@@ -1,4 +1,4 @@
-# Local Agent Workspace v1.1
+# Local Agent Workspace v1.2
 
 Workspace local cho công việc văn phòng với Claude, Codex, Gemini hoặc agent khác.
 

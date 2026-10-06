@@ -6,7 +6,7 @@ description: >-
   or a deadline that was not mentioned.
   Triggers when the user says: "meeting minutes", "summarise the meeting", "turn the meeting notes into action items".
 metadata:
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Meeting minutes and summaries
@@ -28,6 +28,11 @@ Separate four kinds of information, because this is where minutes often get mixe
 | Decisions | Record only what was clearly agreed; do not turn opinions into decisions. |
 | Action items | Table: Task, Owner, Deadline. A cell not mentioned reads "not stated". |
 | Open points | Issues still open, things to confirm, or who must answer. |
+
+Record an owner and a deadline only when the source says who will do it and when. Someone having "reported",
+"done" or "is waiting for" something does not mean they were assigned to follow it up: a task nobody took gets
+the owner "not stated". Relative milestones ("from next week", "before the next meeting") are kept verbatim, not
+turned into "not stated" and not converted into a calendar date.
 
 Keep figures, proper names and document codes as they are. If you are unsure of the speaker or a name
 (especially in a speech-to-text transcript), mark it `[?]` rather than guess. If the source

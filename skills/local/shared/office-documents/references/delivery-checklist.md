@@ -11,6 +11,7 @@ Dùng ngắn gọn, chọn phần phù hợp với sản phẩm. Không biến t
 - [ ] Dữ kiện lấy từ nguồn tách khỏi đề xuất của agent.
 - [ ] File gốc của người dùng không bị ghi đè; bản mới có tên rõ (và hậu tố phiên bản khi thay bản cũ).
 - [ ] Nêu trong lời giao: đã làm gì, chưa kiểm gì, cần người dùng xác nhận gì.
+- [ ] Việc có phát hiện hoặc số liệu: kết thúc bằng khối "Khai báo thực hiện" (cách làm, nguồn, file, chưa kiểm); phát hiện về số nêu con số cụ thể (xem `AGENTS.md`).
 
 ## Văn bản, quy trình, biểu mẫu
 

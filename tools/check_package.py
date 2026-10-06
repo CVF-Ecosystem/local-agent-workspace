@@ -14,6 +14,8 @@ import argparse, ast, hashlib, io, json, os, re, subprocess, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEXT_EXT = ('.md', '.html', '.py', '.json', '.txt', '.sha256', '.css', '.js', '')
 SKIP_DIRS = {'.git', '__pycache__', 'dist', 'node_modules'}
+# Chỉ ở thư mục gốc: nơi quản lý feedback của người duy trì, không đưa vào gói phát hành
+ROOT_ONLY_SKIP = {'feedback'}
 # File người dùng sửa trong project: không đưa vào MANIFEST
 USER_FILES = {'PROJECT.md', '.agent/STATE.md', '.agent/HANDOFF.md', '.agent/INDEX.md',
               '.agent/SKILL_INDEX.md', '.agent/PENDING_LESSONS.md', '.agent/PACKAGE_INFO.json', 'setup_answers.json'}
@@ -34,7 +36,7 @@ def rd(rel): return io.open(P(rel), encoding='utf-8', newline='').read()
 def all_files():
     out = []
     for d, dirs, files in os.walk(ROOT):
-        dirs[:] = sorted(x for x in dirs if x not in SKIP_DIRS)
+        dirs[:] = sorted(x for x in dirs if x not in SKIP_DIRS and not (d == ROOT and x in ROOT_ONLY_SKIP))
         for f in sorted(files):
             rel = os.path.relpath(os.path.join(d, f), ROOT).replace(os.sep, '/')
             if f.endswith(('.pyc', '.bak')) or '.bak-' in f:

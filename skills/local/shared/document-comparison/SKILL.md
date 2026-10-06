@@ -6,7 +6,7 @@ description: >-
   ảnh hưởng gì đến người thực hiện; không dùng để đánh giá đúng/sai pháp lý.
   Kích hoạt khi người dùng nói: “so sánh hai bản”, “bản mới khác bản cũ chỗ nào”, “đối chiếu quy định cũ và mới”.
 metadata:
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Đối chiếu hai phiên bản tài liệu
@@ -26,7 +26,7 @@ Lập bảng:
 
 - **Loại:** thêm, bỏ, sửa nội dung, đổi vị trí. Đổi vị trí không đổi nghĩa chỉ nêu một dòng.
 - **Tác động:** chỉ viết khi văn bản cho căn cứ (ai phải làm khác, hạn mới, biểu mẫu mới).
-  Chưa rõ thì ghi "cần xác nhận"; không tự suy ra hậu quả.
+  Chưa rõ thì ghi "cần xác nhận"; không tự suy ra hậu quả. Nếu vẫn nêu ảnh hưởng suy từ ngữ cảnh chứ không có trong văn bản, gắn nhãn "(suy luận)" để người đọc phân biệt.
 - Đưa lên đầu những thay đổi về **số liệu, thời hạn, vai trò, thẩm quyền, điều kiện**.
 - Bỏ qua khác biệt định dạng, chính tả, đánh số lại khi nghĩa không đổi. Nếu có nhiều,
   nói một câu chung thay vì liệt kê.

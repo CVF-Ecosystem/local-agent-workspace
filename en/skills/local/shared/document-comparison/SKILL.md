@@ -6,7 +6,7 @@ description: >-
   old and what it means for those carrying it out; not for judging legal right or wrong.
   Triggers when the user says: "compare the two versions", "where does the new version differ from the old", "compare the old and new regulation".
 metadata:
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Comparing two versions of a document
@@ -25,7 +25,7 @@ Build the table:
 
 - **Type:** added, removed, changed content, moved. A move that does not change the meaning gets one line.
 - **Impact:** write it only when the text gives a basis (who must act differently, a new deadline, a
-  new form). If unclear, write "needs confirmation"; do not infer consequences.
+  new form). If unclear, write "needs confirmation"; do not infer consequences. If you still state an impact inferred from context rather than found in the text, label it "(inferred)" so the reader can tell the difference.
 - Put changes to **figures, deadlines, roles, authority and conditions** first.
 - Ignore differences of formatting, spelling or renumbering when the meaning is unchanged. If there
   are many, say so in one general sentence instead of listing them.

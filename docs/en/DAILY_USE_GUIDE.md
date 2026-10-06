@@ -1,6 +1,6 @@
 # Daily use guide
 
-Local Agent Workspace v1.1 keeps your documents, context and results in one folder. The agent
+Local Agent Workspace v1.2 keeps your documents, context and results in one folder. The agent
 still chooses the approach, tools and skills that fit.
 
 ## 1. Give work in plain language
@@ -149,7 +149,17 @@ For documents that go outside or to be signed, the signer is responsible for the
 figures against the sources. If your organisation requires recording AI assistance, add a line to the file (for example: "Draft prepared
 with AI assistance, reviewed by [name]").
 
-## 10. The role of the HTML guides
+## 10. Reading the agent's "Execution declaration"
+
+When the agent reads, checks, compares or calculates on your files, the end of its reply should carry an "Execution
+declaration" block (rule 9 in `AGENTS.md`): the method (skill, script run with its command, or manual reading), the sources read,
+the files created or changed, and what was not checked. Read this block before trusting the result. Findings about numbers should
+carry the actual numbers; ambiguous values (such as `1.234`) should be given both readings. If the block is missing or vague, ask
+the agent to add it. The declaration is written by the agent itself, so it is not absolute proof; for important work, the script's
+"Trace" line (file, sha256, run time) lets you cross-check. Save the reply to a file and run
+`python tools/check_output.py --declaration <file>` to check the declaration is complete.
+
+## 11. The role of the HTML guides
 
 `START_HERE.en.html` gathers the handbook for the user; each Markdown guide also has an HTML
 version with the same name. You only need to read one form. The agent does not need to load HTML,

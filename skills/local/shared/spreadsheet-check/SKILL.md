@@ -6,7 +6,7 @@ description: >-
   Chỉ báo phát hiện, không tự sửa dữ liệu gốc.
   Kích hoạt khi người dùng nói: “kiểm tra file Excel/CSV”, “dữ liệu có sạch không”, “kiểm trước khi làm báo cáo”.
 metadata:
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Kiểm tra bảng tính trước khi dùng
@@ -40,7 +40,7 @@ python skills/local/shared/spreadsheet-check/scripts/check_spreadsheet.py FILE.c
 CSV chỉ cần Python 3.8+. Excel cần `openpyxl` (`pip install openpyxl`); không có thì script báo rõ và
 dừng, khi đó xuất sheet sang CSV hoặc kiểm bằng cách khác. `--sheet TÊN` chỉ kiểm một sheet; `--khoa`
 chỉ định cột mã để tìm trùng. Kết quả chia ba nhóm như bên dưới; vẫn cần người đọc đánh giá ý nghĩa
-nghiệp vụ. Số dạng `1.234` hoặc `1,234` được ghi là "mơ hồ" thay vì đoán.
+nghiệp vụ. Số dạng `1.234` hoặc `1,234` được ghi là "mơ hồ" thay vì đoán. Script in cuối một dòng "Dấu vết" (file, sha256, giờ chạy); khi báo cáo, chép dòng đó vào khối "Khai báo thực hiện" của `AGENTS.md`, và nêu con số cụ thể của từng phát hiện (giá trị ghi, giá trị tính lại, chênh lệch) cùng các cách hiểu của chỗ mơ hồ.
 
 ## Kết quả
 

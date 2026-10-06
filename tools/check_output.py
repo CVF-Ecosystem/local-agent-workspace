@@ -4,6 +4,7 @@ Quick pre-delivery check of a deliverable: unfilled placeholders, leftover demo 
 
 Dùng / Usage:
   python tools/check_output.py <file> [<file> ...] [--lang vi|en]
+  python tools/check_output.py --declaration <reply.txt|.md>   (kiểm khối "Khai báo thực hiện" / check the "Execution declaration" block)
 
 Hỗ trợ: .md .txt .html .docx .csv .xlsx (CSV/Excel được chuyển cho skill spreadsheet-check). Chỉ đọc, không sửa file.
 Mã thoát: 0 không có lỗi cần sửa; 1 có điều cần sửa trước khi giao. Chỉ cần Python 3.8+, không dùng mạng.
@@ -60,11 +61,47 @@ def check_text(path, text, ext):
         must.append(L('nội dung gần như trống', 'the content is almost empty'))
     return must, note
 
+DECL_HEAD = re.compile(r'^[ \t]*(?:#+[ \t]*|\*\*)?(Khai báo thực hiện|Execution declaration)', re.I | re.M)
+DECL_FIELDS = [('cách làm', 'method', 'Cách làm / Method'), ('nguồn', 'sources', 'Nguồn / Sources'),
+               ('file', 'files', 'File / Files'), ('chưa kiểm', 'not checked', 'Chưa kiểm / Not checked')]
+
+def check_declaration(text):
+    must, note = [], []
+    m = DECL_HEAD.search(text)
+    if not m:
+        return [L('không có khối "Khai báo thực hiện" (xem AGENTS.md)', 'no "Execution declaration" block (see AGENTS.md)')], note
+    fields, cur = {}, None
+    for line in text[m.end():].split('\n'):
+        fm = re.match(r'^\s*[-*]\s*(?:\*\*)?([^:\n]{2,40}?)(?:\*\*)?\s*:\s*(.*)$', line)
+        if fm:
+            cur = fm.group(1).strip().lower(); fields[cur] = fm.group(2).strip()
+        elif cur and line.strip() and not line.lstrip().startswith(('-', '*', '#')):
+            fields[cur] += ' ' + line.strip()
+    def get(*names):
+        for k, v in fields.items():
+            if any(k.startswith(n) for n in names): return v
+        return None
+    for vi, en, label in DECL_FIELDS:
+        v = get(vi, en)
+        if v is None:
+            must.append(L('thiếu mục "%s"', 'missing item "%s"') % label)
+        elif not v or re.fullmatch(r'\[[^\]]*\]', v):
+            must.append(L('mục "%s" chưa điền', 'item "%s" is not filled in') % label)
+    how = get('cách làm', 'method') or ''
+    if how and not re.search(r'python|\.py|script|thủ công|manual|không chạy|no script|by hand|skill', how, re.I):
+        note.append(L('mục Cách làm chưa nói rõ có chạy script/công cụ hay đọc thủ công', 'Method does not say whether a script/tool was run or the work was done manually'))
+    figs = get('số liệu', 'figures')
+    whole = text[m.end():]
+    if re.search(r'sai lệch|lệch|không khớp|mismatch|discrepan|does not match', whole, re.I) and not (figs and re.search(r'\d', figs)):
+        note.append(L('có nói về sai lệch nhưng mục Số liệu không có con số cụ thể', 'mentions a discrepancy but the Figures item has no concrete numbers'))
+    return must, note
+
 def main():
     global LANG
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('files', nargs='+')
     ap.add_argument('--lang', choices=['vi', 'en'], default=None)
+    ap.add_argument('--declaration', action='store_true', help='kiểm khối Khai báo thực hiện trong câu trả lời đã lưu / check the Execution declaration block in a saved reply')
     a = ap.parse_args()
     if hasattr(sys.stdout, 'reconfigure'):
         sys.stdout.reconfigure(encoding='utf-8')
@@ -81,6 +118,12 @@ def main():
         print('== %s ==' % f)
         if not os.path.isfile(f):
             print('  ' + L('Không thấy file.', 'File not found.')); bad += 1; continue
+        if a.declaration:
+            must, note = check_declaration(io.open(f, encoding='utf-8', errors='replace').read())
+            for m_ in must: print('  ' + L('CẦN SỬA: ', 'FIX: ') + m_)
+            for n_ in note: print('  ' + L('LƯU Ý: ', 'NOTE: ') + n_)
+            if not must and not note: print('  ' + L('Khai báo đủ các mục.', 'Declaration has all items.'))
+            bad += len(must); continue
         if ext in ('.csv', '.xlsx', '.xlsm'):
             sc = os.path.join(ROOT, 'skills', 'local', 'shared', 'spreadsheet-check', 'scripts', 'check_spreadsheet.py')
             r = subprocess.run([sys.executable, sc, f, '--lang', LANG], capture_output=True)

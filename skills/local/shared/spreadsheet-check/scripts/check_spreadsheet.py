@@ -46,6 +46,7 @@ MSG = {
     'l2': ('CẦN HỎI (định nghĩa/đơn vị chưa rõ)', 'TO ASK (definition/unit unclear)'),
     'l3': ('LƯU Ý (chưa ảnh hưởng kết quả)', 'NOTES (not affecting the result yet)'),
     'none': ('(không phát hiện trong phạm vi đã kiểm)', '(nothing found within the scope checked)'),
+    'trace': ('Dấu vết: check_spreadsheet.py | file %s | sha256 %s | chạy %s', 'Trace: check_spreadsheet.py | file %s | sha256 %s | run %s'),
     'scope': ('Phạm vi: các kiểm tra trên là phát hiện máy móc, không chứng minh file đúng. Chưa kiểm: ý nghĩa nghiệp vụ, công thức phức tạp, liên kết giữa các sheet.', 'Scope: the checks above are mechanical findings and do not prove the file is correct. Not checked: business meaning, complex formulas, links between sheets.'),
     'ext': ('Chỉ hỗ trợ .csv .tsv .xlsx .xlsm (file .xls cũ: hãy lưu thành .xlsx rồi kiểm tra).', 'Only .csv .tsv .xlsx .xlsm are supported (for old .xls: save as .xlsx first).'),
     'noxl': ('Cần openpyxl để đọc Excel: pip install openpyxl (hoặc xuất sheet sang CSV rồi kiểm tra).', 'openpyxl is needed to read Excel: pip install openpyxl (or export the sheet to CSV and check that).'),
@@ -291,6 +292,12 @@ def main():
         for line in R[k] or [T('none')]:
             print('- ' + line)
     print('\n' + T('scope'))
+    import datetime, hashlib, os
+    try:
+        h = hashlib.sha256(open(a.file, 'rb').read()).hexdigest()[:12]
+    except OSError:
+        h = '?'
+    print(T('trace') % (os.path.basename(a.file), h, datetime.datetime.now().strftime('%Y-%m-%d %H:%M')))
 
 if __name__ == '__main__':
     main()

@@ -3,6 +3,20 @@
 Định dạng phiên bản: `MAJOR.MINOR.PATCH`. Số phiên bản nằm trong `VERSION`; hướng dẫn nâng cấp ở
 `docs/HUONG_DAN_CHUYEN_DOI_PROJECT_CO_SAN_VI.md`.
 
+## v1.2.0 — 2026-10-06
+
+Khai báo khi làm việc (rút ra từ lần thử đầu tiên với Gemini, xem `feedback/` trong kho nguồn)
+- Quy tắc bắt buộc thứ 9 trong `AGENTS.md` và mục "Khai báo thực hiện": cuối câu trả lời có phát hiện hoặc số liệu, agent khai cách làm (skill, script kèm lệnh hoặc đọc thủ công), nguồn, file đã tạo hoặc sửa, và điều chưa kiểm; phát hiện về số kèm con số cụ thể, số mơ hồ nêu các cách hiểu.
+- `check_spreadsheet.py` in dòng "Dấu vết" (file, sha256, giờ chạy) để chép vào khai báo; `tools/check_output.py --declaration` kiểm khối khai báo trong câu trả lời đã lưu.
+- Checklist giao sản phẩm và hướng dẫn dùng hằng ngày (mục 10) nói về khai báo.
+
+Skill và bài thử
+- `meeting-minutes` 1.1: không gán người phụ trách chỉ vì họ "đã báo/đã làm"; giữ nguyên mốc tương đối như "từ tuần sau". `document-comparison` 1.1: ảnh hưởng suy luận gắn nhãn "(suy luận)". `spreadsheet-check` 1.1: nêu con số và các cách hiểu.
+- `examples/demo-project`: mở thư mục gốc package (để agent thấy `AGENTS.md` và skill), đường dẫn trong yêu cầu có tiền tố `examples/demo-project/`; bản 2 của quy trình có thêm một khác biệt chỉ về câu chữ; thêm mục kiểm khai báo.
+
+Kho nguồn
+- Thư mục `feedback/` (README, mẫu, chỉ mục, bản ghi) để người duy trì theo dõi các lần thử và vấn đề; không nằm trong MANIFEST và ZIP phát hành.
+
 ## v1.1.0 — 2026-10-06
 
 Khởi tạo và dùng thử

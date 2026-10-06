@@ -1,6 +1,6 @@
 # Hướng dẫn sử dụng hằng ngày
 
-Local Agent Workspace v1.1 giúp giữ tài liệu, ngữ cảnh và kết quả công việc trên
+Local Agent Workspace v1.2 giúp giữ tài liệu, ngữ cảnh và kết quả công việc trên
 cùng một thư mục. Agent vẫn chủ động chọn cách làm, công cụ và skill phù hợp.
 
 ## 1. Giao việc bằng ngôn ngữ tự nhiên
@@ -142,7 +142,16 @@ nó. Không dùng project này cho dữ liệu mà quy định của đơn vị 
 Với văn bản gửi ra ngoài hoặc trình ký, người ký chịu trách nhiệm về nội dung: nên đọc lại toàn bộ và đối chiếu số liệu với nguồn.
 Nếu đơn vị yêu cầu ghi nhận phần AI hỗ trợ, thêm một dòng vào hồ sơ (ví dụ: "Bản nháp có hỗ trợ của AI, đã được [tên] rà soát").
 
-## 10. Vai trò của các hướng dẫn HTML
+## 10. Đọc "Khai báo thực hiện" của agent
+
+Khi agent đọc, kiểm tra, đối chiếu hoặc tính toán trên file của bạn, cuối câu trả lời nên có khối "Khai báo thực hiện"
+(quy tắc 9 trong `AGENTS.md`): cách làm (skill, script đã chạy kèm lệnh, hay đọc thủ công), nguồn đã đọc, file đã tạo hoặc sửa,
+và điều chưa kiểm. Hãy đọc khối này trước khi tin kết quả. Phát hiện về số nên kèm con số cụ thể; chỗ mơ hồ (như `1.234`) nên được
+nêu cả hai cách hiểu. Thiếu khối này, hoặc khai báo chung chung, thì yêu cầu agent bổ sung. Khai báo do agent tự ghi nên không phải
+bằng chứng tuyệt đối; với việc quan trọng, dòng "Dấu vết" của script (file, sha256, giờ chạy) giúp bạn đối chiếu được.
+Lưu câu trả lời thành file rồi chạy `python tools/check_output.py --declaration <file>` để kiểm khai báo đủ mục hay chưa.
+
+## 11. Vai trò của các hướng dẫn HTML
 
 `START_HERE.html` tập hợp cẩm nang cho người dùng; mỗi hướng dẫn Markdown cũng có
 bản HTML cùng tên. Chỉ cần đọc một dạng. Agent không cần nạp HTML, đọc toàn bộ README

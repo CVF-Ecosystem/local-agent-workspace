@@ -48,6 +48,7 @@ Quản lý gói lĩnh vực (`packs/`): `list`, `add <tên>`, `update <tên> [--
 
 Kiểm tra cơ học một sản phẩm trước khi giao: `python tools/check_output.py <file>...` cho `.md`, `.txt`, `.html`, `.docx` (chỗ chưa điền, nhãn
 mẫu minh họa, `isDemo`, tài nguyên mạng trong HTML) và chuyển `.csv`/`.xlsx` cho `spreadsheet-check`. Chỉ đọc; mã thoát 1 nếu có điều cần sửa.
+`python tools/check_output.py --declaration <file>` kiểm một câu trả lời của agent đã lưu thành file: có khối "Khai báo thực hiện" / "Execution declaration" với đủ mục Cách làm, Nguồn, File, Chưa kiểm hay không; cảnh báo khi nói "sai lệch" mà không có con số.
 
 ## install_skills.py
 

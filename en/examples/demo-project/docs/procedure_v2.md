@@ -1,6 +1,6 @@
 # File intake procedure (version 2, fake data)
 
-1. The intake officer checks that the file has all the papers on the list.
+1. The intake officer reviews whether the file has all the papers on the list.
 2. If something is missing, guide the applicant to supplement it the same day.
 3. Enter the file into the system and issue an intake code.
 4. The team leader assigns a handler within 1 working day.
