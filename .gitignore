@@ -1,0 +1,9 @@
+dist/
+__pycache__/
+*.pyc
+*.bak
+*.bak-*
+setup_answers.json
+.agent/PACKAGE_INFO.json
+Thumbs.db
+.DS_Store

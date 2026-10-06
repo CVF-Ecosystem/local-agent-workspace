@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>[MẪU MINH HỌA] Tổng quan chỉ số hoạt động</title><style>
+:root{--ink:#152f3b;--muted:#536871;--paper:#f3f6f5;--white:#fff;--line:#d8e3e1;--teal:#176b63;--teal-soft:#e4f2ed;--blue:#96b8be;--gold:#ad7132;--radius:18px}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}button,select{font:inherit}button,select,a{touch-action:manipulation}button{cursor:pointer}button:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #c58540;outline-offset:4px}.wrap{max-width:1140px;margin:auto;padding:34px 32px 44px}.top{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:28px}.brand{font-size:12px;letter-spacing:.13em;font-weight:750;text-transform:uppercase}.pill{display:inline-block;padding:5px 12px;border:1px solid var(--line);border-radius:99px;color:var(--muted);font-size:12px;font-weight:650}.print{padding:9px 16px;border:1px solid var(--line);border-radius:10px;background:white;color:var(--ink)}.hero{padding:28px 0 26px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:24px}.eyebrow{margin:0 0 12px;color:var(--teal);font-size:12px;font-weight:750;letter-spacing:.14em;text-transform:uppercase}h1{margin:0 0 12px;font-size:clamp(30px,4vw,48px);letter-spacing:-.045em;line-height:1.13;font-weight:750;max-width:860px}h2{font-size:20px;line-height:1.3;letter-spacing:-.025em;margin:0 0 8px}h3{font-size:16px;margin:0 0 8px}.sub{color:var(--muted);margin:0;max-width:770px}.demo{border:1px solid #dcb982;background:#fff6e5;color:#6f4c1d;border-radius:10px;padding:11px 15px;margin:18px 0;font-size:13px}.demo:empty{display:none}.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin:24px 0}.kpi{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:19px 21px}.kpi .label{font-size:13px;color:var(--muted);margin:0 0 8px}.kpi .value{font-size:34px;font-weight:750;letter-spacing:-.035em;line-height:1.2;margin:0 0 8px}.kpi .note{font-size:12px;color:var(--muted);margin:0}.kpi.accent{background:var(--teal);color:white;border-color:var(--teal)}.kpi.accent .label,.kpi.accent .note{color:#d9eeeb}.grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(260px,1fr);gap:18px;margin:20px 0}.panel{padding:24px;border:1px solid var(--line);border-radius:var(--radius);background:var(--white);min-width:0}.muted{color:var(--muted);font-size:13px}.legend{display:flex;gap:18px;flex-wrap:wrap;margin:22px 0 16px;color:var(--muted);font-size:12px}.legend span{display:flex;align-items:center;gap:7px}.dot{width:9px;height:9px;border-radius:3px;background:var(--teal);display:inline-block}.dot.light{background:var(--blue)}.plot-row{margin:17px 0}.plot-label{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px}.bars{display:grid;gap:4px}.track{height:24px;background:#f1f5f4;border-radius:4px;position:relative}.bar{height:100%;border-radius:4px;background:var(--teal);min-width:0}.bar.light{background:var(--blue)}.scale{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);border-top:1px solid var(--line);margin-top:14px;padding-top:6px}.note-item{padding:14px 0;border-top:1px solid var(--line);font-size:14px}.note-item:first-of-type{margin-top:18px}.table-wrap{overflow:auto;margin-top:18px;border:1px solid var(--line);border-radius:10px}table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}th,td{text-align:right;padding:12px 15px;border-bottom:1px solid var(--line);white-space:nowrap}th:first-child,td:first-child{text-align:left}th{background:#f1f6f4;color:var(--muted);font-size:11px;letter-spacing:.03em}tbody tr:last-child td{border-bottom:0}tfoot td{background:#edf4f0;font-weight:700;border-top:1px solid var(--line);border-bottom:0}.table-panel{margin:20px 0}.source{margin-top:24px;padding:20px 0;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}.source p{margin:5px 0}.foot{display:flex;justify-content:space-between;gap:16px;font-size:11px;color:var(--muted);padding-top:14px}.filters{display:flex;align-items:end;gap:16px;flex-wrap:wrap;padding:20px 24px;background:var(--white);border:1px solid var(--line);border-radius:var(--radius);margin-top:22px}.field{display:grid;gap:7px;flex:1;min-width:170px}.field label{font-size:12px;font-weight:650;color:var(--muted)}select{width:100%;padding:10px 12px;background:white;color:var(--ink);border:1px solid #afc3be;border-radius:9px}.filter-status{font-size:12px;color:var(--muted);margin:14px 2px 0}.alert{background:#fff1ee;border:1px solid #c78070;color:#833722;border-radius:12px;padding:16px;margin:20px 0}.dashboard .hero{background:var(--ink);color:white;border:none;border-radius:22px;padding:32px}.dashboard .hero .eyebrow{color:#90ccc0}.dashboard .hero .sub{color:#d0dfdf}.dashboard .grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.dashboard .top{margin-bottom:22px}.empty{font-size:14px;color:var(--muted);padding:20px 0}[hidden]{display:none!important}
+@media(max-width:760px){.wrap{padding:20px 18px}.kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.kpi{padding:16px}.kpi .value{font-size:29px}.grid,.dashboard .grid{grid-template-columns:1fr}.panel{padding:19px}.top{align-items:flex-start}.brand{max-width:200px}.dashboard .hero{padding:25px}.foot{flex-direction:column;gap:4px}}
+@media(max-width:390px){.kpi .value{font-size:26px}.kpi .label{font-size:12px}.wrap{padding:16px 12px}}
+@media print{@page{size:A4;margin:14mm}body{background:white;font-size:11px}.wrap{max-width:none;padding:0}.print{display:none}.top{margin-bottom:12px}.hero,.dashboard .hero{background:white;color:var(--ink);padding:10px 0 15px;border-radius:0;border-bottom:1px solid var(--line)}h1{font-size:28px}.dashboard .hero .sub{color:var(--muted)}.dashboard .hero .eyebrow{color:var(--teal)}.demo{font-size:10px;padding:7px 10px}.kpis{gap:8px;margin:15px 0}.kpi{padding:12px}.kpi .value{font-size:24px}.panel{padding:15px}.grid,.dashboard .grid{grid-template-columns:1fr}.filters{padding:12px}.kpi,.panel,.source{break-inside:avoid}.table-wrap{overflow:visible}th,td{padding:8px 9px;font-size:10px}.foot{font-size:9px}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style></head>
+<body class="dashboard"><div class="wrap">
+<header class="top"><div class="brand">Local Agent Workspace <span style="color:var(--muted)"> / Báo cáo</span></div><button class="print" id="print-button" type="button">In báo cáo</button></header>
+<header class="hero"><p class="eyebrow" id="period-label">Kỳ báo cáo</p><h1 id="title">Tổng quan chỉ số hoạt động</h1><p class="sub" id="subtitle"></p></header>
+<div class="demo" id="demo-banner">MẪU MINH HỌA — Dữ liệu giả lập, không dùng như số liệu thật.</div>
+<noscript><div class="alert">Bật JavaScript để tính chỉ số và hiển thị bảng số liệu từ dữ liệu được lưu trong file. Báo cáo không cần mạng.</div></noscript>
+<div class="alert" id="data-error" role="alert" hidden></div>
+<main id="report-content">
+<section class="filters" aria-label="Lọc báo cáo"><div class="field"><label for="channel-filter">Kênh tiếp nhận</label><select id="channel-filter"><option value="">Tất cả kênh</option></select></div><div class="field"><label for="period-filter">Kỳ báo cáo</label><select id="period-filter"><option value="">Tất cả tuần</option></select></div></section>
+<p class="filter-status" id="filter-status" aria-live="polite"></p>
+<section class="kpis" aria-label="Chỉ số trong phạm vi đang chọn">
+<div class="kpi"><p class="label">Hồ sơ tiếp nhận</p><p class="value" id="kpi-received">—</p><p class="note">Theo bộ lọc hiện tại</p></div>
+<div class="kpi"><p class="label">Hồ sơ hoàn tất</p><p class="value" id="kpi-closed">—</p><p class="note">Có thể bao gồm hồ sơ tồn</p></div>
+<div class="kpi accent"><p class="label">Hoàn tất đúng hạn</p><p class="value" id="kpi-rate">—</p><p class="note" id="rate-note"></p></div>
+<div class="kpi"><p class="label">Hồ sơ đúng hạn</p><p class="value" id="kpi-on-time">—</p><p class="note">Là một phần của hồ sơ hoàn tất</p></div>
+</section>
+<div class="grid">
+<section class="panel"><h2>Diễn biến theo tuần</h2><p class="muted">Số lượng theo phạm vi đang chọn.</p><div class="legend"><span><i class="dot" aria-hidden="true"></i>Tiếp nhận</span><span><i class="dot light" aria-hidden="true"></i>Hoàn tất</span></div><div id="period-chart"></div></section>
+<section class="panel"><h2>Hoàn tất theo kênh</h2><p class="muted">So sánh tổng hoàn tất và phần hoàn tất đúng hạn.</p><div class="legend"><span><i class="dot" aria-hidden="true"></i>Hoàn tất</span><span><i class="dot light" aria-hidden="true"></i>Đúng hạn</span></div><div id="channel-chart"></div></section>
+</div>
+<section class="panel table-panel"><h2>Dữ liệu trong phạm vi đang chọn</h2><p class="muted">Tỷ lệ tổng được tính từ tổng số đúng hạn / tổng hoàn tất, không lấy trung bình các tỷ lệ dòng.</p><p id="empty-data" class="empty" hidden>Không có dữ liệu phù hợp bộ lọc.</p><div class="table-wrap"><table><caption style="position:absolute;width:1px;height:1px;overflow:hidden">Số liệu theo tuần và kênh</caption><thead><tr><th scope="col">Kỳ</th><th scope="col">Kênh</th><th scope="col">Tiếp nhận</th><th scope="col">Hoàn tất</th><th scope="col">Đúng hạn</th><th scope="col">Tỷ lệ</th></tr></thead><tbody id="data-body"></tbody><tfoot id="data-foot"></tfoot></table></div></section>
+</main>
+<footer class="source"><p><strong>Nguồn:</strong> <span id="source"></span></p><p><strong>Cập nhật:</strong> <span id="updated"></span></p><p>“—” nghĩa chưa thể tính tỷ lệ do không có mẫu số; không phải 0%. Số hoàn tất có thể gồm hồ sơ từ kỳ trước.</p></footer>
+<div class="foot"><span id="type-label">Mẫu tham khảo · v1.0</span><span>HTML tự chứa · Tiếng Việt · Mở offline</span></div>
+</div>
+<!--
+Mẫu HTML viết mới cho Local Agent Workspace v1.0. Không dùng tài nguyên Lieflat Charts.
+DỮ LIỆU: sửa JSON trong report-data; giữ đúng dấu ngoặc và dấu phẩy.
+received = hồ sơ tiếp nhận; closed = hồ sơ hoàn tất; onTime = phần hoàn tất đúng hạn.
+period = tên kỳ; channel = tên kênh (mẫu tổng quan).
+backlog = tồn cuối kỳ; openingBacklog = tồn đầu kỳ (mẫu định kỳ).
+Mẫu định kỳ giả định không có luồng điều chỉnh khác: tồn trước + nhận - hoàn tất = tồn cuối.
+Đổi công thức nếu nghiệp vụ thực tế khác; không sửa số liệu để ép khớp mẫu.
+Dữ liệu phải là số nguyên không âm; thiếu dữ liệu cần làm rõ, không điền 0 theo suy đoán.
+Thay cả metadata, nguồn và nhận xét; chỉ đặt isDemo=false khi đã dùng dữ liệu thật.
+Không có mạng, tracker, font ngoài, server hoặc dependency cần cài đặt.
+-->
+<script id="report-data" type="application/json">{
+  "isDemo": true,
+  "title": "Tổng quan chỉ số hoạt động",
+  "period": "Tháng 9/2026 · Dữ liệu minh họa",
+  "subtitle": "Lọc theo kênh và tuần để xem cùng một bộ chỉ tiêu. Mọi dữ liệu được lưu trong file, không kết nối hệ thống bên ngoài.",
+  "source": "Dữ liệu giả lập trong mẫu Local Agent Workspace v1.0; không phải số liệu thật của dự án.",
+  "updated": "06/10/2026 · Ngày tạo mẫu",
+  "rows": [
+    {
+      "period": "Tuần 1",
+      "channel": "Email",
+      "received": 42,
+      "closed": 40,
+      "onTime": 38
+    },
+    {
+      "period": "Tuần 1",
+      "channel": "Điện thoại",
+      "received": 50,
+      "closed": 49,
+      "onTime": 45
+    },
+    {
+      "period": "Tuần 1",
+      "channel": "Trực tuyến",
+      "received": 28,
+      "closed": 27,
+      "onTime": 24
+    },
+    {
+      "period": "Tuần 2",
+      "channel": "Email",
+      "received": 52,
+      "closed": 50,
+      "onTime": 47
+    },
+    {
+      "period": "Tuần 2",
+      "channel": "Điện thoại",
+      "received": 61,
+      "closed": 58,
+      "onTime": 54
+    },
+    {
+      "period": "Tuần 2",
+      "channel": "Trực tuyến",
+      "received": 35,
+      "closed": 33,
+      "onTime": 32
+    },
+    {
+      "period": "Tuần 3",
+      "channel": "Email",
+      "received": 46,
+      "closed": 48,
+      "onTime": 46
+    },
+    {
+      "period": "Tuần 3",
+      "channel": "Điện thoại",
+      "received": 57,
+      "closed": 60,
+      "onTime": 57
+    },
+    {
+      "period": "Tuần 3",
+      "channel": "Trực tuyến",
+      "received": 32,
+      "closed": 34,
+      "onTime": 33
+    },
+    {
+      "period": "Tuần 4",
+      "channel": "Email",
+      "received": 55,
+      "closed": 54,
+      "onTime": 51
+    },
+    {
+      "period": "Tuần 4",
+      "channel": "Điện thoại",
+      "received": 63,
+      "closed": 61,
+      "onTime": 57
+    },
+    {
+      "period": "Tuần 4",
+      "channel": "Trực tuyến",
+      "received": 39,
+      "closed": 36,
+      "onTime": 33
+    }
+  ]
+}</script>
+<script>
+const byId = id => document.getElementById(id);
+const numberFormat = new Intl.NumberFormat('vi-VN');
+const percentFormat = new Intl.NumberFormat('vi-VN', {maximumFractionDigits: 1});
+const fmt = value => Number.isFinite(value) ? numberFormat.format(value) : '—';
+const rate = (part, whole) => whole > 0 ? percentFormat.format(part / whole * 100) + '%' : '—';
+const sum = (rows, key) => rows.reduce((total, row) => total + row[key], 0);
+const text = (id, value) => { byId(id).textContent = value; };
+function element(tag, value, cls) {
+  const node = document.createElement(tag);
+  if (value !== undefined) node.textContent = value;
+  if (cls) node.className = cls;
+  return node;
+}
+function validateRows(rows, fields) {
+  if (!Array.isArray(rows) || !rows.length) throw new Error('Chưa có các dòng dữ liệu để lập báo cáo.');
+  rows.forEach((row, index) => {
+    fields.forEach(key => {
+      if (!Number.isInteger(row[key]) || row[key] < 0)
+        throw new Error('Dòng ' + (index + 1) + ': trường ' + key + ' cần là số nguyên không âm.');
+    });
+    if (typeof row.period !== 'string' || !row.period.trim()) throw new Error('Thiếu tên kỳ ở dòng ' + (index + 1));
+    if (row.onTime > row.closed) throw new Error('Dòng ' + (index + 1) + ': số đúng hạn lớn hơn số hoàn tất.');
+  });
+}
+function setup(data) {
+  if (typeof data.isDemo !== 'boolean') throw new Error('Cần khai báo isDemo là true hoặc false.');
+  text('title', data.title || 'Báo cáo');
+  document.title = (data.isDemo ? '[MẪU MINH HỌA] ' : '') + (data.title || 'Báo cáo');
+  text('period-label', data.period || 'Chưa ghi kỳ báo cáo');
+  text('subtitle', data.subtitle || '');
+  text('source', data.source || 'Chưa ghi nguồn dữ liệu.');
+  text('updated', data.updated || 'Chưa ghi thời điểm cập nhật.');
+  text('demo-banner', data.isDemo ? 'MẪU MINH HỌA — Dữ liệu giả lập. Thay số liệu, nguồn và nhận xét trước khi dùng cho công việc thực tế.' : '');
+  text('type-label', data.isDemo ? 'Mẫu tham khảo · v1.0' : 'Báo cáo');
+}
+function notes(targetId, items) {
+  const target = byId(targetId); target.replaceChildren();
+  if (!Array.isArray(items) || !items.length) { target.append(element('p','Chưa có nhận xét.','muted')); return; }
+  items.forEach(item => target.append(element('p',item,'note-item')));
+}
+function barChart(targetId, rows, keys, labels) {
+  const target=byId(targetId); target.replaceChildren();
+  if (!rows.length) { target.append(element('p','Không có dữ liệu trong phạm vi đang chọn.','empty')); return; }
+  const max=Math.max(...rows.flatMap(row => keys.map(key => row[key])), 1);
+  rows.forEach(row => {
+    const group=element('div',undefined,'plot-row');
+    const heading=element('div',undefined,'plot-label');
+    heading.append(element('span',row.label), element('span',keys.map(key => fmt(row[key])).join(' / ')));
+    group.append(heading);
+    const bars=element('div',undefined,'bars');
+    keys.forEach((key,index) => {
+      const track=element('div',undefined,'track');
+      const bar=element('div',undefined,'bar'+(index===1?' light':''));
+      bar.style.width=(row[key]/max*100)+'%';
+      track.setAttribute('role','img');
+      track.setAttribute('aria-label',row.label+' — '+labels[index]+': '+fmt(row[key]));
+      track.append(bar); bars.append(track);
+    });
+    group.append(bars); target.append(group);
+  });
+  const scale=element('div',undefined,'scale'); scale.append(element('span','0'),element('span',fmt(max)+' hồ sơ')); target.append(scale);
+}
+function tableRows(targetId, rows) {
+  const body=byId(targetId); body.replaceChildren();
+  rows.forEach(values => {
+    const tr=element('tr'); values.forEach(value => tr.append(element('td',value))); body.append(tr);
+  });
+}
+function showError(error) {
+  byId('report-content').hidden=true;
+  const alert=byId('data-error'); alert.hidden=false;
+  alert.textContent='Không thể hiển thị báo cáo: '+error.message+' Kiểm tra khối report-data trong file, không thay dữ liệu thiếu bằng số 0 theo suy đoán.';
+}
+byId('print-button').addEventListener('click', () => window.print());
+
+
+try {
+  const data=JSON.parse(byId('report-data').textContent);
+  validateRows(data.rows,['received','closed','onTime']);
+  if(data.rows.some(row=>typeof row.channel!=='string'||!row.channel.trim())) throw new Error('Mỗi dòng cần có tên kênh.');
+  setup(data);
+  const channelSelect=byId('channel-filter'), periodSelect=byId('period-filter');
+  function fillOptions(select,values){ values.forEach(value=>{const option=element('option',value);option.value=value;select.append(option);}); }
+  fillOptions(channelSelect,[...new Set(data.rows.map(row=>row.channel))]);
+  fillOptions(periodSelect,[...new Set(data.rows.map(row=>row.period))]);
+  function aggregate(rows,key) {
+    const groups=new Map();
+    rows.forEach(row=>{ if(!groups.has(row[key])) groups.set(row[key],{label:row[key],received:0,closed:0,onTime:0}); const g=groups.get(row[key]); ['received','closed','onTime'].forEach(k=>g[k]+=row[k]); });
+    return [...groups.values()];
+  }
+  function render() {
+    const rows=data.rows.filter(row=>(!channelSelect.value||row.channel===channelSelect.value)&&(!periodSelect.value||row.period===periodSelect.value));
+    const totalReceived=sum(rows,'received'),totalClosed=sum(rows,'closed'),totalOnTime=sum(rows,'onTime');
+    text('kpi-received',rows.length?fmt(totalReceived):'—'); text('kpi-closed',rows.length?fmt(totalClosed):'—');
+    text('kpi-rate',rate(totalOnTime,totalClosed)); text('kpi-on-time',rows.length?fmt(totalOnTime):'—');
+    text('rate-note',fmt(totalOnTime)+' / '+fmt(totalClosed)+' hồ sơ hoàn tất');
+    text('filter-status',(channelSelect.value||'Tất cả kênh')+' · '+(periodSelect.value||'Tất cả tuần')+' · '+rows.length+' dòng dữ liệu');
+    barChart('period-chart',aggregate(rows,'period'),['received','closed'],['Tiếp nhận','Hoàn tất']);
+    barChart('channel-chart',aggregate(rows,'channel'),['closed','onTime'],['Hoàn tất','Đúng hạn']);
+    tableRows('data-body',rows.map(row=>[row.period,row.channel,fmt(row.received),fmt(row.closed),fmt(row.onTime),rate(row.onTime,row.closed)]));
+    tableRows('data-foot',rows.length?[['Tổng','',fmt(totalReceived),fmt(totalClosed),fmt(totalOnTime),rate(totalOnTime,totalClosed)]]:[]);
+    byId('empty-data').hidden=rows.length>0;
+  }
+  channelSelect.addEventListener('change',render); periodSelect.addEventListener('change',render); render();
+} catch(error) { showError(error); }
+</script>
+</body></html>

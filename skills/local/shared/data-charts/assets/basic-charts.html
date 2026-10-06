@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>[MẪU MINH HỌA] Thư viện biểu đồ cơ bản</title><style>
+:root{--ink:#152f3b;--muted:#536871;--paper:#f3f6f5;--white:#fff;--line:#d8e3e1;--c1:#176b63;--c2:#c08a3e;--c3:#3d6f94;--c4:#8a979c;--c5:#b0533f;--radius:16px}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+.wrap{max-width:1100px;margin:auto;padding:30px 24px 44px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:22px}
+.brand{font-size:12px;letter-spacing:.13em;font-weight:750;text-transform:uppercase}
+button{font:inherit;cursor:pointer;padding:8px 15px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+button:focus-visible,summary:focus-visible{outline:3px solid #c58540;outline-offset:3px}
+h1{margin:0 0 8px;font-size:clamp(28px,4vw,42px);line-height:1.15;letter-spacing:-.04em}
+h2{margin:0 0 4px;font-size:18px;line-height:1.35}
+.sub,.muted{color:var(--muted)}.sub{margin:0 0 18px;max-width:760px}.muted{font-size:13px}
+.demo{border:1px solid #dcb982;background:#fff6e5;color:#6f4c1d;border-radius:10px;padding:10px 14px;margin:16px 0;font-size:13px}.demo:empty{display:none}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:20px 0}
+.kpi{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.kpi .l{font-size:13px;color:var(--muted);margin:0}.kpi .v{font-size:30px;font-weight:750;letter-spacing:-.03em;line-height:1.2;margin:4px 0}.kpi .n{font-size:12px;color:var(--muted);margin:0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.panel{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:20px;min-width:0}
+.panel.wide{grid-column:1/-1}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin:10px 0 2px;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
+svg{display:block;width:100%;height:auto;margin-top:10px}svg text{font:12px -apple-system,"Segoe UI",Arial,sans-serif;fill:#536871}
+svg .val{fill:#152f3b;font-weight:650}.axis{stroke:#cbd8d5;stroke-width:1}.grid-line{stroke:#e5ecea;stroke-width:1}
+details{margin-top:10px}summary{cursor:pointer;color:var(--muted);font-size:13px}
+.table-wrap{overflow:auto;margin-top:8px;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+th,td{text-align:right;padding:9px 12px;border-bottom:1px solid var(--line)}th:first-child,td:first-child{text-align:left}
+thead th{background:#f1f6f4;font-weight:650}tbody th,tfoot th{font-weight:500;text-align:left;background:none}tfoot th,tfoot td{font-weight:650}tr:last-child th,tr:last-child td{border-bottom:0}tfoot th,tfoot td{border-top:2px solid var(--line)}
+.inbar{display:inline-block;height:8px;border-radius:4px;background:var(--c1);vertical-align:middle;margin-left:8px}
+.src{margin-top:22px;font-size:13px;color:var(--muted)}
+@media(max-width:760px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.grid{grid-template-columns:1fr}.wrap{padding:22px 16px 34px}}
+@media print{body{background:#fff}.top button{display:none}.panel,.kpi{break-inside:avoid}}
+</style></head><body><div class="wrap">
+<div class="top"><span class="brand">Mẫu biểu đồ · Local Agent Workspace</span><button type="button" id="print">In trang</button></div>
+<h1 id="title"></h1><p class="sub" id="subtitle"></p><div class="demo" id="demo" role="note"></div>
+<section class="kpis" id="kpis" aria-label="Chỉ số chính"></section>
+<section class="grid">
+<div class="panel"><h2 id="t-line"></h2><p class="muted" id="u-line"></p><div class="legend" id="lg-line"></div><div id="c-line"></div></div>
+<div class="panel"><h2 id="t-bar"></h2><p class="muted" id="u-bar"></p><div id="c-bar"></div></div>
+<div class="panel"><h2 id="t-stack"></h2><p class="muted" id="u-stack"></p><div class="legend" id="lg-stack"></div><div id="c-stack"></div></div>
+<div class="panel"><h2 id="t-donut"></h2><p class="muted" id="u-donut"></p><div class="legend" id="lg-donut"></div><div id="c-donut"></div></div>
+<div class="panel wide"><h2 id="t-table"></h2><p class="muted" id="u-table"></p><div class="table-wrap" id="c-table"></div></div>
+</section>
+<p class="src"><strong>Nguồn:</strong> <span id="source"></span> · <strong>Cập nhật:</strong> <span id="updated"></span></p>
+</div>
+<!--
+Mẫu thư viện biểu đồ cơ bản, SVG thuần, mở offline; viết mới cho Local Agent Workspace v1.0.
+Dùng: giữ hàm vẽ cần dùng (line, bars, stack, donut, kpis, table), thay khối report-data,
+xóa các panel và hàm không dùng. Mỗi biểu đồ có bảng dữ liệu gập kèm theo để tra số chính xác.
+DỮ LIỆU: months = nhãn kỳ; series[].values = số theo kỳ (null = thiếu dữ liệu, hiện "—", không là 0).
+categories = nhóm so sánh; parts = cơ cấu; rows = bảng chi tiết (value + share).
+Không có mạng, font ngoài hay dependency. Chỉ đặt isDemo=false khi đã thay toàn bộ bằng dữ liệu thật.
+-->
+<script id="report-data" type="application/json">{
+  "isDemo": true,
+  "title": "Thư viện biểu đồ cơ bản",
+  "subtitle": "Sáu dạng trình bày thường dùng trong báo cáo văn phòng, dựng từ cùng một khối dữ liệu.",
+  "source": "Dữ liệu giả lập trong mẫu; không phải số liệu thật của dự án.",
+  "updated": "06/10/2026 · Ngày tạo mẫu",
+  "unit": "hồ sơ",
+  "kpis": [
+    {"label": "Tiếp nhận tháng 6", "value": "412", "note": "so với 371 tháng 1"},
+    {"label": "Hoàn tất tháng 6", "value": "398", "note": "tỷ lệ hoàn tất 96,6%"},
+    {"label": "Đúng hạn", "value": "91%", "note": "tính trên hồ sơ hoàn tất"},
+    {"label": "Tồn cuối kỳ", "value": "34", "note": "hồ sơ chưa xử lý"}
+  ],
+  "months": ["T1", "T2", "T3", "T4", "T5", "T6"],
+  "line": {
+    "title": "Tiếp nhận tăng đều, hoàn tất bám sát",
+    "series": [
+      {"name": "Tiếp nhận", "values": [371, 365, 388, 395, 402, 412]},
+      {"name": "Hoàn tất", "values": [352, 360, 371, 380, 389, 398]}
+    ]
+  },
+  "bar": {
+    "title": "Điện thoại là kênh nhiều hồ sơ nhất",
+    "categories": [
+      {"name": "Điện thoại", "value": 168},
+      {"name": "Email", "value": 131},
+      {"name": "Trực tuyến", "value": 76},
+      {"name": "Trực tiếp", "value": 37}
+    ]
+  },
+  "stack": {
+    "title": "Cơ cấu hồ sơ theo loại, từng tháng",
+    "series": [
+      {"name": "Loại A", "values": [180, 176, 190, 192, 196, 201]},
+      {"name": "Loại B", "values": [120, 118, 124, 126, 129, 131]},
+      {"name": "Loại C", "values": [71, 71, 74, 77, 77, 80]}
+    ]
+  },
+  "donut": {
+    "title": "Phần lớn hồ sơ tháng 6 đã xong đúng hạn",
+    "parts": [
+      {"name": "Đúng hạn", "value": 362},
+      {"name": "Trễ hạn", "value": 36},
+      {"name": "Đang xử lý", "value": 34}
+    ]
+  },
+  "table": {
+    "title": "Chi tiết theo kênh, tháng 6",
+    "rows": [
+      {"name": "Điện thoại", "value": 168},
+      {"name": "Email", "value": 131},
+      {"name": "Trực tuyến", "value": 76},
+      {"name": "Trực tiếp", "value": 37}
+    ]
+  }
+}</script>
+<script>
+(function(){
+  var D=JSON.parse(document.getElementById('report-data').textContent);
+  var COL=['#176b63','#c08a3e','#3d6f94','#8a979c','#b0533f'];
+  var NS='http://www.w3.org/2000/svg';
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function $(id){return document.getElementById(id)}
+  function fmt(n){return n===null||n===undefined?'—':Number(n).toLocaleString('vi-VN')}
+  function pct(n,t){return t?(Math.round(n/t*1000)/10).toLocaleString('vi-VN')+'%':'—'}
+  function niceStep(s){var p=Math.pow(10,Math.floor(Math.log10(s||1))),f=s/p;return(f<=1?1:f<=2?2:f<=5?5:10)*p}
+  function niceMax(m){var p=Math.pow(10,Math.floor(Math.log10(m||1))),f=m/p;return(f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10)*p}
+  function legend(id,items){$(id).innerHTML=items.map(function(n,i){return'<span><i style="background:'+COL[i%COL.length]+'"></i>'+esc(n)+'</span>'}).join('')}
+  function dataTable(head,rows){return'<details><summary>Xem bảng dữ liệu</summary><div class="table-wrap"><table><thead><tr>'+head.map(function(h){return'<th scope="col">'+esc(h)+'</th>'}).join('')+'</tr></thead><tbody>'+rows.map(function(r){return'<tr>'+r.map(function(c,i){return(i?'<td>':'<th scope="row">')+esc(c)+(i?'</td>':'</th>')}).join('')+'</tr>'}).join('')+'</tbody></table></div></details>'}
+  function frame(w,h,label,inner){return'<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="'+esc(label)+'">'+inner+'</svg>'}
+  function setHead(k,o,unitText){$('t-'+k).textContent=o.title;$('u-'+k).textContent=unitText}
+
+  /* Thẻ KPI */
+  $('title').textContent=D.title;$('subtitle').textContent=D.subtitle;
+  $('demo').textContent=D.isDemo?'DỮ LIỆU MINH HỌA. Thay toàn bộ số liệu, tiêu đề, kỳ và nguồn trước khi sử dụng.':'';
+  document.title=(D.isDemo?'[MẪU MINH HỌA] ':'')+D.title;
+  $('kpis').innerHTML=D.kpis.map(function(k){return'<div class="kpi"><p class="l">'+esc(k.label)+'</p><p class="v">'+esc(k.value)+'</p><p class="n">'+esc(k.note)+'</p></div>'}).join('');
+  $('source').textContent=D.source;$('updated').textContent=D.updated;
+
+  /* Biểu đồ đường: xu hướng theo kỳ. null tạo khoảng ngắt, không nối qua dữ liệu thiếu. */
+  function line(){
+    var o=D.line,W=520,H=260,L=44,R=64,T=14,B=30,all=[],ends=[];
+    o.series.forEach(function(s){s.values.forEach(function(v){if(v!==null)all.push(v)})});
+    var mn=Math.min.apply(null,all),mx=Math.max.apply(null,all),step=niceStep((mx-mn||1)/3),lo=Math.floor(mn/step)*step,hi=Math.ceil(mx/step)*step,n=D.months.length;
+    function x(i){return L+i*(W-L-R)/(n-1)} function y(v){return T+(H-T-B)*(1-(v-lo)/(hi-lo))}
+    var g='';for(var gv=lo;gv<=hi+step/2;gv+=step){g+='<line class="grid-line" x1="'+L+'" x2="'+(W-R)+'" y1="'+y(gv)+'" y2="'+y(gv)+'"/><text x="'+(L-6)+'" y="'+(y(gv)+4)+'" text-anchor="end">'+fmt(gv)+'</text>'}
+    D.months.forEach(function(m,i){g+='<text x="'+x(i)+'" y="'+(H-8)+'" text-anchor="middle">'+esc(m)+'</text>'});
+    o.series.forEach(function(s,si){
+      var c=COL[si],d='',pen=false;
+      s.values.forEach(function(v,i){if(v===null){pen=false;return}d+=(pen?'L':'M')+x(i)+' '+y(v);pen=true});
+      g+='<path d="'+d+'" fill="none" stroke="'+c+'" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
+      s.values.forEach(function(v,i){if(v!==null)g+='<circle cx="'+x(i)+'" cy="'+y(v)+'" r="3.5" fill="#fff" stroke="'+c+'" stroke-width="2"><title>'+esc(s.name+' · '+D.months[i]+': '+fmt(v))+'</title></circle>'});
+      var last=s.values.length-1;while(last>0&&s.values[last]===null)last--;
+      ends.push({i:si,y:y(s.values[last]),x:x(last),v:s.values[last]});
+    });
+    ends.sort(function(a,b){return a.y-b.y});for(var e=1;e<ends.length;e++){if(ends[e].y-ends[e-1].y<15)ends[e].y=ends[e-1].y+15}
+    ends.forEach(function(en){g+='<text class="val" x="'+(en.x+9)+'" y="'+(en.y+4)+'" style="fill:'+COL[en.i]+'">'+fmt(en.v)+'</text>'});
+    setHead('line',o,'Đơn vị: '+D.unit+' · theo tháng · trục bắt đầu từ '+fmt(lo));legend('lg-line',o.series.map(function(s){return s.name}));
+    $('c-line').innerHTML=frame(W,H,o.title+'. '+o.series.map(function(s){return s.name+' từ '+fmt(s.values[0])+' đến '+fmt(s.values[s.values.length-1])}).join('; '),g)+
+      dataTable(['Kỳ'].concat(o.series.map(function(s){return s.name})),D.months.map(function(m,i){return[m].concat(o.series.map(function(s){return fmt(s.values[i])}))}));
+  }
+
+  /* Cột ngang: so sánh giữa các nhóm, sắp theo giá trị, trục bắt đầu từ 0. */
+  function bars(){
+    var o=D.bar,cats=o.categories.slice().sort(function(a,b){return b.value-a.value}),W=520,rowH=40,L=104,R=56,H=cats.length*rowH+10,max=niceMax(Math.max.apply(null,cats.map(function(c){return c.value}))),g='';
+    cats.forEach(function(c,i){var w=(W-L-R)*c.value/max,yy=i*rowH+6;
+      g+='<text x="'+(L-10)+'" y="'+(yy+17)+'" text-anchor="end">'+esc(c.name)+'</text><rect x="'+L+'" y="'+yy+'" width="'+w+'" height="24" rx="4" fill="'+COL[0]+'"><title>'+esc(c.name+': '+fmt(c.value))+'</title></rect><text class="val" x="'+(L+w+8)+'" y="'+(yy+17)+'">'+fmt(c.value)+'</text>'});
+    g+='<line class="axis" x1="'+L+'" x2="'+L+'" y1="0" y2="'+H+'"/>';
+    var tot=cats.reduce(function(a,c){return a+c.value},0);
+    setHead('bar',o,'Đơn vị: '+D.unit+' · tháng 6');
+    $('c-bar').innerHTML=frame(W,H,o.title+'. '+cats.map(function(c){return c.name+' '+fmt(c.value)}).join(', '),g)+
+      dataTable(['Nhóm',D.unit,'Tỷ trọng'],cats.map(function(c){return[c.name,fmt(c.value),pct(c.value,tot)]}));
+  }
+
+  /* Cột xếp chồng: cơ cấu theo kỳ; tổng ghi trên đầu cột. */
+  function stack(){
+    var o=D.stack,W=520,H=260,L=44,R=12,T=18,B=30,n=D.months.length,tot=D.months.map(function(m,i){return o.series.reduce(function(a,s){return a+(s.values[i]||0)},0)}),max=niceMax(Math.max.apply(null,tot)),bw=Math.min(46,(W-L-R)/n*0.6),g='';
+    function y(v){return T+(H-T-B)*(1-v/max)}
+    for(var k=0;k<=4;k++){var gv=max*k/4;g+='<line class="grid-line" x1="'+L+'" x2="'+(W-R)+'" y1="'+y(gv)+'" y2="'+y(gv)+'"/><text x="'+(L-6)+'" y="'+(y(gv)+4)+'" text-anchor="end">'+fmt(gv)+'</text>'}
+    D.months.forEach(function(m,i){var cx=L+(i+0.5)*(W-L-R)/n,acc=0;
+      o.series.forEach(function(s,si){var v=s.values[i]||0;g+='<rect x="'+(cx-bw/2)+'" y="'+y(acc+v)+'" width="'+bw+'" height="'+(y(acc)-y(acc+v))+'" fill="'+COL[si]+'"><title>'+esc(s.name+' · '+m+': '+fmt(v))+'</title></rect>';acc+=v});
+      g+='<text class="val" x="'+cx+'" y="'+(y(tot[i])-6)+'" text-anchor="middle">'+fmt(tot[i])+'</text><text x="'+cx+'" y="'+(H-8)+'" text-anchor="middle">'+esc(m)+'</text>'});
+    setHead('stack',o,'Đơn vị: '+D.unit+' · tổng ghi trên đầu cột');legend('lg-stack',o.series.map(function(s){return s.name}));
+    $('c-stack').innerHTML=frame(W,H,o.title+'. Tổng từ '+fmt(tot[0])+' đến '+fmt(tot[n-1]),g)+
+      dataTable(['Kỳ'].concat(o.series.map(function(s){return s.name}),['Tổng']),D.months.map(function(m,i){return[m].concat(o.series.map(function(s){return fmt(s.values[i])}),[fmt(tot[i])])}));
+  }
+
+  /* Vành khuyên: cơ cấu một thời điểm, từ 5 phần trở xuống. */
+  function donut(){
+    var o=D.donut,W=360,H=260,cx=120,cy=130,r=84,w=34,tot=o.parts.reduce(function(a,p){return a+p.value},0),a0=-Math.PI/2,g='';
+    o.parts.forEach(function(p,i){var a1=a0+2*Math.PI*p.value/tot,large=a1-a0>Math.PI?1:0,R=r,r2=r-w,
+      d='M'+(cx+R*Math.cos(a0))+' '+(cy+R*Math.sin(a0))+'A'+R+' '+R+' 0 '+large+' 1 '+(cx+R*Math.cos(a1))+' '+(cy+R*Math.sin(a1))+'L'+(cx+r2*Math.cos(a1))+' '+(cy+r2*Math.sin(a1))+'A'+r2+' '+r2+' 0 '+large+' 0 '+(cx+r2*Math.cos(a0))+' '+(cy+r2*Math.sin(a0))+'Z';
+      g+='<path d="'+d+'" fill="'+COL[i]+'" stroke="#fff" stroke-width="2"><title>'+esc(p.name+': '+fmt(p.value)+' ('+pct(p.value,tot)+')')+'</title></path>';a0=a1;
+      g+='<text x="250" y="'+(96+i*34)+'" class="val">'+pct(p.value,tot)+'</text><text x="250" y="'+(112+i*34)+'">'+esc(p.name)+'</text><rect x="234" y="'+(86+i*34)+'" width="10" height="10" rx="2" fill="'+COL[i]+'"/>'});
+    g+='<text x="'+cx+'" y="'+(cy+2)+'" text-anchor="middle" class="val" style="font-size:22px">'+fmt(tot)+'</text><text x="'+cx+'" y="'+(cy+20)+'" text-anchor="middle">'+esc(D.unit)+'</text>';
+    setHead('donut',o,'Đơn vị: '+D.unit+' · tháng 6, gồm 20 hồ sơ tồn từ kỳ trước');$('lg-donut').innerHTML='';
+    $('c-donut').innerHTML=frame(W,H,o.title+'. '+o.parts.map(function(p){return p.name+' '+pct(p.value,tot)}).join(', '),g)+
+      dataTable(['Trạng thái',D.unit,'Tỷ trọng'],o.parts.map(function(p){return[p.name,fmt(p.value),pct(p.value,tot)]}));
+  }
+
+  /* Bảng kèm thanh nhỏ: tra số chính xác, thanh chỉ hỗ trợ so sánh. */
+  function table(){
+    var o=D.table,max=Math.max.apply(null,o.rows.map(function(r){return r.value})),tot=o.rows.reduce(function(a,r){return a+r.value},0);
+    setHead('table',o,'Đơn vị: '+D.unit+' · tháng 6');
+    $('c-table').innerHTML='<table><thead><tr><th scope="col">Kênh</th><th scope="col">'+esc(D.unit)+'</th><th scope="col">Tỷ trọng</th></tr></thead><tbody>'+
+      o.rows.map(function(r){return'<tr><th scope="row">'+esc(r.name)+'</th><td>'+fmt(r.value)+'<span class="inbar" style="width:'+Math.round(80*r.value/max)+'px" aria-hidden="true"></span></td><td>'+pct(r.value,tot)+'</td></tr>'}).join('')+
+      '</tbody><tfoot><tr><th scope="row">Tổng</th><td>'+fmt(tot)+'</td><td>100%</td></tr></tfoot></table>';
+  }
+
+  line();bars();stack();donut();table();
+  $('print').addEventListener('click',function(){window.print()});
+})();
+</script></body></html>
