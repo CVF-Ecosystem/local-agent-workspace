@@ -1,0 +1,9 @@
+Weekly meeting of the Intake Team - 2026-09-04 (fake data)
+Present: Lan, Hung, Minh, Thu (absent: Duc)
+
+- Lan reported that the backlog of files grew compared with last week, mostly on the phone channel. Hung said it was because nobody covers Tuesday and Thursday afternoons.
+- Decided: from next week add one person on duty on Tuesday and Thursday afternoons. Minh will arrange the rota.
+- Thu proposed a new intake form with fewer unused fields. Nobody took it on yet. Need to ask Duc whether any rule requires keeping the old fields.
+- Hung: the system gives an error when uploading files over 10 MB; reported to the technical team, no deadline for a reply yet.
+- Decided: the weekly report goes out on Friday instead of Monday. Lan sends it from next week.
+- Still open: should the In person channel be merged into Phone in the report? No agreement yet, to be discussed at a later meeting.

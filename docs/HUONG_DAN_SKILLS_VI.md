@@ -145,7 +145,23 @@ Khi thêm hoặc sửa lớn, nhờ agent đọc đủ để ghi `Use when`, v�
 dependency đáng chú ý vào index. Không cần đánh giá lại khi dùng skill quen thuộc.
 Người dùng giữ quyền thêm/bỏ/sửa thư viện; agent chủ động lựa chọn trong tác nghiệp.
 
-## 9. Phạm vi tham khảo repo
+## 9. Gói lĩnh vực và cài skill vào ứng dụng
+
+Lõi của package chỉ giữ quy tắc làm việc và mười một skill dùng chung. Kiến thức riêng của một lĩnh vực (cảng và logistics,
+nhân sự, tài chính...) nên nằm trong **gói lĩnh vực** trong `packs/`, cài vào project nào cần bằng
+`python tools/pack.py add <tên>` (xem `python tools/pack.py list`). Gói cài vào `skills/local/packs/` và được ghi trong
+`.agent/SKILL_INDEX.md` với Scope `PACK`; gỡ bằng `pack.py remove <tên>` (thư mục được chuyển vào `archive/`, không xóa).
+Quy tắc nhận một gói và cách viết gói mới ở `packs/README.md`. Package chưa kèm gói lĩnh vực nào ngoài khung `_template`.
+
+Mỗi project giữ bản sao skill của riêng mình, nên project luôn tự đủ và mang đi được; công cụ `tools/upgrade_package.py` giữ
+các bản sao này đồng bộ với package mới. Nếu muốn skill hiện trong menu của ứng dụng (ví dụ Claude), dùng
+`python tools/install_skills.py --dest <thư mục skill của ứng dụng> --yes` (mặc định chỉ xem trước, không ghi đè). Việc này là tùy chọn;
+agent vẫn đọc được skill như file.
+
+Bảng thuật ngữ Việt–Anh cho văn bản hành chính: `docs/GLOSSARY_VI_EN.md`. Trước khi giao sản phẩm, có thể dùng
+`python tools/check_output.py <file>` và checklist `skills/local/shared/office-documents/references/delivery-checklist.md`.
+
+## 10. Phạm vi tham khảo repo
 
 Các skill trong package được biên soạn mới dựa trên nhu cầu đã trao đổi. Repo
 `sharkrebel/everything-everywhere-for-antigravity` được dùng để tham khảo ý tưởng (kể cả

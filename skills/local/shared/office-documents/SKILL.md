@@ -40,6 +40,7 @@ Chọn mẫu phù hợp hoặc dùng mẫu của dự án; không cần mở c�
 - `references/procedure-template.md`: khung gợi ý cho SOP/quy trình.
 - `references/form-template.md`: phiếu ghi nhận, yêu cầu hoặc xử lý.
 - `references/internal-update-template.md`: cập nhật tiến độ, vấn đề và việc cần quyết định.
+- `references/delivery-checklist.md`: checklist ngắn trước khi giao (kèm `tools/check_output.py` cho phần cơ học).
 
 Các khung dùng chỗ trống, không chứa chính sách được phê duyệt. Có thể bỏ, đổi hoặc
 kết hợp mục theo yêu cầu; không cần làm tài liệu dài hơn chỉ để điền đủ khung.

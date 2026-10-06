@@ -113,3 +113,7 @@ Môi trường cloud có thể không giữ `.agent/` giữa các phiên; khi đ
 
 Giữ nguyên dữ kiện, số liệu, quyết định đã xác nhận và file gốc của người dùng. Tách dữ kiện
 lấy từ nguồn khỏi đề xuất của agent. Các quy tắc cấm nằm ở mục "Quy tắc bắt buộc".
+
+Dữ liệu nhạy cảm (mật khẩu, khóa truy cập, dữ liệu cá nhân của khách hàng hoặc nhân sự, tài liệu mật): không
+chép vào file của project hay hội thoại nếu không cần; dùng bản đã che hoặc mô tả thay thế khi được. Theo dòng
+"Mức nhạy cảm dữ liệu" trong `PROJECT.md`; chưa ghi thì coi là nội bộ và hỏi trước khi xử lý dữ liệu cá nhân.

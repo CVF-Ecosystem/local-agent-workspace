@@ -17,7 +17,7 @@ SKIP_DIRS = {'.git', '__pycache__', 'dist', 'node_modules'}
 # File người dùng sửa trong project: không đưa vào MANIFEST
 USER_FILES = {'PROJECT.md', '.agent/STATE.md', '.agent/HANDOFF.md', '.agent/INDEX.md',
               '.agent/SKILL_INDEX.md', '.agent/PENDING_LESSONS.md', '.agent/PACKAGE_INFO.json', 'setup_answers.json'}
-USER_DIRS = ('working/', 'output/', 'archive/', 'references/', 'skills/external/', 'skills/inbox/', 'skills/local/project/')
+USER_DIRS = ('working/', 'output/', 'archive/', 'references/', 'skills/external/', 'skills/inbox/', 'skills/local/project/', 'skills/local/packs/')
 OVERLAY_SKIP = {'en/PROJECT_INSTRUCTIONS_SNIPPET.md'}
 PAIRS = [('AGENTS.md', 'en/AGENTS.md'), ('PROJECT.md', 'en/PROJECT.md'),
          ('docs/HUONG_DAN_TAO_PROJECT_MOI_VI.md', 'docs/en/NEW_PROJECT_GUIDE.md'),
@@ -174,8 +174,8 @@ def check_all(release=False):
             if not os.path.isfile(P(loc)): errs.append('%s: %s trỏ tới file không có (%s).' % (idxf, name, loc))
             if name not in sk: errs.append('%s liệt kê "%s" nhưng không có thư mục skill.' % (idxf, name))
     # cây en/ phủ đủ các file chỉ có nội dung tiếng Việt
-    root_lang = [f for f in files if not f.startswith(('en/', 'docs/', 'tools/', 'dist/')) and f.endswith(('.md', '.html')) and
-                 (f in ('AGENTS.md', 'CLAUDE.md', 'GEMINI.md', 'PROJECT.md', 'README.md') or f.startswith(('.agent/', 'archive/', 'output/', 'working/', 'references/', 'skills/')))
+    root_lang = [f for f in files if not f.startswith(('en/', 'docs/', 'tools/', 'dist/')) and f.endswith(('.md', '.html', '.csv', '.txt')) and
+                 (f in ('AGENTS.md', 'CLAUDE.md', 'GEMINI.md', 'PROJECT.md', 'README.md') or f.startswith(('.agent/', 'archive/', 'output/', 'working/', 'references/', 'skills/', 'examples/')))
                  and '/scripts/' not in f and f not in ('.agent/PACKAGE_INFO.json',)]
     root_lang.append('docs/README.md')
     for f in sorted(root_lang):
@@ -229,6 +229,13 @@ def check_all(release=False):
         except SyntaxError as e: errs.append('%s: lỗi cú pháp Python (%s).' % (f, e))
     crlf = [f for f in files if f.endswith(('.md', '.html', '.py', '.json')) and '\r\n' in rd(f)]
     if crlf: warns.append('Có %d file dùng CRLF (ví dụ %s); nên dùng LF.' % (len(crlf), crlf[0]))
+    # 7b. gói lĩnh vực
+    if os.path.isdir(P('packs')):
+        import pack as packmod
+        for n in sorted(os.listdir(P('packs'))):
+            if os.path.isdir(P('packs/' + n)):
+                for e in packmod.validate_pack(P('packs/' + n), n):
+                    errs.append('Gói: ' + e)
     # 8. phát hành
     if release:
         if os.path.exists(P('setup_answers.json')): errs.append('Bản phát hành không được có setup_answers.json.')
@@ -237,7 +244,7 @@ def check_all(release=False):
             if marker not in rd(f): errs.append('%s không còn ở dạng mẫu (thiếu %s).' % (f, marker))
         if not rd('.agent/HANDOFF.md').lstrip().startswith('# HANDOFF\n\nNone') or not rd('en/.agent/HANDOFF.md').lstrip().startswith('# HANDOFF\n\nNone'): errs.append('.agent/HANDOFF.md không ở dạng mẫu "None".')
         for f in files:
-            if f.startswith(('working/', 'output/', 'archive/', 'references/', 'skills/external/', 'skills/inbox/', 'skills/local/project/')) and os.path.basename(f) != 'README.md':
+            if f.startswith(USER_DIRS) and os.path.basename(f) != 'README.md':
                 errs.append('Có file người dùng trong bản phát hành: %s.' % f)
     return errs, warns
 

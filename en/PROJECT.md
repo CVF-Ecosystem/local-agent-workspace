@@ -12,6 +12,7 @@ Fill in only what is useful and stable. Current progress belongs in STATE.
 - Language and house style: [For example: Vietnamese; use the existing company template]
 - Main sources / approved templates: [Paths or entries in the source index]
 - Important constraints: [Confirmed business constraints or data-handling limits]
+- Data sensitivity: [Public / Internal / Contains personal or confidential data; state how to handle it]
 
 ## Purpose of this workspace
 

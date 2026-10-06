@@ -1,4 +1,4 @@
-# Local Agent Workspace v1.0
+# Local Agent Workspace v1.1
 
 A local workspace for office work with Claude, Codex, Gemini or another agent.
 
@@ -76,11 +76,14 @@ project/
 ├── PROJECT.md               Stable project context
 ├── CLAUDE.md / GEMINI.md     Thin adapters, depending on the environment
 ├── en/                      English tree, overlaid onto the root by init --lang en
-├── tools/                   Project initialization, package check, packaging, HTML rebuild
+├── tools/                   Initialization, upgrade, domain packs, output check, package check, packaging, HTML rebuild
 ├── CHANGELOG.md
+├── LICENSE                  MIT license
 ├── VERSION                  Package version number (single source)
 ├── MANIFEST.sha256          Hashes of the package files, to check integrity
-├── docs/                    Guides in Markdown + HTML
+├── docs/                    Guides in Markdown + HTML, Vietnamese–English glossary
+├── examples/demo-project/   Demo project (fake data) to try in 10 minutes
+├── packs/                   Domain packs (installed on demand with tools/pack.py)
 ├── .agent/                  STATE, HANDOFF, INDEX, SKILL_INDEX, PENDING_LESSONS
 ├── skills/
 │   ├── local/shared/        Eleven skills and their templates
@@ -120,6 +123,17 @@ know the workspace, you can say:
 An adapter file name does not guarantee that every app loads it automatically. `skills/local/shared/` is a
 file library for the agent to consult; the package does not install these skills into the native catalog
 of Claude, Codex or Antigravity. It does not change any app's global configuration.
+
+## Quick try, upgrading and extending
+
+- Try it in 10 minutes with fake data: `examples/demo-project/README.md`.
+- A newer package version exists: `python tools/upgrade_package.py` (three-way comparison, never overwrites your work; see `docs/en/EXISTING_PROJECT_UPGRADE_GUIDE.md`).
+- Knowledge specific to one domain: a domain pack in `packs/`, installed with `python tools/pack.py add <name>`.
+- Before handing over a deliverable: `python tools/check_output.py <file>` and the checklist in `office-documents`.
+
+## License
+
+MIT, see `LICENSE`. The guides, skills and templates are under the same license.
 
 ## Keeping it light in use
 

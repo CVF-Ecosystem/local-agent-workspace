@@ -9,7 +9,7 @@ Việc script làm:
   - với --lang en: chép đè toàn bộ cây en/ (hướng dẫn agent, ghi chú .agent, skill, README) lên thư mục
     gốc, trừ en/PROJECT_INSTRUCTIONS_SNIPPET.md. File của package bị thay mà đã bị sửa được sao lưu thành
     <tên>.bak-<ngày>; file của người dùng (PROJECT, STATE, HANDOFF, INDEX...) đã điền thì giữ nguyên;
-  - nếu có --purpose/--outputs/--style/--sources/--constraints: điền các dòng tương ứng trong PROJECT.md;
+  - nếu có --purpose/--outputs/--style/--sources/--constraints/--sensitivity: điền các dòng tương ứng trong PROJECT.md;
   - đặt .agent/STATE.md sạch;
   - ghi .agent/PACKAGE_INFO.json (phiên bản package, ngôn ngữ, ngày khởi tạo).
 Script không xóa file nào và không dùng mạng. Chỉ cần Python 3.8+.
@@ -35,7 +35,8 @@ FIELDS = [('purpose', ('Mục đích và người đọc', 'Purpose and audience
           ('outputs', ('Đầu ra mong đợi', 'Expected outputs')),
           ('style', ('Ngôn ngữ và văn phong', 'Language and house style')),
           ('sources', ('Nguồn / mẫu đã duyệt chính', 'Main sources / approved templates')),
-          ('constraints', ('Ràng buộc quan trọng', 'Important constraints'))]
+          ('constraints', ('Ràng buộc quan trọng', 'Important constraints')),
+          ('sensitivity', ('Mức nhạy cảm dữ liệu', 'Data sensitivity'))]
 USER_TEMPLATES = {'PROJECT.md', '.agent/STATE.md', '.agent/HANDOFF.md', '.agent/INDEX.md',
                   '.agent/SKILL_INDEX.md', '.agent/PENDING_LESSONS.md'}
 NAME_LINE = {'vi': '- Tên dự án: [Tên]', 'en': '- Project name: [Name]'}

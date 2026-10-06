@@ -149,7 +149,24 @@ origin and notable dependencies in the index. There is no need to re-evaluate a 
 when using it. The user keeps the right to add, remove or edit the library; the agent chooses
 actively within the work.
 
-## 9. Scope of the reference repo
+## 9. Domain packs and installing skills into an app
+
+The package core only holds the working rules and the eleven shared skills. Knowledge specific to a domain (port and logistics,
+HR, finance...) belongs in a **domain pack** in `packs/`, installed into the projects that need it with
+`python tools/pack.py add <name>` (see `python tools/pack.py list`). A pack installs into `skills/local/packs/` and is recorded in
+`.agent/SKILL_INDEX.md` with Scope `PACK`; remove it with `pack.py remove <name>` (the folder is moved into `archive/`, not deleted).
+The rule for accepting a pack and how to write a new one are in `packs/README.md`. The package ships no domain pack apart from the
+`_template` skeleton.
+
+Each project keeps its own copy of the skills, so a project is always self-contained and portable; `tools/upgrade_package.py` keeps
+these copies in sync with a new package. If you want the skills to show up in an app's menu (for example Claude), use
+`python tools/install_skills.py --dest <the app's skills folder> --yes` (preview only by default, never overwrites). This is optional;
+the agent can still read the skills as files.
+
+Vietnamese–English glossary for administrative documents: `docs/GLOSSARY_VI_EN.md`. Before handing over a deliverable you can use
+`python tools/check_output.py <file>` and the checklist `skills/local/shared/office-documents/references/delivery-checklist.md`.
+
+## 10. Scope of the reference repo
 
 The skills in the package were newly written from the needs discussed. The repo
 `sharkrebel/everything-everywhere-for-antigravity` was used for ideas (including the four skills

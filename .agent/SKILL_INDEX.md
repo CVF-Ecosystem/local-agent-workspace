@@ -24,7 +24,7 @@ Khi biết rõ skill cần dùng, có thể mở trực tiếp. Chỉ đọc tà
 `ACTIVE` nghĩa thường dùng trong dự án, không nghĩa tự nạp vào mọi phiên.
 
 Origin: `LOCAL` (tự biên soạn), `EXTERNAL` (nhập ngoài), `PROVIDER` (native).
-Scope: `SHARED` (dùng chung), `PROJECT` (riêng dự án), `GLOBAL` (theo provider).
+Scope: `SHARED` (dùng chung), `PROJECT` (riêng dự án), `GLOBAL` (theo provider), `PACK` (gói lĩnh vực cài bằng `tools/pack.py`).
 Status: `AVAILABLE` (sẵn dùng), `ACTIVE` (thường dùng), `REVIEW` (đang xem xét),
 `DISABLED` (người dùng đã chọn không dùng).
 

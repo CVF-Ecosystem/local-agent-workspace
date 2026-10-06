@@ -3,6 +3,27 @@
 Định dạng phiên bản: `MAJOR.MINOR.PATCH`. Số phiên bản nằm trong `VERSION`; hướng dẫn nâng cấp ở
 `docs/HUONG_DAN_CHUYEN_DOI_PROJECT_CO_SAN_VI.md`.
 
+## v1.1.0 — 2026-10-06
+
+Khởi tạo và dùng thử
+- `SETUP.bat` / `SETUP.command` chạy `tools/setup_wizard.py`: hỏi ngôn ngữ, tên và các thông tin ngắn (mục đích, đầu ra, văn phong, nguồn, ràng buộc, mức nhạy cảm dữ liệu), tự khởi tạo, điền `PROJECT.md`, sao chép đoạn hướng dẫn dán vào Project/cloud. Form "Khởi tạo nhanh" trong `START_HERE.html` / `START_HERE.en.html` tạo `setup_answers.json` để trình hướng dẫn đọc, không hỏi lại.
+- Mục "Package này dùng để làm gì?" ở đầu `START_HERE`; project mẫu `examples/demo-project/` (dữ liệu giả, hai ngôn ngữ) kèm ba yêu cầu thử.
+
+Vòng đời và mở rộng
+- `tools/upgrade_package.py`: nâng cấp project lên bản package mới bằng so sánh ba bên theo `MANIFEST.sha256` (cập nhật file chưa sửa, giữ file đã sửa, lưu `<tên>.new` khi xung đột; không xóa, không đụng file người dùng).
+- Gói lĩnh vực: `packs/` + `tools/pack.py` (`list/add/update/remove/check/new`), khung `packs/_template`, cài vào `skills/local/packs/`, ghi `.agent/SKILL_INDEX.md` với Scope `PACK`; `check_package.py` kiểm tra cấu trúc gói.
+- `MANIFEST.sha256` ghi cả hash file mẫu của người dùng để nhận biết file còn nguyên bản mẫu.
+
+Chất lượng và an toàn
+- `tools/check_output.py` và checklist `skills/local/shared/office-documents/references/delivery-checklist.md` trước khi giao sản phẩm.
+- Mục "Dữ liệu nhạy cảm" trong `AGENTS.md`, dòng "Mức nhạy cảm dữ liệu" trong `PROJECT.md`, và mục 9 của hướng dẫn dùng hằng ngày.
+- `spreadsheet-check`: báo ô chữ lẫn trong cột số (và bỏ qua phép kiểm dòng tổng sai vì lý do đó), không còn báo "số lưu dạng chữ" cho CSV.
+- `vn-admin-documents`: đã đối chiếu thông số trình bày với Nghị định 30/2020/NĐ-CP (06/10/2026).
+
+Khác
+- `tools/install_skills.py` (tùy chọn): sao chép skill vào thư mục skill của ứng dụng. `docs/GLOSSARY_VI_EN.md`: bảng thuật ngữ Việt–Anh.
+- Giấy phép MIT (`LICENSE`), `.gitignore`, `.gitattributes`.
+
 ## v1.0.0 — 2026-10-06
 
 Bản chuẩn đầu tiên. Package là một thư mục tự chứa: giải nén, đổi tên, chạy `tools/init_project.py` là có

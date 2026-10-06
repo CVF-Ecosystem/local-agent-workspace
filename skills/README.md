@@ -19,6 +19,7 @@ công cụ định dạng sẵn có. Không cần đọc toàn bộ thư viện 
 - `local/project/`: hướng dẫn riêng của dự án khi thật sự cần.
 - `external/`: skill nhập từ nguồn ngoài, giữ nguồn gốc và điều khoản đi kèm.
 - `inbox/`: nơi tạm tùy chọn, không phải bước duyệt bắt buộc.
+- `local/packs/`: gói lĩnh vực cài bằng `tools/pack.py` (xem `packs/README.md`).
 
 Khi thêm hoặc sửa lớn, cập nhật index với mục đích và dependency đáng chú ý.
 Không lặp lại việc này khi chỉ dùng lại skill. Người dùng giữ quyền quản lý thư

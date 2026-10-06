@@ -1,6 +1,6 @@
 # Hướng dẫn sử dụng hằng ngày
 
-Local Agent Workspace v1.0 giúp giữ tài liệu, ngữ cảnh và kết quả công việc trên
+Local Agent Workspace v1.1 giúp giữ tài liệu, ngữ cảnh và kết quả công việc trên
 cùng một thư mục. Agent vẫn chủ động chọn cách làm, công cụ và skill phù hợp.
 
 ## 1. Giao việc bằng ngôn ngữ tự nhiên
@@ -130,7 +130,19 @@ Với việc có hậu quả cao (pháp lý, tài chính, số liệu hoặc vă
 áp dụng "Mức thận trọng cao" trong `AGENTS.md`: đối chiếu từng số, ngày, tên, điều khoản với nguồn,
 nêu phần chưa kiểm được. Bạn có thể nhắc: "Việc này gửi ra ngoài, áp dụng mức thận trọng cao."
 
-## 9. Vai trò của các hướng dẫn HTML
+## 9. Dữ liệu nhạy cảm và ghi nhận phần AI hỗ trợ
+
+Trước khi đưa tài liệu cho AI, tự hỏi: file này có mật khẩu, khóa truy cập, dữ liệu cá nhân của khách hàng hoặc nhân sự, hay
+tài liệu mật không? Nếu có, che hoặc bỏ phần đó trước (thay tên thật bằng ký hiệu, xóa số định danh), và ghi mức nhạy cảm vào
+dòng "Mức nhạy cảm dữ liệu" trong `PROJECT.md`. Tuân thủ quy định bảo mật của đơn vị; package không thay thế các quy định đó.
+
+Package giữ file ở máy bạn, nhưng khi mở bằng ứng dụng AI thì nội dung bạn giao vẫn được ứng dụng đó xử lý theo điều khoản của
+nó. Không dùng project này cho dữ liệu mà quy định của đơn vị cấm đưa vào dịch vụ AI.
+
+Với văn bản gửi ra ngoài hoặc trình ký, người ký chịu trách nhiệm về nội dung: nên đọc lại toàn bộ và đối chiếu số liệu với nguồn.
+Nếu đơn vị yêu cầu ghi nhận phần AI hỗ trợ, thêm một dòng vào hồ sơ (ví dụ: "Bản nháp có hỗ trợ của AI, đã được [tên] rà soát").
+
+## 10. Vai trò của các hướng dẫn HTML
 
 `START_HERE.html` tập hợp cẩm nang cho người dùng; mỗi hướng dẫn Markdown cũng có
 bản HTML cùng tên. Chỉ cần đọc một dạng. Agent không cần nạp HTML, đọc toàn bộ README

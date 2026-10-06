@@ -26,6 +26,34 @@ ghi chú `.agent`, skill, README. File của package đã bị sửa được sa
 (PROJECT, STATE, HANDOFF, INDEX... đã điền) được giữ nguyên. Thông báo của script theo ngôn ngữ `--lang`.
 `--dry-run` chỉ in việc sẽ làm; chạy lần hai cần `--force`. Script không xóa file nào.
 
+## upgrade_package.py
+
+Nâng cấp một project lên bản package mới mà không ghi đè việc của bạn. Mặc định chỉ báo cáo; thêm `--apply` mới ghi.
+
+```text
+python tools/upgrade_package.py --project "đường dẫn project cũ"        # chạy từ thư mục package MỚI
+python tools/upgrade_package.py --from "đường dẫn package mới" --apply  # chạy từ project
+```
+
+So ba bên bằng `MANIFEST.sha256`: file chưa ai sửa thì cập nhật, file mới thì thêm, file bạn đã sửa thì giữ nguyên; nếu bạn sửa và
+package cũng đổi thì lưu bản mới thành `<tên>.new`. Không đụng file của người dùng (PROJECT, STATE, INDEX, `references/`...), không xóa file nào.
+Từ chối chạy trên thư mục chưa khởi tạo (có thể là thư mục nguồn của package) trừ khi có `--allow-uninitialized`.
+
+## pack.py
+
+Quản lý gói lĩnh vực (`packs/`): `list`, `add <tên>`, `update <tên> [--apply]`, `remove <tên>` (chuyển vào `archive/`), `check [<tên>]`,
+`new <tên>` (tạo gói từ `packs/_template`). Gói cài vào `skills/local/packs/` và ghi trong `.agent/SKILL_INDEX.md` (Scope `PACK`). Xem `packs/README.md`.
+
+## check_output.py
+
+Kiểm tra cơ học một sản phẩm trước khi giao: `python tools/check_output.py <file>...` cho `.md`, `.txt`, `.html`, `.docx` (chỗ chưa điền, nhãn
+mẫu minh họa, `isDemo`, tài nguyên mạng trong HTML) và chuyển `.csv`/`.xlsx` cho `spreadsheet-check`. Chỉ đọc; mã thoát 1 nếu có điều cần sửa.
+
+## install_skills.py
+
+Tùy chọn: sao chép skill của package vào thư mục skill của ứng dụng để hiện trong menu native, ví dụ
+`python tools/install_skills.py --dest ~/.claude/skills --yes`. Mặc định chỉ xem trước; không ghi đè nếu không có `--overwrite`.
+
 ## check_package.py
 
 ```text

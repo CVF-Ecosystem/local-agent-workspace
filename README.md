@@ -1,4 +1,4 @@
-# Local Agent Workspace v1.0
+# Local Agent Workspace v1.1
 
 Workspace local cho công việc văn phòng với Claude, Codex, Gemini hoặc agent khác.
 
@@ -75,11 +75,14 @@ project/
 ├── PROJECT.md               Ngữ cảnh ổn định của dự án
 ├── CLAUDE.md / GEMINI.md     Adapter mỏng, tùy môi trường
 ├── en/                      Cây tiếng Anh, chép đè lên thư mục gốc bởi init --lang en
-├── tools/                   Khởi tạo project, kiểm tra package, đóng gói, dựng lại HTML
+├── tools/                   Khởi tạo, nâng cấp, gói lĩnh vực, kiểm tra đầu ra, kiểm tra package, đóng gói, dựng HTML
 ├── CHANGELOG.md
+├── LICENSE                  Giấy phép MIT
 ├── VERSION                  Số phiên bản package (một nguồn duy nhất)
 ├── MANIFEST.sha256          Mã băm các file của package, để kiểm tra nguyên vẹn
-├── docs/                    Hướng dẫn Markdown + HTML
+├── docs/                    Hướng dẫn Markdown + HTML, bảng thuật ngữ Việt–Anh
+├── examples/demo-project/   Project mẫu (dữ liệu giả) để thử trong 10 phút
+├── packs/                   Gói lĩnh vực (cài theo nhu cầu bằng tools/pack.py)
 ├── .agent/                  STATE, HANDOFF, INDEX, SKILL_INDEX, PENDING_LESSONS
 ├── skills/
 │   ├── local/shared/        Mười một skill và các mẫu đi kèm
@@ -118,6 +121,17 @@ chưa biết workspace, có thể nói:
 Tên file adapter không đảm bảo mọi ứng dụng tự nạp nó. `skills/local/shared/` là
 thư viện file để agent tra cứu; package không tự cài các skill này vào danh mục native
 của Claude, Codex hay Antigravity. Không thay đổi cấu hình toàn cục của các ứng dụng.
+
+## Thử nhanh, nâng cấp và mở rộng
+
+- Thử trong 10 phút với dữ liệu giả: `examples/demo-project/README.md`.
+- Có bản mới của package: `python tools/upgrade_package.py` (so ba bên, không ghi đè việc của bạn; xem `docs/HUONG_DAN_CHUYEN_DOI_PROJECT_CO_SAN_VI.md`).
+- Kiến thức riêng của một lĩnh vực: gói lĩnh vực trong `packs/`, cài bằng `python tools/pack.py add <tên>`.
+- Trước khi giao sản phẩm: `python tools/check_output.py <file>` và checklist trong `office-documents`.
+
+## Giấy phép
+
+MIT, xem `LICENSE`. Nội dung hướng dẫn, skill và mẫu đi cùng giấy phép này.
 
 ## Giữ nhẹ khi sử dụng
 

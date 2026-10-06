@@ -20,6 +20,7 @@ TXT = {
   'style': 'Ngôn ngữ và văn phong (ví dụ: tiếng Việt, trang trọng, theo mẫu hiện có)',
   'sources': 'Nguồn / mẫu chính đã duyệt (đường dẫn hoặc tên tài liệu)',
   'constraints': 'Ràng buộc quan trọng (ví dụ: không đưa số liệu khách hàng ra ngoài)',
+  'sensitivity': 'Mức nhạy cảm dữ liệu (ví dụ: nội bộ; có dữ liệu cá nhân khách hàng thì ghi rõ)',
   'need_name': 'Cần nhập tên project.',
   'summary': 'Sẽ khởi tạo với thông tin sau:',
   'confirm': 'Tiếp tục? (Enter = Có, n = Hủy)',
@@ -46,6 +47,7 @@ TXT = {
   'style': 'Language and house style (e.g. English, formal, follow the existing template)',
   'sources': 'Main approved sources / templates (paths or document names)',
   'constraints': 'Important constraints (e.g. do not share customer data externally)',
+  'sensitivity': 'Data sensitivity (e.g. internal; say so if it holds customer personal data)',
   'need_name': 'A project name is required.',
   'summary': 'The project will be set up with:',
   'confirm': 'Continue? (Enter = Yes, n = Cancel)',
@@ -64,7 +66,7 @@ TXT = {
  },
 }
 FIELDS = [('purpose', '--purpose'), ('outputs', '--outputs'), ('style', '--style'),
-          ('sources', '--sources'), ('constraints', '--constraints')]
+          ('sources', '--sources'), ('constraints', '--constraints'), ('sensitivity', '--sensitivity')]
 
 def ask(prompt, required=False, t=None):
     while True:

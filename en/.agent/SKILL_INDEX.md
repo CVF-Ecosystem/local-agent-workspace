@@ -24,7 +24,7 @@ When you know which skill to use, you can open it directly. Read only the suppor
 `ACTIVE` means commonly used in the project, not automatically loaded in every session.
 
 Origin: `LOCAL` (self-written), `EXTERNAL` (imported), `PROVIDER` (native).
-Scope: `SHARED` (common), `PROJECT` (project-specific), `GLOBAL` (per provider).
+Scope: `SHARED` (common), `PROJECT` (project-specific), `GLOBAL` (per provider), `PACK` (domain pack installed with `tools/pack.py`).
 Status: `AVAILABLE` (ready to use), `ACTIVE` (commonly used), `REVIEW` (under review),
 `DISABLED` (the user chose not to use it).
 

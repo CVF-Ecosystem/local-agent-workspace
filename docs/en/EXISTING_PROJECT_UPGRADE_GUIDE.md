@@ -34,14 +34,22 @@ Each project records the package version it uses in `.agent/PACKAGE_INFO.json` (
 `tools/init_project.py`; for an existing project without it, create it by hand with `"version"` set to the
 version you used). The package version is in the `VERSION` file; `CHANGELOG.md` says what changed between versions.
 
-- Step 1: Unzip the new version into a separate folder; read `CHANGELOG.md` from your version to the new one.
-- Step 2: In the old project run `python tools/check_package.py --verify` to see which package files you have
-   edited compared with the original. Those need merging, not overwriting.
-- Step 3: Copy over the package files you have not edited from the new version (skills, tools, docs). For
-   `AGENTS.md`, `PROJECT.md`, `STATE.md`, `HANDOFF.md`, `INDEX.md` and `SKILL_INDEX.md`, merge your content with the new.
-- Step 4: Update `"version"` in `.agent/PACKAGE_INFO.json`, run `--verify` again and open a trial session.
+The quick and safe way is the upgrade tool. It compares three sides (the old original, the project's current file, the new version),
+reports first and writes only when you add `--apply`.
 
-You do not need a migration script or installer. Do not replace the project's real STATE, HANDOFF,
+- Step 1: Unzip the new version into a separate folder; read `CHANGELOG.md` from your version to the new one.
+- Step 2: From the new version's folder run `python tools/upgrade_package.py --project "path of the old project"` to see the report.
+   Files nobody edited are updated, new files are added, and files you edited are kept.
+- Step 3: If the report looks right, run it again with `--apply`. A file that you edited and the package also changed is not
+   overwritten: the new version is saved as `<name>.new` for you to merge, then delete the `.new` file. Your own files (`PROJECT.md`,
+   STATE, HANDOFF, INDEX, `SKILL_INDEX.md`, `references/`, `working/`, `output/`, `archive/`, project skills) are never touched.
+- Step 4: Run `python tools/check_package.py --verify` and open a trial session. If you use domain packs, run
+   `python tools/pack.py list` to see which have a newer version (`pack.py update <name> --apply`).
+
+A project without `MANIFEST.sha256` (made before this version) cannot be compared safely: upgrade by hand, copying selectively the
+package files you have not edited. The tool deletes nothing; files no longer in the new package are only listed for you to decide.
+
+Do not replace the project's real STATE, HANDOFF,
 sources and outputs with the sample files of the new version.
 
 ## 4. Slim down old context when useful

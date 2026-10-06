@@ -19,6 +19,7 @@ formatting tools already available. There is no need to read the whole library o
 - `local/project/`: project-specific guidance, only when really needed.
 - `external/`: skills imported from outside sources, keeping their origin and accompanying terms.
 - `inbox/`: an optional temporary place, not a required approval step.
+- `local/packs/`: domain packs installed with `tools/pack.py` (see `packs/README.md`).
 
 When adding or substantially editing a skill, update the index with its purpose and notable dependencies.
 Do not repeat this when only reusing a skill. The user keeps control of the library; the agent chooses

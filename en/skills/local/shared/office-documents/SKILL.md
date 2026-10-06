@@ -40,6 +40,7 @@ Choose a fitting template or the project's own; there is no need to open all thr
 - `references/procedure-template.md`: a suggested frame for an SOP/procedure.
 - `references/form-template.md`: a recording, request or handling slip.
 - `references/internal-update-template.md`: an update on progress, problems and decisions needed.
+- `references/delivery-checklist.md`: a short pre-delivery checklist (with `tools/check_output.py` for the mechanical part).
 
 The frames use blanks and contain no approved policy. You may drop, change or combine sections as
 asked; do not make the document longer just to fill the frame.

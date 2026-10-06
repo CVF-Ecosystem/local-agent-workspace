@@ -34,14 +34,22 @@ Mỗi project ghi phiên bản package đang dùng trong `.agent/PACKAGE_INFO.js
 `tools/init_project.py` tạo; project có sẵn chưa có thì tạo tay, ghi `"version"` theo bản đã dùng). Bản package
 nằm trong file `VERSION`; `CHANGELOG.md` cho biết điều gì đổi giữa các bản.
 
-- Bước 1: Giải nén bản mới ra thư mục riêng; đọc `CHANGELOG.md` từ bản đang dùng đến bản mới.
-- Bước 2: Trong project cũ, chạy `python tools/check_package.py --verify` để biết file nào của package đã bị
-   bạn sửa so với bản gốc. File đó cần hợp nhất, không ghi đè.
-- Bước 3: Chép những file package chưa bị sửa từ bản mới sang (skills, tools, docs). Với `AGENTS.md`,
-   `PROJECT.md`, `STATE.md`, `HANDOFF.md`, `INDEX.md`, `SKILL_INDEX.md`: hợp nhất phần của bạn với phần mới.
-- Bước 4: Cập nhật `"version"` trong `.agent/PACKAGE_INFO.json`, chạy lại `--verify` và mở một phiên thử.
+Cách nhanh và an toàn: dùng công cụ nâng cấp. Nó so ba bên (bản gốc cũ, bản hiện tại của project, bản mới), chỉ báo cáo
+trước rồi mới ghi khi bạn thêm `--apply`.
 
-Không cần migration script hay installer. Không thay STATE, HANDOFF, nguồn và đầu ra thật của project
+- Bước 1: Giải nén bản mới ra thư mục riêng; đọc `CHANGELOG.md` từ bản đang dùng đến bản mới.
+- Bước 2: Từ thư mục bản mới, chạy `python tools/upgrade_package.py --project "đường dẫn project cũ"` để xem báo cáo.
+   File chưa ai sửa sẽ được cập nhật, file mới được thêm, file bạn đã sửa được giữ nguyên.
+- Bước 3: Nếu báo cáo ổn, chạy lại kèm `--apply`. File mà bạn đã sửa và package cũng đổi sẽ không bị ghi đè: bản mới
+   được lưu thành `<tên>.new` để bạn hợp nhất, rồi xóa file `.new`. Các file của bạn (`PROJECT.md`, STATE, HANDOFF, INDEX,
+   `SKILL_INDEX.md`, `references/`, `working/`, `output/`, `archive/`, skill riêng) không bao giờ bị đụng tới.
+- Bước 4: Chạy `python tools/check_package.py --verify` và mở một phiên thử. Nếu dùng gói lĩnh vực, chạy
+   `python tools/pack.py list` để xem gói nào có bản mới (`pack.py update <tên> --apply`).
+
+Project cũ chưa có `MANIFEST.sha256` (làm từ trước bản này) thì công cụ không so sánh an toàn được: nâng cấp tay, chép có chọn lọc
+những file package bạn chưa sửa. Công cụ không xóa file nào; file không còn trong package mới chỉ được liệt kê để bạn tự quyết định.
+
+Không thay STATE, HANDOFF, nguồn và đầu ra thật của project
 bằng các file mẫu của bản mới.
 
 ## 4. Rút gọn ngữ cảnh cũ khi hữu ích

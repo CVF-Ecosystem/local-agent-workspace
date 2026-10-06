@@ -2,7 +2,7 @@
 
 ## Nền tảng
 
-Package bản v1.0 được biên soạn từ một bộ khung workspace do người dùng cung cấp trước đó, làm gọn
+Package bản v1.1 được biên soạn từ một bộ khung workspace do người dùng cung cấp trước đó, làm gọn
 hướng dẫn và bổ sung tài nguyên văn phòng đã thống nhất.
 Các file gốc của người dùng không được gán lại một giấy phép chung mới.
 
@@ -70,7 +70,7 @@ truy cập các địa chỉ này khi mở hoặc lọc dữ liệu.
 
 ## Giới hạn kiểm tra
 
-Bản v1.0 được kiểm tra file, đường dẫn nội bộ, metadata skill (tên khớp thư mục và index),
+Bản v1.1 được kiểm tra file, đường dẫn nội bộ, metadata skill (tên khớp thư mục và index),
 các trang HTML dựng lại từ Markdown (bộ tiếng Việt và bộ tiếng Anh, kèm nút chuyển ngôn ngữ hai chiều)
 và mẫu `basic-charts.html` trong trình duyệt Chromium local (không lỗi console, không yêu cầu mạng,
 không cuộn ngang ở chiều rộng điện thoại). Bản dịch tiếng Anh do agent viết, chưa được người bản ngữ rà soát.

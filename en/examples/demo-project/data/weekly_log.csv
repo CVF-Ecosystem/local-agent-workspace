@@ -1,0 +1,11 @@
+Date,Channel,Received,Completed,Note
+2026-09-01,Online,120,115,
+2026-09-01,Phone,45,40,
+2026-09-02,Online,130,126,
+2026-09-02,Phone,38,n/a,no figure yet
+2026-09-03,Online,"1.234",118,
+2026-09-03,In person,22,22,
+2026-09-03,In person,22,22,
+2026-09-04,Online,141,139,
+2026-09-04,Phone,50,47,
+Total,,600,589,

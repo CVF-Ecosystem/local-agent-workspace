@@ -12,6 +12,7 @@ Chỉ điền điều hữu ích và ổn định. Tiến độ hiện tại thu
 - Ngôn ngữ và văn phong: [Ví dụ: tiếng Việt; dùng mẫu hiện có của đơn vị]
 - Nguồn / mẫu đã duyệt chính: [Đường dẫn hoặc mục trong index nguồn]
 - Ràng buộc quan trọng: [Ràng buộc nghiệp vụ đã xác nhận hoặc giới hạn xử lý dữ liệu]
+- Mức nhạy cảm dữ liệu: [Công khai / Nội bộ / Có dữ liệu cá nhân hoặc mật; nêu cách xử lý]
 
 ## Mục đích của workspace
 

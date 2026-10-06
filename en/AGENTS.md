@@ -124,3 +124,7 @@ same limit) in one Project document, overwriting it there.
 
 Preserve confirmed facts, figures, decisions, and original user files. Keep facts taken
 from sources distinct from the agent's own proposals. The prohibitions are in "Mandatory rules".
+
+Sensitive data (passwords, access keys, personal data of customers or staff, confidential documents): do not
+copy it into project files or the conversation unless necessary; use a masked version or a description when possible.
+Follow the "Data sensitivity" line in `PROJECT.md`; if it is empty treat the data as internal and ask before handling personal data.

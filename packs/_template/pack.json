@@ -1,0 +1,15 @@
+{
+  "name": "_template",
+  "version": "0.1.0",
+  "requires_core": "1.1",
+  "title": {
+    "vi": "Gói mẫu (khung để sao chép)",
+    "en": "Template pack (skeleton to copy)"
+  },
+  "description": {
+    "vi": "Khung gói lĩnh vực: một skill ví dụ và cấu trúc thư mục cần có. Dùng 'python tools/pack.py new <tên>' để tạo gói mới từ khung này.",
+    "en": "Skeleton of a domain pack: one example skill and the required folder structure. Use 'python tools/pack.py new <name>' to create a new pack from it."
+  },
+  "domain": "template",
+  "skills": ["example-skill"]
+}

@@ -31,7 +31,7 @@ MSG = {
     'amb': ('%d giá trị dạng 1.234 / 1,234 mơ hồ (nghìn hay thập phân); xác nhận định dạng số của file.', '%d values like 1.234 / 1,234 are ambiguous (thousands or decimal); confirm the number format of the file.'),
     'neg': ('%d giá trị âm (chỉ nêu, chưa kết luận sai).', '%d negative values (reported only, not concluded to be wrong).'),
     'outl': ('%d giá trị lệch xa so với phần còn lại (ví dụ %s); kiểm tra đơn vị/nhập liệu.', '%d values far from the rest (e.g. %s); check units/data entry.'),
-    'textinnum': ('cột chủ yếu là số nhưng có %d ô chữ (%s); phép cộng/lọc sẽ bỏ qua các ô này.', 'column is mostly numbers but has %d text cells (%s); sums/filters will skip them.'),
+    'textinnum': ('cột chủ yếu là số nhưng có %d ô chữ (%s); phép cộng/lọc sẽ bỏ qua các ô này.', 'column is mostly numbers but has %d text cell(s) (%s); sums/filters will skip them.'),
     'total': ('dòng tổng ghi %s nhưng tổng các dòng trên là %s (lệch %s).', 'total row says %s but the rows above add up to %s (difference %s).'),
     'datefmt': ('ngày viết nhiều định dạng (%s).', 'dates written in several formats (%s).'),
     'dateord': ('ngày dạng a/b/yyyy: xác nhận thứ tự ngày/tháng.', 'dates like a/b/yyyy: confirm day/month order.'),
@@ -200,7 +200,7 @@ def check_sheet(sh, keys, ex_n, R):
                 others.append(c)
         if texts_num and nums:
             R['Ảnh hưởng'].append(loc + T('mixed') % (len(nums), len(texts_num)))
-        elif texts_num and not others:
+        elif texts_num and not others and name != 'CSV':  # CSV: mọi ô đều là chữ, không có ý nghĩa cảnh báo
             R['Ảnh hưởng'].append(loc + T('alltext') % len(texts_num))
         if amb:
             R['Cần hỏi'].append(loc + T('amb') % amb)

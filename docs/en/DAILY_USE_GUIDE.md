@@ -1,6 +1,6 @@
 # Daily use guide
 
-Local Agent Workspace v1.0 keeps your documents, context and results in one folder. The agent
+Local Agent Workspace v1.1 keeps your documents, context and results in one folder. The agent
 still chooses the approach, tools and skills that fit.
 
 ## 1. Give work in plain language
@@ -135,7 +135,21 @@ signature) the agent applies "High-caution mode" from `AGENTS.md`: check each fi
 clause against the source and state what could not be checked. You can remind it: "This goes out of
 the organisation, use high-caution mode."
 
-## 9. The role of the HTML guides
+## 9. Sensitive data and recording AI assistance
+
+Before giving a document to the AI, ask yourself: does this file contain passwords, access keys, personal data of customers or
+staff, or confidential documents? If so, mask or remove that part first (replace real names with labels, delete identification
+numbers) and record the level in the "Data sensitivity" line of `PROJECT.md`. Follow your organisation's security rules; the
+package does not replace them.
+
+The package keeps files on your computer, but when you open them with an AI app, what you hand over is still processed by that
+app under its own terms. Do not use this project for data that your organisation's rules forbid sending to AI services.
+
+For documents that go outside or to be signed, the signer is responsible for the content: read the whole text again and check the
+figures against the sources. If your organisation requires recording AI assistance, add a line to the file (for example: "Draft prepared
+with AI assistance, reviewed by [name]").
+
+## 10. The role of the HTML guides
 
 `START_HERE.en.html` gathers the handbook for the user; each Markdown guide also has an HTML
 version with the same name. You only need to read one form. The agent does not need to load HTML,
