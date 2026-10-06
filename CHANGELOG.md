@@ -3,6 +3,13 @@
 Định dạng phiên bản: `MAJOR.MINOR.PATCH`. Số phiên bản nằm trong `VERSION`; hướng dẫn nâng cấp ở
 `docs/HUONG_DAN_CHUYEN_DOI_PROJECT_CO_SAN_VI.md`.
 
+## v1.3.0 — 2026-10-07
+
+Phản hồi của người dùng
+- `docs/FEEDBACK_FORM_VI_EN.md`: phiếu phản hồi song ngữ, chủ yếu tích chọn (thông tin, bảy câu hỏi, câu hỏi cho việc thật, năm gợi ý kể lại, đính kèm nên có) kèm lời nhắc để agent phỏng vấn và điền giúp, để người dùng không phải tự nghĩ nên mô tả gì.
+- Mục "Góp ý sau khi dùng" trong `START_HERE.html` / `START_HERE.en.html`, dòng nhắc trong `README.md` / `en/README.md`, `docs/README.md`.
+- Kho nguồn: mẫu issue GitHub `.github/ISSUE_TEMPLATE/phan-hoi.md` (cùng nội dung phiếu; `check_package.py` cảnh báo nếu hai bản lệch nhau); `.github/` và `feedback/` không nằm trong gói phát hành.
+
 ## v1.2.3 — 2026-10-07
 
 - `spreadsheet-check` 1.3: mỗi phát hiện của `check_spreadsheet.py` kèm số dòng trong file hoặc sheet (ô chữ lẫn trong cột số, giá trị mơ hồ, giá trị lệch xa, các dòng trùng hoặc cùng khóa, dòng Tổng), tính cả dòng trống. Agent chép đúng số dòng, không tự đánh số lại (lần thử ba mô hình cho thấy mỗi mô hình đánh số một kiểu).

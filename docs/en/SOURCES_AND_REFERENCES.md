@@ -2,7 +2,7 @@
 
 ## Foundation
 
-Package version v1.2 was written from a workspace skeleton the user supplied earlier. It lightens the guides
+Package version v1.3 was written from a workspace skeleton the user supplied earlier. It lightens the guides
 and adds the office resources that were agreed.
 The user's original files were not relabelled under a new blanket licence.
 
@@ -68,7 +68,7 @@ when opened or filtered.
 
 ## Limits of checking
 
-Version v1.2 was checked for files, internal paths, skill metadata (name matching folder and index),
+Version v1.3 was checked for files, internal paths, skill metadata (name matching folder and index),
 HTML pages rebuilt from Markdown (the Vietnamese and English sets, with two-way language links) and the
 `basic-charts.html` template in a local Chromium browser (no console errors, no network requests, no
 horizontal scrolling at phone width). The English translation was written by an agent and has not been

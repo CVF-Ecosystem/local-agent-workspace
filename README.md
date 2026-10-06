@@ -1,4 +1,4 @@
-# Local Agent Workspace v1.2
+# Local Agent Workspace v1.3
 
 Workspace local cho công việc văn phòng với Claude, Codex, Gemini hoặc agent khác.
 
@@ -125,6 +125,7 @@ của Claude, Codex hay Antigravity. Không thay đổi cấu hình toàn cục 
 ## Thử nhanh, nâng cấp và mở rộng
 
 - Thử trong 10 phút với dữ liệu giả: `examples/demo-project/README.md`.
+- Góp ý sau khi dùng: `docs/FEEDBACK_FORM_VI_EN.md` (phiếu chủ yếu tích chọn) hoặc GitHub Issues.
 - Có bản mới của package: `python tools/upgrade_package.py` (so ba bên, không ghi đè việc của bạn; xem `docs/HUONG_DAN_CHUYEN_DOI_PROJECT_CO_SAN_VI.md`).
 - Kiến thức riêng của một lĩnh vực: gói lĩnh vực trong `packs/`, cài bằng `python tools/pack.py add <tên>`.
 - Trước khi giao sản phẩm: `python tools/check_output.py <file>` và checklist trong `office-documents`.

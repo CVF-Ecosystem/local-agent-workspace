@@ -15,7 +15,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEXT_EXT = ('.md', '.html', '.py', '.json', '.txt', '.sha256', '.css', '.js', '')
 SKIP_DIRS = {'.git', '__pycache__', 'dist', 'node_modules'}
 # Chỉ ở thư mục gốc: nơi quản lý feedback của người duy trì, không đưa vào gói phát hành
-ROOT_ONLY_SKIP = {'feedback'}
+ROOT_ONLY_SKIP = {'feedback', '.github'}
 # File người dùng sửa trong project: không đưa vào MANIFEST
 USER_FILES = {'PROJECT.md', '.agent/STATE.md', '.agent/HANDOFF.md', '.agent/INDEX.md',
               '.agent/SKILL_INDEX.md', '.agent/PENDING_LESSONS.md', '.agent/PACKAGE_INFO.json', 'setup_answers.json'}
@@ -205,6 +205,13 @@ def check_all(release=False):
             if tok in GENERATED or any(os.path.exists(P(c)) for c in cands): continue
             if tok.rstrip('/') in ('dist', 'dist/'): continue
             errs.append('%s: đường dẫn `%s` không tồn tại.' % (f, tok))
+    # mẫu issue GitHub (kho nguồn, không vào gói) phải cùng nội dung phiếu phản hồi
+    tpl = '.github/ISSUE_TEMPLATE/phan-hoi.md'
+    if os.path.isfile(P(tpl)) and os.path.isfile(P('docs/FEEDBACK_FORM_VI_EN.md')):
+        tb = rd(tpl).replace('\r\n', '\n').split('\n## 1.', 1)[-1]
+        fb = rd('docs/FEEDBACK_FORM_VI_EN.md').replace('\r\n', '\n').split('\n## 1.', 1)[-1]
+        if tb.strip() != fb.strip():
+            warns.append('%s khác nội dung từ mục 1 của docs/FEEDBACK_FORM_VI_EN.md; hãy đồng bộ.' % tpl)
     # 5. song ngữ
     for a, b in PAIRS:
         ta, tb = rd(a), rd(b)

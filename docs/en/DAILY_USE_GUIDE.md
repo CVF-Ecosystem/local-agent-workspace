@@ -1,6 +1,6 @@
 # Daily use guide
 
-Local Agent Workspace v1.2 keeps your documents, context and results in one folder. The agent
+Local Agent Workspace v1.3 keeps your documents, context and results in one folder. The agent
 still chooses the approach, tools and skills that fit.
 
 ## 1. Give work in plain language

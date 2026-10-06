@@ -10,6 +10,7 @@ of the whole handbook is in `en/` (open `START_HERE.en.html`); every page has a 
 - `HUONG_DAN_SKILLS_VI.md`: choosing skills and using templates (Vietnamese).
 - `NGUON_THAM_KHAO_VI.md`: sources of ideas, audit of reference repos and what was not imported (Vietnamese).
 - `GLOSSARY_VI_EN.md`: Vietnamese–English glossary for administrative and office documents (bilingual, no `.html` version).
+- `FEEDBACK_FORM_VI_EN.md`: feedback form for after use (bilingual, mostly tick boxes, with a prompt that has the agent interview you and fill it in).
 - `en/`: the English version of the five documents above (`NEW_PROJECT_GUIDE`, `DAILY_USE_GUIDE`,
   `EXISTING_PROJECT_UPGRADE_GUIDE`, `SKILLS_GUIDE`, `SOURCES_AND_REFERENCES`), each with `.md` and `.html`
   (the references document has `.md` only).

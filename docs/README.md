@@ -10,6 +10,7 @@ cẩm nang nằm trong `en/` (mở `START_HERE.en.html`); mỗi trang có nút c
 - `HUONG_DAN_SKILLS_VI.md`: lựa chọn skill và sử dụng mẫu.
 - `NGUON_THAM_KHAO_VI.md`: nguồn ý tưởng, audit repo tham chiếu và phần không nhập.
 - `GLOSSARY_VI_EN.md`: bảng thuật ngữ Việt–Anh cho văn bản hành chính và văn phòng (song ngữ, không có bản `.html`).
+- `FEEDBACK_FORM_VI_EN.md`: phiếu phản hồi sau khi dùng (song ngữ, chủ yếu tích chọn, có lời nhắc nhờ agent phỏng vấn và điền giúp).
 - `en/`: bản tiếng Anh của năm tài liệu trên (`NEW_PROJECT_GUIDE`, `DAILY_USE_GUIDE`,
   `EXISTING_PROJECT_UPGRADE_GUIDE`, `SKILLS_GUIDE`, `SOURCES_AND_REFERENCES`), mỗi tài liệu có `.md` và `.html`
   (riêng nguồn tham khảo chỉ có `.md`).

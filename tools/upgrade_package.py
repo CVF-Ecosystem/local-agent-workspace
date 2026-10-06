@@ -4,7 +4,7 @@ Upgrade a project to a newer package version without overwriting your work.
 
 Cách dùng / Usage (mặc định chỉ BÁO CÁO, thêm --apply mới ghi / report only by default, --apply writes):
   # chạy từ project, chỉ tới thư mục package mới đã giải nén
-  python tools/upgrade_package.py --from "D:\\goi-moi\\local-agent-workspace-v1.2.3"
+  python tools/upgrade_package.py --from "D:\\goi-moi\\local-agent-workspace-v1.3.0"
   # hoặc chạy từ package mới, chỉ tới project cần nâng cấp (dùng cho lần nâng cấp đầu tiên)
   python tools/upgrade_package.py --project "D:\\cac-project\\ten-project" --apply
 

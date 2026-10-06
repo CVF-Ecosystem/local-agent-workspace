@@ -1,4 +1,4 @@
-# Local Agent Workspace v1.2
+# Local Agent Workspace v1.3
 
 A local workspace for office work with Claude, Codex, Gemini or another agent.
 
@@ -127,6 +127,7 @@ of Claude, Codex or Antigravity. It does not change any app's global configurati
 ## Quick try, upgrading and extending
 
 - Try it in 10 minutes with fake data: `examples/demo-project/README.md`.
+- Feedback after use: `docs/FEEDBACK_FORM_VI_EN.md` (a mostly tick-box form) or GitHub Issues.
 - A newer package version exists: `python tools/upgrade_package.py` (three-way comparison, never overwrites your work; see `docs/en/EXISTING_PROJECT_UPGRADE_GUIDE.md`).
 - Knowledge specific to one domain: a domain pack in `packs/`, installed with `python tools/pack.py add <name>`.
 - Before handing over a deliverable: `python tools/check_output.py <file>` and the checklist in `office-documents`.
