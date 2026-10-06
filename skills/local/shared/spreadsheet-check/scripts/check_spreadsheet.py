@@ -22,7 +22,7 @@ MSG = {
     'merged': ('Có %d vùng ô gộp; ô gộp dễ làm lệch cột khi đọc bằng máy.', '%d merged-cell ranges; merged cells easily misalign columns when read by machine.'),
     'nocache': ('%d/%d ô công thức chưa có giá trị đã tính (file chưa được mở và lưu trong Excel); số đọc ra có thể thiếu.', '%d/%d formula cells have no calculated value (the file was not opened and saved in Excel); figures read may be missing.'),
     'nodata': ('Gần như không có dữ liệu (dưới 2 dòng có nội dung).', 'Almost no data (fewer than 2 non-empty rows).'),
-    'header': ('Dòng tiêu đề đoán là dòng %d của sheet; %d cột, %d dòng dữ liệu. Kiểm tra lại nếu đoán sai.', 'Header row guessed to be sheet row %d; %d columns, %d data rows. Check again if the guess is wrong.'),
+    'header': ('Dòng tiêu đề đoán là dòng %d của sheet; %d cột, %d dòng dữ liệu. Kiểm tra lại nếu đoán sai. Số dòng nêu trong kết quả là số dòng trong sheet hoặc file (dòng đầu tiên là dòng 1).', 'Header row guessed to be sheet row %d; %d columns, %d data rows. Check again if the guess is wrong. Row numbers in this report are the row numbers in the sheet or file (the first row is row 1).'),
     'duphdr': ('Tên cột trùng nhau: %s.', 'Duplicate column names: %s.'),
     'empty': ('%d/%d ô trống.', '%d/%d cells empty.'),
     'errs': ('%d ô lỗi công thức (%s).', '%d cells with formula errors (%s).'),
@@ -47,6 +47,10 @@ MSG = {
     'l2': ('CẦN HỎI (định nghĩa/đơn vị chưa rõ)', 'TO ASK (definition/unit unclear)'),
     'l3': ('LƯU Ý (chưa ảnh hưởng kết quả)', 'NOTES (not affecting the result yet)'),
     'none': ('(không phát hiện trong phạm vi đã kiểm)', '(nothing found within the scope checked)'),
+    'at': (' Vị trí: dòng %s.', ' Location: row %s.'),
+    'totalat': (' Dòng Tổng nằm ở dòng %s.', ' The total row is row %s.'),
+    'dupat': (' Các dòng giống nhau: %s.', ' Identical rows: %s.'),
+    'keyat': (' Các dòng cùng khóa: %s.', ' Rows sharing a key: %s.'),
     'trace': ('Dấu vết: check_spreadsheet.py | file %s | sha256 %s | chạy %s', 'Trace: check_spreadsheet.py | file %s | sha256 %s | run %s'),
     'scope': ('Phạm vi: các kiểm tra trên là phát hiện máy móc, không chứng minh file đúng. Chưa kiểm: ý nghĩa nghiệp vụ, công thức phức tạp, liên kết giữa các sheet.', 'Scope: the checks above are mechanical findings and do not prove the file is correct. Not checked: business meaning, complex formulas, links between sheets.'),
     'ext': ('Chỉ hỗ trợ .csv .tsv .xlsx .xlsm (file .xls cũ: hãy lưu thành .xlsx rồi kiểm tra).', 'Only .csv .tsv .xlsx .xlsm are supported (for old .xls: save as .xlsx first).'),
@@ -142,6 +146,20 @@ def fmt(x):
         s = s.replace(',', '\0').replace('.', ',').replace('\0', '.')
     return s
 
+def at(rows, key='at'):
+    rows = sorted(set(rows))
+    if not rows:
+        return ''
+    shown = ', '.join(str(r) for r in rows[:6]) + (' …(+%d)' % (len(rows) - 6) if len(rows) > 6 else '')
+    return T(key) % shown
+
+def groups_at(groups, key='dupat'):
+    gs = [sorted(g) for g in groups if len(g) > 1]
+    if not gs:
+        return ''
+    shown = '; '.join(', '.join(str(r) for r in g[:6]) for g in sorted(gs)[:3]) + (' …' if len(gs) > 3 else '')
+    return T(key) % shown
+
 def is_blank(v):
     return v is None or (isinstance(v, str) and not v.strip())
 
@@ -189,32 +207,38 @@ def check_sheet(sh, keys, ex_n, R):
         if errs:
             R['Ảnh hưởng'].append(loc + T('errs') % (len(errs), ', '.join(sorted(set(e.strip() for e in errs)))))
         nums, texts_num, amb, others, amb_vals = [], [], 0, [], []
-        for c in vals:
+        nums_r, texts_num_r, amb_r, others_r = [], [], [], []
+        for ri, c in enumerate(col):
+            if is_blank(c):
+                continue
+            rn = nums_row[hdr_i + 1 + ri]  # số dòng trong sheet/file
             if isinstance(c, bool):
-                others.append(c)
+                others.append(c); others_r.append(rn)
             elif isinstance(c, (int, float)):
-                nums.append(float(c))
+                nums.append(float(c)); nums_r.append(rn)
             elif isinstance(c, str):
                 v, note = parse_number(c)
                 if v is not None:
-                    texts_num.append(v)
+                    texts_num.append(v); texts_num_r.append(rn)
                     amb += (note == 'mơ hồ')
-                    if note == 'mơ hồ': amb_vals.append(v)
+                    if note == 'mơ hồ':
+                        amb_vals.append(v); amb_r.append(rn)
                 elif c.strip() not in ERR:
-                    others.append(c)
+                    others.append(c); others_r.append(rn)
             else:
-                others.append(c)
+                others.append(c); others_r.append(rn)
         if texts_num and nums:
-            R['Ảnh hưởng'].append(loc + T('mixed') % (len(nums), len(texts_num)))
+            R['Ảnh hưởng'].append(loc + T('mixed') % (len(nums), len(texts_num)) + at(texts_num_r))
         elif texts_num and not others and name != 'CSV':  # CSV: mọi ô đều là chữ, không có ý nghĩa cảnh báo
             R['Ảnh hưởng'].append(loc + T('alltext') % len(texts_num))
         if amb:
-            R['Cần hỏi'].append(loc + T('amb') % amb)
+            R['Cần hỏi'].append(loc + T('amb') % amb + at(amb_r))
         allnum = nums + texts_num
+        allnum_r = nums_r + texts_num_r
         numcol = bool(allnum) and (not others or (len(allnum) >= 2 and len(allnum) / len(vals) >= 0.6))
         txt = [str(c).strip() for c in others if isinstance(c, str)]
         if allnum and txt and numcol:
-            R['Ảnh hưởng'].append(loc + T('textinnum') % (len(txt), ', '.join('"%s"' % x for x in sorted(set(txt))[:ex_n])))
+            R['Ảnh hưởng'].append(loc + T('textinnum') % (len(txt), ', '.join('"%s"' % x for x in sorted(set(txt))[:ex_n])) + at([others_r[k] for k, c in enumerate(others) if isinstance(c, str)]))
         if numcol and len(allnum) >= 4 and (not others or len(txt) == len(others)):
             neg = sum(1 for x in allnum if x < 0)
             if neg:
@@ -224,7 +248,7 @@ def check_sheet(sh, keys, ex_n, R):
             if iqr > 0:
                 out = [x for x in allnum if x > q[2] + 3 * iqr or x < q[0] - 3 * iqr]
                 if out:
-                    R['Lưu ý'].append(loc + T('outl') % (len(out), ', '.join(fmt(x) for x in out[:ex_n])))
+                    R['Lưu ý'].append(loc + T('outl') % (len(out), ', '.join(fmt(x) for x in out[:ex_n])) + at([allnum_r[k] for k, x in enumerate(allnum) if x in out]))
             if total_idx is not None and j < len(data[total_idx]):
                 tv = data[total_idx][j]
                 tn = float(tv) if isinstance(tv, (int, float)) and not isinstance(tv, bool) else parse_number(tv)[0] if isinstance(tv, str) else None
@@ -233,6 +257,7 @@ def check_sheet(sh, keys, ex_n, R):
                     if amb_vals:
                         alt = sum(allnum) - sum(amb_vals) + sum(v / 1000.0 for v in amb_vals)
                         msg += T('totalalt') % (fmt(alt), fmt(tn - alt))
+                    msg += T('totalat') % nums_row[hdr_i + 1 + total_idx]
                     R['Ảnh hưởng'].append(msg)
         # ngày
         if others and not numcol and all(isinstance(c, str) for c in others):
@@ -270,12 +295,18 @@ def check_sheet(sh, keys, ex_n, R):
         d = [(k, n) for k, n in c.items() if n > 1 and any(k)]
         if d:
             eg = ', '.join('%s (x%d)' % ('/'.join(k), n) for k, n in d[:ex_n])
-            R['Ảnh hưởng'].append(tag + T('dupkey') % (len(d), '+'.join(header[i] for i in kidx), eg))
+            kg = defaultdict(list)
+            for bi, r in enumerate(body):
+                kg[tuple(fold(r[i]) if i < len(r) and not is_blank(r[i]) else '' for i in kidx)].append(nums_row[hdr_i + 1 + bi])
+            R['Ảnh hưởng'].append(tag + T('dupkey') % (len(d), '+'.join(header[i] for i in kidx), eg) + groups_at([v for k, v in kg.items() if any(k)], 'keyat'))
     else:
         c = Counter(tuple('' if is_blank(x) else str(x).strip() for x in r) for r in body)
         d = sum(n - 1 for n in c.values() if n > 1)
         if d:
-            R['Cần hỏi'].append(tag + T('duprows') % d)
+            rg = defaultdict(list)
+            for bi, r in enumerate(body):
+                rg[tuple('' if is_blank(x) else str(x).strip() for x in r)].append(nums_row[hdr_i + 1 + bi])
+            R['Cần hỏi'].append(tag + T('duprows') % d + groups_at(rg.values()))
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)

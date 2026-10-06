@@ -3,6 +3,11 @@
 Định dạng phiên bản: `MAJOR.MINOR.PATCH`. Số phiên bản nằm trong `VERSION`; hướng dẫn nâng cấp ở
 `docs/HUONG_DAN_CHUYEN_DOI_PROJECT_CO_SAN_VI.md`.
 
+## v1.2.3 — 2026-10-07
+
+- `spreadsheet-check` 1.3: mỗi phát hiện của `check_spreadsheet.py` kèm số dòng trong file hoặc sheet (ô chữ lẫn trong cột số, giá trị mơ hồ, giá trị lệch xa, các dòng trùng hoặc cùng khóa, dòng Tổng), tính cả dòng trống. Agent chép đúng số dòng, không tự đánh số lại (lần thử ba mô hình cho thấy mỗi mô hình đánh số một kiểu).
+- Bài thử `examples/demo-project` ghi rõ vị trí mong đợi (dòng 5, 6, 7 và 8, 11).
+
 ## v1.2.2 — 2026-10-07
 
 Rút ra từ lần thử với ba mô hình (Gemini 3.8 Flash High, Claude Sonnet 4.5, GLM 5), xem `feedback/` trong kho nguồn

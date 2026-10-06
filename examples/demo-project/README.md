@@ -15,7 +15,7 @@
 Kiểm tra file examples/demo-project/data/weekly_log.csv trước khi tôi lấy số làm báo cáo. Chỉ báo phát hiện, không sửa file gốc.
 ```
 
-Bạn nên thấy: ô chữ lẫn trong cột số, một dòng trùng, số dạng `1.234` mơ hồ, và dòng tổng không khớp. Mỗi phát hiện về tổng có con số cụ thể (giá trị ghi so với giá trị tính lại), và ô "1.234" được nêu cả hai cách hiểu (1234, hoặc một phẩy hai trăm ba mươi bốn) kèm tổng theo từng cách.
+Bạn nên thấy: ô chữ lẫn trong cột số, một dòng trùng, số dạng `1.234` mơ hồ, và dòng tổng không khớp. Mỗi phát hiện về tổng có con số cụ thể (giá trị ghi so với giá trị tính lại), và ô "1.234" được nêu cả hai cách hiểu (1234, hoặc một phẩy hai trăm ba mươi bốn) kèm tổng theo từng cách. Vị trí ghi theo số dòng trong file: "n/a" ở dòng 5, "1.234" ở dòng 6, hai dòng trùng là dòng 7 và 8, dòng Tổng là dòng 11.
 
 ## Thử 2: lập biên bản họp (skill `meeting-minutes`)
 

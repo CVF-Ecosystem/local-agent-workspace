@@ -16,7 +16,7 @@ Each uses a different skill.
 Check examples/demo-project/data/weekly_log.csv before I take figures for a report. Report findings only, do not edit the original file.
 ```
 
-You should see: a text cell inside a number column, a duplicate row, an ambiguous number like `1.234`, and a total row that does not match. Each finding about a total carries the actual numbers (value recorded versus recalculated value), and the cell "1.234" is given both readings (1234, or one point two three four) with the total under each.
+You should see: a text cell inside a number column, a duplicate row, an ambiguous number like `1.234`, and a total row that does not match. Each finding about a total carries the actual numbers (value recorded versus recalculated value), and the cell "1.234" is given both readings (1234, or one point two three four) with the total under each. Locations use the row numbers in the file: "n/a" in row 5, "1.234" in row 6, the duplicate rows are 7 and 8, the total row is row 11.
 
 ## Try 2: write meeting minutes (skill `meeting-minutes`)
 

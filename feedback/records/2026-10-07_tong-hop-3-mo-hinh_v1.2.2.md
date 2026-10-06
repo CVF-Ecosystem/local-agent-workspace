@@ -39,6 +39,6 @@ Kết luận: các lỗi ở v1.2.1 do skill và script gây ra đã hết. Ph�
 
 | Mã | Mô tả | Thuộc về | Mức | Trạng thái |
 |---|---|---|---|---|
-| 2026-10-07-K1 | Script không in số dòng của từng phát hiện, nên mô hình tự đánh số theo quy ước khác nhau (Gemini dùng dòng trong file, Sonnet dùng thứ tự dòng dữ liệu, không nói rõ) | Script | Thấp | Mới (đề xuất: script in số dòng gốc trong file) |
+| 2026-10-07-K1 | Script không in số dòng của từng phát hiện, nên mô hình tự đánh số theo quy ước khác nhau (Gemini dùng dòng trong file, Sonnet dùng thứ tự dòng dữ liệu, không nói rõ) | Script | Thấp | Đã xử lý (v1.2.3): script in số dòng gốc trong file |
 | 2026-10-07-K2 | Gemini High vẫn đếm sai số dòng đã đọc dù `AGENTS.md` đã ghi không cần đếm (J5 lặp lại) | Mô hình | Thấp | Không làm, theo dõi |
 | 2026-10-07-K3 | GLM 5 ghi "Chưa kiểm: không có" khi còn điều chưa rõ (J6 lặp lại); Gemini High thêm suy đoán "123 hoặc 134" và "SMS" | Mô hình | Thấp | Không làm, theo dõi |

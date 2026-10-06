@@ -6,7 +6,7 @@ description: >-
   not match. Reports findings only and never edits the original data.
   Triggers when the user says: "check the Excel/CSV file", "is the data clean", "check before making the report".
 metadata:
-  version: "1.2"
+  version: "1.3"
 ---
 
 # Checking a spreadsheet before use
@@ -41,7 +41,7 @@ CSV needs only Python 3.8+. Excel needs `openpyxl` (`pip install openpyxl`); wit
 and stops, and you can then export the sheet to CSV or check another way. `--sheet NAME` checks one
 sheet only; `--key` names the code column used to find duplicates; `--lang vi` gives Vietnamese output.
 Results are grouped into the three levels below; a person still has to judge the business meaning.
-Numbers such as `1.234` or `1,234` are reported as "ambiguous" rather than guessed. The script prints a "Trace" line at the end (file, sha256, run time); when reporting, copy it into the "Execution declaration" block of `AGENTS.md`, and give the actual numbers for each finding (value recorded, recalculated value, difference) plus each reading of an ambiguous value. For an ambiguous cell such as `1.234`, write the string exactly as in the file and give both readings (1234, or one point two three four) with the total under each; the script prints both totals.
+Numbers such as `1.234` or `1,234` are reported as "ambiguous" rather than guessed. The script prints a "Trace" line at the end (file, sha256, run time); when reporting, copy it into the "Execution declaration" block of `AGENTS.md`, and give the actual numbers for each finding (value recorded, recalculated value, difference) plus each reading of an ambiguous value. For an ambiguous cell such as `1.234`, write the string exactly as in the file and give both readings (1234, or one point two three four) with the total under each; the script prints both totals. Each finding carries its row number in the file or sheet (the first row is row 1); when giving a location, use exactly those numbers and do not renumber.
 
 ## Result
 
