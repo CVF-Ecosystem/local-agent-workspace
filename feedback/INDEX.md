@@ -8,3 +8,7 @@
 | 2026-10-06 | Claude Sonnet 4.5 | 1.2.1 | 3 bài sau khi sửa | Tốt nhất bài 1 và 2; đưa bước 1 vào bảng bài 3 | Xem bản tổng hợp | `records/2026-10-06_claudesonnet45_demo-project_v1.2.1.md` |
 | 2026-10-06 | GLM 5, Kiro | 1.2.1 | 3 bài sau khi sửa | Bài 2 đúng; bài 3 yếu (bước 1, suy luận, đếm sai) | Xem bản tổng hợp | `records/2026-10-06_GLM5_demo-project_v1.2.1.md` |
 | 2026-10-07 | Tổng hợp 3 mô hình | 1.2.1 | Đối chiếu và chấm | H1 đã hết; 6 vấn đề mới (J1–J6) | 0 (J1–J4 xử lý ở 1.2.2; J5, J6 theo dõi) | `records/2026-10-07_tong-hop-3-mo-hinh_v1.2.1.md` |
+| 2026-10-07 | Gemini 3.8 Flash (High), Antigravity | 1.2.2 | 3 bài sau khi sửa lần 2 | Đạt gần đủ; đếm sai dòng | Xem bản tổng hợp | `records/2026-10-07_gemini38flashhigh_demo-project_v1.2.2.md` |
+| 2026-10-07 | Claude Sonnet 4.5 | 1.2.2 | 3 bài sau khi sửa lần 2 | Đạt đủ | Xem bản tổng hợp | `records/2026-10-07_claudesonnet45_demo-project_v1.2.2.md` |
+| 2026-10-07 | GLM 5, Kiro | 1.2.2 | 3 bài sau khi sửa lần 2 | Đạt; "Chưa kiểm" còn sơ sài | Xem bản tổng hợp | `records/2026-10-07_GLM5_demo-project_v1.2.2.md` |
+| 2026-10-07 | Tổng hợp 3 mô hình | 1.2.2 | Đối chiếu và chấm | J1–J4 đã hết; 3 vấn đề thấp (K1–K3) | 3 (K1–K3, mức thấp) | `records/2026-10-07_tong-hop-3-mo-hinh_v1.2.2.md` |
