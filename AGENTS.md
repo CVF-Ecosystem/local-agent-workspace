@@ -43,8 +43,12 @@ README; README của thư mục chỉ để tra khi chưa rõ mục đích thư 
 
 Chọn skill native, skill của workspace, công cụ, kết hợp hoặc làm trực tiếp, theo yêu cầu,
 đầu vào, đầu ra và khả năng thực có trong phiên này. Nguồn gốc skill hay nhãn `ACTIVE` không
-tạo ưu tiên và không bắt buộc phải nạp skill. Khả năng ghi cho provider khác có thể không có
-ở phiên này.
+tạo ưu tiên. Khả năng ghi cho provider khác có thể không có ở phiên này.
+
+Khi yêu cầu khớp rõ với cột "Use when" của một skill trong workspace (`.agent/SKILL_INDEX.md`), đọc `SKILL.md` của skill
+đó trước khi làm. Skill ngắn, và quy tắc về độ chính xác của từng loại việc nằm ở đó (dùng script có sẵn, không gán người
+phụ trách khi nguồn không giao, gắn nhãn suy luận...); bỏ qua thì dễ lặp lại đúng những lỗi skill được viết ra để tránh. Skill
+không phù hợp thì không dùng, và nói rõ trong khai báo thực hiện.
 
 Đọc hướng dẫn của skill đã chọn và chỉ những tài nguyên hoặc mẫu hữu ích. Dùng linh hoạt;
 skill không được mở rộng phạm vi người dùng giao. Các skill văn phòng đi kèm là ví dụ gợi ý,
@@ -93,8 +97,9 @@ số liệu hoặc kết luận. Không cần cho sửa nhỏ, trả lời câu 
 
 ```text
 Khai báo thực hiện
-- Cách làm: [skill đã dùng; script hoặc công cụ đã chạy kèm lệnh; hoặc "đọc thủ công, không chạy script"]
-- Nguồn: [file đã đọc; đọc đủ hay một phần]
+- Cách làm: [script hoặc công cụ đã chạy kèm lệnh; hoặc "đọc thủ công, không chạy script"]
+- Skill: [tên skill đã đọc SKILL.md; hoặc "không dùng skill" kèm lý do ngắn]
+- Nguồn: [file đã đọc; đọc đủ hay một phần, không cần đếm số dòng]
 - Số liệu: [phát hiện về số: giá trị trong nguồn, giá trị tính lại, chênh lệch; chỗ mơ hồ nêu từng cách hiểu]
 - File: [đã tạo hoặc sửa file nào; hoặc "không tạo, không sửa file"]
 - Chưa kiểm / cần xác nhận: [điều chưa kiểm được; điều cần người dùng xác nhận]

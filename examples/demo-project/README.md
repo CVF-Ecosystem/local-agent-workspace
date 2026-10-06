@@ -36,7 +36,7 @@ Bạn nên thấy: bảng chỉ liệt kê thay đổi thật (bước thêm, b�
 
 ## Kiểm tra cách agent làm việc
 
-Cuối mỗi câu trả lời, agent nên có khối **"Khai báo thực hiện"** (cách làm, nguồn, file, chưa kiểm; xem `AGENTS.md`). Với bài 1,
+Cuối mỗi câu trả lời, agent nên có khối **"Khai báo thực hiện"** (cách làm, skill, nguồn, file, chưa kiểm; xem `AGENTS.md`). Với bài 1,
 package có sẵn script `spreadsheet-check`: khai báo nên ghi lệnh đã chạy và dòng "Dấu vết" của script, hoặc nói rõ vì sao đọc thủ công.
 Thiếu khối này là dấu hiệu agent chưa làm theo hướng dẫn của package. Muốn kiểm nhanh, lưu câu trả lời thành file rồi chạy
 `python tools/check_output.py --declaration <file>`.

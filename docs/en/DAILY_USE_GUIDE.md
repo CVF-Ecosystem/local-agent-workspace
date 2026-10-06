@@ -152,7 +152,7 @@ with AI assistance, reviewed by [name]").
 ## 10. Reading the agent's "Execution declaration"
 
 When the agent reads, checks, compares or calculates on your files, the end of its reply should carry an "Execution
-declaration" block (rule 9 in `AGENTS.md`): the method (skill, script run with its command, or manual reading), the sources read,
+declaration" block (rule 9 in `AGENTS.md`): the method (script run with its command, or manual reading), the skill read, the sources read,
 the files created or changed, and what was not checked. Read this block before trusting the result. Findings about numbers should
 carry the actual numbers; ambiguous values (such as `1.234`) should be given both readings. If the block is missing or vague, ask
 the agent to add it. The declaration is written by the agent itself, so it is not absolute proof; for important work, the script's

@@ -1,7 +1,7 @@
 # SKILL INDEX
 
-Danh mục gợi ý để tìm skill theo công việc. Không phải thứ tự ưu tiên hay danh sách
-cần nạp. Có thể dùng native skill, local skill, kết hợp hoặc xử lý trực tiếp.
+Danh mục để tìm skill theo công việc. Không phải thứ tự ưu tiên. Khi yêu cầu khớp cột "Use when" của một skill,
+đọc `SKILL.md` của skill đó trước khi làm (xem `AGENTS.md`). Có thể dùng native skill, local skill, kết hợp hoặc xử lý trực tiếp.
 
 | Skill ID | Origin | Scope | Location / Provider | Use when | Status | Provenance / Notes |
 |---|---|---|---|---|---|---|

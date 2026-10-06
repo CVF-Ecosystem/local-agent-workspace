@@ -3,6 +3,12 @@
 Định dạng phiên bản: `MAJOR.MINOR.PATCH`. Số phiên bản nằm trong `VERSION`; hướng dẫn nâng cấp ở
 `docs/HUONG_DAN_CHUYEN_DOI_PROJECT_CO_SAN_VI.md`.
 
+## v1.2.1 — 2026-10-06
+
+Rút ra từ lần chạy lại bài thử với Gemini 3.8 Flash (Low), xem `feedback/` trong kho nguồn
+- `AGENTS.md`: khi yêu cầu khớp cột "Use when" của một skill, agent đọc `SKILL.md` của skill đó trước khi làm (trước đây ghi "không bắt buộc phải nạp skill", nên skill và script không được dùng). `.agent/SKILL_INDEX.md` nhắc cùng điều này.
+- Khối "Khai báo thực hiện" thêm dòng "Skill" (skill đã đọc hoặc "không dùng skill"); bỏ yêu cầu đếm số dòng đã đọc. `check_output.py --declaration` cảnh báo khi thiếu dòng Skill và không còn coi từ "skill" là đủ cho dòng Cách làm.
+
 ## v1.2.0 — 2026-10-06
 
 Khai báo khi làm việc (rút ra từ lần thử đầu tiên với Gemini, xem `feedback/` trong kho nguồn)

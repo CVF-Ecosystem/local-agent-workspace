@@ -1,7 +1,7 @@
 # SKILL INDEX
 
-A catalog that suggests skills by task. It is not a priority order or a list to load.
-You may use a native skill, a local skill, a combination, or handle the task directly.
+A catalog for finding skills by task. It is not a priority order. When a request matches the "Use when" column of a skill,
+read that skill's `SKILL.md` before starting (see `AGENTS.md`). You may use a native skill, a local skill, a combination, or handle the task directly.
 
 | Skill ID | Origin | Scope | Location / Provider | Use when | Status | Provenance / Notes |
 |---|---|---|---|---|---|---|

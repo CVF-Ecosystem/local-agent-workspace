@@ -87,8 +87,10 @@ def check_declaration(text):
             must.append(L('thiếu mục "%s"', 'missing item "%s"') % label)
         elif not v or re.fullmatch(r'\[[^\]]*\]', v):
             must.append(L('mục "%s" chưa điền', 'item "%s" is not filled in') % label)
+    if get('skill') is None:
+        note.append(L('chưa có mục "Skill" (tên skill đã đọc hoặc "không dùng skill")', 'no "Skill" item (name of the skill read, or "no skill used")'))
     how = get('cách làm', 'method') or ''
-    if how and not re.search(r'python|\.py|script|thủ công|manual|không chạy|no script|by hand|skill', how, re.I):
+    if how and not re.search(r'python|\.py|script|thủ công|manual|không chạy|no script|by hand', how, re.I):
         note.append(L('mục Cách làm chưa nói rõ có chạy script/công cụ hay đọc thủ công', 'Method does not say whether a script/tool was run or the work was done manually'))
     figs = get('số liệu', 'figures')
     whole = text[m.end():]

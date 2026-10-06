@@ -48,8 +48,13 @@ or when organizing its contents, not a checklist before each file operation.
 
 Select native skills, workspace skills, tools, a combination, or direct work
 according to the task, inputs, intended output, and capabilities available now.
-Origin and an `ACTIVE` label do not confer priority or require a skill to load.
+Origin and an `ACTIVE` label do not confer priority.
 A capability recorded for another provider may not exist in this session.
+
+When the request clearly matches the "Use when" column of a workspace skill (`.agent/SKILL_INDEX.md`), read that skill's
+`SKILL.md` before starting. Skills are short, and the accuracy rules for each kind of work live there (use the bundled
+script, do not assign an owner the source did not give, label inferences...); skipping it makes it easy to repeat the very
+mistakes the skill was written to prevent. If no skill fits, do not use one, and say so in the execution declaration.
 
 Read the selected skill's guidance and only the references or templates that help.
 Use its approach flexibly; a skill should not expand the user's scope.
@@ -102,8 +107,9 @@ the user supplied. Put it at the end of the reply, in the conversation (do not c
 
 ```text
 Execution declaration
-- Method: [skill used; script or tool run, with the command; or "read manually, no script run"]
-- Sources: [files read; read in full or in part]
+- Method: [script or tool run, with the command; or "read manually, no script run"]
+- Skill: [name of the skill whose SKILL.md was read; or "no skill used" with a short reason]
+- Sources: [files read; read in full or in part, no need to count lines]
 - Figures: [findings about numbers: value in the source, recalculated value, difference; for ambiguous values, each reading]
 - Files: [which files were created or changed; or "no files created or changed"]
 - Not checked / needs confirmation: [what could not be checked; what the user must confirm]

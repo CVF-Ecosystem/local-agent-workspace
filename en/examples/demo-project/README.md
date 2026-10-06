@@ -37,7 +37,7 @@ You should see: a table listing real changes only (an added step, a changed owne
 
 ## Check how the agent worked
 
-At the end of each reply the agent should give an **"Execution declaration"** (method, sources, files, not checked; see `AGENTS.md`).
+At the end of each reply the agent should give an **"Execution declaration"** (method, skill, sources, files, not checked; see `AGENTS.md`).
 For Try 1 the package ships a `spreadsheet-check` script: the declaration should give the command run and the script's "Trace" line, or say
 why the work was done manually. A missing block is a sign the agent did not follow the package guidance. For a quick check, save the
 reply to a file and run `python tools/check_output.py --declaration <file>`.

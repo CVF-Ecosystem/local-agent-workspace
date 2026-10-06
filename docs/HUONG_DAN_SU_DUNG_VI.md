@@ -145,7 +145,7 @@ Nếu đơn vị yêu cầu ghi nhận phần AI hỗ trợ, thêm một dòng v
 ## 10. Đọc "Khai báo thực hiện" của agent
 
 Khi agent đọc, kiểm tra, đối chiếu hoặc tính toán trên file của bạn, cuối câu trả lời nên có khối "Khai báo thực hiện"
-(quy tắc 9 trong `AGENTS.md`): cách làm (skill, script đã chạy kèm lệnh, hay đọc thủ công), nguồn đã đọc, file đã tạo hoặc sửa,
+(quy tắc 9 trong `AGENTS.md`): cách làm (script đã chạy kèm lệnh, hay đọc thủ công), skill đã đọc, nguồn đã đọc, file đã tạo hoặc sửa,
 và điều chưa kiểm. Hãy đọc khối này trước khi tin kết quả. Phát hiện về số nên kèm con số cụ thể; chỗ mơ hồ (như `1.234`) nên được
 nêu cả hai cách hiểu. Thiếu khối này, hoặc khai báo chung chung, thì yêu cầu agent bổ sung. Khai báo do agent tự ghi nên không phải
 bằng chứng tuyệt đối; với việc quan trọng, dòng "Dấu vết" của script (file, sha256, giờ chạy) giúp bạn đối chiếu được.
