@@ -107,7 +107,7 @@ Khai báo thực hiện
 
 Chỉ khai báo điều đã thực sự làm, không khai điều định làm. Không nói đã chạy script khi chưa chạy (quy tắc 4). Script có
 in dòng "Dấu vết" thì chép lại vào mục Cách làm. Phát hiện về số luôn kèm con số, không viết chung chung "sai lệch";
-số mơ hồ (ví dụ `1.234` có thể là 1234 hoặc 1,234) thì nêu cả hai cách hiểu và kết quả theo từng cách nếu tính được.
+số mơ hồ (ví dụ ô ghi "1.234" có thể là 1234 hoặc một phẩy hai trăm ba mươi bốn) thì viết đúng chuỗi như trong file, nêu cả hai cách hiểu và kết quả theo từng cách nếu tính được.
 Dòng "Số liệu" bỏ đi khi không có phát hiện về số. Kiểm nhanh một câu trả lời đã lưu thành file:
 `python tools/check_output.py --declaration <file>`.
 

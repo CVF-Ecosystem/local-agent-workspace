@@ -92,6 +92,8 @@ def check_declaration(text):
     how = get('cách làm', 'method') or ''
     if how and not re.search(r'python|\.py|script|thủ công|manual|không chạy|no script|by hand', how, re.I):
         note.append(L('mục Cách làm chưa nói rõ có chạy script/công cụ hay đọc thủ công', 'Method does not say whether a script/tool was run or the work was done manually'))
+    if re.search(r'check_spreadsheet', how) and not re.search(r'dấu vết|trace', how, re.I):
+        note.append(L('Cách làm nhắc check_spreadsheet nhưng thiếu dòng "Dấu vết" / "Trace" mà script in ra', 'Method mentions check_spreadsheet but lacks the "Trace" line the script prints'))
     figs = get('số liệu', 'figures')
     whole = text[m.end():]
     if re.search(r'sai lệch|lệch|không khớp|mismatch|discrepan|does not match', whole, re.I) and not (figs and re.search(r'\d', figs)):

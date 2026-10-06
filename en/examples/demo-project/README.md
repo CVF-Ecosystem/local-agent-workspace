@@ -16,7 +16,7 @@ Each uses a different skill.
 Check examples/demo-project/data/weekly_log.csv before I take figures for a report. Report findings only, do not edit the original file.
 ```
 
-You should see: a text cell inside a number column, a duplicate row, an ambiguous number like `1.234`, and a total row that does not match. Each finding about a total carries the actual numbers (value recorded versus recalculated value), and `1.234` is given both readings (1234 or 1.234).
+You should see: a text cell inside a number column, a duplicate row, an ambiguous number like `1.234`, and a total row that does not match. Each finding about a total carries the actual numbers (value recorded versus recalculated value), and the cell "1.234" is given both readings (1234, or one point two three four) with the total under each.
 
 ## Try 2: write meeting minutes (skill `meeting-minutes`)
 
@@ -33,7 +33,7 @@ You should see: three clearly separated groups; actions missing an owner or a de
 Compare examples/demo-project/docs/procedure_v1.md and examples/demo-project/docs/procedure_v2.md, build a table of the meaningful changes and state their impact.
 ```
 
-You should see: a table listing real changes only (an added step, a changed owner, a different deadline), not differences of wording alone (step 1 of version 2 is only reworded and should not be in the table). Impact inferred beyond the text is labelled "(inferred)".
+You should see: a table listing real changes only (an added step, a changed owner, a different deadline), not differences of wording alone (step 1 of version 2 is only reworded and should not be in the table). The impact column carries the label "(inferred)" (in the column header or per item).
 
 ## Check how the agent worked
 

@@ -11,7 +11,7 @@ Quy trình tiếp nhận hồ sơ, bản cũ (2025) và bản mới (2026).
 **Tóm tắt:** có 4 thay đổi đáng kể; quan trọng nhất là rút thời hạn xử lý và đổi người duyệt.
 Ngoài ra bản mới đánh số lại các mục 4–7 và sửa vài lỗi chính tả, nghĩa không đổi.
 
-| Mục | Bản cũ | Bản mới | Loại | Tác động |
+| Mục | Bản cũ | Bản mới | Loại | Tác động (suy luận) |
 |---|---|---|---|---|
 | 3.2 Thời hạn xử lý | "05 ngày làm việc" | "03 ngày làm việc" | Sửa | Người xử lý phải hoàn thành sớm hơn 02 ngày |
 | 3.4 Người duyệt | "Trưởng phòng" | "Phó giám đốc phụ trách" | Sửa | Cần xác nhận: có ủy quyền lại cho trưởng phòng không |

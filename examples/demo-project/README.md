@@ -15,7 +15,7 @@
 Kiểm tra file examples/demo-project/data/weekly_log.csv trước khi tôi lấy số làm báo cáo. Chỉ báo phát hiện, không sửa file gốc.
 ```
 
-Bạn nên thấy: ô chữ lẫn trong cột số, một dòng trùng, số dạng `1.234` mơ hồ, và dòng tổng không khớp. Mỗi phát hiện về tổng có con số cụ thể (giá trị ghi so với giá trị tính lại), và số `1.234` được nêu cả hai cách hiểu (1234 hoặc 1,234).
+Bạn nên thấy: ô chữ lẫn trong cột số, một dòng trùng, số dạng `1.234` mơ hồ, và dòng tổng không khớp. Mỗi phát hiện về tổng có con số cụ thể (giá trị ghi so với giá trị tính lại), và ô "1.234" được nêu cả hai cách hiểu (1234, hoặc một phẩy hai trăm ba mươi bốn) kèm tổng theo từng cách.
 
 ## Thử 2: lập biên bản họp (skill `meeting-minutes`)
 
@@ -32,7 +32,7 @@ Bạn nên thấy: ba nhóm tách rõ; việc thiếu người hoặc hạn đư
 So sánh examples/demo-project/docs/procedure_v1.md và examples/demo-project/docs/procedure_v2.md, lập bảng thay đổi có ý nghĩa và nêu ảnh hưởng.
 ```
 
-Bạn nên thấy: bảng chỉ liệt kê thay đổi thật (bước thêm, bước đổi người phụ trách, thời hạn khác), không liệt kê khác biệt chỉ về câu chữ (bước 1 của bản 2 chỉ diễn đạt lại, không nên có trong bảng). Phần ảnh hưởng suy ra ngoài văn bản được gắn nhãn "(suy luận)".
+Bạn nên thấy: bảng chỉ liệt kê thay đổi thật (bước thêm, bước đổi người phụ trách, thời hạn khác), không liệt kê khác biệt chỉ về câu chữ (bước 1 của bản 2 chỉ diễn đạt lại, không nên có trong bảng). Cột ảnh hưởng mang nhãn "(suy luận)" (ở tiêu đề cột hoặc từng ý).
 
 ## Kiểm tra cách agent làm việc
 

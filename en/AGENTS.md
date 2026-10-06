@@ -117,8 +117,8 @@ Execution declaration
 
 Declare only what was actually done, not what was intended. Do not say a script was run when it was not (rule 4). If a
 script prints a "Trace" line, copy it into Method. Findings about numbers always carry the numbers, not a vague
-"discrepancy"; for ambiguous values (for example `1.234` could be 1234 or 1.234) state both readings and the result
-under each when it can be computed. Drop the Figures line when there are no findings about numbers. To check a saved
+"discrepancy"; for ambiguous values (for example a cell reading "1.234" could be 1234 or one point two three four) write the string
+exactly as in the file, state both readings and the result under each when it can be computed. Drop the Figures line when there are no findings about numbers. To check a saved
 reply quickly: `python tools/check_output.py --declaration <file>`.
 
 ## High-caution mode

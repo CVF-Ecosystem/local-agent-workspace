@@ -11,7 +11,7 @@ A file-intake procedure, the old version (2025) and the new version (2026).
 **Summary:** 4 significant changes; the most important are the shorter handling time and the change of approver.
 In addition the new version renumbers sections 4-7 and fixes a few spelling errors, with no change of meaning.
 
-| Section | Old | New | Type | Impact |
+| Section | Old | New | Type | Impact (inferred) |
 |---|---|---|---|---|
 | 3.2 Handling time | "05 working days" | "03 working days" | Changed | Handlers must finish 02 days sooner |
 | 3.4 Approver | "Head of department" | "Deputy director in charge" | Changed | Needs confirmation: is authority delegated back to the head of department? |

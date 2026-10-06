@@ -6,7 +6,7 @@ description: >-
   ảnh hưởng gì đến người thực hiện; không dùng để đánh giá đúng/sai pháp lý.
   Kích hoạt khi người dùng nói: “so sánh hai bản”, “bản mới khác bản cũ chỗ nào”, “đối chiếu quy định cũ và mới”.
 metadata:
-  version: "1.1"
+  version: "1.2"
 ---
 
 # Đối chiếu hai phiên bản tài liệu
@@ -21,15 +21,16 @@ Xác định bản cũ và bản mới. Nếu không rõ bản nào mới hơn, 
 
 Lập bảng:
 
-| Mục / điều khoản | Bản cũ | Bản mới | Loại | Tác động |
+| Mục / điều khoản | Bản cũ | Bản mới | Loại | Tác động (suy luận) |
 |---|---|---|---|---|
 
 - **Loại:** thêm, bỏ, sửa nội dung, đổi vị trí. Đổi vị trí không đổi nghĩa chỉ nêu một dòng.
-- **Tác động:** chỉ viết khi văn bản cho căn cứ (ai phải làm khác, hạn mới, biểu mẫu mới).
-  Chưa rõ thì ghi "cần xác nhận"; không tự suy ra hậu quả. Nếu vẫn nêu ảnh hưởng suy từ ngữ cảnh chứ không có trong văn bản, gắn nhãn "(suy luận)" để người đọc phân biệt.
+- **Tác động (suy luận):** tiêu đề cột đã gắn nhãn suy luận, nên mọi nội dung trong cột này được hiểu là
+  suy luận của agent về việc ai phải làm khác, hạn mới, biểu mẫu mới. Điều văn bản nêu thẳng thì để ở cột Bản mới,
+  không lặp lại ở đây. Chưa có căn cứ thì ghi "cần xác nhận"; không dựng thêm hậu quả xa.
 - Đưa lên đầu những thay đổi về **số liệu, thời hạn, vai trò, thẩm quyền, điều kiện**.
-- Bỏ qua khác biệt định dạng, chính tả, đánh số lại khi nghĩa không đổi. Nếu có nhiều,
-  nói một câu chung thay vì liệt kê.
+- Bỏ qua khác biệt định dạng, chính tả, đánh số lại, diễn đạt lại hoặc đổi từ mà nghĩa không đổi (ví dụ "kiểm tra" thành "rà soát"). Nếu có nhiều,
+  nói một câu chung thay vì liệt kê, và nêu rõ đã bỏ qua loại khác biệt nào.
 - Trích nguyên văn ngắn khi diễn đạt lại có thể làm lệch nghĩa.
 
 Nếu một file đọc không đầy đủ (bảng, ảnh, chữ quét), nêu rõ phần chưa đối chiếu được.

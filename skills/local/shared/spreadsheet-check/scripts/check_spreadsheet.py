@@ -28,7 +28,8 @@ MSG = {
     'errs': ('%d ô lỗi công thức (%s).', '%d cells with formula errors (%s).'),
     'mixed': ('lẫn %d số thật và %d số lưu dạng chữ; phép cộng/lọc có thể bỏ sót.', 'mixes %d real numbers and %d numbers stored as text; sums/filters may miss some.'),
     'alltext': ('toàn bộ %d số đang lưu dạng chữ; cần đổi sang số trước khi tính.', 'all %d numbers are stored as text; convert them to numbers before calculating.'),
-    'amb': ('%d giá trị dạng 1.234 / 1,234 mơ hồ (nghìn hay thập phân); xác nhận định dạng số của file.', '%d values like 1.234 / 1,234 are ambiguous (thousands or decimal); confirm the number format of the file.'),
+    'amb': ('%d giá trị dạng 1.234 mơ hồ giữa hai cách đọc: 1.234 là 1234 (dấu chấm ngăn cách nghìn) hoặc 1.234 là một phẩy hai trăm ba mươi bốn (dấu chấm thập phân); xác nhận định dạng số của file.', '%d values like 1.234 are ambiguous between two readings: 1.234 as 1234 (dot as thousands separator) or 1.234 as one point two three four (dot as decimal point); confirm the number format of the file.'),
+    'totalalt': (' Tổng này tính giá trị mơ hồ theo cách 1234; nếu đọc theo cách còn lại (dấu chấm là dấu thập phân) thì tổng là %s (lệch %s).', ' This total reads ambiguous values as 1234; under the other reading (dot as decimal point) the total is %s (difference %s).'),
     'neg': ('%d giá trị âm (chỉ nêu, chưa kết luận sai).', '%d negative values (reported only, not concluded to be wrong).'),
     'outl': ('%d giá trị lệch xa so với phần còn lại (ví dụ %s); kiểm tra đơn vị/nhập liệu.', '%d values far from the rest (e.g. %s); check units/data entry.'),
     'textinnum': ('cột chủ yếu là số nhưng có %d ô chữ (%s); phép cộng/lọc sẽ bỏ qua các ô này.', 'column is mostly numbers but has %d text cell(s) (%s); sums/filters will skip them.'),
@@ -136,7 +137,10 @@ def load(path, sheet):
     return out
 
 def fmt(x):
-    return '{:,.0f}'.format(x) if x == int(x) else '{:,.2f}'.format(x)
+    s = '{:,.0f}'.format(x) if x == int(x) else '{:,.2f}'.format(x)
+    if LANG == 0:  # tiếng Việt: dấu chấm ngăn cách nghìn, dấu phẩy thập phân
+        s = s.replace(',', '\0').replace('.', ',').replace('\0', '.')
+    return s
 
 def is_blank(v):
     return v is None or (isinstance(v, str) and not v.strip())
@@ -184,7 +188,7 @@ def check_sheet(sh, keys, ex_n, R):
         errs = [c for c in vals if isinstance(c, str) and c.strip() in ERR]
         if errs:
             R['Ảnh hưởng'].append(loc + T('errs') % (len(errs), ', '.join(sorted(set(e.strip() for e in errs)))))
-        nums, texts_num, amb, others = [], [], 0, []
+        nums, texts_num, amb, others, amb_vals = [], [], 0, [], []
         for c in vals:
             if isinstance(c, bool):
                 others.append(c)
@@ -195,6 +199,7 @@ def check_sheet(sh, keys, ex_n, R):
                 if v is not None:
                     texts_num.append(v)
                     amb += (note == 'mơ hồ')
+                    if note == 'mơ hồ': amb_vals.append(v)
                 elif c.strip() not in ERR:
                     others.append(c)
             else:
@@ -224,7 +229,11 @@ def check_sheet(sh, keys, ex_n, R):
                 tv = data[total_idx][j]
                 tn = float(tv) if isinstance(tv, (int, float)) and not isinstance(tv, bool) else parse_number(tv)[0] if isinstance(tv, str) else None
                 if tn is not None and abs(tn - sum(allnum)) > max(0.5, abs(tn) * 1e-6):
-                    R['Ảnh hưởng'].append(loc + T('total') % (fmt(tn), fmt(sum(allnum)), fmt(tn - sum(allnum))))
+                    msg = loc + T('total') % (fmt(tn), fmt(sum(allnum)), fmt(tn - sum(allnum)))
+                    if amb_vals:
+                        alt = sum(allnum) - sum(amb_vals) + sum(v / 1000.0 for v in amb_vals)
+                        msg += T('totalalt') % (fmt(alt), fmt(tn - alt))
+                    R['Ảnh hưởng'].append(msg)
         # ngày
         if others and not numcol and all(isinstance(c, str) for c in others):
             fm = Counter()

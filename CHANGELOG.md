@@ -3,6 +3,14 @@
 Định dạng phiên bản: `MAJOR.MINOR.PATCH`. Số phiên bản nằm trong `VERSION`; hướng dẫn nâng cấp ở
 `docs/HUONG_DAN_CHUYEN_DOI_PROJECT_CO_SAN_VI.md`.
 
+## v1.2.2 — 2026-10-07
+
+Rút ra từ lần thử với ba mô hình (Gemini 3.8 Flash High, Claude Sonnet 4.5, GLM 5), xem `feedback/` trong kho nguồn
+- `document-comparison` 1.2: bỏ qua cả khác biệt diễn đạt lại hoặc đổi từ mà nghĩa không đổi, và nêu rõ đã bỏ loại nào; cột "Tác động" đổi thành "Tác động (suy luận)" để nhãn gắn cả cột.
+- `spreadsheet-check` 1.2: số trong kết quả tiếng Việt dùng dấu chấm ngăn cách nghìn (trước đây dùng dấu phẩy kiểu Anh, dễ nhầm với dấu thập phân); ô mơ hồ như "1.234" được mô tả bằng hai cách đọc rõ ràng, và dòng tổng không khớp in thêm tổng theo cách đọc còn lại.
+- `check_output.py --declaration` cảnh báo khi mục Cách làm nhắc `check_spreadsheet` mà thiếu dòng "Dấu vết".
+- `AGENTS.md` và demo-project cập nhật theo.
+
 ## v1.2.1 — 2026-10-06
 
 Rút ra từ lần chạy lại bài thử với Gemini 3.8 Flash (Low), xem `feedback/` trong kho nguồn

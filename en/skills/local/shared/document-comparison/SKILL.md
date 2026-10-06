@@ -6,7 +6,7 @@ description: >-
   old and what it means for those carrying it out; not for judging legal right or wrong.
   Triggers when the user says: "compare the two versions", "where does the new version differ from the old", "compare the old and new regulation".
 metadata:
-  version: "1.1"
+  version: "1.2"
 ---
 
 # Comparing two versions of a document
@@ -20,15 +20,17 @@ both fully for the part being compared; if the question is only about one sectio
 
 Build the table:
 
-| Section / clause | Old | New | Type | Impact |
+| Section / clause | Old | New | Type | Impact (inferred) |
 |---|---|---|---|---|
 
 - **Type:** added, removed, changed content, moved. A move that does not change the meaning gets one line.
-- **Impact:** write it only when the text gives a basis (who must act differently, a new deadline, a
-  new form). If unclear, write "needs confirmation"; do not infer consequences. If you still state an impact inferred from context rather than found in the text, label it "(inferred)" so the reader can tell the difference.
+- **Impact (inferred):** the column header already carries the inference label, so everything in this column is
+  read as the agent's inference about who must act differently, a new deadline, a new form. What the text states
+  directly belongs in the New column, not repeated here. Without a basis, write "needs confirmation"; do not build
+  distant consequences.
 - Put changes to **figures, deadlines, roles, authority and conditions** first.
-- Ignore differences of formatting, spelling or renumbering when the meaning is unchanged. If there
-  are many, say so in one general sentence instead of listing them.
+- Ignore differences of formatting, spelling, renumbering, rewording or swapping a word for another of the same meaning (for example "checks" becoming "reviews") when the meaning is unchanged. If there
+  are many, say so in one general sentence instead of listing them, and name the kind of difference you skipped.
 - Quote short passages verbatim when paraphrasing could shift the meaning.
 
 If a file cannot be read completely (tables, images, scanned text), say which part could not be compared.
