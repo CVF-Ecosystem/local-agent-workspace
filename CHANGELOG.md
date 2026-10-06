@@ -3,6 +3,10 @@
 Định dạng phiên bản: `MAJOR.MINOR.PATCH`. Số phiên bản nằm trong `VERSION`; hướng dẫn nâng cấp ở
 `docs/HUONG_DAN_CHUYEN_DOI_PROJECT_CO_SAN_VI.md`.
 
+## v1.3.1 — 2026-10-07
+
+- `README.md` / `en/README.md`: mục "Cách bắt đầu" cho người xem trên GitHub (tải ZIP ở Releases, giải nén, chạy `SETUP`, mở bằng ứng dụng AI).
+
 ## v1.3.0 — 2026-10-07
 
 Phản hồi của người dùng

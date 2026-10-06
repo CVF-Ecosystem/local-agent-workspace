@@ -5,6 +5,16 @@ A local workspace for office work with Claude, Codex, Gemini or another agent.
 **Open `START_HERE.en.html` to read the handbook in English (or `START_HERE.html` for the Vietnamese version; every page has a language switch button).** The page opens directly
 in a browser, with no installation, server, online font or network connection.
 
+## Getting started
+
+If you are reading this page on GitHub, the package runs on your own computer, so download it first:
+
+1. Go to https://github.com/CVF-Ecosystem/local-agent-workspace/releases/latest and download `local-agent-workspace-v….zip` (the lean build, with only what users need). Unzip it into a folder.
+2. Run `SETUP.bat` (Windows) or `SETUP.command` (macOS); or open `START_HERE.en.html` and use the "Quick setup" form.
+3. Open that folder in the AI app you use (Claude, Codex, Gemini...), then try the 3 exercises in `START_HERE.en.html`.
+
+GitHub's Code → Download ZIP also works, but that copy includes folders meant for the maintainer.
+
 ## What is it for?
 
 A starter folder for every office-work project you do with an AI assistant, built to one standard. It helps the AI remember the

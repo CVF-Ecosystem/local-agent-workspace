@@ -5,6 +5,16 @@ Workspace local cho công việc văn phòng với Claude, Codex, Gemini hoặc 
 **Mở `START_HERE.html` để đọc bộ hướng dẫn tiếng Việt (hoặc `START_HERE.en.html` cho bản tiếng Anh; mỗi trang có nút chuyển ngôn ngữ).** Trang này mở trực tiếp
 trong trình duyệt, không cần cài đặt, máy chủ, font trực tuyến hay kết nối mạng.
 
+## Cách bắt đầu
+
+Nếu bạn đang xem trang này trên GitHub, package chạy trên máy của bạn nên cần tải về trước:
+
+1. Vào https://github.com/CVF-Ecosystem/local-agent-workspace/releases/latest và tải file `local-agent-workspace-v….zip` (bản gọn, chỉ gồm phần dành cho người dùng). Giải nén ra một thư mục.
+2. Chạy `SETUP.bat` (Windows) hoặc `SETUP.command` (macOS); hoặc mở `START_HERE.html` và dùng form "Khởi tạo nhanh".
+3. Mở thư mục đó bằng ứng dụng AI bạn dùng (Claude, Codex, Gemini...), rồi thử 3 bài trong `START_HERE.html`.
+
+Dùng nút Code → Download ZIP của GitHub cũng được, nhưng bản đó còn kèm thư mục dành cho người duy trì.
+
 ## Dùng để làm gì?
 
 Đây là thư mục mẫu để bắt đầu mỗi dự án công việc văn phòng với trợ lý AI theo cùng một chuẩn. Nó giúp AI nhớ bối cảnh
