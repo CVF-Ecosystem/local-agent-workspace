@@ -16,6 +16,8 @@ read that skill's `SKILL.md` before starting (see `AGENTS.md`). You may use a na
 | meeting-minutes | LOCAL | SHARED | skills/local/shared/meeting-minutes/SKILL.md | Writing minutes or a summary of a meeting from notes/a transcript; separating decisions, action items and open issues. | AVAILABLE | Newly written; no dependencies. |
 | process-mapping | LOCAL | SHARED | skills/local/shared/process-mapping/SKILL.md | Describing a process with a step table, RACI and a flow diagram when needed. | AVAILABLE | Newly written; Mermaid/SVG depending on where it is used, no install dependencies. |
 | vn-admin-documents | LOCAL | SHARED | skills/local/shared/vn-admin-documents/SKILL.md | Drafting Vietnamese administrative documents in the proper format (official letter, submission, report, notice): number/symbol, place, subject line, recipients, layout. | AVAILABLE | Newly written; the reference basis is the rules on clerical work, always check the current version or the unit's regulations; no dependencies. |
+| excel-workbooks | LOCAL | SHARED | skills/local/shared/excel-workbooks/SKILL.md | Building tracking workbooks, data-entry forms, self-summarising reports or calculation appendices in Excel (openpyxl, real formulas). | AVAILABLE | Rewritten from the maintainer's practical experience with the unit-specific data removed; with technical notes; needs openpyxl. |
+| excel-html-viewer | LOCAL | SHARED | skills/local/shared/excel-html-viewer/SKILL.md | Building a single-file offline HTML tool that reads the user's Excel files to show figures (metric cards, filters, a data-check tab). | AVAILABLE | Rewritten from the maintainer's practical experience; reading .xlsx needs an Excel-reading library embedded in the file. |
 
 ## How to read the catalog
 

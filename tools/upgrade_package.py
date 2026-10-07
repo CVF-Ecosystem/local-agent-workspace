@@ -4,7 +4,7 @@ Upgrade a project to a newer package version without overwriting your work.
 
 Cách dùng / Usage (mặc định chỉ BÁO CÁO, thêm --apply mới ghi / report only by default, --apply writes):
   # chạy từ project, chỉ tới thư mục package mới đã giải nén
-  python tools/upgrade_package.py --from "D:\\goi-moi\\local-agent-workspace-v1.3.2"
+  python tools/upgrade_package.py --from "D:\\goi-moi\\local-agent-workspace-v1.4.0"
   # hoặc chạy từ package mới, chỉ tới project cần nâng cấp (dùng cho lần nâng cấp đầu tiên)
   python tools/upgrade_package.py --project "D:\\cac-project\\ten-project" --apply
 
@@ -16,7 +16,7 @@ Quy tắc so sánh ba bên (bản gốc cũ trong MANIFEST của project, bản 
   - file của bạn (PROJECT, STATE, INDEX...), thư mục references/working/output/archive/skills riêng: không đụng.
 Script không xóa file nào. Cần Python 3.8+, không dùng mạng.
 """
-import argparse, datetime, hashlib, io, json, os, shutil, sys
+import argparse, datetime, hashlib, io, json, os, re, shutil, sys
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEXT_EXT = ('.md', '.html', '.py', '.json', '.txt', '.sha256', '.css', '.js', '')
@@ -96,6 +96,42 @@ def plan(project, source, lang):
             out['obsolete'].append(rel)
     return out
 
+ROW_RE = re.compile(r'^\| ([a-z0-9-]+) \| LOCAL \| SHARED \| (\S+) \|.*$', re.M)
+
+def index_rows(project, source, lang, plan_):
+    """Dòng skill dùng chung có trong SKILL_INDEX của package nhưng chưa có trong SKILL_INDEX của project.
+    Shared-skill rows present in the package SKILL_INDEX but missing from the project's SKILL_INDEX."""
+    src_i = os.path.join(source, *(('en/.agent/SKILL_INDEX.md') if lang == 'en' else '.agent/SKILL_INDEX.md').split('/'))
+    dst_i = os.path.join(project, '.agent', 'SKILL_INDEX.md')
+    if not (os.path.isfile(src_i) and os.path.isfile(dst_i)):
+        return []
+    have = {m.group(1) for m in ROW_RE.finditer(io.open(dst_i, encoding='utf-8').read())}
+    adding = {rel for rel, _ in plan_['add']}
+    out = []
+    for m in ROW_RE.finditer(io.open(src_i, encoding='utf-8').read()):
+        if m.group(1) in have:
+            continue
+        loc = m.group(2)
+        if os.path.isfile(os.path.join(project, *loc.split('/'))) or loc in adding:
+            out.append(m.group(0))
+    return out
+
+def write_index_rows(project, rows):
+    dst_i = os.path.join(project, '.agent', 'SKILL_INDEX.md')
+    txt = io.open(dst_i, encoding='utf-8').read()
+    last = None
+    for m in re.finditer(r'^\| [a-z0-9-]+ \| [A-Z]+ \| [A-Z]+ \|.*\n?', txt, re.M):
+        last = m
+    ins = ''.join(r + '\n' for r in rows)
+    if last is None:
+        txt = txt.rstrip('\n') + '\n' + ins
+    else:
+        end = last.end()
+        if not txt[end - 1:end] == '\n':
+            txt = txt[:end] + '\n' + txt[end:]; end += 1
+        txt = txt[:end] + ins + txt[end:]
+    io.open(dst_i, 'w', encoding='utf-8', newline='').write(txt)
+
 def copy(source, src_rel, project, dst_rel, suffix=''):
     dst = os.path.join(project, *dst_rel.split('/')) + suffix
     os.makedirs(os.path.dirname(dst), exist_ok=True)
@@ -154,10 +190,16 @@ def main():
             print('  - ' + (it[0] if isinstance(it, tuple) else it))
         if len(items) > 40:
             print('  ... +%d' % (len(items) - 40))
+    idx_rows = index_rows(project, source, LANG, p)
+    if idx_rows:
+        print('\n%s (%d):' % (L('Thêm vào .agent/SKILL_INDEX.md các dòng skill dùng chung còn thiếu (không sửa dòng đã có)',
+                                'Added to .agent/SKILL_INDEX.md: shared-skill rows still missing (existing rows are not touched)'), len(idx_rows)))
+        for r in idx_rows:
+            print('  - ' + r.split('|')[1].strip())
     show('update', 'Cập nhật (bạn chưa sửa, package có bản mới)', 'Updated (untouched by you, newer in the package)')
     show('add', 'Thêm (file mới của package)', 'Added (new in the package)')
     show('user_missing', 'Thêm file mẫu của bạn còn thiếu', 'Added missing starter files of yours')
-    show('user_changed', 'Mẫu của file BẠN ĐANG DÙNG có đổi trong package (không tự sửa; xem file mẫu mới trong package và hợp nhất nếu muốn)', 'The starter template of a file YOU OWN changed in the package (not touched; see the new template in the package and merge if you want)')
+    show('user_changed', 'Mẫu của file BẠN ĐANG DÙNG có đổi trong package (không tự sửa, trừ dòng skill còn thiếu trong SKILL_INDEX ở trên; xem file mẫu mới trong package và hợp nhất nếu muốn)', 'The starter template of a file YOU OWN changed in the package (not touched, apart from the missing skill rows in SKILL_INDEX listed above; see the new template in the package and merge if you want)')
     show('conflict', 'XUNG ĐỘT: bạn đã sửa và package cũng đổi; lưu bản mới thành <tên>.new để hợp nhất', 'CONFLICT: you edited it and the package changed too; the new version is saved as <name>.new to merge')
     show('kept', 'Giữ nguyên (bạn đã sửa, package không đổi)', 'Kept (you edited it, the package did not change)')
     show('obsolete', 'Không còn trong package mới (giữ nguyên, bạn tự quyết định bỏ)', 'No longer in the new package (kept; you decide whether to drop it)')
@@ -169,6 +211,8 @@ def main():
             copy(source, src, project, rel)
         for rel, src in p['conflict']:
             copy(source, src, project, rel, '.new')
+        if idx_rows:
+            write_index_rows(project, idx_rows)
         shutil.copyfile(os.path.join(source, 'MANIFEST.sha256'), os.path.join(project, 'MANIFEST.sha256'))
         if info:
             info['version'] = nv

@@ -178,7 +178,8 @@ def check_all(release=False):
     # cây en/ phủ đủ các file chỉ có nội dung tiếng Việt
     root_lang = [f for f in files if not f.startswith(('en/', 'docs/', 'tools/', 'dist/')) and f.endswith(('.md', '.html', '.csv', '.txt')) and
                  (f in ('AGENTS.md', 'CLAUDE.md', 'GEMINI.md', 'PROJECT.md', 'README.md') or f.startswith(('.agent/', 'archive/', 'output/', 'working/', 'references/', 'skills/', 'examples/')))
-                 and '/scripts/' not in f and f not in ('.agent/PACKAGE_INFO.json',)]
+                 and '/scripts/' not in f and f not in ('.agent/PACKAGE_INFO.json',)
+                 and not f.startswith(('skills/local/project/', 'skills/local/packs/', 'skills/external/', 'skills/inbox/'))]  # skill của project/pack do người dùng quản lý, không bắt buộc bản en/
     root_lang.append('docs/README.md')
     for f in sorted(root_lang):
         if not os.path.isfile(P('en/' + f)): errs.append('Thiếu bản tiếng Anh en/%s.' % f)
@@ -214,6 +215,8 @@ def check_all(release=False):
             warns.append('%s khác nội dung từ mục 1 của docs/FEEDBACK_FORM_VI_EN.md; hãy đồng bộ.' % tpl)
     # 5. song ngữ
     for a, b in PAIRS:
+        if a in USER_FILES and not release:  # file người dùng điền/mở rộng trong project: không bắt buộc khớp bản en
+            continue
         ta, tb = rd(a), rd(b)
         ha = len(re.findall(r'^## ', ta, re.M)); hb = len(re.findall(r'^## ', tb, re.M))
         if ha != hb: errs.append('Song ngữ: %s có %d mục "##", %s có %d.' % (a, ha, b, hb))

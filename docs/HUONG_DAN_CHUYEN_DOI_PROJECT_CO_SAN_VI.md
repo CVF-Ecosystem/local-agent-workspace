@@ -25,6 +25,12 @@ hữu ích thay vì chấp nhận ghi đè hàng loạt.
 | `skills/`, nguồn, output | Giữ nguyên tài nguyên hiện hành; không di chuyển chỉ để giống cây mẫu. |
 | `README.md`, `docs/`, `START_HERE.html` | Giữ nội dung riêng; thêm bộ hướng dẫn ở vị trí phù hợp, giữ liên kết nội bộ. |
 
+Lần đầu đưa package vào project đã có (chưa có `VERSION` hay `.agent/`), dùng công cụ thay vì chép tay: từ thư mục package chạy
+`python tools/adopt_project.py --project "đường dẫn" --name "Tên project"` để xem báo cáo, thêm `--apply` để ghi. Công cụ chỉ thêm file
+còn thiếu; `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` cũ khác bản package được lưu thành `<tên>.bak-<ngày>` (hãy hợp nhất phần riêng vào `PROJECT.md`);
+file khác bị trùng giữ nguyên của bạn và bản package lưu thành `<tên>.new`; skill riêng sẵn có được thêm dòng vào `SKILL_INDEX.md`.
+Skill dùng chung ở `skills/local/shared/`, skill chứa thông tin riêng của đơn vị ở `skills/local/project/`; không chép nội dung chung vào skill riêng.
+
 Nếu đổi vị trí thư mục package hoặc tài liệu hướng dẫn, nhờ agent cập nhật những
 đường dẫn liên quan; không cần ép project cũ vào cây thư mục mới.
 

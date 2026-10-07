@@ -35,15 +35,32 @@ will become a lasting procedure/form.
 
 ## Templates when needed
 
-Choose a fitting template or the project's own; there is no need to open all three:
+Choose a fitting template or the project's own; there is no need to open them all:
 
 - `references/procedure-template.md`: a suggested frame for an SOP/procedure.
 - `references/form-template.md`: a recording, request or handling slip.
 - `references/internal-update-template.md`: an update on progress, problems and decisions needed.
 - `references/delivery-checklist.md`: a short pre-delivery checklist (with `tools/check_output.py` for the mechanical part).
+- `references/report-writing.md`: style and outlines for periodic reports, investment proposals, letters and submissions.
+- `references/procedure-document.md`: a procedure document with a department organisation chart (document code, sign-off, table of contents).
+- `references/proposal-review.md`: reviewing and revising an existing proposal or internal regulation.
+- `references/form-standardization.md`: standardising old forms and documents in bulk.
+- `references/word-technical-notes.md`: technical notes for building or editing Word files.
+- Tracking workbooks, data-entry forms and calculation appendices in Excel: `excel-workbooks`; an HTML tool that reads Excel files: `excel-html-viewer`.
 
 The frames use blanks and contain no approved policy. You may drop, change or combine sections as
 asked; do not make the document longer just to fill the frame.
+
+## Keeping content intact when converting or editing in place
+
+When the user asks to "keep the content" (turn prose into a table, change a template, standardise formatting, edit in place), do all three:
+
+1. **Count before**: record the number of images, tables, text characters and steps/sections/rows in the source file. For Word you can use:
+   `python -c "import zipfile,re,sys;z=zipfile.ZipFile(sys.argv[1]);x=z.read('word/document.xml').decode('utf8');print('anh',len([n for n in z.namelist() if n.startswith('word/media/')]),'bang',x.count('<w:tbl>'),'ky_tu',len(re.sub(r'<[^>]+>','',x)))" file.docx`
+2. **Count after** on the new file the same way. If images or tables differ, or characters differ by more than about 10%, find the cause: if something was lost, rebuild it from the source (copy back the images, tables, notes); do not hand it over.
+3. **State in the hand-over** a "before → after" table (images, tables, characters, steps) and say which parts were removed on purpose. Counting steps only inside the extracted part does not prove nothing was lost; count on the whole source file.
+
+Rebuilding a file by copying only the text easily drops images, nested tables, headers/footers and notes; prefer editing a copy of the source file directly.
 
 ## Suitable output
 

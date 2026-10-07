@@ -35,15 +35,32 @@ quy trình/biểu mẫu dùng lâu dài.
 
 ## Mẫu khi cần
 
-Chọn mẫu phù hợp hoặc dùng mẫu của dự án; không cần mở cả ba:
+Chọn mẫu phù hợp hoặc dùng mẫu của dự án; không cần mở hết:
 
 - `references/procedure-template.md`: khung gợi ý cho SOP/quy trình.
 - `references/form-template.md`: phiếu ghi nhận, yêu cầu hoặc xử lý.
 - `references/internal-update-template.md`: cập nhật tiến độ, vấn đề và việc cần quyết định.
 - `references/delivery-checklist.md`: checklist ngắn trước khi giao (kèm `tools/check_output.py` cho phần cơ học).
+- `references/report-writing.md`: văn phong và khung báo cáo định kỳ, đề án đầu tư, công văn, tờ trình.
+- `references/procedure-document.md`: tài liệu quy trình kèm sơ đồ tổ chức cấp phòng ban (mã tài liệu, ký duyệt, mục lục).
+- `references/proposal-review.md`: đánh giá và sửa đề án hoặc quy chế nội bộ có sẵn.
+- `references/form-standardization.md`: chuẩn hóa hàng loạt biểu mẫu và tài liệu cũ.
+- `references/word-technical-notes.md`: lưu ý kỹ thuật khi dựng hoặc sửa file Word.
+- Sổ theo dõi, form nhập liệu và phụ lục tính bằng Excel: `excel-workbooks`; công cụ HTML đọc file Excel: `excel-html-viewer`.
 
 Các khung dùng chỗ trống, không chứa chính sách được phê duyệt. Có thể bỏ, đổi hoặc
 kết hợp mục theo yêu cầu; không cần làm tài liệu dài hơn chỉ để điền đủ khung.
+
+## Giữ nguyên nội dung khi chuyển dạng hoặc sửa tại chỗ
+
+Khi người dùng yêu cầu "giữ nguyên nội dung" (chuyển văn xuôi sang bảng, đổi mẫu, chuẩn hóa định dạng, sửa tại chỗ), làm đủ ba việc:
+
+1. **Đếm trước**: ghi số ảnh, số bảng, số ký tự chữ, số bước/mục/dòng của file gốc. Với Word có thể dùng:
+   `python -c "import zipfile,re,sys;z=zipfile.ZipFile(sys.argv[1]);x=z.read('word/document.xml').decode('utf8');print('anh',len([n for n in z.namelist() if n.startswith('word/media/')]),'bang',x.count('<w:tbl>'),'ky_tu',len(re.sub(r'<[^>]+>','',x)))" file.docx`
+2. **Đếm sau** trên file mới bằng đúng cách đó. Lệch ảnh, bảng hoặc quá khoảng 10% ký tự thì tìm nguyên nhân: nếu là phần bị mất thì dựng lại từ file gốc (chép lại ảnh, bảng, ghi chú), không giao.
+3. **Báo trong lời giao** một bảng "trước → sau" (ảnh, bảng, ký tự, bước) và nói rõ phần nào chủ ý bỏ. Đếm số bước chỉ trong phần đã trích ra thì không chứng minh được "không mất nội dung"; phải đếm trên toàn file gốc.
+
+Dựng file mới bằng cách chỉ chép lại phần chữ dễ làm rơi ảnh, bảng lồng, đầu trang/chân trang và ghi chú; ưu tiên sửa trực tiếp bản sao của file gốc.
 
 ## Đầu ra phù hợp
 

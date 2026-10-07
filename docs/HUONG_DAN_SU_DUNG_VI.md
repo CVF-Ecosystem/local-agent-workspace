@@ -1,6 +1,6 @@
 # Hướng dẫn sử dụng hằng ngày
 
-Local Agent Workspace v1.3 giúp giữ tài liệu, ngữ cảnh và kết quả công việc trên
+Local Agent Workspace v1.4 giúp giữ tài liệu, ngữ cảnh và kết quả công việc trên
 cùng một thư mục. Agent vẫn chủ động chọn cách làm, công cụ và skill phù hợp.
 
 ## 1. Giao việc bằng ngôn ngữ tự nhiên
@@ -63,10 +63,10 @@ vừa sửa hoặc kết luận phụ thuộc một điều khoản, đối chi�
 
 ## 5. Để agent chọn skill phù hợp
 
-Workspace có mười một skill gợi ý, từ soạn tài liệu (`office-documents`, `internal-comms`,
+Workspace có mười ba skill gợi ý, từ soạn tài liệu (`office-documents`, `internal-comms`,
 `doc-coauthoring`), phân tích (`document-comparison`, `spreadsheet-check`), biểu đồ và báo cáo
 (`data-charts`, `html-reports`), quy trình và họp (`process-mapping`, `meeting-minutes`), văn bản
-hành chính đúng thể thức (`vn-admin-documents`) đến biên tập (`vietnamese-editing`). Bạn không phải gọi chúng bằng tên.
+hành chính đúng thể thức (`vn-admin-documents`), sổ và công cụ Excel (`excel-workbooks`, `excel-html-viewer`) đến biên tập (`vietnamese-editing`). Bạn không phải gọi chúng bằng tên.
 
 Agent có thể dùng native skill, skill của workspace, kết hợp hoặc không dùng skill.
 Tiêu chí là độ phù hợp với công việc và khả năng thực có, không phải nơi cung cấp.

@@ -2,7 +2,7 @@
 
 ## Foundation
 
-Package version v1.3 was written from a workspace skeleton the user supplied earlier. It lightens the guides
+Package version v1.4 was written from a workspace skeleton the user supplied earlier. It lightens the guides
 and adds the office resources that were agreed.
 The user's original files were not relabelled under a new blanket licence.
 
@@ -55,6 +55,13 @@ the records-management rules (Decree 30/2020/ND-CP) as a reference only; it is a
 advice, and the rules may have been amended. `skills/external/` is still empty; if you
 import an outside skill later, record the source, commit and licence following the guidance in that folder.
 
+## Skills drawn from practical experience (v1.4.0)
+
+`excel-workbooks`, `excel-html-viewer` and the five references in `office-documents` (`report-writing`, `procedure-document`, `proposal-review`, `form-standardization`,
+`word-technical-notes`), plus the meeting-minutes and basis-order additions in `vn-admin-documents`, were drawn from the maintainer's practical experience on office projects.
+Nothing was copied from an outside repo. Unit names, job titles, signatories, pay cut-offs, private legal bases and specific workbook layouts were removed; those stay in each project's own skill.
+Not imported: skills tied to one unit, one person or one specific case.
+
 ## What was not imported into the ZIP
 
 The lieflat-charts LICENSE file states the **PolyForm Noncommercial License 1.0.0**. The package
@@ -68,7 +75,7 @@ when opened or filtered.
 
 ## Limits of checking
 
-Version v1.3 was checked for files, internal paths, skill metadata (name matching folder and index),
+Version v1.4 was checked for files, internal paths, skill metadata (name matching folder and index),
 HTML pages rebuilt from Markdown (the Vietnamese and English sets, with two-way language links) and the
 `basic-charts.html` template in a local Chromium browser (no console errors, no network requests, no
 horizontal scrolling at phone width). The English translation was written by an agent and has not been

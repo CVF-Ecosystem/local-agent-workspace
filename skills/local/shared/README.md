@@ -13,8 +13,10 @@ Các skill dùng chung được biên soạn cho tác nghiệp văn phòng.
 - `doc-coauthoring/`: đồng soạn tài liệu lớn (tùy chọn).
 - `data-charts/`: biểu đồ SVG offline và hướng dẫn chọn biểu đồ.
 - `vn-admin-documents/`: văn bản hành chính đúng thể thức (công văn, tờ trình, báo cáo, thông báo).
+- `excel-workbooks/`: sổ theo dõi, form nhập liệu, báo cáo tự tổng hợp và phụ lục tính bằng Excel.
+- `excel-html-viewer/`: công cụ HTML một file, offline, đọc file Excel.
 
-Không cần đọc cả mười một hoặc áp dụng theo chuỗi. Mỗi skill có `SKILL.md` mô tả khi hữu
+Không cần đọc cả mười ba hoặc áp dụng theo chuỗi. Mỗi skill có `SKILL.md` mô tả khi hữu
 ích; tài nguyên bên trong chỉ mở khi phù hợp. Mẫu minh họa không phải quy định đã
 được phê duyệt của dự án. Nguồn ý tưởng: `docs/NGUON_THAM_KHAO_VI.md` ở project root.
 

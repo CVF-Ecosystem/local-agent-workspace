@@ -1,4 +1,4 @@
-# Local Agent Workspace v1.3
+# Local Agent Workspace v1.4
 
 A local workspace for office work with Claude, Codex, Gemini or another agent.
 
@@ -19,7 +19,7 @@ GitHub's Code → Download ZIP also works, but that copy includes folders meant 
 
 A starter folder for every office-work project you do with an AI assistant, built to one standard. It helps the AI remember the
 context between sessions (no explaining again), keeps files tidy and sets clear working rules (no invented figures, no
-overwriting originals), with eleven skills for common tasks; unzip it on any computer and get the same standard. The full
+overwriting originals), with thirteen skills for common tasks; unzip it on any computer and get the same standard. The full
 introduction is at the top of `START_HERE.en.html`.
 
 Reading documents, drafting procedures, forms and reports; handling spreadsheets when needed; continuing
@@ -65,8 +65,10 @@ does not need the HTML version as well. HTML is for users, not default context.
 | `doc-coauthoring` | Co-authoring a large document step by step; use only when you want to work through it in depth. |
 | `data-charts` | Drawing charts from a data table into offline HTML (SVG), with templates and a chart selection guide. |
 | `vn-admin-documents` | Vietnamese administrative documents in the proper format: official letter, submission, report, notice. |
+| `excel-workbooks` | Building tracking workbooks, data-entry forms, self-summarising reports and calculation appendices in Excel. |
+| `excel-html-viewer` | A single-file offline HTML tool that reads Excel files to show figures visually. |
 
-The eleven skills are in `skills/local/shared/` and are recorded as `AVAILABLE` in
+The thirteen skills are in `skills/local/shared/` and are recorded as `AVAILABLE` in
 `.agent/SKILL_INDEX.md`. The agent chooses a skill by fit, with no fixed preference for
 native or local. Not using a skill is also a valid choice.
 
@@ -109,7 +111,7 @@ project/
 ## The English tree and maintenance tools
 
 The `en/` folder mirrors the Vietnamese files at the root: the agent files (`AGENTS.md`, `CLAUDE.md`,
-`GEMINI.md`, `PROJECT.md`), the `.agent/` notes, all eleven skills with their references, templates and
+`GEMINI.md`, `PROJECT.md`), the `.agent/` notes, all thirteen skills with their references, templates and
 script, the folder READMEs and this README. File and folder names are the same in both trees, so
 `python tools/init_project.py --lang en` simply overlays `en/` onto the root (except
 `en/PROJECT_INSTRUCTIONS_SNIPPET.md`, which you paste into the Project instructions). Keep the `en/` folder

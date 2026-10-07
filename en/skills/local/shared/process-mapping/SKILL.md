@@ -57,3 +57,4 @@ file") have a condition to leave; department names match the source. When the ta
 delivered as requested, stop; do not propose process improvements unless asked.
 
 Output example (fictional, only to picture the layout): `references/output-examples.md`. Open it when needed, not required.
+For a whole procedure document with a code, sign-off, table of contents and a department organisation chart: `office-documents` (`references/procedure-document.md`).

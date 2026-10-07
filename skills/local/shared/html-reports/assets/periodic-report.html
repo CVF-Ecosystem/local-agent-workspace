@@ -26,7 +26,7 @@
 <section class="panel table-panel"><h2>Bảng số liệu đối chiếu</h2><p class="muted">Tỷ lệ đúng hạn = hồ sơ hoàn tất đúng hạn / tổng hồ sơ hoàn tất. Số tồn cuối kỳ không cộng qua các tuần.</p><div class="table-wrap"><table><caption style="position:absolute;width:1px;height:1px;overflow:hidden">Số liệu tiếp nhận, hoàn tất, đúng hạn và tồn theo từng tuần</caption><thead><tr><th scope="col">Kỳ</th><th scope="col">Tiếp nhận</th><th scope="col">Hoàn tất</th><th scope="col">Đúng hạn</th><th scope="col">Tỷ lệ</th><th scope="col">Tồn cuối kỳ</th></tr></thead><tbody id="data-body"></tbody><tfoot id="data-foot"></tfoot></table></div></section>
 </main>
 <footer class="source"><p><strong>Nguồn:</strong> <span id="source"></span></p><p><strong>Cập nhật:</strong> <span id="updated"></span></p><p>“—” nghĩa chưa thể tính tỷ lệ do không có mẫu số; không phải 0%. Số hoàn tất có thể gồm hồ sơ từ kỳ trước.</p></footer>
-<div class="foot"><span id="type-label">Mẫu tham khảo · v1.3</span><span>HTML tự chứa · Tiếng Việt · Mở offline</span></div>
+<div class="foot"><span id="type-label">Mẫu tham khảo · v1.4</span><span>HTML tự chứa · Tiếng Việt · Mở offline</span></div>
 </div>
 <!--
 Mẫu HTML viết mới cho Local Agent Workspace v1.0. Không dùng tài nguyên Lieflat Charts.
@@ -45,7 +45,7 @@ Không có mạng, tracker, font ngoài, server hoặc dependency cần cài đ�
   "title": "Báo cáo hoạt động định kỳ",
   "period": "Tháng 9/2026 · Dữ liệu minh họa",
   "subtitle": "Tình hình tiếp nhận, hoàn tất và tồn cuối kỳ. Bố cục tham khảo cho báo cáo tuần hoặc tháng.",
-  "source": "Dữ liệu giả lập trong mẫu Local Agent Workspace v1.3; không phải số liệu thật của dự án.",
+  "source": "Dữ liệu giả lập trong mẫu Local Agent Workspace v1.4; không phải số liệu thật của dự án.",
   "updated": "06/10/2026 · Ngày tạo mẫu",
   "openingBacklog": 42,
   "highlights": [
@@ -119,7 +119,7 @@ function setup(data) {
   text('source', data.source || 'Chưa ghi nguồn dữ liệu.');
   text('updated', data.updated || 'Chưa ghi thời điểm cập nhật.');
   text('demo-banner', data.isDemo ? 'MẪU MINH HỌA — Dữ liệu giả lập. Thay số liệu, nguồn và nhận xét trước khi dùng cho công việc thực tế.' : '');
-  text('type-label', data.isDemo ? 'Mẫu tham khảo · v1.3' : 'Báo cáo');
+  text('type-label', data.isDemo ? 'Mẫu tham khảo · v1.4' : 'Báo cáo');
 }
 function notes(targetId, items) {
   const target = byId(targetId); target.replaceChildren();

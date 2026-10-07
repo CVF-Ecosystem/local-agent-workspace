@@ -49,6 +49,8 @@ A4 paper, a Unicode Vietnamese font (usually Times New Roman), body size 13 to 1
 top and bottom about 20 to 25 mm, left about 30 to 35 mm, right about 15 to 20 mm. These are the common
 figures in the format annex; check the current version or the unit's regulation before printing for issue.
 
+When building a Word file: the heading block (agency name on the left, national motto on the right) and the signature block use a two-column table without borders. Official letters and submissions in state format do not use ruled frames for the content; accounting vouchers and forms with their own numbered template usually have bordered tables. Look up the numbered template and the current legal document (including whether it is still in force or replaced) before choosing; see `office-documents` (`references/form-standardization.md`).
+
 ## How to work
 
 1. Identify the document type, the signer, the recipients, the issuing unit and the basis. Ask once, in

@@ -56,3 +56,4 @@ hồ sơ") có điều kiện thoát; tên bộ phận khớp nguồn. Khi bản
 cầu thì dừng; không đề xuất cải tiến quy trình nếu không được hỏi.
 
 Ví dụ đầu ra (hư cấu, chỉ để hình dung cách trình bày): `references/output-examples.md`. Mở khi cần, không bắt buộc.
+Khi cần cả tài liệu quy trình có mã, ký duyệt, mục lục và sơ đồ tổ chức của một phòng ban: `office-documents` (`references/procedure-document.md`).

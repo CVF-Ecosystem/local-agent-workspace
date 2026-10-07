@@ -28,6 +28,12 @@ instead of accepting a blanket overwrite.
 If you move the package folder or the guides, ask the agent to update the related paths; you do
 not need to force an old project into the new folder tree.
 
+The first time you bring the package into an existing project (no `VERSION` or `.agent/` yet), use the tool instead of copying by hand: from the package
+folder run `python tools/adopt_project.py --project "path" --name "Project name"` for a report, add `--apply` to write. It only adds missing files; an old
+`AGENTS.md`, `CLAUDE.md` or `GEMINI.md` that differs from the package version is saved as `<name>.bak-<date>` (merge its project-specific parts into `PROJECT.md`);
+any other conflicting file stays yours and the package version is saved as `<name>.new`; existing project skills get a row in `SKILL_INDEX.md`.
+Shared skills live in `skills/local/shared/`; skills with an organisation's own details live in `skills/local/project/`; do not copy shared content into a project skill.
+
 ## 3. Upgrade to a newer package version
 
 Each project records the package version it uses in `.agent/PACKAGE_INFO.json` (created by

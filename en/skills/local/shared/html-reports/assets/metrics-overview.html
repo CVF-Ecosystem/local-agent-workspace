@@ -28,7 +28,7 @@
 <section class="panel table-panel"><h2>Data in the selected scope</h2><p class="muted">The overall rate is calculated as total on time / total completed, not as an average of the row rates.</p><p id="empty-data" class="empty" hidden>No data matches the filter.</p><div class="table-wrap"><table><caption style="position:absolute;width:1px;height:1px;overflow:hidden">Figures by week and channel</caption><thead><tr><th scope="col">Period</th><th scope="col">Channel</th><th scope="col">Received</th><th scope="col">Completed</th><th scope="col">On time</th><th scope="col">Rate</th></tr></thead><tbody id="data-body"></tbody><tfoot id="data-foot"></tfoot></table></div></section>
 </main>
 <footer class="source"><p><strong>Source:</strong> <span id="source"></span></p><p><strong>Updated:</strong> <span id="updated"></span></p><p>"—" means the rate cannot be calculated because there is no denominator; it is not 0%. Completed numbers may include files from the previous period.</p></footer>
-<div class="foot"><span id="type-label">Reference template · v1.3</span><span>Self-contained HTML · English · Opens offline</span></div>
+<div class="foot"><span id="type-label">Reference template · v1.4</span><span>Self-contained HTML · English · Opens offline</span></div>
 </div>
 <!--
 HTML template newly written for Local Agent Workspace v1.0. It uses no Lieflat Charts resources.
@@ -47,7 +47,7 @@ No network, tracker, outside fonts, server or dependency to install.
   "title": "Activity indicators overview",
   "period": "September 2026 · Illustrative data",
   "subtitle": "Filter by channel and week to see the same set of indicators. All data is stored in the file; there is no connection to outside systems.",
-  "source": "Simulated data in the Local Agent Workspace v1.3 template; not real project figures.",
+  "source": "Simulated data in the Local Agent Workspace v1.4 template; not real project figures.",
   "updated": "2026-10-06 · Template creation date",
   "rows": [
     {
@@ -170,7 +170,7 @@ function setup(data) {
   text('source', data.source || 'Data source not recorded.');
   text('updated', data.updated || 'Update time not recorded.');
   text('demo-banner', data.isDemo ? 'ILLUSTRATIVE TEMPLATE - simulated data. Replace the figures, source and comments before using it for real work.' : '');
-  text('type-label', data.isDemo ? 'Reference template · v1.3' : 'Report');
+  text('type-label', data.isDemo ? 'Reference template · v1.4' : 'Report');
 }
 function notes(targetId, items) {
   const target = byId(targetId); target.replaceChildren();

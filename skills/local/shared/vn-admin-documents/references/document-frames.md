@@ -68,8 +68,31 @@ THÔNG BÁO
 [Nội dung thông báo: việc gì thay đổi, từ khi nào, ai bị ảnh hưởng, cần làm gì, liên hệ ai.]
 ```
 
+## Biên bản họp
+
+```text
+BIÊN BẢN HỌP
+[Về việc ...]
+
+Thời gian: [giờ, ngày]. Địa điểm: [nơi họp].
+Thành phần tham dự: [danh sách kèm chức danh].
+Chủ trì: [họ tên, chức vụ]. Thư ký ghi biên bản: [họ tên].
+
+Nội dung: [trình tự theo chương trình họp, tường thuật khách quan].
+Kết luận, quyết nghị: [điều đã thống nhất; việc, người, hạn chỉ ghi khi đã chốt].
+
+Chủ trì cuộc họp                          Người ghi biên bản
+[Chữ ký, họ tên]                           [Chữ ký, họ tên]
+```
+
+Biên bản họp thường không có "Kính gửi" và "Căn cứ"; khối ký gồm chủ trì và người ghi biên bản song song. Biên bản chính thức có thể thêm số văn bản và "Nơi nhận" theo quy định áp dụng; biên bản ghi nhận sự việc nội bộ có thể lược hai phần này, nhưng phải nói với người dùng đó là lựa chọn đã lược. Lập biên bản từ ghi chú họp: `meeting-minutes`.
+
+## Thứ tự "Căn cứ"
+
+Căn cứ xếp theo thẩm quyền giảm dần (điều lệ hoặc quy chế, nghị quyết, chỉ đạo của cấp trên, hồ sơ kỹ thuật cụ thể), mỗi căn cứ một đoạn bắt đầu bằng "Căn cứ ..."; câu cuối dẫn vào nội dung (ví dụ "... kính báo cáo như sau:"). Câu kết thường gặp: "Trân trọng./."; công văn và tờ trình ngắn có thể bỏ khối căn cứ dài. Căn cứ phải do người dùng nêu hoặc đã tra cứu; không tự thêm văn bản căn cứ.
+
 ## Lưu ý khi dùng khung
 
 Không điền số văn bản, ngày ban hành, họ tên, chức vụ người ký hay thẩm quyền ký thay người dùng.
-Biên bản, quyết định và kế hoạch có cấu trúc riêng theo quy định/quy chế áp dụng; cần khung đó thì
+Quyết định và kế hoạch có cấu trúc riêng theo quy định/quy chế áp dụng; cần khung đó thì
 hỏi người dùng hoặc đối chiếu quy định hiện hành rồi mới dựng.

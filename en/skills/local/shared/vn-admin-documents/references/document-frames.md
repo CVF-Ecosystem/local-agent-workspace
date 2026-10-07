@@ -69,8 +69,31 @@ THÔNG BÁO
 [Content of the notice: what changes, from when, who is affected, what must be done, whom to contact.]
 ```
 
+## Meeting minutes
+
+```text
+MEETING MINUTES
+[Subject ...]
+
+Time: [hour, date]. Place: [venue].
+Attendees: [list with titles].
+Chair: [name, title]. Secretary: [name].
+
+Content: [in the order of the agenda, objective narration].
+Conclusions, resolutions: [what was agreed; tasks, people and deadlines only when settled].
+
+Chair                                     Secretary
+[Signature, name]                         [Signature, name]
+```
+
+Meeting minutes usually have no "To:" or "Basis"; the signature block has the chair and the secretary side by side. Official minutes may add a document number and "Recipients" under the rule that applies; minutes recording an internal event may drop those two parts, but tell the user it was a dropped item. Drafting minutes from meeting notes: `meeting-minutes`.
+
+## Order of "Basis" lines
+
+List the basis in descending order of authority (charter or regulation, resolution, a superior's direction, specific technical records), each as a paragraph starting "Pursuant to ..."; the last sentence leads into the content (for example "... respectfully reports as follows:"). A common closing is "Trân trọng./." ("Respectfully."); short letters and submissions may skip a long basis block. A basis must come from the user or have been looked up; do not add a basis document on your own.
+
 ## Notes when using the frames
 
 Do not fill in the document number, issue date, the signer's name, title or signing authority for the
-user. Minutes, decisions and plans have their own structure under the rule/regulation that applies; if
+user. Decisions and plans have their own structure under the rule/regulation that applies; if
 that frame is needed, ask the user or check the current rule before building it.

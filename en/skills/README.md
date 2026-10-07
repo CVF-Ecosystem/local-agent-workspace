@@ -15,7 +15,7 @@ formatting tools already available. There is no need to read the whole library o
 
 ## Areas
 
-- `local/shared/`: guidance reused across many projects; eleven newly written skills.
+- `local/shared/`: guidance reused across many projects; thirteen newly written skills.
 - `local/project/`: project-specific guidance, only when really needed.
 - `external/`: skills imported from outside sources, keeping their origin and accompanying terms.
 - `inbox/`: an optional temporary place, not a required approval step.

@@ -9,9 +9,10 @@ Dùng ngắn gọn, chọn phần phù hợp với sản phẩm. Không biến t
 - [ ] Không còn chỗ chưa điền (`[Tên]`, `[...]`) và không còn nhãn "mẫu/minh họa/dữ liệu giả".
 - [ ] Chỗ thiếu căn cứ đã ghi "cần xác nhận"; không có số liệu, ngày, tên, thời hạn bịa.
 - [ ] Dữ kiện lấy từ nguồn tách khỏi đề xuất của agent.
-- [ ] File gốc của người dùng không bị ghi đè; bản mới có tên rõ (và hậu tố phiên bản khi thay bản cũ).
+- [ ] File gốc của người dùng không bị ghi đè; bản mới có tên rõ (và hậu tố phiên bản khi thay bản cũ). Thư mục kết quả chỉ chứa bản đang dùng; bản cũ chuyển vào thư mục lưu trữ bằng lệnh không ghi đè (`mv -n`) và kiểm tra lại; không xóa khi chưa được yêu cầu.
 - [ ] Nêu trong lời giao: đã làm gì, chưa kiểm gì, cần người dùng xác nhận gì.
 - [ ] Việc có phát hiện hoặc số liệu: kết thúc bằng khối "Khai báo thực hiện" (cách làm, skill, nguồn, file, chưa kiểm); phát hiện về số nêu con số cụ thể (xem `AGENTS.md`).
+- [ ] Yêu cầu "giữ nguyên nội dung": đã đếm ảnh, bảng, ký tự, bước của file gốc và file mới, và nêu bảng "trước → sau" (xem `SKILL.md`, mục "Giữ nguyên nội dung").
 
 ## Văn bản, quy trình, biểu mẫu
 

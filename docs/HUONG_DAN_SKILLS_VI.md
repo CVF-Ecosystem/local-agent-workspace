@@ -23,6 +23,8 @@ một từ khóa giống tên skill.
 | Mô tả quy trình, phân vai, sơ đồ | Cân nhắc `process-mapping`, kết hợp `office-documents` khi viết thành tài liệu. |
 | Báo cáo tuần, thông báo, bản tin, FAQ, báo cáo sự cố | Cân nhắc `internal-comms`. |
 | Công văn, tờ trình, báo cáo gửi cơ quan khác hoặc trình ký | Cân nhắc `vn-admin-documents`; dùng quy chế văn thư của đơn vị trước nếu có. |
+| Dựng sổ theo dõi, form nhập liệu hoặc phụ lục tính bằng Excel | Cân nhắc `excel-workbooks`; kiểm tra file có sẵn bằng `spreadsheet-check`. |
+| Dashboard offline đọc file Excel của người dùng | Cân nhắc `excel-html-viewer`; biểu đồ theo `data-charts`. |
 
 Đây là ví dụ lựa chọn, không phải bảng định tuyến bắt buộc. Agent có thể kết hợp
 skills khi chúng bổ sung nhau hoặc xử lý trực tiếp nếu đã đủ khả năng.
@@ -95,7 +97,7 @@ Không cần tự chạy skill này sau mọi báo cáo hoặc SOP.
 
 ## 6. Các skill cho công việc hằng ngày
 
-Bảy skill này ngắn, mỗi skill có phần “khi nào dừng” để agent không làm quá phạm vi.
+Chín skill này ngắn, mỗi skill có phần “khi nào dừng” để agent không làm quá phạm vi.
 
 | Skill | Dùng khi | Đầu ra điển hình |
 |---|---|---|
@@ -106,6 +108,8 @@ Bảy skill này ngắn, mỗi skill có phần “khi nào dừng” để agen
 | `internal-comms` | Cần viết cho người trong đơn vị đọc nhanh. | Báo cáo tiến độ (Tiến độ - Kế hoạch - Vấn đề), thông báo, bản tin, FAQ, báo cáo sự cố. |
 | `doc-coauthoring` | Tài liệu lớn, muốn trao đổi sâu từng bước. | Dàn ý đã duyệt, các mục soạn theo từng phần, một lượt soát cuối. |
 | `vn-admin-documents` | Cần văn bản hành chính đúng thể thức. | Bản nháp có đủ thành phần thể thức; số, ngày, người ký để `[cần xác nhận]`. |
+| `excel-workbooks` | Cần sổ theo dõi, form nhập liệu hoặc phụ lục tính bằng Excel. | File Excel có sheet nhập, sheet báo cáo bằng công thức, dữ liệu mẫu tách riêng; đã tính lại không lỗi. |
+| `excel-html-viewer` | Muốn xem số liệu trực quan từ file Excel mà không cài phần mềm. | Một file HTML mở offline, đọc Excel, có tab kiểm tra dữ liệu; nêu rõ giới hạn khi giao. |
 
 ```text
 Đối chiếu Quy_dinh_cu.docx với Quy_dinh_moi.docx. Chỉ lập bảng thay đổi có ý nghĩa,
@@ -147,7 +151,7 @@ Người dùng giữ quyền thêm/bỏ/sửa thư viện; agent chủ động l
 
 ## 9. Gói lĩnh vực và cài skill vào ứng dụng
 
-Lõi của package chỉ giữ quy tắc làm việc và mười một skill dùng chung. Kiến thức riêng của một lĩnh vực (cảng và logistics,
+Lõi của package chỉ giữ quy tắc làm việc và mười ba skill dùng chung. Kiến thức riêng của một lĩnh vực (cảng và logistics,
 nhân sự, tài chính...) nên nằm trong **gói lĩnh vực** trong `packs/`, cài vào project nào cần bằng
 `python tools/pack.py add <tên>` (xem `python tools/pack.py list`). Gói cài vào `skills/local/packs/` và được ghi trong
 `.agent/SKILL_INDEX.md` với Scope `PACK`; gỡ bằng `pack.py remove <tên>` (thư mục được chuyển vào `archive/`, không xóa).

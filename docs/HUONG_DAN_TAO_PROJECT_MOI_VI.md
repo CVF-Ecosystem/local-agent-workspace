@@ -59,7 +59,7 @@ nguồn đã được duyệt. Không cần chuyển chúng vào khu vực quy �
 
 ## 4. Bắt đầu với skills sẵn có
 
-Package đã có mười một skill gọn trong `skills/local/shared/` và các mục tương ứng trong
+Package đã có mười ba skill gọn trong `skills/local/shared/` và các mục tương ứng trong
 `.agent/SKILL_INDEX.md`. Không cần tạo hoặc cài thêm skill để bắt đầu.
 
 Để agent chọn native skill, local skill hoặc làm trực tiếp theo công việc. Một

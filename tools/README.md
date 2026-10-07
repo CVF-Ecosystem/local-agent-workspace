@@ -39,6 +39,20 @@ So ba bên bằng `MANIFEST.sha256`: file chưa ai sửa thì cập nhật, file
 package cũng đổi thì lưu bản mới thành `<tên>.new`. Không đụng file của người dùng (PROJECT, STATE, INDEX, `references/`...), không xóa file nào.
 Từ chối chạy trên thư mục chưa khởi tạo (có thể là thư mục nguồn của package) trừ khi có `--allow-uninitialized`.
 
+Từ v1.4.0, `.agent/SKILL_INDEX.md` (file của bạn, không bị ghi đè) được **thêm** các dòng skill dùng chung còn thiếu của package mới để agent tìm thấy skill mới; dòng đã có không bị sửa. Project đang ở bản cũ hơn v1.4.0 nên chạy script từ thư mục package MỚI (cách thứ nhất ở trên), vì bản script nằm trong project còn cũ.
+
+## adopt_project.py
+
+Đưa package vào một project ĐÃ CÓ lần đầu (chưa có `VERSION`/`.agent/`). Mặc định chỉ báo cáo; thêm `--apply` mới ghi.
+
+```text
+python tools/adopt_project.py --project "đường dẫn project cũ" --name "Tên project" [--lang vi|en] [--purpose "..."] [--apply]   # chạy từ thư mục package
+```
+
+Chỉ thêm file còn thiếu; không xóa, không ghi đè file của bạn. `AGENTS.md`/`CLAUDE.md`/`GEMINI.md` cũ khác bản package được lưu `<tên>.bak-<ngày>` rồi
+thay bằng bản package (hợp nhất phần riêng vào `PROJECT.md`); file khác trùng tên và khác thì giữ của bạn, bản package lưu `<tên>.new`. Skill riêng sẵn có trong
+`skills/local/project/` được thêm dòng vào `.agent/SKILL_INDEX.md`. Cuối cùng chạy `init_project.py`. Từ chối chạy nếu project đã có package (dùng `upgrade_package.py`).
+
 ## pack.py
 
 Quản lý gói lĩnh vực (`packs/`): `list`, `add <tên>`, `update <tên> [--apply]`, `remove <tên>` (chuyển vào `archive/`), `check [<tên>]`,

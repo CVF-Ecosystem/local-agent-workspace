@@ -15,7 +15,7 @@ công cụ định dạng sẵn có. Không cần đọc toàn bộ thư viện 
 
 ## Các vùng
 
-- `local/shared/`: hướng dẫn dùng lại cho nhiều dự án; mười một skill biên soạn mới.
+- `local/shared/`: hướng dẫn dùng lại cho nhiều dự án; mười ba skill biên soạn mới.
 - `local/project/`: hướng dẫn riêng của dự án khi thật sự cần.
 - `external/`: skill nhập từ nguồn ngoài, giữ nguồn gốc và điều khoản đi kèm.
 - `inbox/`: nơi tạm tùy chọn, không phải bước duyệt bắt buộc.

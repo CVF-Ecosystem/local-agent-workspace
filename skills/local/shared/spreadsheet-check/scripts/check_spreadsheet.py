@@ -27,6 +27,7 @@ MSG = {
     'empty': ('%d/%d ô trống.', '%d/%d cells empty.'),
     'errs': ('%d ô lỗi công thức (%s).', '%d cells with formula errors (%s).'),
     'mixed': ('lẫn %d số thật và %d số lưu dạng chữ; phép cộng/lọc có thể bỏ sót.', 'mixes %d real numbers and %d numbers stored as text; sums/filters may miss some.'),
+    'nottable': ('sheet có dạng hướng dẫn/biểu mẫu (không phải bảng dữ liệu liền mạch); bỏ qua kiểm theo cột.', 'sheet looks like a guide/form (not a continuous data table); column checks skipped.'),
     'alltext': ('toàn bộ %d số đang lưu dạng chữ; cần đổi sang số trước khi tính.', 'all %d numbers are stored as text; convert them to numbers before calculating.'),
     'amb': ('%d giá trị dạng 1.234 mơ hồ giữa hai cách đọc: 1.234 là 1234 (dấu chấm ngăn cách nghìn) hoặc 1.234 là một phẩy hai trăm ba mươi bốn (dấu chấm thập phân); xác nhận định dạng số của file.', '%d values like 1.234 are ambiguous between two readings: 1.234 as 1234 (dot as thousands separator) or 1.234 as one point two three four (dot as decimal point); confirm the number format of the file.'),
     'totalalt': (' Tổng này tính giá trị mơ hồ theo cách 1234; nếu đọc theo cách còn lại (dấu chấm là dấu thập phân) thì tổng là %s (lệch %s).', ' This total reads ambiguous values as 1234; under the other reading (dot as decimal point) the total is %s (difference %s).'),
@@ -64,6 +65,10 @@ MSG = {
     'lv3': ('Lưu ý', 'Note'),
 }
 LANG = 0
+
+# cột định danh: số lưu dạng chữ là bình thường (mã, số điện thoại, số hiệu...)
+IDWORDS = ('ma ', 'ma_', 'so hieu', 'stt', 'id', 'dien thoai', 'sdt', 'cccd', 'cmnd', 'mst', 'ma so', 'tai khoan', 'so hd', 'so hoa don')
+
 
 def T(key):
     return MSG[key][LANG]
@@ -179,10 +184,17 @@ def check_sheet(sh, keys, ex_n, R):
         R['Cần hỏi'].append(tag + T('nodata'))
         return
     # dòng tiêu đề = dòng đầu có >=2 ô chữ không rỗng
-    hdr_i = next((i for i, r in enumerate(rows[:15]) if sum(1 for c in r if isinstance(c, str) and c.strip()) >= 2), 0)
+    # chọn dòng có số ô chữ gần mức nhiều nhất trong 15 dòng đầu (tránh nhầm dòng quốc hiệu/tên đơn vị 2 ô với tiêu đề bảng)
+    tcount = [sum(1 for c in r if isinstance(c, str) and c.strip()) for r in rows[:15]]
+    thr = max(2, int(0.6 * max(tcount)))
+    hdr_i = next((i for i, n in enumerate(tcount) if n >= thr), 0)
     header = [(str(c).strip() if not is_blank(c) else T('colname') % (j + 1)) for j, c in enumerate(rows[hdr_i])]
     data = rows[hdr_i + 1:]
     width = len(header)
+    auto = sum(1 for h in header if h.startswith(T('colname').split('%')[0]))
+    if width >= 4 and auto > width / 2:
+        R['Lưu ý'].append(tag + T('nottable'))
+        return
     R['Lưu ý'].append(tag + T('header') % (nums_row[hdr_i], width, len(data)))
     dup_h = [h for h, n in Counter(header).items() if n > 1]
     if dup_h:
@@ -230,7 +242,7 @@ def check_sheet(sh, keys, ex_n, R):
                 others.append(c); others_r.append(rn)
         if texts_num and nums:
             R['Ảnh hưởng'].append(loc + T('mixed') % (len(nums), len(texts_num)) + at(texts_num_r))
-        elif texts_num and not others and name != 'CSV':  # CSV: mọi ô đều là chữ, không có ý nghĩa cảnh báo
+        elif texts_num and not others and name != 'CSV' and len(texts_num) >= 3 and not any(w in fold(h) for w in IDWORDS):  # CSV: mọi ô đều là chữ, không có ý nghĩa cảnh báo
             R['Ảnh hưởng'].append(loc + T('alltext') % len(texts_num))
         if amb:
             R['Cần hỏi'].append(loc + T('amb') % amb + at(amb_r))

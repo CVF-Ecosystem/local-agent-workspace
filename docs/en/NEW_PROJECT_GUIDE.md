@@ -61,7 +61,7 @@ sources. You do not need to move them into the project's regulations area.
 
 ## 4. Start with the skills that are already there
 
-The package already includes eleven compact skills in `skills/local/shared/` and matching entries in
+The package already includes thirteen compact skills in `skills/local/shared/` and matching entries in
 `.agent/SKILL_INDEX.md`. You do not need to create or install more skills to start. The skill
 files are written in Vietnamese; agents read them without problems.
 

@@ -3,6 +3,23 @@
 Định dạng phiên bản: `MAJOR.MINOR.PATCH`. Số phiên bản nằm trong `VERSION`; hướng dẫn nâng cấp ở
 `docs/HUONG_DAN_CHUYEN_DOI_PROJECT_CO_SAN_VI.md`.
 
+## v1.4.0 — 2026-10-07
+
+Đưa kinh nghiệm từ các project cũ vào bộ skill dùng chung (đã loại thông tin riêng của đơn vị, cá nhân và từng vụ việc; xem `docs/NGUON_THAM_KHAO_VI.md`)
+- Skill mới `excel-workbooks`: dựng sổ theo dõi, form nhập liệu, báo cáo tự tổng hợp và phụ lục tính bằng Excel; kèm `references/openpyxl-notes.md` (công thức, định dạng, giới hạn, lỗi đã gặp).
+- Skill mới `excel-html-viewer`: công cụ HTML một file, offline, đọc file Excel; chịu được tên sheet, tên cột và giá trị gõ tay không chuẩn; kèm danh sách kiểm thử.
+- `office-documents`: thêm năm tài liệu tham khảo `report-writing`, `procedure-document`, `proposal-review`, `form-standardization`, `word-technical-notes`; checklist giao thêm quy ước lưu bản cũ (`mv -n`, không xóa khi chưa được yêu cầu).
+- `vn-admin-documents`: thêm khung biên bản họp, thứ tự "Căn cứ", và lưu ý khi nào bảng có viền, khi nào không.
+- `process-mapping` trỏ tới `procedure-document`. `skills/local/README.md` thêm quy tắc chọn chỗ đặt skill (chung hay riêng project) và tránh chép trùng.
+- `upgrade_package.py`: khi nâng cấp, thêm vào `.agent/SKILL_INDEX.md` của project các dòng skill dùng chung còn thiếu (không sửa dòng đã có); trước đây skill mới đến project cũ nhưng agent không tìm thấy vì không có dòng trong chỉ mục. Project cũ hơn v1.4.0 chạy script từ package mới.
+- Công cụ mới `adopt_project.py`: đưa package vào project đã có lần đầu (báo cáo trước, `--apply` mới ghi; lưu `.bak`/`.new`, thêm skill riêng sẵn có vào chỉ mục). `upgrade_package.py` không làm được việc này vì cần `VERSION` của project.
+- `spreadsheet-check`: chọn dòng tiêu đề theo dòng nhiều ô chữ nhất (không nhầm dòng quốc hiệu/tên đơn vị); bỏ qua kiểm theo cột với sheet dạng hướng dẫn/biểu mẫu; không báo "số lưu dạng chữ" với cột mã/số hiệu hoặc khi chỉ có 1–2 ô. Phát hiện khi thử trên file Excel thật của người dùng.
+- `check_package.py`: không đòi bản `en/` cho skill trong `skills/local/project|packs|external|inbox` (do người dùng quản lý).
+- `excel-html-viewer`: thêm `assets/xlsx-mini-reader.js`, đọc .xlsx không cần thư viện ngoài (thử trên 13 file Excel thật); quy tắc: lời nhắc đọc .xlsx thì công cụ phải đọc được .xlsx. `excel-workbooks`: phép thử bằng dữ liệu trước khi giao (đổi kỳ, ngưỡng trống, mã mới), tham số mặc định trống. Phát hiện khi kiểm lại kết quả test agent.
+- Từ mười một lên mười ba skill; cập nhật chỉ mục, README và các hướng dẫn.
+- Gia cố sau kiểm toán độc lập kết quả test agent: `office-documents` thêm mục "Giữ nguyên nội dung khi chuyển dạng hoặc sửa tại chỗ" (đếm ảnh, bảng, ký tự, bước trước và sau, báo bảng trước → sau) và mục tương ứng trong checklist giao; `excel-html-viewer` cấm tài nguyên mạng (kèm lệnh tự kiểm), thêm quy tắc ngày serial, số âm và nhiều sheet, cùng ba mục kiểm thử mới (quét mạng, lỗi dữ liệu, nhiều sheet).
+
+
 ## v1.3.2 — 2026-10-07
 
 Sửa theo bản audit độc lập (xem `feedback/records/2026-10-07_audit-ben-ngoai_v1.3.1_xu-ly.md` trong kho nguồn)

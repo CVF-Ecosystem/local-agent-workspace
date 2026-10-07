@@ -2,7 +2,7 @@
 
 ## Nền tảng
 
-Package bản v1.3 được biên soạn từ một bộ khung workspace do người dùng cung cấp trước đó, làm gọn
+Package bản v1.4 được biên soạn từ một bộ khung workspace do người dùng cung cấp trước đó, làm gọn
 hướng dẫn và bổ sung tài nguyên văn phòng đã thống nhất.
 Các file gốc của người dùng không được gán lại một giấy phép chung mới.
 
@@ -56,6 +56,13 @@ gợi ý về thể thức, không phải ý kiến pháp lý, và quy định c
 trống; nếu sau này nhập skill ngoài, ghi nguồn, commit và giấy phép theo hướng dẫn trong
 thư mục đó.
 
+## Skill rút từ kinh nghiệm thực tế (v1.4.0)
+
+`excel-workbooks`, `excel-html-viewer` và năm tài liệu tham khảo trong `office-documents` (`report-writing`, `procedure-document`, `proposal-review`, `form-standardization`,
+`word-technical-notes`), cùng phần bổ sung biên bản họp và thứ tự căn cứ trong `vn-admin-documents`, được rút từ kinh nghiệm làm việc thực tế của người duy trì trên các project văn phòng.
+Không sao chép từ repo ngoài. Đã bỏ tên đơn vị, chức danh, người ký, mốc lương, căn cứ pháp lý riêng và bố cục sổ riêng; những phần đó ở lại skill của từng project.
+Không nhập: skill gắn với một đơn vị, một cá nhân hoặc một vụ việc cụ thể.
+
 ## Phần không nhập vào ZIP
 
 File LICENSE của lieflat-charts ghi **PolyForm Noncommercial License 1.0.0**. Package không
@@ -70,7 +77,7 @@ truy cập các địa chỉ này khi mở hoặc lọc dữ liệu.
 
 ## Giới hạn kiểm tra
 
-Bản v1.3 được kiểm tra file, đường dẫn nội bộ, metadata skill (tên khớp thư mục và index),
+Bản v1.4 được kiểm tra file, đường dẫn nội bộ, metadata skill (tên khớp thư mục và index),
 các trang HTML dựng lại từ Markdown (bộ tiếng Việt và bộ tiếng Anh, kèm nút chuyển ngôn ngữ hai chiều)
 và mẫu `basic-charts.html` trong trình duyệt Chromium local (không lỗi console, không yêu cầu mạng,
 không cuộn ngang ở chiều rộng điện thoại). Bản dịch tiếng Anh do agent viết, chưa được người bản ngữ rà soát.

@@ -47,6 +47,8 @@ Khổ A4, phông chữ tiếng Việt Unicode (thường Times New Roman), cỡ 
 trên và dưới khoảng 20 đến 25 mm, trái khoảng 30 đến 35 mm, phải khoảng 15 đến 20 mm. Đây là mức phổ
 biến theo phụ lục thể thức; đối chiếu bản hiện hành hoặc quy chế đơn vị trước khi in ban hành.
 
+Khi dựng file Word: phần đầu (tên cơ quan bên trái, quốc hiệu bên phải) và khối ký dùng bảng hai cột không viền. Công văn và tờ trình theo thể thức nhà nước không dùng bảng kẻ khung cho nội dung; chứng từ kế toán và biểu mẫu theo mẫu số hiệu riêng thường có bảng viền. Tra mẫu số hiệu và văn bản hiện hành (kể cả còn hiệu lực hay đã bị thay thế) trước khi chọn; xem `office-documents` (`references/form-standardization.md`).
+
 ## Cách làm
 
 1. Xác định loại văn bản, người ký, nơi nhận, đơn vị ban hành và căn cứ. Hỏi gộp một lần nếu thiếu.

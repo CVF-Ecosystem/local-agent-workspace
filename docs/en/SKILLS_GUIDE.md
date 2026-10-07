@@ -23,6 +23,8 @@ task contains a word similar to its name.
 | Describe a process, roles, a diagram | Consider `process-mapping`, combined with `office-documents` when writing it up as a document. |
 | Weekly update, announcement, newsletter, FAQ, incident report | Consider `internal-comms`. |
 | Official letter, submission or report to another body or for signature | Consider `vn-admin-documents`; use the organisation's own records-management rules first if it has them. |
+| Build a tracking workbook, data-entry form or calculation appendix in Excel | Consider `excel-workbooks`; check an existing file with `spreadsheet-check`. |
+| An offline dashboard that reads the user's Excel files | Consider `excel-html-viewer`; charts follow `data-charts`. |
 
 These are examples of choices, not a mandatory routing table. The agent can combine skills when
 they complement each other, or work directly if it is already capable.
@@ -98,7 +100,7 @@ There is no need to run this skill after every report or SOP.
 
 ## 6. Skills for everyday work
 
-These seven skills are short, and each has a “when to stop” part so the agent does not go beyond scope.
+These nine skills are short, and each has a “when to stop” part so the agent does not go beyond scope.
 
 | Skill | Use when | Typical output |
 |---|---|---|
@@ -109,6 +111,8 @@ These seven skills are short, and each has a “when to stop” part so the agen
 | `internal-comms` | You need to write something people in the organisation read quickly. | A progress update (Progress - Plans - Problems), announcement, newsletter, FAQ, incident report. |
 | `doc-coauthoring` | A large document where you want to work through it step by step. | An approved outline, sections drafted one at a time, one final review. |
 | `vn-admin-documents` | You need a correctly formatted administrative document. | A draft with all format components; numbers, dates and signatory left as `[needs confirmation]`. |
+| `excel-workbooks` | You need a tracking workbook, data-entry form or calculation appendix in Excel. | An Excel file with an input sheet, a formula-only report sheet and separate sample data; recalculated with no errors. |
+| `excel-html-viewer` | You want to see figures from Excel files visually without installing software. | One HTML file that opens offline, reads Excel and has a data-check tab; limits stated on delivery. |
 
 ```text
 Compare Old_Regulation.docx with New_Regulation.docx. Only build a table of meaningful changes,
@@ -151,7 +155,7 @@ actively within the work.
 
 ## 9. Domain packs and installing skills into an app
 
-The package core only holds the working rules and the eleven shared skills. Knowledge specific to a domain (port and logistics,
+The package core only holds the working rules and the thirteen shared skills. Knowledge specific to a domain (port and logistics,
 HR, finance...) belongs in a **domain pack** in `packs/`, installed into the projects that need it with
 `python tools/pack.py add <name>` (see `python tools/pack.py list`). A pack installs into `skills/local/packs/` and is recorded in
 `.agent/SKILL_INDEX.md` with Scope `PACK`; remove it with `pack.py remove <name>` (the folder is moved into `archive/`, not deleted).

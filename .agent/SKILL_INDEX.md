@@ -16,6 +16,8 @@ Danh mục để tìm skill theo công việc. Không phải thứ tự ưu tiê
 | meeting-minutes | LOCAL | SHARED | skills/local/shared/meeting-minutes/SKILL.md | Lập biên bản hoặc tóm tắt họp từ ghi chú/bản ghi; tách quyết định, việc cần làm, vấn đề chưa chốt. | AVAILABLE | Biên soạn mới; không dependency. |
 | process-mapping | LOCAL | SHARED | skills/local/shared/process-mapping/SKILL.md | Mô tả quy trình bằng bảng bước, RACI, sơ đồ luồng khi cần. | AVAILABLE | Biên soạn mới; Mermaid/SVG tùy nơi dùng, không dependency cài đặt. |
 | vn-admin-documents | LOCAL | SHARED | skills/local/shared/vn-admin-documents/SKILL.md | Soạn văn bản hành chính đúng thể thức (công văn, tờ trình, báo cáo, thông báo): số/ký hiệu, địa danh, trích yếu, nơi nhận, trình bày. | AVAILABLE | Biên soạn mới; căn cứ tham khảo là quy định về công tác văn thư, luôn kiểm bản hiện hành hoặc quy chế đơn vị; không dependency. |
+| excel-workbooks | LOCAL | SHARED | skills/local/shared/excel-workbooks/SKILL.md | Dựng sổ theo dõi, form nhập liệu, báo cáo tự tổng hợp hoặc phụ lục tính bằng Excel (openpyxl, công thức thật). | AVAILABLE | Viết lại từ kinh nghiệm thực tế của người duy trì, đã bỏ dữ liệu riêng của đơn vị; kèm ghi chú kỹ thuật; cần openpyxl. |
+| excel-html-viewer | LOCAL | SHARED | skills/local/shared/excel-html-viewer/SKILL.md | Dựng công cụ HTML một file, chạy offline, đọc file Excel của người dùng để xem số liệu (thẻ chỉ số, bộ lọc, tab kiểm tra dữ liệu). | AVAILABLE | Viết lại từ kinh nghiệm thực tế của người duy trì; đọc .xlsx cần thư viện đọc Excel nhúng vào file. |
 
 ## Cách đọc danh mục
 

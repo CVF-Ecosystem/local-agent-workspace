@@ -9,9 +9,10 @@ Use it briefly and pick the parts that fit the deliverable. Do not turn it into 
 - [ ] No unfilled places (`[Name]`, `[...]`) and no "template / illustrative / fake data" label left.
 - [ ] Places lacking a basis are marked "to be confirmed"; no invented figures, dates, names or deadlines.
 - [ ] Facts taken from sources are kept apart from the agent's own proposals.
-- [ ] The user's original files were not overwritten; the new file has a clear name (and a version suffix when it replaces an older one).
+- [ ] The user's original files were not overwritten; the new file has a clear name (and a version suffix when it replaces an older one). The output folder holds only the version in use; old versions go to an archive folder with a non-overwriting command (`mv -n`) and are re-checked; nothing is deleted unless asked.
 - [ ] The hand-over message says what was done, what was not checked, and what the user must confirm.
 - [ ] Work with findings or figures ends with an "Execution declaration" block (method, skill, sources, files, not checked); findings about numbers state the actual numbers (see `AGENTS.md`).
+- [ ] "Keep the content" requests: images, tables, characters and steps counted in the source and the new file, and a "before → after" table given (see `SKILL.md`, section "Keeping content intact").
 
 ## Documents, procedures, forms
 

@@ -1,6 +1,6 @@
 # Daily use guide
 
-Local Agent Workspace v1.3 keeps your documents, context and results in one folder. The agent
+Local Agent Workspace v1.4 keeps your documents, context and results in one folder. The agent
 still chooses the approach, tools and skills that fit.
 
 ## 1. Give work in plain language
@@ -64,10 +64,10 @@ just edited, or a conclusion depends on one clause, check that part again.
 
 ## 5. Let the agent pick the skill
 
-The workspace has eleven suggested skills, from drafting documents (`office-documents`,
+The workspace has thirteen suggested skills, from drafting documents (`office-documents`,
 `internal-comms`, `doc-coauthoring`), analysis (`document-comparison`, `spreadsheet-check`),
 charts and reports (`data-charts`, `html-reports`), processes and meetings (`process-mapping`,
-`meeting-minutes`), correctly formatted administrative documents (`vn-admin-documents`) to editing
+`meeting-minutes`), correctly formatted administrative documents (`vn-admin-documents`), Excel workbooks and tools (`excel-workbooks`, `excel-html-viewer`) to editing
 (`vietnamese-editing`). You do not have to call them by name.
 
 The agent can use a native skill, a workspace skill, a combination, or no skill at all. The
