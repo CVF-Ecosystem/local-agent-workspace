@@ -28,7 +28,7 @@ không nhắc lại.
 2. **Chốt dàn ý.** Đề xuất các mục và thứ tự, nói ngắn mỗi mục sẽ chứa gì và nguồn nào đỡ
    cho nó. Người dùng duyệt hoặc chỉnh một lần.
 3. **Soạn từng mục.** Soạn mục có nhiều nội dung then chốt trước; mục nhỏ soạn sau. Mỗi mục
-   tối đa một vòng chỉnh theo phản hồi. Chỗ thiếu căn cứ để ô "cần xác nhận", không tự lấp.
+   chỉnh theo phản hồi của người dùng; họ muốn chỉnh thêm thì chỉnh tiếp, không tự mở thêm vòng. Chỗ thiếu căn cứ để ô "cần xác nhận", không tự lấp.
    Có thể gộp các mục nhỏ vào một lượt giao.
 4. **Soát cuối (một lượt).** Đọc toàn bộ để tìm: mâu thuẫn giữa các mục, thuật ngữ dùng không
    nhất quán, ý còn thiếu so với dàn ý, số liệu hoặc tên không khớp nguồn. Báo kết quả ngắn gọn

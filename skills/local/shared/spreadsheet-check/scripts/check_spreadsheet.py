@@ -39,6 +39,7 @@ MSG = {
     'variants': ('%d mục viết khác nhau nhưng có thể là một (hoa/thường, dấu, khoảng trắng): %s.', '%d entries are written differently but may be the same (case, accents, spaces): %s.'),
     'spaces': ('%d giá trị có khoảng trắng thừa đầu/cuối/giữa.', '%d values have extra leading/trailing/inner spaces.'),
     'nokey': ('Không thấy cột khóa đã chỉ định (%s); các cột có: %s.', 'Key column(s) not found (%s); columns present: %s.'),
+    'partkey': ('Chỉ thấy cột khóa %s, thiếu %s trong các cột đã chỉ định; chưa kiểm được khóa ghép đầy đủ, phần trùng bên dưới chỉ theo cột tìm thấy.', 'Only key column(s) %s found, missing %s from those requested; the full composite key was not checked, duplicates below use the found column(s) only.'),
     'dupkey': ('%d khóa trùng theo cột %s, ví dụ: %s.', '%d duplicate keys on column(s) %s, e.g.: %s.'),
     'duprows': ('%d dòng trùng hoàn toàn dòng khác (chưa chỉ định cột khóa; dùng --khoa để kiểm theo mã).', '%d rows are exact duplicates of other rows (no key column given; use --khoa to check by code).'),
     'col': ('Cột "%s": ', 'Column "%s": '),
@@ -239,16 +240,17 @@ def check_sheet(sh, keys, ex_n, R):
         txt = [str(c).strip() for c in others if isinstance(c, str)]
         if allnum and txt and numcol:
             R['Ảnh hưởng'].append(loc + T('textinnum') % (len(txt), ', '.join('"%s"' % x for x in sorted(set(txt))[:ex_n])) + at([others_r[k] for k, c in enumerate(others) if isinstance(c, str)]))
-        if numcol and len(allnum) >= 4 and (not others or len(txt) == len(others)):
-            neg = sum(1 for x in allnum if x < 0)
-            if neg:
-                R['Lưu ý'].append(loc + T('neg') % neg)
-            q = statistics.quantiles(allnum, n=4)
-            iqr = q[2] - q[0]
-            if iqr > 0:
-                out = [x for x in allnum if x > q[2] + 3 * iqr or x < q[0] - 3 * iqr]
-                if out:
-                    R['Lưu ý'].append(loc + T('outl') % (len(out), ', '.join(fmt(x) for x in out[:ex_n])) + at([allnum_r[k] for k, x in enumerate(allnum) if x in out]))
+        if numcol and (not others or len(txt) == len(others)):
+            if len(allnum) >= 4:  # thống kê lệch/âm cần đủ mẫu; phép cộng dòng Tổng thì không
+                neg = sum(1 for x in allnum if x < 0)
+                if neg:
+                    R['Lưu ý'].append(loc + T('neg') % neg)
+                q = statistics.quantiles(allnum, n=4)
+                iqr = q[2] - q[0]
+                if iqr > 0:
+                    out = [x for x in allnum if x > q[2] + 3 * iqr or x < q[0] - 3 * iqr]
+                    if out:
+                        R['Lưu ý'].append(loc + T('outl') % (len(out), ', '.join(fmt(x) for x in out[:ex_n])) + at([allnum_r[k] for k, x in enumerate(allnum) if x in out]))
             if total_idx is not None and j < len(data[total_idx]):
                 tv = data[total_idx][j]
                 tn = float(tv) if isinstance(tv, (int, float)) and not isinstance(tv, bool) else parse_number(tv)[0] if isinstance(tv, str) else None
@@ -290,6 +292,11 @@ def check_sheet(sh, keys, ex_n, R):
     kidx = [i for i, h in enumerate(header) if h in keys or fold(h) in [fold(k) for k in keys]]
     if keys and not kidx:
         R['Cần hỏi'].append(tag + T('nokey') % (', '.join(keys), ', '.join(header)))
+    if kidx and len(kidx) < len(set(fold(k) for k in keys)):
+        got = set(fold(header[i]) for i in kidx)
+        miss = [k for k in keys if fold(k) not in got]
+        if miss:
+            R['Cần hỏi'].append(tag + T('partkey') % ('+'.join(header[i] for i in kidx), ', '.join(miss)))
     if kidx:
         c = Counter(tuple(fold(r[i]) if i < len(r) and not is_blank(r[i]) else '' for i in kidx) for r in body)
         d = [(k, n) for k, n in c.items() if n > 1 and any(k)]

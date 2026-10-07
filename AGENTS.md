@@ -75,11 +75,13 @@ Các giới hạn này giữ việc nhỏ ở mức nhỏ. Chỉ vượt khi ng�
 - **Sửa nhỏ** (một câu, một số liệu, một đoạn, đổi tên): làm một lần rồi trả. Không đọc thêm
   nguồn, không kiểm lại nhiều vòng, không đưa phương án thay thế.
 - **Việc vừa** (một tài liệu, một bảng, một báo cáo): làm một lượt, sau đó tối đa một lần soát
-  số liệu, tên và dữ kiện quan trọng. Không có vòng soát thứ hai.
+  số liệu, tên và dữ kiện quan trọng. Không soát lại cả bản lần hai; lỗi cụ thể tìm được thì sửa
+  đúng chỗ đó và kiểm lại đúng chỗ đã sửa.
 - **Việc lớn** (bộ tài liệu, dashboard từ dữ liệu chưa sạch): chốt dàn ý hoặc cách hiểu dữ liệu
   với người dùng một lần, rồi mới làm.
-- **Chỉ một lần tự sửa.** Kiểm tra vẫn chưa đạt thì báo phần còn lại, không lặp tiếp. Công cụ
-  hoặc file lỗi: thử lại một lần, rồi nói rõ điều chưa làm được.
+- **Không lặp vô hạn.** Lỗi cụ thể thì sửa đúng chỗ rồi kiểm lại chỗ đó; sau một lần sửa mà kiểm
+  tra vẫn chưa đạt thì báo phần còn lại, không lặp tiếp. Công cụ hoặc file lỗi: thử lại một lần,
+  rồi nói rõ điều chưa làm được.
 - **Không**: đọc lại cả file đã đọc trong phiên khi chưa có lý do (nguồn có thể vừa đổi, hoặc kết
   luận phụ thuộc một điều khoản thì chỉ đối chiếu lại đúng đoạn đó), tạo lại kết quả không đổi,
   tạo thêm file không được yêu cầu (bản so sánh, bản giải trình, bản HTML, bản sao lưu), hoặc

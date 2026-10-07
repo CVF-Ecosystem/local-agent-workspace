@@ -132,6 +132,10 @@ def main():
             sc = os.path.join(ROOT, 'skills', 'local', 'shared', 'spreadsheet-check', 'scripts', 'check_spreadsheet.py')
             r = subprocess.run([sys.executable, sc, f, '--lang', LANG], capture_output=True)
             print(r.stdout.decode('utf-8', 'replace').rstrip() or r.stderr.decode('utf-8', 'replace').rstrip())
+            if r.returncode != 0:
+                err = r.stderr.decode('utf-8', 'replace').strip().splitlines()
+                print('  ' + L('LỖI CÔNG CỤ: skill spreadsheet-check không chạy xong (mã %d) - KHÔNG kiểm được file này, đừng hiểu là không có lỗi. %s', 'TOOL ERROR: the spreadsheet-check skill did not finish (code %d) - this file was NOT checked, do not read it as no problems. %s') % (r.returncode, err[-1] if err else ''))
+                bad += 1
             continue
         if ext not in ('.md', '.txt', '.html', '.docx'):
             print('  ' + L('Định dạng chưa hỗ trợ (%s).', 'Unsupported format (%s).') % ext); continue

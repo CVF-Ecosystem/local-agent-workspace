@@ -122,7 +122,7 @@ Nếu agent thiếu thông tin quan trọng, để nó đọc thêm đúng ngu�
 Mục tiêu là làm vừa đủ để đúng việc, không phải bỏ qua kiểm tra cần thiết.
 
 `AGENTS.md` có khối "Giới hạn công việc": việc nhỏ làm một lần, việc vừa một lượt kèm tối đa một
-lần soát, chỉ một lần tự sửa, hỏi gộp một lần. Nếu môi trường (đặc biệt là cloud) không
+lần soát (lỗi cụ thể thì sửa đúng chỗ), không lặp vô hạn, hỏi gộp một lần. Nếu môi trường (đặc biệt là cloud) không
 tự đọc `AGENTS.md`, dán đoạn hướng dẫn trong mục 5 của `HUONG_DAN_TAO_PROJECT_MOI_VI.md`
 vào phần hướng dẫn của Project.
 

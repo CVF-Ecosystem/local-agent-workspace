@@ -29,7 +29,7 @@ use it or have you draft straight away. If they decline, draft straight away and
 2. **Settle the outline.** Propose the sections and their order, say briefly what each will contain
    and which source backs it. The user approves or adjusts once.
 3. **Draft section by section.** Draft the sections with the most key content first; small ones later.
-   At most one revision round per section based on feedback. Leave a "needs confirmation" cell where
+   Revise each section on the user's feedback; if they want more changes, make them, but do not open extra rounds yourself. Leave a "needs confirmation" cell where
    there is no basis; do not fill it yourself. Small sections can be delivered together.
 4. **Final review (one round).** Read the whole thing for: contradictions between sections,
    inconsistent terms, ideas missing against the outline, figures or names that do not match sources.

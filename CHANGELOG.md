@@ -3,6 +3,16 @@
 Định dạng phiên bản: `MAJOR.MINOR.PATCH`. Số phiên bản nằm trong `VERSION`; hướng dẫn nâng cấp ở
 `docs/HUONG_DAN_CHUYEN_DOI_PROJECT_CO_SAN_VI.md`.
 
+## v1.3.2 — 2026-10-07
+
+Sửa theo bản audit độc lập (xem `feedback/records/2026-10-07_audit-ben-ngoai_v1.3.1_xu-ly.md` trong kho nguồn)
+- `spreadsheet-check`: dòng Tổng được đối chiếu cả khi bảng chỉ có 2–3 dòng số (trước đây cần ít nhất 4); khóa ghép thiếu một cột thì báo "chưa kiểm được khóa ghép đầy đủ" thay vì im lặng.
+- `check_output.py`: checker bảng tính lỗi hoặc không chạy được thì in "LỖI CÔNG CỤ" và trả mã thoát 1, không còn trông như không có lỗi.
+- `data-charts/assets/basic-charts.html` (VI/EN): cột xếp chồng không coi ô thiếu là 0 (ghi "≥ tổng phần đã biết"); biểu đồ đường không còn NaN với chuỗi hằng, một kỳ hoặc toàn ô thiếu; nhãn "tháng 6", "20 hồ sơ tồn" chuyển vào dữ liệu (`period`, `note`).
+- `init_project.py`: đổi sang tiếng Anh sao lưu `.bak` cả file mẫu người dùng đã sửa một phần (PROJECT, STATE, HANDOFF).
+- `AGENTS.md`, `doc-coauthoring`: các giới hạn vòng soát/sửa có ngoại lệ cho lỗi cụ thể (sửa đúng chỗ, kiểm lại chỗ đó); không đổi quy tắc đọc `SKILL.md` khi khớp.
+- Đoạn dán cho Project/cloud (`HUONG_DAN_TAO_PROJECT_MOI_VI.md`, `NEW_PROJECT_GUIDE.md`): đồng bộ quy tắc đọc skill và khối Khai báo thực hiện, đủ 11 skill, bỏ tên ZIP `v1.0.0`.
+
 ## v1.3.1 — 2026-10-07
 
 - `README.md` / `en/README.md`: mục "Cách bắt đầu" cho người xem trên GitHub (tải ZIP ở Releases, giải nén, chạy `SETUP`, mở bằng ứng dụng AI).

@@ -5,7 +5,7 @@ or an agent management system.
 
 ## 1. Unzip and name it
 
-Unzip the whole `local-agent-workspace-v1.0.0.zip`, rename the outer folder to your project
+Unzip the whole `local-agent-workspace-vX.Y.Z.zip` (the name of the ZIP you downloaded), rename the outer folder to your project
 name and put it somewhere convenient. Open `START_HERE.en.html` in a browser. Do not work
 directly inside the ZIP viewer.
 
@@ -103,9 +103,9 @@ Rules:
   or roles; mark anything without a basis as "needs confirmation".
 - Keep original files unchanged; save new versions as new files.
 - Small edits: do it once and return it; no extra reading, no repeated re-checking.
-- Medium tasks: one pass, then at most one final check of figures and proper names.
+- Medium tasks: one pass, then at most one final check of figures and proper names; fix a concrete error in place.
 - Large tasks: confirm the outline or the reading of the data once, then build.
-- Self-correct at most once; if a check still fails, report what remains instead of looping.
+- Fix the error in place and re-check that spot; if a check still fails, report what remains instead of looping.
 - Do not create extra files, comparisons, explanations or alternatives unless I ask.
 - If something is missing, ask everything in one message; otherwise state a brief
   assumption and proceed.
@@ -118,9 +118,14 @@ Rules:
   Next milestone; overwrite it, 60 lines at most) and update it when something meaningful changes. When
   continuing unfinished work: read STATE, say in two lines where things stand and what comes next, then carry on.
 
-Suggested skills (use when helpful, not mandatory): office-documents, internal-comms,
+Skills: when a request matches a skill below and its SKILL.md is in the Project, read the SKILL.md before
+starting; if the file is not there, say you are working without the skill. List: office-documents, internal-comms,
 document-comparison, meeting-minutes, process-mapping, spreadsheet-check, data-charts,
-html-reports, vietnamese-editing, doc-coauthoring (only when I want to work through it step by step).
+html-reports, vietnamese-editing, vn-admin-documents, doc-coauthoring (only when I want to work through it step by step).
+
+Declaration: when the work is reading, checking, comparing, calculating or summarising from my files and the
+result is findings or figures, end the reply with a short "Execution declaration" block: Method (script run or
+manual reading), Skill, Sources, Figures, Files, Not checked. Declare only what was actually done.
 ```
 
 If files can be added to the Project, upload `AGENTS.md`, a filled-in `PROJECT.md` and the

@@ -5,7 +5,7 @@ bộ quản trị agent.
 
 ## 1. Giải nén và đặt tên
 
-Giải nén toàn bộ `local-agent-workspace-v1.0.0.zip`, đổi tên thư mục ngoài thành tên
+Giải nén toàn bộ `local-agent-workspace-vX.Y.Z.zip` (tên file ZIP đã tải), đổi tên thư mục ngoài thành tên
 project của bạn và đặt ở vị trí thuận tiện. Mở `START_HERE.html` bằng trình duyệt.
 Không làm việc ngay trong cửa sổ xem nội dung ZIP.
 
@@ -97,9 +97,9 @@ Nguyên tắc:
   vai trò; chỗ thiếu căn cứ thì đánh dấu "cần xác nhận".
 - Giữ nguyên file gốc; bản mới lưu thành file mới.
 - Sửa nhỏ: làm một lần và trả ngay, không đọc thêm, không kiểm lại nhiều vòng.
-- Việc vừa: một lượt làm, tối đa một lần soát số liệu và tên riêng cuối cùng.
+- Việc vừa: một lượt làm, tối đa một lần soát số liệu và tên riêng cuối cùng; lỗi cụ thể tìm được thì sửa đúng chỗ đó.
 - Việc lớn: chốt dàn ý hoặc cách hiểu dữ liệu một lần rồi mới làm.
-- Chỉ sửa một lần nếu kiểm tra còn lỗi; nếu vẫn chưa được thì báo lại, không lặp tiếp.
+- Sửa đúng chỗ lỗi rồi kiểm lại chỗ đó; nếu vẫn chưa đạt thì báo lại, không lặp tiếp.
 - Không tạo thêm file, bản so sánh, bản giải trình hay phương án nếu tôi chưa yêu cầu.
 - Cần hỏi thì gom tất cả câu hỏi trong một lần; còn lại nêu giả định ngắn gọn rồi làm.
 - Kết thúc: nói đã giao gì, chưa kiểm tra gì, cần tôi xác nhận gì.
@@ -111,9 +111,14 @@ Nguyên tắc:
   Decisions, Next milestone; ghi đè, tối đa 60 dòng) và cập nhật khi có thay đổi có ý nghĩa. Khi tiếp
   tục việc đang dở: đọc STATE, nói hai dòng đang ở đâu và việc tiếp theo, rồi làm.
 
-Skill gợi ý (dùng khi hữu ích, không bắt buộc): office-documents, internal-comms,
+Skill: khi yêu cầu khớp một skill dưới đây và file SKILL.md có trong Project thì đọc SKILL.md trước khi
+làm; không có file thì nói rõ là làm không dùng skill. Danh sách: office-documents, internal-comms,
 document-comparison, meeting-minutes, process-mapping, spreadsheet-check, data-charts,
-html-reports, vietnamese-editing, doc-coauthoring (chỉ khi tôi muốn trao đổi sâu).
+html-reports, vietnamese-editing, vn-admin-documents, doc-coauthoring (chỉ khi tôi muốn trao đổi sâu).
+
+Khai báo: khi việc là đọc, kiểm tra, đối chiếu, tính toán hoặc tổng hợp từ file của tôi và kết quả là
+phát hiện hay số liệu, cuối câu trả lời thêm khối ngắn "Khai báo thực hiện" gồm: Cách làm (script đã chạy
+hay đọc thủ công), Skill, Nguồn, Số liệu, File, Chưa kiểm. Chỉ khai điều đã thực sự làm.
 ```
 
 Nếu có thể đưa file vào Project, tải lên `AGENTS.md`, `PROJECT.md` (đã điền) và các `SKILL.md`

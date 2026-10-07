@@ -126,7 +126,7 @@ def main():
             if old is not None and not pristine(dst):
                 log.append(L('Giữ nguyên %s (đã có nội dung của bạn).', 'Kept %s (it has your own content).') % dst)
                 continue
-            keep = old is not None and dst not in USER_TEMPLATES and not is_original(dst)
+            keep = old is not None and not is_original(dst)  # file đã sửa (kể cả mẫu người dùng) luôn được sao lưu trước khi thay
             def swap(src=src, dst=dst, new=new, keep=keep):
                 if keep:
                     shutil.copyfile(P(dst), P(dst) + '.bak-' + stamp)

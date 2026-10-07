@@ -12,3 +12,4 @@
 | 2026-10-07 | Claude Sonnet 4.5 | 1.2.2 | 3 bài sau khi sửa lần 2 | Đạt đủ | Xem bản tổng hợp | `records/2026-10-07_claudesonnet45_demo-project_v1.2.2.md` |
 | 2026-10-07 | GLM 5, Kiro | 1.2.2 | 3 bài sau khi sửa lần 2 | Đạt; "Chưa kiểm" còn sơ sài | Xem bản tổng hợp | `records/2026-10-07_GLM5_demo-project_v1.2.2.md` |
 | 2026-10-07 | Tổng hợp 3 mô hình | 1.2.2 | Đối chiếu và chấm | J1–J4 đã hết; 3 vấn đề thấp (K1–K3) | 2 (K2, K3: lỗi riêng của mô hình, theo dõi); K1 xử lý ở 1.2.3 | `records/2026-10-07_tong-hop-3-mo-hinh_v1.2.2.md` |
+| 2026-10-07 | Audit độc lập (bên ngoài) | 1.3.1 | Đọc mã, chạy lại ca tái hiện | 7 lỗi F01–F07, 3 điểm thiết kế D01–D03 | F01–F06 và phần D01/D03 xử lý ở 1.3.2; F07, D02 và một số điểm chưa kiểm được, xem bản xử lý | `records/2026-10-07_audit-ben-ngoai_v1.3.1.md`, `records/2026-10-07_audit-ben-ngoai_v1.3.1_xu-ly.md` |

@@ -74,6 +74,7 @@ No network, outside fonts or dependencies. Set isDemo=false only when everything
   },
   "bar": {
     "title": "Phone is the channel with the most files",
+    "period": "June",
     "categories": [
       {"name": "Phone", "value": 168},
       {"name": "Email", "value": 131},
@@ -91,6 +92,8 @@ No network, outside fonts or dependencies. Set isDemo=false only when everything
   },
   "donut": {
     "title": "Most June files were finished on time",
+    "period": "June",
+    "note": "including 20 files carried over from the previous period",
     "parts": [
       {"name": "On time", "value": 362},
       {"name": "Late", "value": 36},
@@ -99,6 +102,7 @@ No network, outside fonts or dependencies. Set isDemo=false only when everything
   },
   "table": {
     "title": "Detail by channel, June",
+    "period": "June",
     "rows": [
       {"name": "Phone", "value": 168},
       {"name": "Email", "value": 131},
@@ -135,7 +139,9 @@ No network, outside fonts or dependencies. Set isDemo=false only when everything
     var o=D.line,W=520,H=260,L=44,R=64,T=14,B=30,all=[],ends=[];
     o.series.forEach(function(s){s.values.forEach(function(v){if(v!==null)all.push(v)})});
     var mn=Math.min.apply(null,all),mx=Math.max.apply(null,all),step=niceStep((mx-mn||1)/3),lo=Math.floor(mn/step)*step,hi=Math.ceil(mx/step)*step,n=D.months.length;
-    function x(i){return L+i*(W-L-R)/(n-1)} function y(v){return T+(H-T-B)*(1-(v-lo)/(hi-lo))}
+    if(!all.length){setHead('line',o,'No data to draw.');$('c-line').innerHTML='';return}
+    if(hi<=lo){lo-=step;hi+=step}
+    function x(i){return n>1?L+i*(W-L-R)/(n-1):(L+W-R)/2} function y(v){return T+(H-T-B)*(1-(v-lo)/(hi-lo))}
     var g='';for(var gv=lo;gv<=hi+step/2;gv+=step){g+='<line class="grid-line" x1="'+L+'" x2="'+(W-R)+'" y1="'+y(gv)+'" y2="'+y(gv)+'"/><text x="'+(L-6)+'" y="'+(y(gv)+4)+'" text-anchor="end">'+fmt(gv)+'</text>'}
     D.months.forEach(function(m,i){g+='<text x="'+x(i)+'" y="'+(H-8)+'" text-anchor="middle">'+esc(m)+'</text>'});
     o.series.forEach(function(s,si){
@@ -144,7 +150,7 @@ No network, outside fonts or dependencies. Set isDemo=false only when everything
       g+='<path d="'+d+'" fill="none" stroke="'+c+'" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
       s.values.forEach(function(v,i){if(v!==null)g+='<circle cx="'+x(i)+'" cy="'+y(v)+'" r="3.5" fill="#fff" stroke="'+c+'" stroke-width="2"><title>'+esc(s.name+' · '+D.months[i]+': '+fmt(v))+'</title></circle>'});
       var last=s.values.length-1;while(last>0&&s.values[last]===null)last--;
-      ends.push({i:si,y:y(s.values[last]),x:x(last),v:s.values[last]});
+      if(s.values[last]!==null)ends.push({i:si,y:y(s.values[last]),x:x(last),v:s.values[last]});
     });
     ends.sort(function(a,b){return a.y-b.y});for(var e=1;e<ends.length;e++){if(ends[e].y-ends[e-1].y<15)ends[e].y=ends[e-1].y+15}
     ends.forEach(function(en){g+='<text class="val" x="'+(en.x+9)+'" y="'+(en.y+4)+'" style="fill:'+COL[en.i]+'">'+fmt(en.v)+'</text>'});
@@ -160,22 +166,22 @@ No network, outside fonts or dependencies. Set isDemo=false only when everything
       g+='<text x="'+(L-10)+'" y="'+(yy+17)+'" text-anchor="end">'+esc(c.name)+'</text><rect x="'+L+'" y="'+yy+'" width="'+w+'" height="24" rx="4" fill="'+COL[0]+'"><title>'+esc(c.name+': '+fmt(c.value))+'</title></rect><text class="val" x="'+(L+w+8)+'" y="'+(yy+17)+'">'+fmt(c.value)+'</text>'});
     g+='<line class="axis" x1="'+L+'" x2="'+L+'" y1="0" y2="'+H+'"/>';
     var tot=cats.reduce(function(a,c){return a+c.value},0);
-    setHead('bar',o,'Unit: '+D.unit+' · June');
+    setHead('bar',o,'Unit: '+D.unit+(o.period?' · '+o.period:''));
     $('c-bar').innerHTML=frame(W,H,o.title+'. '+cats.map(function(c){return c.name+' '+fmt(c.value)}).join(', '),g)+
       dataTable(['Group',D.unit,'Share'],cats.map(function(c){return[c.name,fmt(c.value),pct(c.value,tot)]}));
   }
 
   /* Stacked bars: composition by period; the total is written above each bar. */
   function stack(){
-    var o=D.stack,W=520,H=260,L=44,R=12,T=18,B=30,n=D.months.length,tot=D.months.map(function(m,i){return o.series.reduce(function(a,s){return a+(s.values[i]||0)},0)}),max=niceMax(Math.max.apply(null,tot)),bw=Math.min(46,(W-L-R)/n*0.6),g='';
+    var o=D.stack,W=520,H=260,L=44,R=12,T=18,B=30,n=D.months.length,part=D.months.map(function(m,i){return o.series.reduce(function(a,s){var v=s.values[i];return a+(v==null?0:v)},0)}),tot=part.map(function(p,i){return o.series.some(function(s){return s.values[i]==null})?null:p}),lab=function(i){return tot[i]===null?'≥ '+fmt(part[i]):fmt(tot[i])},max=niceMax(Math.max.apply(null,part)),bw=Math.min(46,(W-L-R)/n*0.6),g='';
     function y(v){return T+(H-T-B)*(1-v/max)}
     for(var k=0;k<=4;k++){var gv=max*k/4;g+='<line class="grid-line" x1="'+L+'" x2="'+(W-R)+'" y1="'+y(gv)+'" y2="'+y(gv)+'"/><text x="'+(L-6)+'" y="'+(y(gv)+4)+'" text-anchor="end">'+fmt(gv)+'</text>'}
     D.months.forEach(function(m,i){var cx=L+(i+0.5)*(W-L-R)/n,acc=0;
-      o.series.forEach(function(s,si){var v=s.values[i]||0;g+='<rect x="'+(cx-bw/2)+'" y="'+y(acc+v)+'" width="'+bw+'" height="'+(y(acc)-y(acc+v))+'" fill="'+COL[si]+'"><title>'+esc(s.name+' · '+m+': '+fmt(v))+'</title></rect>';acc+=v});
-      g+='<text class="val" x="'+cx+'" y="'+(y(tot[i])-6)+'" text-anchor="middle">'+fmt(tot[i])+'</text><text x="'+cx+'" y="'+(H-8)+'" text-anchor="middle">'+esc(m)+'</text>'});
+      o.series.forEach(function(s,si){var v=s.values[i];if(v==null)return;g+='<rect x="'+(cx-bw/2)+'" y="'+y(acc+v)+'" width="'+bw+'" height="'+(y(acc)-y(acc+v))+'" fill="'+COL[si]+'"><title>'+esc(s.name+' · '+m+': '+fmt(v))+'</title></rect>';acc+=v});
+      g+='<text class="val" x="'+cx+'" y="'+(y(part[i])-6)+'" text-anchor="middle">'+lab(i)+'</text><text x="'+cx+'" y="'+(H-8)+'" text-anchor="middle">'+esc(m)+'</text>'});
     setHead('stack',o,'Unit: '+D.unit+' · total written above each bar');legend('lg-stack',o.series.map(function(s){return s.name}));
-    $('c-stack').innerHTML=frame(W,H,o.title+'. Total from '+fmt(tot[0])+' to '+fmt(tot[n-1]),g)+
-      dataTable(['Period'].concat(o.series.map(function(s){return s.name}),['Total']),D.months.map(function(m,i){return[m].concat(o.series.map(function(s){return fmt(s.values[i])}),[fmt(tot[i])])}));
+    $('c-stack').innerHTML=frame(W,H,o.title+'. Total from '+lab(0)+' to '+lab(n-1),g)+
+      dataTable(['Period'].concat(o.series.map(function(s){return s.name}),['Total']),D.months.map(function(m,i){return[m].concat(o.series.map(function(s){return fmt(s.values[i])}),[lab(i)])}));
   }
 
   /* Donut: composition at one point in time, 5 parts or fewer. */
@@ -186,7 +192,7 @@ No network, outside fonts or dependencies. Set isDemo=false only when everything
       g+='<path d="'+d+'" fill="'+COL[i]+'" stroke="#fff" stroke-width="2"><title>'+esc(p.name+': '+fmt(p.value)+' ('+pct(p.value,tot)+')')+'</title></path>';a0=a1;
       g+='<text x="250" y="'+(96+i*34)+'" class="val">'+pct(p.value,tot)+'</text><text x="250" y="'+(112+i*34)+'">'+esc(p.name)+'</text><rect x="234" y="'+(86+i*34)+'" width="10" height="10" rx="2" fill="'+COL[i]+'"/>'});
     g+='<text x="'+cx+'" y="'+(cy+2)+'" text-anchor="middle" class="val" style="font-size:22px">'+fmt(tot)+'</text><text x="'+cx+'" y="'+(cy+20)+'" text-anchor="middle">'+esc(D.unit)+'</text>';
-    setHead('donut',o,'Unit: '+D.unit+' · June, including 20 files carried over from the previous period');$('lg-donut').innerHTML='';
+    setHead('donut',o,'Unit: '+D.unit+(o.period?' · '+o.period:'')+(o.note?', '+o.note:''));$('lg-donut').innerHTML='';
     $('c-donut').innerHTML=frame(W,H,o.title+'. '+o.parts.map(function(p){return p.name+' '+pct(p.value,tot)}).join(', '),g)+
       dataTable(['Status',D.unit,'Share'],o.parts.map(function(p){return[p.name,fmt(p.value),pct(p.value,tot)]}));
   }
@@ -194,7 +200,7 @@ No network, outside fonts or dependencies. Set isDemo=false only when everything
   /* Table with small bars: look up exact figures; the bars only help comparison. */
   function table(){
     var o=D.table,max=Math.max.apply(null,o.rows.map(function(r){return r.value})),tot=o.rows.reduce(function(a,r){return a+r.value},0);
-    setHead('table',o,'Unit: '+D.unit+' · June');
+    setHead('table',o,'Unit: '+D.unit+(o.period?' · '+o.period:''));
     $('c-table').innerHTML='<table><thead><tr><th scope="col">Channel</th><th scope="col">'+esc(D.unit)+'</th><th scope="col">Share</th></tr></thead><tbody>'+
       o.rows.map(function(r){return'<tr><th scope="row">'+esc(r.name)+'</th><td>'+fmt(r.value)+'<span class="inbar" style="width:'+Math.round(80*r.value/max)+'px" aria-hidden="true"></span></td><td>'+pct(r.value,tot)+'</td></tr>'}).join('')+
       '</tbody><tfoot><tr><th scope="row">Total</th><td>'+fmt(tot)+'</td><td>100%</td></tr></tfoot></table>';

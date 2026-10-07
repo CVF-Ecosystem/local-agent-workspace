@@ -85,11 +85,12 @@ problem requires it.
 - **Small edits** (a sentence, a figure, one paragraph, a rename): do it once and
   return it. Do not read other sources, re-verify, or add alternatives.
 - **Medium tasks** (one document, one table, one report): one pass, then at most one
-  final check of the facts, figures and names that matter. No second review round.
+  final check of the facts, figures and names that matter. Do not re-review the whole piece a
+  second time; a concrete error you find is fixed in place and only that spot is re-checked.
 - **Large tasks** (a set of documents, a dashboard from messy data): confirm the
   outline or data interpretation once, then build.
-- **One self-correction.** If a check still fails, report what remains instead of
-  looping. If a tool or file fails, retry once, then say what could not be done.
+- **No endless loops.** Fix a concrete error in place and re-check only that spot; if a check
+  still fails after one fix, report what remains instead of looping. If a tool or file fails, retry once, then say what could not be done.
 - **Do not** re-read a whole file you already read this session without a reason (a source may
   have just changed, or a conclusion depends on one clause: then re-check only that passage),
   regenerate unchanged output, create extra files (comparisons, explanations, HTML copies, backups) that were
