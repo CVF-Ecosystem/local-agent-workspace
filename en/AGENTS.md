@@ -44,6 +44,10 @@ There is usually no benefit in reading the entire workspace or every README.
 Folder READMEs are local guidance to consult when the folder's purpose is unclear
 or when organizing its contents, not a checklist before each file operation.
 
+The project's source library (legal documents, company rules and regulations, templates) is recorded in `references/_INDEX.xlsx`.
+Before quoting a legal document or internal regulation, look it up in the index (`python tools/library.py find <keyword>`); quote
+verbatim only from a file in the library; without a file, mark "[not checked against full text]" and use no quotation marks (skill `source-library`).
+
 ## Choose what fits
 
 Select native skills, workspace skills, tools, a combination, or direct work
@@ -55,6 +59,10 @@ When the request clearly matches the "Use when" column of a workspace skill (`.a
 `SKILL.md` before starting. Skills are short, and the accuracy rules for each kind of work live there (use the bundled
 script, do not assign an owner the source did not give, label inferences...); skipping it makes it easy to repeat the very
 mistakes the skill was written to prevent. If no skill fits, do not use one, and say so in the execution declaration.
+
+Domain packs (records, ports, HR, accounting, legal...) live in `packs/`; only installed packs have Scope `PACK` rows in
+`.agent/SKILL_INDEX.md`, and only those are skills to use. For work in a domain whose pack is not installed, suggest that the user
+install it (`python tools/pack.py add <name>` or the "Domain packs" page of `APP.bat`); do not read `packs/` in place of an installed skill.
 
 Read the selected skill's guidance and only the references or templates that help.
 Use its approach flexibly; a skill should not expand the user's scope.

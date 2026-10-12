@@ -1,0 +1,17 @@
+{
+  "name": "hanh-chinh-nhan-su",
+  "version": "0.2.0",
+  "requires_core": "1.6",
+  "title": {
+    "vi": "Hành chính - nhân sự: quyết định nhân sự, nghỉ phép, làm thêm giờ, kỷ luật, lương và bảo hiểm",
+    "en": "HR and administration: personnel decisions, leave, overtime, discipline, pay and insurance"
+  },
+  "description": {
+    "vi": "Soạn và kiểm tra văn bản nhân sự (quyết định, giấy nghỉ phép, hợp đồng lao động), tính phép năm và làm thêm giờ, trình tự kỷ luật lao động, mức lương tối thiểu, bảo hiểm và thuế thu nhập cá nhân theo văn bản hiện hành. Kèm bảng căn cứ có ngày đối chiếu.",
+    "en": "Drafting and checking HR documents (decisions, leave permits, labour contracts), annual leave and overtime, disciplinary procedure, minimum wage, insurance and personal income tax under current rules. With a dated legal-basis table."
+  },
+  "domain": "hr",
+  "skills": [
+    "hr-admin-vn"
+  ]
+}

@@ -6,7 +6,7 @@ Use it briefly and pick the parts that fit the deliverable. Do not turn it into 
 ## Every deliverable
 
 - [ ] It matches the request: kind of deliverable, audience, scope, format.
-- [ ] No unfilled places (`[Name]`, `[...]`) and no "template / illustrative / fake data" label left.
+- [ ] No unfilled places (`[Name]`, `[...]`) and no "template / illustrative / fake data" label left; for Word files, count on the built file itself (command in `references/docx-default-layout.md`).
 - [ ] Places lacking a basis are marked "to be confirmed"; no invented figures, dates, names or deadlines.
 - [ ] Facts taken from sources are kept apart from the agent's own proposals.
 - [ ] The user's original files were not overwritten; the new file has a clear name (and a version suffix when it replaces an older one). The output folder holds only the version in use; old versions go to an archive folder with a non-overwriting command (`mv -n`) and are re-checked; nothing is deleted unless asked.

@@ -59,8 +59,13 @@ nguồn đã được duyệt. Không cần chuyển chúng vào khu vực quy �
 
 ## 4. Bắt đầu với skills sẵn có
 
-Package đã có mười ba skill gọn trong `skills/local/shared/` và các mục tương ứng trong
+Package đã có mười bốn skill gọn trong `skills/local/shared/` và các mục tương ứng trong
 `.agent/SKILL_INDEX.md`. Không cần tạo hoặc cài thêm skill để bắt đầu.
+
+Công việc thuộc một mảng chuyên sâu thì cài thêm **gói lĩnh vực**: `phap-ly`, `van-thu-luu-tru`, `cang-logistics`,
+`hanh-chinh-nhan-su`, `ke-toan-noi-bo`. Cách dễ nhất: bấm đúp `APP.bat` (Windows) hoặc `APP.command` (macOS), vào trang
+"Gói lĩnh vực", bấm "Cài gói". Gói đã cài được ghi vào `.agent/SKILL_INDEX.md`, nên agent tự tìm thấy và dùng như skill
+sẵn có; bạn không cần nhắc tên gói khi giao việc.
 
 Để agent chọn native skill, local skill hoặc làm trực tiếp theo công việc. Một
 skill viết riêng cho dự án chỉ đáng thêm khi có mẫu/kinh nghiệm thực tế cần dùng lại.

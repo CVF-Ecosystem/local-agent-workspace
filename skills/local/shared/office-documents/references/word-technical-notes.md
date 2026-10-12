@@ -22,7 +22,7 @@ Kinh nghiệm đã kiểm chứng với `.docx`; mở khi dựng hoặc sửa fi
 
 - Căn "Nhãn: Giá trị" bằng bảng hai cột (cột nhãn khoảng 5,2 cm, in đậm), không canh bằng khoảng trắng hay tab.
 - Khối quốc hiệu và tên cơ quan là bảng hai cột không viền: cột trái rộng khoảng 6,5 cm, cột phải khoảng 11 cm, lề trái và phải khoảng 2 cm và 1,5 cm (đã kiểm
-  chứng vừa một dòng cho quốc hiệu cỡ 12 đậm). Hai dòng trong một ô nên là hai đoạn riêng. Tên cơ quan ban hành chiếm hai dòng của nó; tên phòng ban đặt ở tham số riêng,
+  chứng vừa một dòng cho quốc hiệu cỡ 12 đậm). Văn bản theo thể thức Nghị định 30/2020/NĐ-CP cần lề trái 30 - 35 mm, nên vùng chữ chỉ còn khoảng 16 cm: dùng cột khoảng 6 cm và 10 cm (xem `vn-admin-documents`, `references/nd30-presentation.md`). Hai dòng trong một ô nên là hai đoạn riêng. Tên cơ quan ban hành chiếm hai dòng của nó; tên phòng ban đặt ở tham số riêng,
   không nhét vào dòng thứ hai của tên công ty.
 - Tiêu đề mục: `keep_with_next = True` để không mồ côi cuối trang, đặc biệt khi đứng ngay trước ảnh sơ đồ lớn.
 - Bảng dài: lặp dòng tiêu đề khi tràn trang (`w:tblHeader`), không cho dòng bị cắt giữa hai trang (`w:cantSplit`).

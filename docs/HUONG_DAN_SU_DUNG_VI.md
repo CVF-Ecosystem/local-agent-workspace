@@ -1,6 +1,6 @@
 # Hướng dẫn sử dụng hằng ngày
 
-Local Agent Workspace v1.4 giúp giữ tài liệu, ngữ cảnh và kết quả công việc trên
+Local Agent Workspace v1.6 giúp giữ tài liệu, ngữ cảnh và kết quả công việc trên
 cùng một thư mục. Agent vẫn chủ động chọn cách làm, công cụ và skill phù hợp.
 
 ## 1. Giao việc bằng ngôn ngữ tự nhiên
@@ -63,10 +63,13 @@ vừa sửa hoặc kết luận phụ thuộc một điều khoản, đối chi�
 
 ## 5. Để agent chọn skill phù hợp
 
-Workspace có mười ba skill gợi ý, từ soạn tài liệu (`office-documents`, `internal-comms`,
+Workspace có mười bốn skill gợi ý, từ soạn tài liệu (`office-documents`, `internal-comms`,
 `doc-coauthoring`), phân tích (`document-comparison`, `spreadsheet-check`), biểu đồ và báo cáo
 (`data-charts`, `html-reports`), quy trình và họp (`process-mapping`, `meeting-minutes`), văn bản
-hành chính đúng thể thức (`vn-admin-documents`), sổ và công cụ Excel (`excel-workbooks`, `excel-html-viewer`) đến biên tập (`vietnamese-editing`). Bạn không phải gọi chúng bằng tên.
+hành chính đúng thể thức (`vn-admin-documents`), sổ và công cụ Excel (`excel-workbooks`, `excel-html-viewer`) đến biên tập (`vietnamese-editing`) và thư viện nguồn (`source-library`). Bạn không phải gọi chúng bằng tên.
+
+Ngoài ra có năm gói lĩnh vực cài khi cần (pháp lý, văn thư - lưu trữ, cảng - logistics, hành chính - nhân sự, kế toán nội bộ),
+mỗi gói kèm bảng căn cứ pháp lý có ngày đối chiếu. Gói đã cài thì agent tự dùng; gói chưa cài thì agent sẽ gợi ý bạn cài.
 
 Agent có thể dùng native skill, skill của workspace, kết hợp hoặc không dùng skill.
 Tiêu chí là độ phù hợp với công việc và khả năng thực có, không phải nơi cung cấp.
@@ -161,3 +164,15 @@ Khi bạn chủ động sửa hướng dẫn Markdown và muốn cập nhật b�
 `python tools/build_guides_html.py` từ thư mục gốc của project (xem `tools/README.md`), hoặc nhờ
 agent chạy giúp. Bản HTML không tự đồng bộ khi sửa Markdown; thêm `--check` để kiểm tra HTML
 có còn khớp không.
+
+## 12. Bảng điều khiển (APP.bat)
+
+Bấm đúp `APP.bat` (Windows) hoặc `APP.command` (macOS) để mở bảng điều khiển trong trình duyệt. Trang Tổng quan cho thấy
+trạng thái công việc (đọc từ `.agent/STATE.md`), các skill trong chỉ mục, số file trong `output/` và `references/`. Các trang
+còn lại gọi đúng các công cụ trong `tools/`: khởi tạo hoặc đưa vào project đã có, nâng cấp, gói lĩnh vực, kiểm tra trước khi
+giao (`check_output.py`), chép skill vào ứng dụng (`install_skills.py`), bảo trì package.
+
+Thao tác có ghi file luôn chạy xem trước; đọc kết quả rồi mới bấm "Thực hiện". Bảng điều khiển chạy trên máy này (địa chỉ
+127.0.0.1, có mã truy cập riêng mỗi lần mở), không dùng mạng, không xóa file, tự tắt khoảng 3 phút sau khi đóng trang. Nút
+"Chọn…" mở hộp chọn thư mục của máy; nếu máy không có, gõ hoặc dán đường dẫn. Bảng điều khiển không thay việc giao việc cho
+agent; nó chỉ gom các lệnh `python tools/...` vào một chỗ.

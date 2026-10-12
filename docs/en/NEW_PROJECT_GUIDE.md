@@ -61,9 +61,14 @@ sources. You do not need to move them into the project's regulations area.
 
 ## 4. Start with the skills that are already there
 
-The package already includes thirteen compact skills in `skills/local/shared/` and matching entries in
+The package already includes fourteen compact skills in `skills/local/shared/` and matching entries in
 `.agent/SKILL_INDEX.md`. You do not need to create or install more skills to start. The skill
 files are written in Vietnamese; agents read them without problems.
+
+For specialised work, also install a **domain pack**: `phap-ly`, `van-thu-luu-tru`, `cang-logistics`, `hanh-chinh-nhan-su`,
+`ke-toan-noi-bo`. The easiest way: double-click `APP.bat` (Windows) or `APP.command` (macOS), open "Domain packs" and press
+"Install". An installed pack is recorded in `.agent/SKILL_INDEX.md`, so the agent finds and uses it like any built-in skill;
+you do not need to name the pack when giving work.
 
 Let the agent choose a native skill, a local skill or direct work according to the task. A
 skill written for one project is only worth adding when there is a real template or lesson

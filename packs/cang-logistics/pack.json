@@ -1,0 +1,17 @@
+{
+  "name": "cang-logistics",
+  "version": "0.2.0",
+  "requires_core": "1.6",
+  "title": {
+    "vi": "Cảng - logistics: báo cáo khai thác tàu, sà lan và sự cố thiết bị",
+    "en": "Ports and logistics: ship and barge operation and equipment incident reports"
+  },
+  "description": {
+    "vi": "Báo cáo khai thác tàu và sà lan, thời gian chờ cầu, năng suất, gián đoạn và sự cố thiết bị, đối soát sự cố với chuyến tàu; chỉ số và quy tắc tính đã dùng trong việc thật. Kèm căn cứ pháp lý hàng hải, hải quan, an toàn lao động có ngày đối chiếu.",
+    "en": "Ship and barge operation reports, berth waiting time, productivity, stoppages and equipment incidents, matching incidents to voyages; indicators and calculation rules used in real work. With a dated maritime, customs and safety legal basis."
+  },
+  "domain": "ports",
+  "skills": [
+    "port-operations-reports"
+  ]
+}

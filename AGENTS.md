@@ -39,6 +39,10 @@ Dùng `.agent/INDEX.md` để tìm nguồn và `.agent/SKILL_INDEX.md` để tì
 skill đã được nêu tên thì mở thẳng. Thường không có lợi khi đọc toàn bộ workspace hoặc mọi
 README; README của thư mục chỉ để tra khi chưa rõ mục đích thư mục hoặc khi sắp xếp nội dung.
 
+Thư viện nguồn của project (văn bản pháp luật, quy chế, quy định nội bộ, mẫu biểu) được ghi trong `references/_INDEX.xlsx`.
+Trước khi trích dẫn một văn bản pháp luật hoặc quy định nội bộ, tra chỉ mục (`python tools/library.py find <từ khóa>`); chỉ trích
+nguyên văn từ file có trong thư viện, không có file thì ghi "[chưa đối chiếu toàn văn]" và không đặt trong ngoặc kép (skill `source-library`).
+
 ## Chọn cách phù hợp
 
 Chọn skill native, skill của workspace, công cụ, kết hợp hoặc làm trực tiếp, theo yêu cầu,
@@ -49,6 +53,10 @@ Khi yêu cầu khớp rõ với cột "Use when" của một skill trong workspa
 đó trước khi làm. Skill ngắn, và quy tắc về độ chính xác của từng loại việc nằm ở đó (dùng script có sẵn, không gán người
 phụ trách khi nguồn không giao, gắn nhãn suy luận...); bỏ qua thì dễ lặp lại đúng những lỗi skill được viết ra để tránh. Skill
 không phù hợp thì không dùng, và nói rõ trong khai báo thực hiện.
+
+Gói lĩnh vực (văn thư, cảng, nhân sự, kế toán, pháp lý...) nằm trong `packs/`; chỉ gói đã cài mới có dòng Scope `PACK` trong
+`.agent/SKILL_INDEX.md` và là skill được dùng. Việc thuộc lĩnh vực có gói chưa cài: gợi ý người dùng cài (`python tools/pack.py add <tên>`
+hoặc trang "Gói lĩnh vực" của `APP.bat`); không tự đọc `packs/` thay cho skill đã cài.
 
 Đọc hướng dẫn của skill đã chọn và chỉ những tài nguyên hoặc mẫu hữu ích. Dùng linh hoạt;
 skill không được mở rộng phạm vi người dùng giao. Các skill văn phòng đi kèm là ví dụ gợi ý,

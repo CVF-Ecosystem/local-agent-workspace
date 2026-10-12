@@ -2,7 +2,7 @@
 
 ## Foundation
 
-Package version v1.4 was written from a workspace skeleton the user supplied earlier. It lightens the guides
+Package version v1.6 was written from a workspace skeleton the user supplied earlier. It lightens the guides
 and adds the office resources that were agreed.
 The user's original files were not relabelled under a new blanket licence.
 
@@ -55,12 +55,48 @@ the records-management rules (Decree 30/2020/ND-CP) as a reference only; it is a
 advice, and the rules may have been amended. `skills/external/` is still empty; if you
 import an outside skill later, record the source, commit and licence following the guidance in that folder.
 
-## Skills drawn from practical experience (v1.4.0)
+## Skills drawn from practical experience (version 1.4.0)
 
 `excel-workbooks`, `excel-html-viewer` and the five references in `office-documents` (`report-writing`, `procedure-document`, `proposal-review`, `form-standardization`,
 `word-technical-notes`), plus the meeting-minutes and basis-order additions in `vn-admin-documents`, were drawn from the maintainer's practical experience on office projects.
 Nothing was copied from an outside repo. Unit names, job titles, signatories, pay cut-offs, private legal bases and specific workbook layouts were removed; those stay in each project's own skill.
 Not imported: skills tied to one unit, one person or one specific case.
+
+## Additions from practical experience (version 1.5.0)
+
+The presentation standard in `html-reports` (and both HTML templates restyled to it), the many-files / many-periods / cross-checking parts of `excel-html-viewer`,
+and the shared-tool and direct-XML-editing parts of `excel-workbooks` were drawn from two of the maintainer's office projects (a ship-operations report and an
+engineering-equipment control board), October 2026. Unit names, signatories, figures and business rules were removed; those stay in each project's own skill. Nothing was copied from an outside repo.
+
+## Additions in v1.6.0
+
+- `vn-admin-documents` 1.1 (`references/nd30-presentation.md`, three new frames in `document-frames.md`): the layout values,
+  the size and style table for each component and the list of templates in the annex were checked by the maintainer directly
+  against a scan of Decree 30/2020/ND-CP (Annex I) on 2026-10-12. The idea of adding decision, plan and invitation frames came
+  from the template set of the `xu-ly-van-phong` version 2.0 skill (by Nguyễn Duy Tùng); the frames were rewritten from the decree's
+  templates, not copied from that skill. The check found points where that set departs from the decree (3 pt paragraph
+  spacing below the 6 pt minimum; a 1.25 cm first-line indent instead of 1 cm or 1.27 cm; the size of "Nơi nhận"), so its
+  values were not used.
+- `office-documents` 1.1 (`references/docx-default-layout.md`): a default Word layout, a table for turning raw content into a
+  document, a counting command after building. Ideas from `xu-ly-van-phong` version 2.0 (default layout, content analysis, checks
+  after generating); values adjusted to fall within Decree 30/2020/ND-CP and rewritten in the package's own words.
+- `html-reports` 1.2 (how to propose colours when the unit has none, an idea from the colour-preset library of
+  `xu-ly-van-phong` version 2.0) and `excel-html-viewer` 1.2 (IndexedDB for large data, normalising document numbers when
+  de-duplicating, drawn from the user's own HTML tool for managing legal documents).
+- Pack `phap-ly` 0.1.0: rewritten from ideas in the `tu-van-phap-luat` version 1.0 skill (Nguyễn Duy Tùng): 5 axes to frame the
+  issue, a verbatim basis table with exact coordinates, three-way cross-checking, conflict rules, a stop condition. Not
+  imported: creating a folder and log files for every question (against the rule of creating files only when asked), tool
+  names of another app, the per-domain document lists (each number could not be verified), and the original's sample basis
+  table (it cites the wrong article of the Labour Code).
+- Four new domain packs (0.1.0): `van-thu-luu-tru` (registers and file lists checked directly against a scan of Decree
+  30/2020/ND-CP), `cang-logistics` (calculation rules drawn from real work at a container operations team, private details
+  removed), `hanh-chinh-nhan-su`, `ke-toan-noi-bo`. The legal basis was looked up on 2026-10-12 on Thu Vien Phap Luat,
+  LuatVietnam, government news sites and advisory firms (the source is on each row of `legal-basis.md`); figures taken from
+  summaries are marked as such and unverified rows say `[cần xác nhận]`.
+
+- `xu-ly-van-phong-cli` version 1.0 was not imported (a Windows-only executable, overlapping existing tools).
+
+- Source library (`source-library`, `tools/library.py`): the Excel index idea came from a systematisation file of civil judgment enforcement documents 2000-2026 that the user sent as a sample (full texts not downloaded). The package does not copy that file's data; the columns were redesigned for all source types (legal, internal rules, templates), adding verification level, full text, status check date and sensitivity. The six rows in the Example sheet only illustrate how to fill it in; the statuses shown there must be rechecked before use.
 
 ## What was not imported into the ZIP
 
@@ -75,7 +111,7 @@ when opened or filtered.
 
 ## Limits of checking
 
-Version v1.4 was checked for files, internal paths, skill metadata (name matching folder and index),
+Version v1.6 was checked for files, internal paths, skill metadata (name matching folder and index),
 HTML pages rebuilt from Markdown (the Vietnamese and English sets, with two-way language links) and the
 `basic-charts.html` template in a local Chromium browser (no console errors, no network requests, no
 horizontal scrolling at phone width). The English translation was written by an agent and has not been

@@ -11,8 +11,8 @@ Dùng / Usage:
   python tools/install_skills.py --dest <thư mục skill của ứng dụng> --skills meeting-minutes,data-charts --yes
   python tools/install_skills.py --dest <...> --include-packs --yes                   # kèm skill của gói đã cài
 
-Không có --dest thì dùng ~/.claude/skills (Claude). Với Codex, Gemini/Antigravity... hãy chỉ --dest tới thư mục skill
-của ứng dụng đó theo tài liệu của nó. Package không tự đổi cấu hình toàn cục. Cần Python 3.8+, không dùng mạng.
+Không có --dest thì dùng ~/.claude/skills (Claude). Codex và Gemini CLI cùng đọc ~/.agents/skills (theo tài liệu của hai ứng dụng,
+kiểm tháng 10/2026). Ứng dụng khác: chỉ --dest tới thư mục skill theo tài liệu của nó. Package không tự đổi cấu hình toàn cục. Cần Python 3.8+, không dùng mạng.
 """
 import argparse, io, json, os, shutil, sys
 

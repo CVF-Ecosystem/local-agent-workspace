@@ -22,7 +22,7 @@ Experience verified on `.docx`; open when building or editing a real file. It do
 
 - Align "Label: Value" with a two-column table (label column about 5.2 cm, bold), not with spaces or tabs.
 - The national-motto and agency block is a two-column table without borders: left column about 6.5 cm, right column about 11 cm, left and right margins about 2 cm and 1.5 cm
-  (verified to fit on one line for the motto at size 12 bold). Two lines in one cell should be two separate paragraphs. The issuing organisation's name takes its two lines;
+  (verified to fit on one line for the motto at size 12 bold). Documents in the Decree 30/2020/ND-CP format need a 30 - 35 mm left margin, which leaves only about 16 cm of text width: use columns of about 6 cm and 10 cm (see `vn-admin-documents`, `references/nd30-presentation.md`). Two lines in one cell should be two separate paragraphs. The issuing organisation's name takes its two lines;
   the department name goes into its own parameter and is not stuffed into the second line of the company name.
 - Section headings: `keep_with_next = True` so they are not orphaned at the bottom of a page, especially right before a large diagram image.
 - Long tables: repeat the header row when it breaks across pages (`w:tblHeader`) and do not let a row split across two pages (`w:cantSplit`).

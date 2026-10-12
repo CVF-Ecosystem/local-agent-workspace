@@ -1,4 +1,4 @@
-# Local Agent Workspace v1.4
+# Local Agent Workspace v1.6
 
 A local workspace for office work with Claude, Codex, Gemini or another agent.
 
@@ -19,7 +19,7 @@ GitHub's Code → Download ZIP also works, but that copy includes folders meant 
 
 A starter folder for every office-work project you do with an AI assistant, built to one standard. It helps the AI remember the
 context between sessions (no explaining again), keeps files tidy and sets clear working rules (no invented figures, no
-overwriting originals), with thirteen skills for common tasks; unzip it on any computer and get the same standard. The full
+overwriting originals), with fourteen skills for common tasks; unzip it on any computer and get the same standard. The full
 introduction is at the top of `START_HERE.en.html`.
 
 Reading documents, drafting procedures, forms and reports; handling spreadsheets when needed; continuing
@@ -41,6 +41,10 @@ python tools/init_project.py --name "Project name" --lang en
 
 `--lang vi` keeps the Vietnamese version of the files. Without Python, follow
 `docs/en/NEW_PROJECT_GUIDE.md` by hand. The package version is in `VERSION`.
+
+After setup, double-click `APP.bat` (Windows) or `APP.command` (macOS) to open the **control panel** in the browser: see the
+work status, install domain packs, check files before delivery, upgrade the package, copy skills into Claude, Codex, Gemini. The
+panel is only an interface for the tools in `tools/`; it runs on your computer (no network) and stops when the page is closed.
 
 - New project: `docs/en/NEW_PROJECT_GUIDE.md` or the `.html` file of the same name.
 - Existing project and package upgrade: `docs/en/EXISTING_PROJECT_UPGRADE_GUIDE.md` or `.html`.
@@ -67,8 +71,9 @@ does not need the HTML version as well. HTML is for users, not default context.
 | `vn-admin-documents` | Vietnamese administrative documents in the proper format: official letter, submission, report, notice. |
 | `excel-workbooks` | Building tracking workbooks, data-entry forms, self-summarising reports and calculation appendices in Excel. |
 | `excel-html-viewer` | A single-file offline HTML tool that reads Excel files to show figures visually. |
+| `source-library` | The source library in `references/` (legal documents, company rules, templates) with an Excel index; look up before quoting. |
 
-The thirteen skills are in `skills/local/shared/` and are recorded as `AVAILABLE` in
+The fourteen skills are in `skills/local/shared/` and are recorded as `AVAILABLE` in
 `.agent/SKILL_INDEX.md`. The agent chooses a skill by fit, with no fixed preference for
 native or local. Not using a skill is also a valid choice.
 
@@ -83,6 +88,7 @@ project/
 ├── START_HERE.html          Guide for users (Vietnamese)
 ├── START_HERE.en.html       Guide for users (English)
 ├── SETUP.bat / SETUP.command  Double-click to set up the project (the wizard runs by itself)
+├── APP.bat / APP.command      Control panel in the browser (optional)
 ├── README.md
 ├── AGENTS.md                General instructions for agents
 ├── PROJECT.md               Stable project context
@@ -111,7 +117,7 @@ project/
 ## The English tree and maintenance tools
 
 The `en/` folder mirrors the Vietnamese files at the root: the agent files (`AGENTS.md`, `CLAUDE.md`,
-`GEMINI.md`, `PROJECT.md`), the `.agent/` notes, all thirteen skills with their references, templates and
+`GEMINI.md`, `PROJECT.md`), the `.agent/` notes, all fourteen skills with their references, templates and
 script, the folder READMEs and this README. File and folder names are the same in both trees, so
 `python tools/init_project.py --lang en` simply overlays `en/` onto the root (except
 `en/PROJECT_INSTRUCTIONS_SNIPPET.md`, which you paste into the Project instructions). Keep the `en/` folder

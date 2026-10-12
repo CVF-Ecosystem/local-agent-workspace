@@ -19,6 +19,9 @@ Chạy bằng trình duyệt tự động (ví dụ Playwright với Chromium) k
    Kiểm bằng `page.pdf()` rồi xem ảnh ghép các trang.
 8. Hiệu năng với file đầy tải (đã đo: 200 mục chính và 2.000 bản ghi phụ nạp khoảng 1,2 giây).
 9. Màn hình hẹp không tràn ngang; chế độ tối đọc được.
+10. Nhiều file: nạp cả thư mục có file `~$…` và hai file trùng một khóa: file tạm bị bỏ qua, trùng khóa báo lỗi kèm tên hai file (`setInputFiles('#dir', 'thu_muc')`).
+11. Tải lại trang: lần nạp gần nhất được khôi phục; xóa bộ nhớ trình duyệt thì về màn "Chưa có dữ liệu", không lỗi.
+12. Đối soát chéo: cố ý ghi sai mã cha ở một dòng con, phải hiện lỗi đúng dòng kèm gợi ý mã đúng.
 
 ## Lỗi đã gặp
 
@@ -29,3 +32,4 @@ Chạy bằng trình duyệt tự động (ví dụ Playwright với Chromium) k
 - Nút xuất bằng bản mini của thư viện vẫn có `book_new`, `aoa_to_sheet`, `book_append_sheet`, `writeFile`; xuất tên sheet chuẩn để mở lại được
   bằng chính công cụ. Chỉ xuất dữ liệu thô, không có công thức hay dropdown.
 - Bảng màu phân loại: màu xám "chưa phân nhóm" cố ý trung tính nên không đạt ngưỡng sắc độ; độ tương phản thấp bù bằng nhãn số và bảng số.
+- Chụp PDF bằng Playwright: đã gọi `page.emulateMedia({media:'screen'})` thì `page.pdf()` in theo giao diện màn hình (vẫn thấy nút, dải nền); gọi `page.pdf()` khi chưa ép media hoặc ép lại `print`.

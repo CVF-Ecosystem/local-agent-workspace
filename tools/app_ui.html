@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Workspace</title>
+<style>
+:root{
+  --bg:#f6f7f9;--panel:#ffffff;--panel-2:#f9fafb;--sunken:#f1f3f5;--ink:#111827;--ink-2:#374151;--muted:#6b7280;--faint:#9ca3af;
+  --line:#e5e7eb;--line-2:#eef0f3;--accent:#0f766e;--accent-2:#115e59;--accent-ink:#ffffff;--accent-soft:#e6f4f2;--accent-line:#b7e1dc;
+  --ok:#15803d;--ok-soft:#e8f5ec;--warn:#b45309;--warn-soft:#fdf3e2;--err:#b91c1c;--err-soft:#fdecec;--info:#1d4ed8;--info-soft:#e9effd;
+  --term:#0f172a;--term-ink:#e2e8f0;--term-muted:#94a3b8;
+  --r-lg:14px;--r:10px;--r-sm:8px;
+  --sh-1:0 1px 2px rgba(16,24,40,.05);--sh-2:0 1px 3px rgba(16,24,40,.06),0 8px 24px rgba(16,24,40,.06);--sh-3:0 24px 48px rgba(16,24,40,.18);
+  --font:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:"Cascadia Mono",ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0b0f14;--panel:#121820;--panel-2:#151c25;--sunken:#0f141b;--ink:#e6edf3;--ink-2:#c9d4de;--muted:#8b98a7;--faint:#66717e;
+  --line:#222c37;--line-2:#1a222c;--accent:#2dd4bf;--accent-2:#5eead4;--accent-ink:#04201d;--accent-soft:#0f2a28;--accent-line:#1d4d48;
+  --ok:#4ade80;--ok-soft:#0f2a1a;--warn:#fbbf24;--warn-soft:#2b2110;--err:#f87171;--err-soft:#2c1414;--info:#93c5fd;--info-soft:#132036;
+  --term:#05080c;--sh-1:none;--sh-2:none;--sh-3:0 24px 48px rgba(0,0,0,.5)}}
+:root[data-theme="dark"]{
+  --bg:#0b0f14;--panel:#121820;--panel-2:#151c25;--sunken:#0f141b;--ink:#e6edf3;--ink-2:#c9d4de;--muted:#8b98a7;--faint:#66717e;
+  --line:#222c37;--line-2:#1a222c;--accent:#2dd4bf;--accent-2:#5eead4;--accent-ink:#04201d;--accent-soft:#0f2a28;--accent-line:#1d4d48;
+  --ok:#4ade80;--ok-soft:#0f2a1a;--warn:#fbbf24;--warn-soft:#2b2110;--err:#f87171;--err-soft:#2c1414;--info:#93c5fd;--info-soft:#132036;
+  --term:#05080c;--sh-1:none;--sh-2:none;--sh-3:0 24px 48px rgba(0,0,0,.5)}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:14px/1.55 var(--font);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--accent)}
+svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.app{display:grid;grid-template-columns:264px minmax(0,1fr);min-height:100vh}
+
+/* sidebar */
+.side{position:sticky;top:0;height:100vh;overflow:auto;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:18px 14px 14px}
+.brand{display:flex;align-items:center;gap:10px;padding:2px 8px 16px}
+.logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--accent),#0e7490);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;letter-spacing:-.02em;box-shadow:var(--sh-1)}
+.brand-t{font-weight:650;font-size:14px;line-height:1.2}
+.brand-s{font-size:12px;color:var(--muted)}
+.projcard{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:var(--r);padding:10px;background:var(--panel-2);margin-bottom:14px}
+.avatar{width:34px;height:34px;border-radius:8px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
+.projcard .nm{font-weight:600;font-size:13.5px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.projcard .st{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--ok);display:inline-block}
+.dot.warn{background:var(--warn)}
+.navgroup{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);padding:14px 10px 6px}
+.nav{display:grid;gap:2px}
+.nav button{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r-sm);color:var(--ink-2);font-size:13.5px;font-weight:500;width:100%}
+.nav button:hover{background:var(--sunken)}
+.nav button[aria-current="page"]{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.nav button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.nav .badge{margin-left:auto;font-size:11px;font-weight:600;background:var(--sunken);color:var(--muted);border-radius:999px;padding:1px 7px}
+.side-foot{margin-top:auto;padding-top:14px;border-top:1px solid var(--line);display:flex;align-items:center;gap:8px}
+.lang{display:inline-flex;border:1px solid var(--line);border-radius:var(--r-sm);overflow:hidden}
+.lang button{all:unset;cursor:pointer;font-size:12px;font-weight:600;padding:5px 9px;color:var(--muted)}
+.lang button[aria-pressed="true"]{background:var(--sunken);color:var(--ink)}
+.iconbtn{all:unset;cursor:pointer;display:grid;place-items:center;width:30px;height:30px;border-radius:var(--r-sm);color:var(--muted);border:1px solid var(--line)}
+.iconbtn:hover{color:var(--ink);background:var(--sunken)}
+.iconbtn:focus-visible,.lang button:focus-visible{outline:2px solid var(--accent)}
+.iconbtn svg.i{width:16px;height:16px}
+.ver{margin-left:auto;font-size:11.5px;color:var(--faint);font-family:var(--mono)}
+
+/* main */
+.main{min-width:0}
+.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;padding:12px 32px;min-height:58px}
+.crumb{font-size:12.5px;color:var(--muted)}
+.crumb b{color:var(--ink);font-weight:600}
+.top .acts{margin-left:auto;display:flex;gap:8px}
+.wrap{padding:26px 32px 64px;max-width:1180px}
+.page{display:none}
+.page.on{display:block;animation:fade .16s ease}
+@keyframes fade{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+.ph{margin:0 0 20px}
+.ph h1{font-size:22px;line-height:1.25;letter-spacing:-.015em;font-weight:650;margin:0 0 4px}
+.ph p{margin:0;color:var(--muted);max-width:76ch}
+h2{font-size:14.5px;font-weight:600;margin:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh-1)}
+.card-h{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line-2)}
+.card-h .sub{font-size:12.5px;color:var(--muted)}
+.card-h .r{margin-left:auto;display:flex;gap:8px;align-items:center}
+.card-b{padding:16px 18px}
+.grid{display:grid;gap:16px}
+.c2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.c4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.c-main{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}
+.mb{margin-bottom:16px}
+
+/* buttons, badges */
+.btn{cursor:pointer;display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 13px;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--panel);font-weight:600;font-size:13px;color:var(--ink-2);box-shadow:var(--sh-1);white-space:nowrap}
+.btn:hover{background:var(--panel-2);border-color:#d1d5db}
+.btn svg.i{width:16px;height:16px}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.pri:hover{background:var(--accent-2);border-color:var(--accent-2)}
+.btn.ghost{box-shadow:none;border-color:transparent;background:transparent}
+.btn.ghost:hover{background:var(--sunken)}
+.btn.danger{color:var(--err)}
+.btn.lg{height:40px;padding:0 16px;font-size:13.5px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tag{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 8px;border-radius:999px;font-size:11.5px;font-weight:600;background:var(--sunken);color:var(--muted);white-space:nowrap}
+.tag.ok{background:var(--ok-soft);color:var(--ok)}
+.tag.warn{background:var(--warn-soft);color:var(--warn)}
+.tag.err{background:var(--err-soft);color:var(--err)}
+.tag.acc{background:var(--accent-soft);color:var(--accent)}
+.tag.info{background:var(--info-soft);color:var(--info)}
+.mono{font-family:var(--mono);font-size:12.5px}
+
+/* overview */
+.banner{display:flex;gap:14px;align-items:flex-start;border:1px solid var(--accent-line);background:var(--accent-soft);border-radius:var(--r-lg);padding:14px 16px;margin-bottom:16px}
+.banner.warn{border-color:#f5d9a8;background:var(--warn-soft)}
+.banner .ic{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;background:var(--panel);color:var(--accent);flex:none}
+.banner.warn .ic{color:var(--warn)}
+.banner b{display:block;margin-bottom:2px}
+.banner p{margin:0;color:var(--ink-2);font-size:13.5px}
+.banner .r{margin-left:auto;align-self:center}
+.summary{display:flex;gap:16px;align-items:center;padding:18px}
+.summary .avatar{width:48px;height:48px;font-size:17px;border-radius:12px}
+.summary h1{font-size:20px;margin:0;letter-spacing:-.01em;font-weight:650}
+.summary .meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;align-items:center}
+.path{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-family:var(--mono);font-size:12px;cursor:pointer;border-radius:6px;padding:1px 4px;margin-left:-4px}
+.path:hover{background:var(--sunken);color:var(--ink)}
+.path svg.i{width:13px;height:13px}
+.kpi{padding:16px 18px;display:flex;gap:14px;align-items:center}
+.kpi .ic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);flex:none}
+.kpi .ic.b{background:var(--info-soft);color:var(--info)}
+.kpi .ic.w{background:var(--warn-soft);color:var(--warn)}
+.kpi .ic.g{background:var(--ok-soft);color:var(--ok)}
+.kpi .v{font-size:22px;font-weight:650;line-height:1.1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.kpi .k{font-size:12.5px;color:var(--muted)}
+.dl{display:grid;gap:0}
+.dl .it{display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px;padding:10px 0;border-top:1px solid var(--line-2)}
+.dl .it:first-child{border-top:0;padding-top:0}
+.dl dt{font-size:12.5px;color:var(--muted);font-weight:600}
+.dl dd{margin:0;white-space:pre-wrap;font-size:13.5px;color:var(--ink-2)}
+.dl dd .sub-h{color:var(--ink);font-weight:600}.dl dd code{background:var(--sunken);border-radius:4px;padding:0 4px;font-size:12px}
+.empty{display:grid;place-items:center;text-align:center;gap:8px;padding:26px 12px;color:var(--muted);font-size:13.5px}
+.empty .ic{width:42px;height:42px;border-radius:12px;background:var(--sunken);display:grid;place-items:center;color:var(--faint)}
+.actions{display:grid;gap:10px}
+.act{all:unset;box-sizing:border-box;cursor:pointer;display:flex;gap:12px;align-items:center;padding:12px 14px;border:1px solid var(--line);border-radius:var(--r);background:var(--panel)}
+.act:hover{border-color:var(--accent-line);background:var(--panel-2)}
+.act:focus-visible{outline:2px solid var(--accent)}
+.act .ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;background:var(--sunken);color:var(--ink-2);flex:none}
+.act b{display:block;font-size:13.5px;font-weight:600}
+.act span{display:block;font-size:12.5px;color:var(--muted)}
+.act .chev{margin-left:auto;color:var(--faint)}
+.search{position:relative}
+.search input[type=text]{height:32px;min-height:32px;padding:0 10px 0 32px;width:220px;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--panel)}
+.search svg.i{position:absolute;left:10px;top:8px;z-index:1;pointer-events:none;width:16px;height:16px;color:var(--faint)}
+.chips{display:inline-flex;gap:4px;background:var(--sunken);padding:3px;border-radius:var(--r-sm)}
+.chips button{all:unset;cursor:pointer;font-size:12px;font-weight:600;padding:4px 9px;border-radius:6px;color:var(--muted)}
+.chips button[aria-pressed="true"]{background:var(--panel);color:var(--ink);box-shadow:var(--sh-1)}
+.chips button:focus-visible{outline:2px solid var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:11.5px;font-weight:600;color:var(--muted);letter-spacing:.03em;text-transform:uppercase;padding:9px 18px;background:var(--panel-2);border-bottom:1px solid var(--line)}
+td{padding:11px 18px;border-bottom:1px solid var(--line-2);vertical-align:top;color:var(--ink-2)}
+tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:var(--panel-2)}
+td.id{font-family:var(--mono);font-size:12.5px;color:var(--ink);white-space:nowrap}
+.tw{overflow-x:auto}
+
+/* forms */
+.form{display:grid;gap:16px}
+.field{display:grid;gap:6px}
+.field>label,.flabel{font-size:13px;font-weight:600;color:var(--ink-2)}
+.field .hint{font-size:12.5px;color:var(--muted)}
+.req{color:var(--err);margin-left:2px}
+input[type=text],textarea{width:100%;border:1px solid var(--line);background:var(--panel);border-radius:var(--r-sm);padding:8px 11px;min-height:36px}
+input[type=text]:hover,textarea:hover{border-color:#d1d5db}
+textarea{min-height:68px;resize:vertical}
+.inline{display:flex;gap:8px}
+.inline input{flex:1;min-width:0}
+.seg{display:inline-flex;gap:3px;background:var(--sunken);padding:3px;border-radius:var(--r-sm);width:max-content}
+.seg button{all:unset;cursor:pointer;font-size:13px;font-weight:600;padding:6px 12px;border-radius:6px;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--panel);color:var(--ink);box-shadow:var(--sh-1)}
+.seg button:focus-visible{outline:2px solid var(--accent)}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--ink-2);cursor:pointer}
+.check input{margin-top:3px;accent-color:var(--accent)}
+.steps{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--muted)}
+.steps .s{display:inline-flex;align-items:center;gap:6px}
+.steps .n{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:var(--sunken);font-weight:700;font-size:11px;color:var(--muted)}
+.steps .s.on .n{background:var(--accent);color:var(--accent-ink)}
+.steps .s.on{color:var(--ink)}
+.steps .ln{width:22px;height:1px;background:var(--line)}
+.formfoot{display:flex;align-items:center;gap:12px;padding:14px 18px;border-top:1px solid var(--line-2);background:var(--panel-2);border-radius:0 0 var(--r-lg) var(--r-lg)}
+.formfoot .r{margin-left:auto;display:flex;gap:8px}
+.note{display:flex;gap:10px;align-items:flex-start;border-radius:var(--r);padding:11px 13px;font-size:13px;background:var(--info-soft);color:var(--ink-2)}
+.note.warn{background:var(--warn-soft)}
+.note svg.i{width:16px;height:16px;margin-top:2px;color:var(--info)}
+.note.warn svg.i{color:var(--warn)}
+.opt{position:relative;cursor:pointer;display:flex;gap:12px;align-items:flex-start;padding:14px;border:1px solid var(--line);border-radius:var(--r);background:var(--panel)}
+.opt:hover{border-color:#d1d5db}
+.opt:has(input:checked){border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.opt input{position:absolute;opacity:0}
+.opt:has(input:focus-visible){outline:2px solid var(--accent)}
+.opt .ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;background:var(--sunken);font-weight:700;font-size:13px;color:var(--ink-2);flex:none}
+.opt:has(input:checked) .ic{background:var(--accent-soft);color:var(--accent)}
+.opt b{display:block;font-size:13.5px}
+.opt span{display:block;font-size:12.5px;color:var(--muted)}
+.opt .mono{word-break:break-all;margin-top:3px;font-size:11.5px}
+.drop{all:unset;box-sizing:border-box;cursor:pointer;display:grid;place-items:center;text-align:center;gap:6px;width:100%;padding:24px;border:1.5px dashed var(--line);border-radius:var(--r);background:var(--panel-2);color:var(--muted)}
+.drop:hover{border-color:var(--accent);color:var(--accent)}
+.drop:focus-visible{outline:2px solid var(--accent)}
+.drop b{color:var(--ink);font-size:13.5px}
+.files{display:grid;gap:6px}
+.file{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:var(--r-sm);padding:7px 8px 7px 10px;background:var(--panel)}
+.file .mono{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file svg.i{color:var(--muted);width:16px;height:16px}
+
+/* packs */
+.pack{display:flex;flex-direction:column}
+.pack .card-b{flex:1}
+.pack-h{display:flex;gap:12px;align-items:flex-start}
+.pack-h .ic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);flex:none}
+.pack-h b{display:block;font-size:14px;line-height:1.35}
+.pack p{margin:10px 0 0;color:var(--muted);font-size:13px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.skchips{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}
+.skchips span{font-family:var(--mono);font-size:11.5px;background:var(--sunken);border-radius:6px;padding:2px 7px;color:var(--ink-2)}
+.pack-f{display:flex;gap:8px;align-items:center;padding:12px 18px;border-top:1px solid var(--line-2)}
+.pack-f .r{margin-left:auto;display:flex;gap:8px}
+
+/* maintenance list */
+.rows .rw{display:flex;gap:14px;align-items:center;padding:14px 18px;border-top:1px solid var(--line-2)}
+.rows .rw:first-child{border-top:0}
+.rows .rw .ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;background:var(--sunken);color:var(--ink-2);flex:none}
+.rows .rw b{display:block;font-size:13.5px}
+.rows .rw span{display:block;font-size:12.5px;color:var(--muted)}
+.rows .rw .btn{margin-left:auto}
+
+/* result sheet */
+.scrim{position:fixed;inset:0;background:rgba(15,23,42,.32);opacity:0;pointer-events:none;transition:opacity .2s;z-index:30}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;top:0;right:0;bottom:0;width:min(640px,100%);background:var(--panel);border-left:1px solid var(--line);box-shadow:var(--sh-3);transform:translateX(102%);transition:transform .24s cubic-bezier(.2,.8,.2,1);z-index:31;display:flex;flex-direction:column}
+.sheet.on{transform:none}
+.sh-h{display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid var(--line)}
+.sh-h .t{font-weight:650;font-size:15px}
+.sh-h .iconbtn{margin-left:auto}
+.sh-b{flex:1;overflow:auto;padding:16px 20px;display:grid;gap:12px;align-content:start}
+.cmd{display:flex;gap:8px;align-items:center;border:1px solid var(--line);background:var(--panel-2);border-radius:var(--r-sm);padding:7px 8px 7px 11px}
+.cmd code{flex:1;min-width:0;font-family:var(--mono);font-size:12px;color:var(--ink-2);word-break:break-all}
+.term{background:var(--term);color:var(--term-ink);border-radius:var(--r);padding:14px 16px;font-family:var(--mono);font-size:12.5px;line-height:1.7;white-space:pre-wrap;word-break:break-word;min-height:120px;margin:0}
+.term .ok{color:#86efac}.term .warn{color:#fcd34d}.term .err{color:#fca5a5}.term .dim{color:var(--term-muted)}
+.sh-f{display:flex;gap:10px;align-items:center;padding:14px 20px;border-top:1px solid var(--line);background:var(--panel-2)}
+.sh-f .msg{font-size:12.5px;color:var(--muted);flex:1}
+.spin{width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .7s linear infinite;display:inline-block}
+@keyframes sp{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,10px);background:var(--ink);color:var(--bg);padding:9px 14px;border-radius:var(--r-sm);font-size:13px;opacity:0;transition:.2s;z-index:40;pointer-events:none;box-shadow:var(--sh-2)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.off{position:fixed;inset:0;background:var(--bg);display:none;place-items:center;z-index:50;text-align:center;padding:30px}
+.off.on{display:grid}
+.off h1{font-size:20px;margin:12px 0 4px}
+.off p{color:var(--muted);margin:0}
+
+@media (max-width:1100px){.c4{grid-template-columns:repeat(2,minmax(0,1fr))}.c-main{grid-template-columns:1fr}}
+@media (max-width:860px){
+  .app{grid-template-columns:1fr}
+  .side{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}
+  .nav{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .navgroup{display:none}
+  .top{position:static;padding:12px 16px;flex-wrap:wrap}
+  .wrap{padding:20px 16px 48px}
+  .c2,.c3{grid-template-columns:1fr}
+  .dl .it{grid-template-columns:1fr;gap:2px}
+  .card-h .r{margin-left:0;width:100%;flex-wrap:wrap}
+  .search{flex:1;min-width:0}
+  .search input[type=text]{width:100%}
+  th[style]{width:auto!important}
+  .card-h{flex-wrap:wrap}
+  .summary{flex-wrap:wrap}
+}
+@media (max-width:480px){.c4{grid-template-columns:1fr 1fr}.top .acts .btn span{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="logo">LW</div><div><div class="brand-t">Local Agent Workspace</div><div class="brand-s" data-t="panel"></div></div></div>
+  <div class="projcard"><div class="avatar" id="sb-av">·</div><div style="min-width:0"><div class="nm" id="sb-name">…</div><div class="st"><span class="dot" id="sb-dot"></span><span id="sb-st"></span></div></div></div>
+  <div class="navgroup" data-t="g_work"></div>
+  <div class="nav" id="nav1"></div>
+  <div class="navgroup" data-t="g_setup"></div>
+  <div class="nav" id="nav2"></div>
+  <div class="side-foot">
+    <div class="lang" role="group" aria-label="Language"><button data-lang="vi" aria-pressed="true">VI</button><button data-lang="en" aria-pressed="false">EN</button></div>
+    <button class="iconbtn" id="b-theme" data-tt="theme"></button>
+    <button class="iconbtn" id="b-quit" data-tt="quit"></button>
+    <span class="ver" id="sb-ver"></span>
+  </div>
+</aside>
+
+<div class="main">
+  <header class="top">
+    <div class="crumb"><span id="cr-proj"></span> / <b id="cr-page"></b></div>
+    <div class="acts">
+      <button class="btn" data-open=""><span data-ico="folder"></span><span data-t="open_folder"></span></button>
+      <button class="btn" id="b-guide"><span data-ico="book"></span><span data-t="guide"></span></button>
+    </div>
+  </header>
+  <div class="wrap">
+
+  <!-- OVERVIEW -->
+  <section class="page on" id="pg-home">
+    <div class="banner warn" id="bn-init" hidden><div class="ic" data-ico="alert"></div><div><b data-t="bn_init_t"></b><p data-t="bn_init_p"></p></div><div class="r"><button class="btn pri" data-goto="setup" data-t="bn_init_b"></button></div></div>
+    <div class="card mb"><div class="summary"><div class="avatar" id="ov-av">·</div><div style="min-width:0;flex:1"><h1 id="ov-name">…</h1><div class="meta"><span class="path" id="ov-path" data-tt="copy_path"></span></div><div class="meta" id="ov-tags"></div></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-open="output"><span data-ico="inbox"></span><span data-t="open_output"></span></button><button class="btn" data-open=".agent/STATE.md"><span data-ico="file"></span>STATE.md</button></div></div></div>
+    <div class="grid c4 mb">
+      <div class="card kpi"><div class="ic" data-ico="spark"></div><div><div class="v" id="k-skills">0</div><div class="k" data-t="k_skills"></div></div></div>
+      <div class="card kpi"><div class="ic b" data-ico="box"></div><div><div class="v" id="k-packs">0</div><div class="k" data-t="k_packs"></div></div></div>
+      <div class="card kpi"><div class="ic g" data-ico="inbox"></div><div><div class="v" id="k-out">0</div><div class="k" data-t="k_out"></div></div></div>
+      <div class="card kpi"><div class="ic w" data-ico="library"></div><div><div class="v" id="k-ref">0</div><div class="k" data-t="k_ref"></div></div></div>
+    </div>
+    <div class="grid c-main mb">
+      <div class="card"><div class="card-h"><span data-ico="activity"></span><h2 data-t="state_t"></h2><div class="r"><span class="tag" id="st-time" hidden></span></div></div><div class="card-b" id="st-box"></div></div>
+      <div class="card"><div class="card-h"><span data-ico="zap"></span><h2 data-t="quick_t"></h2></div><div class="card-b actions" id="quick"></div></div>
+    </div>
+    <div class="card"><div class="card-h"><span data-ico="spark"></span><h2 data-t="skills_t"></h2><span class="sub" id="sk-count"></span>
+      <div class="r"><div class="chips" id="sk-filter"></div><div class="search"><span data-ico="search"></span><input type="text" id="sk-q" aria-label="search"></div></div></div>
+      <div class="tw"><table><thead><tr><th style="width:230px">Skill</th><th style="width:110px" data-t="col_scope"></th><th data-t="col_use"></th></tr></thead><tbody id="sk-rows"></tbody></table></div></div>
+  </section>
+
+  <!-- LIBRARY -->
+  <section class="page" id="pg-library">
+    <div class="ph"><h1 data-t="nav_library"></h1><p data-t="lb_p"></p></div>
+    <div class="banner" id="lb-none" hidden><div class="ic" data-ico="library"></div><div><b data-t="lb_none_t"></b><p data-t="lb_none_p"></p></div><div class="r"><button class="btn pri" id="lb-init" data-t="lb_init"></button></div></div>
+    <div class="grid c4 mb" id="lb-kpi">
+      <div class="card kpi"><div class="ic" data-ico="file"></div><div><div class="v" id="lb-rows">–</div><div class="k" data-t="lb_k1"></div></div></div>
+      <div class="card kpi"><div class="ic g" data-ico="folder"></div><div><div class="v" id="lb-files">–</div><div class="k" data-t="lb_k2"></div></div></div>
+      <div class="card kpi"><div class="ic w" data-ico="alert"></div><div><div class="v" id="lb-noft">–</div><div class="k" data-t="lb_k3"></div></div></div>
+      <div class="card kpi"><div class="ic b" data-ico="search"></div><div><div class="v" id="lb-chk">–</div><div class="k" data-t="lb_k4"></div></div></div>
+    </div>
+    <div class="card mb"><div class="card-h"><span data-ico="search"></span><h2 data-t="lb_find"></h2><div class="r">
+      <div class="chips" id="lb-grp"></div>
+      <button class="btn" data-open="references/_INDEX.xlsx"><span data-ico="file"></span><span data-t="lb_open_idx"></span></button>
+      <button class="btn" data-open="references"><span data-ico="folder"></span>references</button>
+      <button class="btn" id="lb-check"><span data-ico="shield"></span><span data-t="lb_check"></span></button></div></div>
+      <div class="card-b"><div class="inline"><input type="text" id="lb-q"><button class="btn pri" id="lb-go"><span data-ico="search"></span><span data-t="lb_go"></span></button></div></div>
+      <div class="tw"><table><thead><tr><th style="width:190px" data-t="lb_c1"></th><th data-t="lb_c2"></th><th style="width:150px" data-t="lb_c3"></th><th style="width:170px" data-t="lb_c4"></th><th style="width:120px" data-t="lb_c5"></th></tr></thead><tbody id="lb-rows-t"></tbody></table></div>
+    </div>
+  </section>
+
+  <!-- CHECK -->
+  <section class="page" id="pg-check">
+    <div class="ph"><h1 data-t="nav_check"></h1><p data-t="ck_p"></p></div>
+    <div class="card" style="max-width:820px"><div class="card-b form">
+      <button class="drop" id="ck-drop"><span data-ico="upload"></span><b data-t="ck_drop"></b><span data-t="ck_types"></span></button>
+      <div class="field"><label for="ck-path" data-t="ck_or"></label><div class="inline"><input type="text" id="ck-path" placeholder="D:\...\output\bao-cao.docx"><button class="btn" id="ck-add"><span data-ico="plus"></span><span data-t="add"></span></button></div></div>
+      <div class="files" id="ck-files"></div>
+      <label class="check"><input type="checkbox" id="ck-decl"><span data-t="ck_decl"></span></label>
+    </div><div class="formfoot"><span class="note" style="background:none;padding:0"><span data-ico="info"></span><span data-t="ck_ro"></span></span><div class="r"><button class="btn pri lg" id="ck-run"><span data-ico="check"></span><span data-t="ck_run"></span></button></div></div></div>
+  </section>
+
+  <!-- PACKS -->
+  <section class="page" id="pg-packs">
+    <div class="ph"><h1 data-t="nav_packs"></h1><p data-t="pk_p"></p></div>
+    <div class="note warn mb" id="pk-need" hidden><span data-ico="alert"></span><span style="flex:1"><span data-t="pk_need"></span> <a href="#" data-goto="upgrade" id="pk-need-a" data-t="pk_need_a"></a></span></div>
+    <div class="grid c2" id="pk-list"></div>
+  </section>
+
+  <!-- SKILLS -->
+  <section class="page" id="pg-skills">
+    <div class="ph"><h1 data-t="nav_skills"></h1><p data-t="sk_p"></p></div>
+    <div class="card" style="max-width:900px"><div class="card-b form">
+      <div class="flabel" data-t="sk_where"></div>
+      <div class="grid c3" style="gap:10px">
+        <label class="opt"><input type="radio" name="tg" value="claude" checked><div class="ic">C</div><div><b>Claude</b><span data-t="sk_claude"></span><div class="mono" id="d-claude"></div></div></label>
+        <label class="opt"><input type="radio" name="tg" value="agents"><div class="ic">C+G</div><div><b>Codex · Gemini CLI</b><span data-t="sk_agents"></span><div class="mono" id="d-agents"></div></div></label>
+        <label class="opt"><input type="radio" name="tg" value="custom"><div class="ic" data-ico="folder"></div><div><b data-t="sk_custom"></b><span data-t="sk_custom_d"></span></div></label>
+      </div>
+      <div class="field" id="sk-dest-f" hidden><label for="sk-dest" data-t="sk_dest"></label><div class="inline"><input type="text" id="sk-dest"><button class="btn" data-pick="sk-dest"><span data-t="choose"></span></button></div></div>
+      <label class="check"><input type="checkbox" id="sk-packs"><span data-t="sk_inc"></span></label>
+      <label class="check"><input type="checkbox" id="sk-over"><span data-t="sk_over"></span></label>
+    </div><div class="formfoot"><div class="steps"><span class="s on"><span class="n">1</span><span data-t="preview"></span></span><span class="ln"></span><span class="s"><span class="n">2</span><span data-t="apply"></span></span></div><div class="r"><button class="btn pri lg" id="sk-run"><span data-ico="eye"></span><span data-t="preview"></span></button></div></div></div>
+  </section>
+
+  <!-- SETUP -->
+  <section class="page" id="pg-setup">
+    <div class="ph"><h1 data-t="nav_setup"></h1><p data-t="su_p"></p></div>
+    <div class="seg mb" role="group" id="su-mode"><button aria-pressed="true" data-v="new" data-t="su_new"></button><button aria-pressed="false" data-v="adopt" data-t="su_adopt"></button></div>
+    <div class="card" id="su-new" style="max-width:900px"><div class="card-b form">
+      <div class="note warn" id="su-tpl" hidden><span data-ico="alert"></span><span data-t="su_tpl"></span></div>
+      <div class="note" id="su-inited" hidden><span data-ico="info"></span><span data-t="su_inited"></span></div>
+      <div class="grid c2">
+        <div class="field"><label for="f-name"><span data-t="f_name"></span><span class="req">*</span></label><input type="text" id="f-name"></div>
+        <div class="field"><span class="flabel" data-t="f_lang"></span><div class="seg" role="group" id="f-lang"><button aria-pressed="true" data-v="vi">Tiếng Việt</button><button aria-pressed="false" data-v="en">English</button></div></div>
+        <div class="field"><label for="f-purpose" data-t="f_purpose"></label><textarea id="f-purpose"></textarea></div>
+        <div class="field"><label for="f-outputs" data-t="f_outputs"></label><textarea id="f-outputs"></textarea></div>
+        <div class="field"><label for="f-style" data-t="f_style"></label><textarea id="f-style"></textarea></div>
+        <div class="field"><label for="f-sources" data-t="f_sources"></label><textarea id="f-sources"></textarea></div>
+        <div class="field"><label for="f-constraints" data-t="f_constraints"></label><textarea id="f-constraints"></textarea></div>
+        <div class="field"><label for="f-sensitivity" data-t="f_sensitivity"></label><textarea id="f-sensitivity"></textarea></div>
+      </div>
+      <div class="hint" style="color:var(--muted);font-size:12.5px" data-t="f_hint"></div>
+    </div><div class="formfoot"><div class="steps"><span class="s on"><span class="n">1</span><span data-t="preview"></span></span><span class="ln"></span><span class="s"><span class="n">2</span><span data-t="apply"></span></span></div><div class="r"><button class="btn pri lg" id="su-run"><span data-ico="eye"></span><span data-t="preview"></span></button></div></div></div>
+    <div class="card" id="su-adopt" style="max-width:900px" hidden><div class="card-b form">
+      <div class="field"><label for="a-dir" data-t="a_dir"></label><div class="inline"><input type="text" id="a-dir" placeholder="D:\..."><button class="btn" data-pick="a-dir"><span data-t="choose"></span></button></div><span class="hint" data-t="a_hint"></span></div>
+      <div class="grid c2">
+        <div class="field"><label for="a-name"><span data-t="f_name"></span><span class="req">*</span></label><input type="text" id="a-name"></div>
+        <div class="field"><span class="flabel" data-t="f_lang"></span><div class="seg" role="group" id="a-lang"><button aria-pressed="true" data-v="vi">Tiếng Việt</button><button aria-pressed="false" data-v="en">English</button></div></div>
+      </div>
+    </div><div class="formfoot"><div class="steps"><span class="s on"><span class="n">1</span><span data-t="preview"></span></span><span class="ln"></span><span class="s"><span class="n">2</span><span data-t="apply"></span></span></div><div class="r"><button class="btn pri lg" id="a-run"><span data-ico="eye"></span><span data-t="preview"></span></button></div></div></div>
+  </section>
+
+  <!-- UPGRADE -->
+  <section class="page" id="pg-upgrade">
+    <div class="ph"><h1 data-t="nav_upgrade"></h1><p data-t="up_p"></p></div>
+    <div class="seg mb" role="group" id="up-mode"><button aria-pressed="true" data-v="self" data-t="up_self"></button><button aria-pressed="false" data-v="other" data-t="up_other"></button></div>
+    <div class="card" style="max-width:900px"><div class="card-b form">
+      <div class="note" id="up-other-n" hidden><span data-ico="info"></span><span data-t="up_other_p"></span></div>
+      <div class="field"><label for="u-dir" id="u-lbl" data-t="up_from"></label><div class="inline"><input type="text" id="u-dir" placeholder="D:\goi-moi\local-agent-workspace-..."><button class="btn" data-pick="u-dir"><span data-t="choose"></span></button></div></div>
+      <div class="grid c3" style="gap:10px">
+        <div class="note"><span data-ico="check"></span><span data-t="up_r1"></span></div>
+        <div class="note"><span data-ico="shield"></span><span data-t="up_r2"></span></div>
+        <div class="note"><span data-ico="merge"></span><span data-t="up_r3"></span></div>
+      </div>
+    </div><div class="formfoot"><span class="tag" id="up-cur"></span><div class="r"><button class="btn pri lg" id="u-run"><span data-ico="eye"></span><span data-t="preview"></span></button></div></div></div>
+  </section>
+
+  <!-- MAINTAIN -->
+  <section class="page" id="pg-maintain">
+    <div class="ph"><h1 data-t="nav_maintain"></h1><p data-t="mt_p"></p></div>
+    <div class="card rows" style="max-width:900px">
+      <div class="rw"><div class="ic" data-ico="shield"></div><div><b data-t="mt1"></b><span data-t="mt1d"></span></div><button class="btn" id="m-verify" data-t="run"></button></div>
+      <div class="rw"><div class="ic" data-ico="list"></div><div><b data-t="mt2"></b><span data-t="mt2d"></span></div><button class="btn" id="m-check" data-t="run"></button></div>
+      <div class="rw"><div class="ic" data-ico="book"></div><div><b data-t="mt3"></b><span data-t="mt3d"></span></div><button class="btn" id="m-guides" data-t="run"></button></div>
+      <div class="rw"><div class="ic" data-ico="package"></div><div><b data-t="mt4"></b><span data-t="mt4d"></span></div><button class="btn" id="m-release" data-t="run"></button></div>
+    </div>
+  </section>
+  </div>
+</div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-t">
+  <div class="sh-h"><span id="sh-ic" data-ico="terminal"></span><span class="t" id="sh-t"></span><span id="sh-tag"></span><button class="iconbtn" id="sh-x" data-tt="close"></button></div>
+  <div class="sh-b">
+    <div class="steps" id="sh-steps"><span class="s on" id="sh-s1"><span class="n">1</span><span data-t="preview"></span></span><span class="ln"></span><span class="s" id="sh-s2"><span class="n">2</span><span data-t="apply"></span></span></div>
+    <div class="cmd" id="sh-cmd" hidden><code id="sh-code"></code><button class="iconbtn" id="sh-cc" data-tt="copy"></button></div>
+    <pre class="term" id="sh-out" tabindex="0"></pre>
+  </div>
+  <div class="sh-f"><span class="msg" id="sh-msg"></span><button class="btn" id="sh-close" data-t="close"></button><button class="btn pri" id="sh-apply" hidden></button></div>
+</aside>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="off" id="off"><div><div class="empty" style="padding:0"><div class="ic" data-ico="power"></div></div><h1 data-t="off_t"></h1><p data-t="off_p"></p></div></div>
+
+<script>
+(function(){
+'use strict';
+var TOKEN='__PANEL_TOKEN__';
+var ICONS={
+ home:'<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+ check:'<path d="M20 6 9 17l-5-5"/>',
+ box:'<path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/>',
+ monitor:'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
+ plus:'<path d="M12 5v14M5 12h14"/>',
+ up:'<path d="M12 19V5M5 12l7-7 7 7"/>',
+ gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
+ folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+ book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',
+ alert:'<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',
+ inbox:'<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5.1 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.5-6.9A2 2 0 0 0 16.8 4H7.2a2 2 0 0 0-1.7 1.1z"/>',
+ file:'<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/>',
+ spark:'<path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/>',
+ library:'<path d="M4 4v16M9 4v16M14 4l5 16"/>',
+ activity:'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
+ zap:'<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>',
+ search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+ upload:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>',
+ info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
+ eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+ shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+ merge:'<circle cx="6" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="12" r="2"/><path d="M6 8v8M8 6h3a5 5 0 0 1 5 5"/>',
+ list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+ package:'<path d="m16.5 9.4-9-5.2M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.7z"/><path d="M3.3 7 12 12l8.7-5M12 22V12"/>',
+ terminal:'<path d="m4 17 6-6-6-6M12 19h8"/>',
+ x:'<path d="M18 6 6 18M6 6l12 12"/>',
+ copy:'<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+ sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+ moon:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
+ power:'<path d="M18.4 6.6a9 9 0 1 1-12.8 0M12 2v10"/>',
+ chev:'<path d="m9 18 6-6-6-6"/>',
+ trash:'<path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>',
+ refresh:'<path d="M21 12a9 9 0 0 1-15.5 6.2L3 16M3 12A9 9 0 0 1 18.5 5.8L21 8M21 3v5h-5M3 21v-5h5"/>',
+ scale:'<path d="M12 3v18M5 7h14M7 7l-3 7a4 4 0 0 0 6 0zM17 7l-3 7a4 4 0 0 0 6 0z"/>',
+ anchor:'<circle cx="12" cy="5" r="2"/><path d="M12 7v14M5 12H2a10 10 0 0 0 20 0h-3"/>',
+ users:'<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M16 4a3 3 0 0 1 0 6M21 20a6 6 0 0 0-4-5.7"/>',
+ calc:'<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M8 6h8M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01M8 19h8"/>',
+ archive:'<rect x="2" y="4" width="20" height="5" rx="1"/><path d="M4 9v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9M10 13h4"/>'
+};
+function ico(n,c){return'<svg class="i'+(c?' '+c:'')+'" viewBox="0 0 24 24" aria-hidden="true">'+(ICONS[n]||'')+'</svg>';}
+var D={
+ panel:['Bảng điều khiển','Control panel'],g_work:['Làm việc','Work'],g_setup:['Thiết lập','Setup'],
+ nav_home:['Tổng quan','Overview'],nav_check:['Kiểm tra trước khi giao','Check before delivery'],nav_packs:['Gói lĩnh vực','Domain packs'],nav_skills:['Cài skill vào ứng dụng','Install skills into apps'],
+ nav_setup:['Khởi tạo','Set up'],nav_library:['Thư viện nguồn','Source library'],
+ lb_p:['Văn bản pháp luật, quy chế nội bộ, mẫu biểu của project trong references/, ghi trong một chỉ mục references/_INDEX.xlsx. Agent tra ở đây trước khi trích dẫn; không có toàn văn thì không trích nguyên văn.','The project\u2019s legal documents, internal rules and templates in references/, recorded in one index references/_INDEX.xlsx. The agent looks here before quoting; without full text there are no verbatim quotes.'],
+ lb_none_t:['Chưa có chỉ mục thư viện','No library index yet'],lb_none_p:['Tạo khung thư mục (legal, policies, templates, source-documents) và file chỉ mục mẫu. Không ghi đè gì đã có.','Create the folders (legal, policies, templates, source-documents) and the index template. Nothing existing is overwritten.'],lb_init:['Tạo khung thư viện','Create the library'],
+ lb_k1:['Văn bản trong chỉ mục','Documents in the index'],lb_k2:['File trong references/','Files in references/'],lb_k3:['Chưa có toàn văn','Without full text'],lb_k4:['Cần đối chiếu','Need checking'],
+ lb_find:['Tra cứu','Search'],lb_open_idx:['Mở chỉ mục','Open index'],lb_check:['Kiểm tra','Check'],lb_go:['Tìm','Search'],lb_ph:['Số hiệu hoặc từ khóa, ví dụ 30/2020 hoặc noi quy lao dong','Number or keyword, e.g. 30/2020 or noi quy lao dong'],
+ lb_c1:['Số, ký hiệu','Number'],lb_c2:['Trích yếu','Title'],lb_c3:['Tình trạng','Status'],lb_c4:['Xác minh','Verification'],lb_c5:['Toàn văn','Full text'],
+ lb_empty:['Nhập từ khóa để tìm trong chỉ mục.','Type a keyword to search the index.'],lb_nohit:['Không thấy văn bản khớp. Chưa có trong thư viện thì không trích nguyên văn.','No matching document. Not in the library means no verbatim quotes.'],
+ lb_open:['Mở','Open'],lb_noft:['Không có','None'],lb_t_check:['Kiểm tra thư viện nguồn','Check the source library'],lb_t_init:['Tạo khung thư viện','Create the library'],nav_upgrade:['Nâng cấp package','Upgrade package'],nav_maintain:['Bảo trì','Maintenance'],
+ theme:['Đổi nền sáng/tối','Toggle light/dark'],quit:['Tắt bảng điều khiển','Stop the panel'],open_folder:['Mở thư mục','Open folder'],guide:['Hướng dẫn','Guide'],open_output:['Mở output','Open output'],copy_path:['Bấm để chép đường dẫn','Click to copy the path'],
+ st_ready:['Đã khởi tạo','Set up'],st_notinit:['Chưa khởi tạo','Not set up'],
+ bn_init_t:['Thư mục này chưa là project','This folder is not a project yet'],bn_init_p:['Khởi tạo để điền PROJECT.md, đặt STATE sạch và bật các chức năng cài gói, nâng cấp.','Set it up to fill PROJECT.md, start a clean STATE and enable packs and upgrades.'],bn_init_b:['Khởi tạo','Set up'],
+ k_skills:['Skill trong chỉ mục','Skills in the index'],k_packs:['Gói lĩnh vực đã cài','Domain packs installed'],k_out:['File trong output','Files in output'],k_ref:['File nguồn (references)','Source files (references)'],
+ state_t:['Trạng thái công việc','Work status'],quick_t:['Lối tắt','Shortcuts'],state_empty:['Chưa có trạng thái','No status yet'],state_empty_p:['Agent ghi vào .agent/STATE.md khi làm việc: mục tiêu, giai đoạn, việc chờ bạn.','The agent writes .agent/STATE.md while working: goal, phase, what waits on you.'],
+ upd:['cập nhật','updated'],
+ q1:['Kiểm tra file trước khi giao','Check a file before delivery'],q1d:['Chỗ chưa điền, nhãn mẫu, tài nguyên mạng','Placeholders, demo labels, network resources'],
+ q2:['Gói lĩnh vực','Domain packs'],q2d:['Cài bộ skill theo mảng việc','Install skill sets by line of work'],
+ q3:['Đưa skill vào Claude, Codex, Gemini','Put skills into Claude, Codex, Gemini'],q3d:['Hiện trong menu của ứng dụng','Show them in the app menu'],
+ q4:['Nâng cấp package','Upgrade the package'],q4d:['Giữ nguyên file bạn đã sửa','Keeps the files you changed'],
+ skills_t:['Skill trong project','Skills in this project'],col_scope:['Phạm vi','Scope'],col_use:['Dùng khi','Use when'],all:['Tất cả','All'],f_shared:['Dùng chung','Shared'],f_pack:['Gói','Pack'],f_proj:['Riêng','Project'],no_match:['Không có skill phù hợp.','No matching skill.'],n_skills:['skill','skills'],
+ ck_p:['Kiểm tra cơ học: chỗ chưa điền, nhãn mẫu minh họa còn sót, tài nguyên mạng trong HTML, lỗi bảng tính. Không thay việc đọc lại và đối chiếu số liệu với nguồn.','A mechanical check: unfilled placeholders, leftover demo labels, network resources in HTML, spreadsheet issues. It does not replace re-reading and checking figures against sources.'],
+ ck_drop:['Chọn file cần kiểm tra','Choose files to check'],ck_types:['.docx · .xlsx · .csv · .html · .md · .txt','.docx · .xlsx · .csv · .html · .md · .txt'],ck_or:['Hoặc dán đường dẫn file','Or paste a file path'],add:['Thêm','Add'],
+ ck_decl:['Đây là câu trả lời đã lưu của agent: kiểm khối "Khai báo thực hiện"','This is a saved agent reply: check the "Execution declaration" block'],ck_ro:['Chỉ đọc, không sửa file.','Read only; files are not changed.'],ck_run:['Kiểm tra','Check'],ck_none:['Chọn ít nhất một file.','Choose at least one file.'],
+ pk_p:['Bộ skill theo mảng việc, cài vào project khi cần. Mỗi gói có bảng căn cứ pháp lý ghi số hiệu, điều khoản và ngày đối chiếu để bạn kiểm lại. Gỡ gói chỉ chuyển thư mục vào archive/.','Skill sets by line of work, installed into a project when needed. Each pack has a legal-basis table with numbers, articles and the check date so you can verify. Removing a pack only moves its folder into archive/.'],
+ pk_need:['Đây là thư mục package gốc, chưa phải project, nên chưa cài gói ở đây. Để dùng gói cho một project (ví dụ TIEN 081): đưa bản package này vào project đó, rồi mở APP.bat trong thư mục project để cài gói.','This is the original package folder, not a project, so packs are not installed here. To use packs in a project: bring this package version into that project, then open APP.bat in the project folder to install packs.'],
+ pk_need_a:['Đưa vào project →','Bring into a project →'],pk_to_proj:['Cài vào project','Install in a project'],
+ up_self:['Nâng cấp thư mục này','Upgrade this folder'],up_other:['Đưa bản này vào project khác','Bring this version into another project'],
+ up_other_p:['Dùng bản package đang mở để nâng cấp một project đã có (thêm file mới, cập nhật file chưa sửa, giữ file bạn đã sửa). Project chưa từng dùng package thì dùng Khởi tạo → Project đã có.','Use the package you have open to upgrade an existing project (adds new files, updates untouched files, keeps the ones you changed). A project that never used the package: use Set up → Existing project.'],
+ up_to:['Thư mục project cần nâng cấp','Project folder to upgrade'],
+ installed:['Đã cài','Installed'],available:['Có sẵn','Available'],newer:['Có bản mới','Update available'],install:['Cài gói','Install'],update:['Cập nhật','Update'],remove:['Gỡ','Remove'],no_packs:['Chưa có gói nào trong packs/.','No pack in packs/ yet.'],confirm_remove:['Gỡ gói này? Thư mục của gói được chuyển vào archive/, không xóa.','Remove this pack? Its folder is moved into archive/, nothing is deleted.'],
+ sk_p:['Chép skill vào thư mục skill của ứng dụng để chúng hiện trong menu. Cùng định dạng SKILL.md dùng được cho cả Claude, Codex và Gemini CLI. Không ghi đè skill đã có, trừ khi bạn chọn.','Copy skills into an app\u2019s skills folder so they show up in its menu. The same SKILL.md format works in Claude, Codex and Gemini CLI. Existing skills are not overwritten unless you choose to.'],
+ sk_where:['Chép vào đâu?','Copy to where?'],sk_claude:['Claude Desktop, Cowork, Claude Code','Claude Desktop, Cowork, Claude Code'],sk_agents:['Hai ứng dụng cùng đọc thư mục này','Both apps read this folder'],sk_custom:['Thư mục khác','Another folder'],sk_custom_d:['Antigravity hoặc ứng dụng khác','Antigravity or another app'],
+ sk_dest:['Thư mục đích','Destination folder'],choose:['Chọn…','Choose…'],sk_inc:['Kèm skill của gói lĩnh vực đã cài','Include skills from installed domain packs'],sk_over:['Ghi đè skill trùng tên đã có ở đích','Overwrite skills with the same name at the destination'],
+ preview:['Xem trước','Preview'],apply:['Thực hiện','Apply'],
+ su_p:['Tạo project từ thư mục này, hoặc đưa package vào một project đã có. Mọi thao tác xem trước rồi mới ghi; không xóa file nào.','Create a project from this folder, or bring the package into an existing project. Every action is previewed before writing; no file is deleted.'],
+ su_new:['Project mới (thư mục này)','New project (this folder)'],su_adopt:['Project đã có','Existing project'],
+ su_tpl:['Thư mục này mang tên package gốc. Nên sao chép ra thư mục mới đặt theo tên project rồi khởi tạo ở đó, để giữ bản gốc dùng cho project khác.','This folder still has the original package name. Copy it to a new folder named after the project and set up there, keeping the original for other projects.'],
+ su_inited:['Thư mục này đã khởi tạo. Chạy lại chỉ điền các dòng còn trống trong PROJECT.md; dòng đã có nội dung và STATE được giữ nguyên.','This folder is already set up. Running again only fills empty lines in PROJECT.md; lines with content and STATE are kept.'],
+ f_name:['Tên project','Project name'],f_lang:['Ngôn ngữ của project','Project language'],f_purpose:['Mục đích và người đọc','Purpose and readers'],f_outputs:['Đầu ra mong đợi','Expected outputs'],f_style:['Ngôn ngữ và văn phong','Language and style'],f_sources:['Nguồn, mẫu chính đã duyệt','Main approved sources and templates'],f_constraints:['Ràng buộc quan trọng','Important constraints'],f_sensitivity:['Mức nhạy cảm dữ liệu','Data sensitivity'],
+ f_hint:['Ô nào chưa biết thì để trống, điền sau trong PROJECT.md.','Leave unknown fields empty and fill them in PROJECT.md later.'],
+ a_dir:['Thư mục project đã có','Existing project folder'],a_hint:['Thêm file còn thiếu; file của bạn được giữ, bản của package lưu thành .new hoặc .bak.','Adds missing files; your files are kept and the package versions are saved as .new or .bak.'],
+ up_p:['Giải nén bản package mới ra một thư mục riêng, chọn thư mục đó rồi xem trước.','Unzip the new package into its own folder, choose that folder and preview.'],up_from:['Thư mục package mới','New package folder'],
+ up_r1:['File chưa ai sửa được cập nhật lên bản mới','Untouched files are updated'],up_r2:['File bạn đã sửa được giữ nguyên','Files you changed are kept'],up_r3:['Hai bên cùng đổi thì bản mới lưu thành .new','When both changed, the new one is saved as .new'],cur:['Bản hiện tại','Current version'],
+ mt_p:['Dành cho người duy trì package, hoặc khi cần kiểm tra project còn nguyên vẹn.','For the package maintainer, or to check that a project is intact.'],
+ mt1:['Kiểm tra nguyên vẹn','Integrity check'],mt1d:['So file với MANIFEST: file nào của package đã bị sửa hoặc thiếu','Compare with MANIFEST: which package files were changed or are missing'],
+ mt2:['Kiểm tra package','Check the package'],mt2d:['Cấu trúc, chỉ mục skill, bản tiếng Anh, số phiên bản, các gói','Structure, skill index, English copies, versions, packs'],
+ mt3:['Dựng lại hướng dẫn HTML','Rebuild the HTML guides'],mt3d:['Sau khi sửa Markdown trong docs/','After editing the Markdown in docs/'],
+ mt4:['Đóng gói phát hành','Build a release'],mt4d:['Kiểm tra, ghi MANIFEST, đóng ZIP vào dist/; working/, output/, archive/ phải trống','Check, write MANIFEST, build the ZIP into dist/; working/, output/, archive/ must be empty'],run:['Chạy','Run'],
+ close:['Đóng','Close'],copy:['Chép','Copy'],copied:['Đã chép','Copied'],running:['Đang chạy…','Running…'],ok:['Thành công','Succeeded'],fail:['Cần xem lại','Needs attention'],bad:['Thiếu thông tin','Missing input'],
+ m_preview:['Mới xem trước, chưa ghi gì. Đọc kết quả rồi bấm Thực hiện.','Preview only, nothing written yet. Read it, then press Apply.'],m_nothing:['Không có gì cần thay đổi.','Nothing to change.'],m_done:['Đã ghi thay đổi.','Changes written.'],m_ro:['Chỉ đọc, không ghi gì.','Read only, nothing written.'],
+ pick_fail:['Không mở được hộp chọn; hãy dán đường dẫn.','The picker is not available; paste the path instead.'],
+ off_t:['Đã tắt bảng điều khiển','The control panel has stopped'],off_p:['Có thể đóng trang này. Mở lại bằng APP.bat hoặc APP.command.','You can close this page. Open it again with APP.bat or APP.command.'],
+ t_init:['Khởi tạo project','Set up project'],t_adopt:['Đưa vào project đã có','Bring into existing project'],t_up:['Nâng cấp package','Upgrade package'],t_pack:['Gói','Pack'],t_check:['Kiểm tra trước khi giao','Check before delivery'],t_install:['Cài skill vào ứng dụng','Install skills'],
+ SEC_Goal:['Mục tiêu','Goal'],'SEC_Current phase':['Giai đoạn hiện tại','Current phase'],SEC_Completed:['Đã xong','Completed'],'SEC_Current artifact':['Sản phẩm hiện hành','Current artifact'],'SEC_Open items':['Việc còn mở','Open items'],'SEC_Waiting on user':['Đang chờ bạn','Waiting on you'],SEC_Decisions:['Quyết định','Decisions'],'SEC_Next milestone':['Mốc tiếp theo','Next milestone']
+};
+var PACK_ICON={'phap-ly':'scale','van-thu-luu-tru':'archive','cang-logistics':'anchor','hanh-chinh-nhan-su':'users','ke-toan-noi-bo':'calc'};
+var NAV=[['nav1',[['home','home','nav_home'],['library','library','nav_library'],['check','check','nav_check'],['packs','box','nav_packs'],['skills','monitor','nav_skills']]],['nav2',[['setup','plus','nav_setup'],['upgrade','up','nav_upgrade'],['maintain','gear','nav_maintain']]]];
+var lang='vi',S=null,files=[],pending=null,page='home',skFilter='all';
+function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);}catch(e){return null;}}
+function $(id){return document.getElementById(id);}
+function t(k){var v=D[k];return v?v[lang==='en'?1:0]:k;}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function initials(n){n=(n||'').replace(/[^\p{L}\p{N} ]/gu,' ').trim().split(/\s+/);return((n[0]||'·')[0]+(n.length>1?n[n.length-1][0]:(n[0]||'')[1]||'')).toUpperCase();}
+function api(path,body){return fetch(path,{method:'POST',headers:{'Content-Type':'application/json','X-Panel-Token':TOKEN},body:JSON.stringify(body||{})}).then(function(r){if(r.status===403)throw new Error('forbidden');return r.json();});}
+function toast(m){var e=$('toast');e.textContent=m;e.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(function(){e.classList.remove('on');},2000);}
+// static text and icons
+function paint(){
+  document.documentElement.lang=lang;
+  document.querySelectorAll('[data-t]').forEach(function(el){el.textContent=t(el.dataset.t);});
+  document.querySelectorAll('[data-tt]').forEach(function(el){el.title=t(el.dataset.tt);el.setAttribute('aria-label',t(el.dataset.tt));});
+  document.querySelectorAll('.lang button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.lang===lang?'true':'false');});
+  $('sk-q').placeholder=lang==='en'?'Search skills':'Tìm skill';
+  NAV.forEach(function(g){$(g[0]).innerHTML=g[1].map(function(n){return'<button data-page="'+n[0]+'"'+(n[0]===page?' aria-current="page"':'')+'>'+ico(n[1])+'<span>'+esc(t(n[2]))+'</span>'+(n[0]==='packs'&&S?'<span class="badge">'+(S.packs.items||[]).length+'</span>':'')+'</button>';}).join('');});
+  document.querySelectorAll('.nav button').forEach(function(b){b.addEventListener('click',function(){go(b.dataset.page);});});
+  $('cr-page').textContent=t(NAV[0][1].concat(NAV[1][1]).filter(function(n){return n[0]===page;})[0][2]);
+  if(S)render();
+}
+document.querySelectorAll('[data-ico]').forEach(function(el){el.insertAdjacentHTML('afterbegin',ico(el.dataset.ico));});
+$('b-quit').innerHTML=ico('power');$('sh-x').innerHTML=ico('x');$('sh-cc').innerHTML=ico('copy');
+function themeIcon(){var d=document.documentElement.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');$('b-theme').innerHTML=ico(d==='dark'?'sun':'moon');}
+function go(p){if(p==='library'){setTimeout(function(){lbStats();lbChips();if(!$('lb-rows-t').innerHTML)lbFind();},0);}page=p;document.querySelectorAll('.page').forEach(function(x){x.classList.toggle('on',x.id==='pg-'+p);});store('panel.page',p);paint();window.scrollTo(0,0);}
+document.addEventListener('click',function(e){var g=e.target.closest('[data-goto]');if(g){e.preventDefault();go(g.dataset.goto);}var o=e.target.closest('[data-open]');if(o)openPath(o.dataset.open);});
+function openPath(p){api('/api/open',{path:p}).then(function(r){if(r.input_error)toast(r.out);});}
+$('b-guide').addEventListener('click',function(){openPath(lang==='en'?'START_HERE.en.html':'START_HERE.html');});
+$('ov-path').addEventListener('click',function(){if(!S)return;(navigator.clipboard?navigator.clipboard.writeText(S.root):Promise.reject()).then(function(){toast(t('copied'));},function(){});});
+function seg(id,cb){var g=$(id);g.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){g.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});if(cb)cb(b.dataset.v);});});}
+function segVal(id){var b=$(id).querySelector('[aria-pressed="true"]');return b?b.dataset.v:'vi';}
+seg('f-lang');seg('a-lang');seg('su-mode',function(v){$('su-new').hidden=v!=='new';$('su-adopt').hidden=v!=='adopt';});
+document.querySelectorAll('[data-pick]').forEach(function(b){b.addEventListener('click',function(){b.disabled=true;
+  api('/api/pick',{kind:'dir'}).then(function(r){b.disabled=false;if(r.paths&&r.paths.length){$(b.dataset.pick).value=r.paths[0];if(b.dataset.pick==='a-dir')autoName();}else if(r.error)toast(t('pick_fail'));}).catch(function(){b.disabled=false;toast(t('pick_fail'));});});});
+// result sheet
+var lastFocus=null;
+function openSheet(title,icon,steps){lastFocus=document.activeElement;$('sh-t').textContent=title;$('sh-ic').innerHTML=ico(icon||'terminal');$('sh-steps').hidden=!steps;$('sh-s1').classList.add('on');$('sh-s2').classList.remove('on');
+  $('sh-tag').innerHTML='<span class="tag info"><span class="spin"></span>'+esc(t('running'))+'</span>';$('sh-cmd').hidden=true;$('sh-out').innerHTML='';$('sh-msg').textContent='';$('sh-apply').hidden=true;
+  $('sheet').classList.add('on');$('scrim').classList.add('on');setTimeout(function(){$('sh-x').focus();},50);}
+function closeSheet(){$('sheet').classList.remove('on');$('scrim').classList.remove('on');pending=null;if(lastFocus)lastFocus.focus();}
+$('sh-x').addEventListener('click',closeSheet);$('sh-close').addEventListener('click',closeSheet);$('scrim').addEventListener('click',closeSheet);
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&$('sheet').classList.contains('on'))closeSheet();});
+$('sh-cc').addEventListener('click',function(){var x=$('sh-code').textContent+'\n\n'+$('sh-out').textContent;(navigator.clipboard?navigator.clipboard.writeText(x):Promise.reject()).then(function(){toast(t('copied'));},function(){});});
+function colorize(s){return esc(s).split('\n').map(function(l){
+  if(/^\s*(LỖI|ERROR|KHÔNG ĐẠT|CẦN SỬA|FAIL)/i.test(l))return'<span class="err">'+l+'</span>';
+  if(/^\s*(CẢNH BÁO|WARNING|Cảnh báo)/i.test(l))return'<span class="warn">'+l+'</span>';
+  if(/^\s*(ĐẠT|PASS|Đã |Xong|Done|OK\b)/.test(l))return'<span class="ok">'+l+'</span>';
+  if(/^\s*\[(XEM TRƯỚC|CHẠY THỬ|PREVIEW|DRY RUN)/i.test(l))return'<span class="dim">'+l+'</span>';return l;}).join('\n');}
+var NOTHING=/Không có gì cần|Nothing to (update|do|change)|0 file đã đổi, 0 file thiếu/i;
+function run(title,icon,act,params,opts){opts=opts||{};openSheet(title,icon,opts.preview);
+  return api('/api/run',{action:act,params:params}).then(function(r){
+    if(r.cmd){$('sh-code').textContent=r.cmd;$('sh-cmd').hidden=false;}
+    $('sh-out').innerHTML=colorize(r.out||'');
+    var ok=r.code===0;
+    $('sh-tag').innerHTML='<span class="tag '+(ok?'ok':(r.input_error?'warn':'err'))+'">'+ico(ok?'check':'alert')+esc(ok?t('ok'):(r.input_error?t('bad'):t('fail')))+'</span>';
+    if(params&&params.apply){$('sh-s2').classList.add('on');if(ok)$('sh-msg').textContent=t('m_done');}
+    else if(opts.preview&&ok){
+      if(NOTHING.test(r.out||'')){$('sh-msg').textContent=t('m_nothing');}
+      else{$('sh-msg').textContent=t('m_preview');var a=$('sh-apply');a.innerHTML=ico('check')+esc(t('apply'));a.hidden=false;
+        pending=function(){run(title,icon,act,Object.assign({},params,{apply:true}),{preview:true,after:opts.after});};}}
+    else if(opts.ro){$('sh-msg').textContent=t('m_ro');}
+    if(ok&&opts.after)opts.after();
+  }).catch(function(e){$('sh-tag').innerHTML='<span class="tag err">'+esc(t('fail'))+'</span>';$('sh-out').textContent=String(e);});}
+$('sh-apply').addEventListener('click',function(){if(pending){var f=pending;pending=null;f();}});
+// actions
+$('su-run').addEventListener('click',function(){var p={name:$('f-name').value,lang:segVal('f-lang')};['purpose','outputs','style','sources','constraints','sensitivity'].forEach(function(k){p[k]=$('f-'+k).value;});run(t('t_init'),'plus','init',p,{preview:true,after:refresh});});
+function autoName(){var v=$('a-dir').value.trim().replace(/[\\\/]+$/,'');if(v&&!$('a-name').value.trim())$('a-name').value=v.split(/[\\\/]/).pop();}
+$('a-dir').addEventListener('change',autoName);$('a-dir').addEventListener('blur',autoName);
+$('a-run').addEventListener('click',function(){autoName();run(t('t_adopt'),'merge','adopt',{project:$('a-dir').value,name:$('a-name').value,lang:segVal('a-lang')},{preview:true});});
+var upMode='self';
+seg('up-mode',function(v){setUpMode(v);});
+function setUpMode(v){upMode=v;$('up-mode').querySelectorAll('button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.v===v?'true':'false');});$('up-other-n').hidden=v!=='other';$('u-lbl').textContent=t(v==='other'?'up_to':'up_from');$('u-dir').placeholder=v==='other'?'D:\\UNG DUNG AI\\TEN PROJECT':'D:\\goi-moi\\local-agent-workspace-...';}
+$('u-run').addEventListener('click',function(){if(upMode==='other')run(t('up_other'),'up','upgrade_other',{project:$('u-dir').value},{preview:true});else run(t('t_up'),'up','upgrade',{source:$('u-dir').value},{preview:true,after:refresh});});
+function target(){var c=document.querySelector('input[name=tg]:checked');return c?c.value:'claude';}
+document.querySelectorAll('input[name=tg]').forEach(function(r){r.addEventListener('change',function(){$('sk-dest-f').hidden=target()!=='custom';});});
+$('sk-run').addEventListener('click',function(){run(t('t_install'),'monitor','install_skills',{target:target(),dest:$('sk-dest').value,include_packs:$('sk-packs').checked,overwrite:$('sk-over').checked},{preview:true});});
+function drawFiles(){$('ck-files').innerHTML=files.map(function(f,i){return'<div class="file">'+ico('file')+'<span class="mono" title="'+esc(f)+'">'+esc(f)+'</span><button class="iconbtn" data-rm="'+i+'" aria-label="x">'+ico('x')+'</button></div>';}).join('');
+  $('ck-files').querySelectorAll('[data-rm]').forEach(function(b){b.addEventListener('click',function(){files.splice(+b.dataset.rm,1);drawFiles();});});}
+$('ck-drop').addEventListener('click',function(){api('/api/pick',{kind:'files'}).then(function(r){(r.paths||[]).forEach(function(p){if(files.indexOf(p)<0)files.push(p);});if(r.error)toast(t('pick_fail'));drawFiles();}).catch(function(){toast(t('pick_fail'));});});
+$('ck-add').addEventListener('click',function(){var v=$('ck-path').value.trim().replace(/^"|"$/g,'');if(v&&files.indexOf(v)<0)files.push(v);$('ck-path').value='';drawFiles();});
+$('ck-path').addEventListener('keydown',function(e){if(e.key==='Enter')$('ck-add').click();});
+$('ck-run').addEventListener('click',function(){if(!files.length){toast(t('ck_none'));return;}run(t('t_check'),'check','check_output',{files:files,declaration:$('ck-decl').checked},{ro:true});});
+$('m-verify').addEventListener('click',function(){run(t('mt1'),'shield','check_package',{verify:true},{ro:true});});
+$('m-check').addEventListener('click',function(){run(t('mt2'),'list','check_package',{},{ro:true});});
+$('m-guides').addEventListener('click',function(){run(t('mt3'),'book','build_guides',{});});
+$('m-release').addEventListener('click',function(){run(t('mt4'),'package','build_release',{});});
+var lbGroup='';
+function lbStats(){api('/api/run',{action:'library_stats',params:{}}).then(function(r){var d=null;try{d=JSON.parse(r.out);}catch(e){}
+  var none=!d||!d.index;$('lb-none').hidden=!none;
+  $('lb-rows').textContent=d&&d.index?d.rows:'–';$('lb-files').textContent=d?d.files:'–';$('lb-noft').textContent=d&&d.index?d.no_fulltext:'–';$('lb-chk').textContent=d&&d.index?d.needs_check:'–';});}
+function lbTag(st){var f=(st||'').toLowerCase();var c=f.indexOf('còn')===0?'ok':(f.indexOf('hết hiệu lực một')===0?'warn':(f.indexOf('hết')===0?'err':(f.indexOf('sắp')===0?'info':'')));return'<span class="tag '+c+'">'+esc(st||'?')+'</span>';}
+function lbFind(){var q=$('lb-q').value.trim();if(!q){$('lb-rows-t').innerHTML='<tr><td colspan="5"><div class="empty" style="padding:14px">'+esc(t('lb_empty'))+'</div></td></tr>';return;}
+  api('/api/run',{action:'library_find',params:{query:q,group:lbGroup}}).then(function(r){var d=null;try{d=JSON.parse(r.out);}catch(e){}
+    if(!d){$('lb-rows-t').innerHTML='<tr><td colspan="5"><div class="empty" style="padding:14px">'+esc(r.out||'')+'</div></td></tr>';return;}
+    $('lb-rows-t').innerHTML=d.hits.length?d.hits.map(function(h){var vc=/toàn văn/i.test(h.verify)?'ok':(/chính thống/i.test(h.verify)?'info':(/tóm tắt/i.test(h.verify)?'warn':'err'));
+      return'<tr><td class="id">'+esc(h.number||h.id)+'<div style="font-family:var(--font);color:var(--muted);font-size:12px">'+esc([h.type,h.group].filter(Boolean).join(' · '))+'</div></td><td>'+esc(h.title)+(h.replaced_by?'<div style="color:var(--muted);font-size:12px">↳ '+esc(h.replaced_by)+'</div>':'')+(h.articles?'<div style="color:var(--muted);font-size:12px">'+esc(h.articles)+'</div>':'')+'</td><td>'+lbTag(h.status)+(h.checked?'<div style="color:var(--muted);font-size:12px;margin-top:3px">'+esc(h.checked)+'</div>':'')+'</td><td><span class="tag '+vc+'">'+esc(h.verify||'?')+'</span></td><td>'+(h.fulltext?'<button class="btn" data-open="'+esc(h.file)+'">'+ico('file')+esc(t('lb_open'))+'</button>':'<span class="tag warn">'+esc(t('lb_noft'))+'</span>')+'</td></tr>';}).join('')
+      :'<tr><td colspan="5"><div class="empty" style="padding:14px">'+esc(t('lb_nohit'))+'</div></td></tr>';});}
+$('lb-go').addEventListener('click',lbFind);$('lb-q').addEventListener('keydown',function(e){if(e.key==='Enter')lbFind();});
+$('lb-check').addEventListener('click',function(){run(t('lb_t_check'),'shield','library_check',{},{ro:true});});
+$('lb-init').addEventListener('click',function(){run(t('lb_t_init'),'library','library_init',{},{after:lbStats});});
+function lbChips(){$('lb-grp').innerHTML=[['','all'],['Pháp luật','Pháp luật'],['Nội bộ','Nội bộ'],['Mẫu biểu','Mẫu biểu']].map(function(g){return'<button data-g="'+esc(g[0])+'" aria-pressed="'+(lbGroup===g[0])+'">'+esc(g[1]==='all'?t('all'):g[1])+'</button>';}).join('');
+  $('lb-grp').querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){lbGroup=b.dataset.g;lbChips();if($('lb-q').value.trim())lbFind();});});
+  $('lb-q').placeholder=t('lb_ph');}
+// render dynamic parts
+function fmtDate(sec){var d=new Date(sec*1000);function z(n){return(n<10?'0':'')+n;}return z(d.getDate())+'/'+z(d.getMonth()+1)+'/'+d.getFullYear()+' '+z(d.getHours())+':'+z(d.getMinutes());}
+function mdl(lines){return lines.map(function(l){var h=/^\s*#{1,6}\s+/.test(l);var e=esc(l.replace(/^\s*#{1,6}\s+/,'')).replace(/`([^`]+)`/g,'<code class="mono">$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>');return h?'<b class="sub-h">'+e+'</b>':e;}).join('\n');}
+function render(){
+  var s=S,name=s.project_name||s.folder,inst=(s.packs.items||[]).filter(function(p){return p.installed;}).length;
+  document.title=name+' · Workspace';
+  $('sb-av').textContent=$('ov-av').textContent=initials(name);$('sb-name').textContent=name;$('sb-name').title=name;
+  $('sb-dot').className='dot'+(s.initialized?'':' warn');$('sb-st').textContent=s.initialized?t('st_ready'):t('st_notinit');
+  $('sb-ver').textContent='v'+s.version;$('cr-proj').textContent=name;
+  $('ov-name').textContent=name;$('ov-path').innerHTML=ico('folder')+esc(s.root);
+  var tags=['<span class="tag acc">package v'+esc(s.version)+'</span>','<span class="tag '+(s.initialized?'ok':'warn')+'">'+esc(s.initialized?t('st_ready'):t('st_notinit'))+'</span>'];
+  if(s.initialized)tags.push('<span class="tag">'+(s.lang==='en'?'English':'Tiếng Việt')+'</span>');
+  if(s.info&&s.info.initialized)tags.push('<span class="tag">'+esc(s.info.initialized)+'</span>');
+  $('ov-tags').innerHTML=tags.join('');
+  $('bn-init').hidden=s.initialized;
+  $('k-skills').textContent=s.skills.length;$('k-packs').textContent=inst;$('k-out').textContent=s.counts.output;$('k-ref').textContent=s.counts.references;
+  var secs=(s.state.sections||[]).filter(function(x){return!x.empty&&x.lines.length;});
+  $('st-box').innerHTML=secs.length?'<dl class="dl">'+secs.map(function(x){var k='SEC_'+x.title;return'<div class="it"><dt>'+esc(D[k]?t(k):x.title)+'</dt><dd>'+mdl(x.lines)+'</dd></div>';}).join('')+'</dl>'
+    :'<div class="empty"><div class="ic">'+ico('activity')+'</div><b style="color:var(--ink)">'+esc(t('state_empty'))+'</b><span>'+esc(t('state_empty_p'))+'</span></div>';
+  if(s.state.mtime){$('st-time').hidden=false;$('st-time').textContent=t('upd')+' '+fmtDate(s.state.mtime);}else $('st-time').hidden=true;
+  $('quick').innerHTML=[['check','check','q1','q1d'],['packs','box','q2','q2d'],['skills','monitor','q3','q3d'],['upgrade','up','q4','q4d']].map(function(q){
+    return'<button class="act" data-goto="'+q[0]+'"><span class="ic">'+ico(q[1])+'</span><span><b>'+esc(t(q[2]))+'</b><span>'+esc(t(q[3]))+'</span></span><span class="chev">'+ico('chev')+'</span></button>';}).join('');
+  $('sk-filter').innerHTML=[['all','all'],['SHARED','f_shared'],['PACK','f_pack'],['PROJECT','f_proj']].map(function(f){return'<button data-f="'+f[0]+'" aria-pressed="'+(skFilter===f[0])+'">'+esc(t(f[1]))+'</button>';}).join('');
+  $('sk-filter').querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){skFilter=b.dataset.f;render();});});
+  drawSkills();
+  // packs
+  $('pk-need').hidden=s.initialized;
+  var items=s.packs.items||[];
+  $('pk-list').innerHTML=items.length?items.map(function(p){
+    var newer=p.installed&&p.version&&p.version!==p.installed;
+    var st=p.installed?'<span class="tag ok">'+ico('check')+esc(t('installed'))+' v'+esc(p.installed)+'</span>'+(newer?' <span class="tag warn">'+esc(t('newer'))+' v'+esc(p.version)+'</span>':''):'<span class="tag">'+esc(t('available'))+' v'+esc(p.version)+'</span>';
+    var b=p.installed?((newer?'<button class="btn" data-pk="update" data-n="'+esc(p.name)+'">'+ico('refresh')+esc(t('update'))+'</button>':'')+'<button class="btn ghost danger" data-pk="remove" data-n="'+esc(p.name)+'">'+ico('trash')+esc(t('remove'))+'</button>')
+      :(s.initialized?'<button class="btn pri" data-pk="add" data-n="'+esc(p.name)+'">'+ico('plus')+esc(t('install'))+'</button>':'<button class="btn" data-goto="upgrade" title="'+esc(t('pk_need'))+'">'+ico('up')+esc(t('pk_to_proj'))+'</button>');
+    return'<div class="card pack"><div class="card-b"><div class="pack-h"><span class="ic">'+ico(PACK_ICON[p.name]||'box')+'</span><div><b>'+esc(p.title)+'</b><span class="mono" style="color:var(--muted)">'+esc(p.name)+'</span></div></div><p title="'+esc(p.description)+'">'+esc(p.description)+'</p><div class="skchips">'+(p.skills||[]).map(function(k){return'<span>'+esc(k)+'</span>';}).join('')+'</div></div><div class="pack-f">'+st+'<div class="r">'+b+'</div></div></div>';}).join('')
+    :'<div class="card"><div class="empty"><div class="ic">'+ico('box')+'</div>'+esc(t('no_packs'))+'</div></div>';
+  if(s.packs.error)$('pk-list').insertAdjacentHTML('afterbegin','<div class="note warn">'+esc(s.packs.error)+'</div>');
+  $('pk-list').querySelectorAll('[data-pk]').forEach(function(b){b.addEventListener('click',function(){var n=b.dataset.n,k=b.dataset.pk;
+    if(k==='remove'&&!confirm(t('confirm_remove')))return;
+    run(t('t_pack')+' · '+n,PACK_ICON[n]||'box',k==='update'?'pack_update':'pack_'+k,{pack:n},{preview:k==='update',after:refresh});});});
+  // forms
+  $('d-claude').textContent=s.dests.claude;$('d-agents').textContent=s.dests.agents;
+  $('up-cur').textContent=t('cur')+': v'+s.version;
+  if(!render.upInit){render.upInit=1;setUpMode(s.initialized?'self':'other');}else setUpMode(upMode);
+  $('su-inited').hidden=!s.initialized;$('su-tpl').hidden=!(s.template_folder&&!s.initialized);
+  if(s.project_name&&!$('f-name').value)$('f-name').value=s.project_name;
+  document.querySelectorAll('[data-pick]').forEach(function(b){b.hidden=!s.picker;});$('ck-drop').hidden=!s.picker;
+  drawFiles();
+}
+function drawSkills(){var q=($('sk-q').value||'').toLowerCase(),rows=S.skills.filter(function(r){return(skFilter==='all'||r.scope===skFilter)&&(!q||(r.id+' '+r.use).toLowerCase().indexOf(q)>=0);});
+  $('sk-count').textContent=S.skills.length+' '+t('n_skills');
+  $('sk-rows').innerHTML=rows.length?rows.map(function(r){var c=r.scope==='PACK'?'acc':(r.scope==='PROJECT'?'warn':'');return'<tr><td class="id">'+esc(r.id)+'</td><td><span class="tag '+c+'">'+esc(r.scope==='SHARED'?t('f_shared'):r.scope==='PACK'?t('f_pack'):r.scope==='PROJECT'?t('f_proj'):r.scope)+'</span></td><td>'+esc(r.use)+'</td></tr>';}).join('')
+    :'<tr><td colspan="3"><div class="empty" style="padding:14px">'+esc(t('no_match'))+'</div></td></tr>';}
+$('sk-q').addEventListener('input',function(){if(S)drawSkills();});
+function refresh(){return api('/api/status').then(function(s){S=s;paint();}).catch(function(e){if(String(e).indexOf('forbidden')>=0)$('off').classList.add('on');});}
+function setTheme(v){if(v)document.documentElement.setAttribute('data-theme',v);else document.documentElement.removeAttribute('data-theme');themeIcon();}
+setTheme(store('panel.theme'));
+$('b-theme').addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');var n=c==='dark'?'light':'dark';setTheme(n);store('panel.theme',n);});
+document.querySelectorAll('.lang button').forEach(function(b){b.addEventListener('click',function(){lang=b.dataset.lang;store('panel.lang',lang);closeSheet();paint();});});
+$('b-quit').addEventListener('click',function(){api('/api/quit').finally(function(){$('off').classList.add('on');});});
+setInterval(function(){api('/api/ping').catch(function(){$('off').classList.add('on');});},20000);
+document.addEventListener('visibilitychange',function(){if(!document.hidden)refresh();});
+lang=store('panel.lang')||'vi';page=store('panel.page')||'home';if(!$('pg-'+page))page='home';
+paint();go(page);
+refresh().then(function(){if(!store('panel.lang')&&S&&S.lang){lang=S.lang;paint();}});
+})();
+</script>
+</body>
+</html>

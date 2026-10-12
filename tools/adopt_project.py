@@ -31,6 +31,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SKIP_DIRS = {'.git', 'dist', '__pycache__'}
 SKIP_PREFIX = ('feedback/records/',)
 SKIP_FILES = {'.agent/PACKAGE_INFO.json', 'setup_answers.json'}
+USER_KEEP = {'PROJECT.md', '.agent/STATE.md', '.agent/HANDOFF.md', '.agent/INDEX.md', '.agent/SKILL_INDEX.md', '.agent/PENDING_LESSONS.md'}
 ADAPTERS = ('AGENTS.md', 'CLAUDE.md', 'GEMINI.md')
 ROW_HEAD = '| Skill ID | Origin | Scope |'
 
@@ -81,8 +82,14 @@ def main():
         sys.exit('Không thấy thư mục project: %s' % proj)
     if os.path.samefile(proj, ROOT):
         sys.exit('Project trùng thư mục package; chọn project cần đưa package vào.')
-    if os.path.isfile(os.path.join(proj, 'VERSION')) or os.path.isfile(os.path.join(proj, '.agent', 'PACKAGE_INFO.json')):
+    # Project dựng tay từ bản cũ: có .agent/PACKAGE_INFO.json nhưng không có VERSION, MANIFEST, tools/ -> upgrade_package.py
+    # không chạy được (cần VERSION), nên coi như đưa package vào lần đầu. / A hand-built project with PACKAGE_INFO but no VERSION.
+    partial = (os.path.isfile(os.path.join(proj, '.agent', 'PACKAGE_INFO.json'))
+               and not os.path.isfile(os.path.join(proj, 'VERSION')) and not os.path.isfile(os.path.join(proj, 'MANIFEST.sha256')))
+    if os.path.isfile(os.path.join(proj, 'VERSION')) or (os.path.isfile(os.path.join(proj, '.agent', 'PACKAGE_INFO.json')) and not partial):
         sys.exit('Project này đã có package (VERSION hoặc .agent/PACKAGE_INFO.json). Dùng tools/upgrade_package.py để nâng cấp.')
+    if partial:
+        print('Project có .agent/PACKAGE_INFO.json nhưng chưa có VERSION, MANIFEST: đưa package vào như lần đầu; PACKAGE_INFO sẽ được ghi lại.')
 
     today = datetime.date.today().strftime('%Y%m%d')
     add, skip, bak, new = [], [], [], []
@@ -94,6 +101,8 @@ def main():
             skip.append(rel)
         elif rel in ADAPTERS:
             bak.append(rel)
+        elif rel in USER_KEEP:
+            skip.append(rel)  # file của người dùng: giữ nguyên, không tạo .new / user-owned: kept, no .new
         else:
             new.append(rel)
 
@@ -103,7 +112,7 @@ def main():
         own = sorted(d for d in os.listdir(pdir) if os.path.isfile(os.path.join(pdir, d, 'SKILL.md')))
 
     print('[%s] Đưa package v%s vào project: %s' % ('GHI' if a.apply else 'BÁO CÁO, chưa ghi gì', open(os.path.join(ROOT, 'VERSION')).read().strip(), proj))
-    print('  Thêm %d file; giống hệt (bỏ qua) %d.' % (len(add), len(skip)))
+    print('  Thêm %d file; bỏ qua (giống hệt hoặc file của bạn) %d.' % (len(add), len(skip)))
     for rel in bak:
         print('  THAY (lưu bản cũ thành %s.bak-%s): %s' % (rel, today, rel))
     for rel in new:
@@ -145,7 +154,20 @@ def main():
             open(idx, 'w', encoding='utf-8').write(t)
             print('  Đã thêm %d dòng skill riêng vào .agent/SKILL_INDEX.md' % rows.count('\n'))
 
+    # dòng skill dùng chung còn thiếu trong SKILL_INDEX của project / shared-skill rows missing from the project index
+    try:
+        sys.path.insert(0, os.path.join(ROOT, 'tools'))
+        import upgrade_package as up
+        rows = up.index_rows(proj, ROOT, a.lang, {'add': []})
+        if rows:
+            up.write_index_rows(proj, rows)
+            print('  Đã thêm %d dòng skill dùng chung vào .agent/SKILL_INDEX.md' % len(rows))
+    except Exception as e:
+        print('  Chưa thêm được dòng skill dùng chung vào SKILL_INDEX (%s); chạy upgrade_package.py sau.' % e)
+
     cmd = [sys.executable, os.path.join(proj, 'tools', 'init_project.py'), '--name', a.name, '--lang', a.lang]
+    if partial:
+        cmd.append('--force')  # đã có PACKAGE_INFO; init chỉ điền dòng trống, giữ STATE / keeps filled lines and STATE
     if a.purpose:
         cmd += ['--purpose', a.purpose]
     r = subprocess.run(cmd, cwd=proj)

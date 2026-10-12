@@ -19,6 +19,9 @@ Run with an automated browser (for example Playwright with Chromium) when availa
    Check with `page.pdf()` and a contact sheet of the pages.
 8. Performance with a full file (measured: 200 main items and 2,000 detail records load in about 1.2 seconds).
 9. A narrow screen does not overflow sideways; dark mode is readable.
+10. Many files: load a whole folder containing a `~$…` file and two files sharing one key: the temporary file is skipped, the duplicate is reported with both file names (`setInputFiles('#dir', 'folder')`).
+11. Reload the page: the last load is restored; with browser storage cleared it shows "No data yet" without errors.
+12. Cross-check: deliberately give a child row the wrong parent code; an error must appear on that row with the right code suggested.
 
 ## Pitfalls met
 
@@ -29,3 +32,4 @@ Run with an automated browser (for example Playwright with Chromium) when availa
 - The export button of the mini library build still has `book_new`, `aoa_to_sheet`, `book_append_sheet`, `writeFile`; export the standard sheet names so the tool can
   reopen the file. Export raw data only, without formulas or dropdowns.
 - Categorical palette: the grey "ungrouped" colour is deliberately neutral so it does not meet the chroma threshold; low contrast is compensated with number labels and a number table.
+- PDF with Playwright: after `page.emulateMedia({media:'screen'})`, `page.pdf()` prints the screen styles (buttons and bands still visible); call `page.pdf()` without forcing media, or force `print` again.

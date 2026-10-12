@@ -6,7 +6,7 @@ description: >-
   cần tổ chức nội dung theo người đọc và công việc; sửa câu đơn giản có thể làm trực tiếp.
   Kích hoạt khi người dùng nói: “soạn quy trình”, “SOP”, “biểu mẫu”, “hướng dẫn nội bộ”, “chỉnh tài liệu theo mẫu”.
 metadata:
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Tài liệu nghiệp vụ
@@ -46,6 +46,7 @@ Chọn mẫu phù hợp hoặc dùng mẫu của dự án; không cần mở h�
 - `references/proposal-review.md`: đánh giá và sửa đề án hoặc quy chế nội bộ có sẵn.
 - `references/form-standardization.md`: chuẩn hóa hàng loạt biểu mẫu và tài liệu cũ.
 - `references/word-technical-notes.md`: lưu ý kỹ thuật khi dựng hoặc sửa file Word.
+- `references/docx-default-layout.md`: khung Word mặc định khi không có mẫu (khớp khoảng của Nghị định 30/2020/NĐ-CP), cách chuyển nội dung thô thành tài liệu, lệnh đếm kiểm sau khi dựng.
 - Sổ theo dõi, form nhập liệu và phụ lục tính bằng Excel: `excel-workbooks`; công cụ HTML đọc file Excel: `excel-html-viewer`.
 
 Các khung dùng chỗ trống, không chứa chính sách được phê duyệt. Có thể bỏ, đổi hoặc

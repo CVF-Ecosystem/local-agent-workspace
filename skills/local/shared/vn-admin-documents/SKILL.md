@@ -7,7 +7,7 @@ description: >-
   công tác văn thư hoặc theo quy chế văn thư riêng; không thay thế quy định hiện hành hay ý kiến pháp chế.
   Kích hoạt khi người dùng nói: “soạn công văn”, “soạn tờ trình”, “đúng thể thức văn bản”, “số và ký hiệu”, “nơi nhận”.
 metadata:
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Văn bản hành chính đúng thể thức
@@ -23,7 +23,8 @@ bộ). Việc nội dung ngắn không cần thể thức thì dùng `internal-c
    30/2020/NĐ-CP (phần thể thức và kỹ thuật trình bày ở phụ lục). Đã đối chiếu ngày 06/10/2026: nghị định này vẫn hiện hành, thông số trình bày dưới đây khớp phụ lục.
    Quy định có thể được sửa đổi hoặc thay thế sau đó: trước khi ban hành, kiểm bản hiện hành hoặc nói rõ chưa kiểm. Không tự khẳng định đơn
    vị bắt buộc phải theo quy định nào; hỏi hoặc ghi "cần xác nhận".
-3. Khung trong `references/document-frames.md` chỉ là điểm xuất phát, không phải mẫu đã được duyệt.
+3. Khung trong `references/document-frames.md` (công văn, tờ trình, báo cáo, thông báo, kế hoạch, quyết định, giấy mời, biên bản họp)
+   chỉ là điểm xuất phát, không phải mẫu đã được duyệt.
 
 ## Các thành phần thể thức
 
@@ -35,17 +36,20 @@ bộ). Việc nội dung ngắn không cần thể thức thì dùng `internal-c
 | Địa danh, thời gian | `[Địa danh], ngày [dd] tháng [mm] năm [yyyy]`; ngày nhỏ hơn 10 và tháng 1, 2 ghi thêm số 0. Ngày để trống khi chưa ban hành. |
 | Tên loại và trích yếu | Văn bản có tên loại: tên loại in hoa, dưới là trích yếu. Công văn không có tên loại: `V/v [trích yếu]`. Trích yếu nêu đúng một ý chính, ngắn. |
 | Nội dung | Căn cứ, nội dung, đề nghị hoặc kiến nghị; bố cục theo loại văn bản. |
-| Chức vụ, họ tên, chữ ký | Do người có thẩm quyền ký; ghi thẩm quyền ký (TM., KT., TL.) theo thực tế. **Không tự điền** tên, chức vụ hay thẩm quyền. |
+| Chức vụ, họ tên, chữ ký | Do người có thẩm quyền ký; ghi thẩm quyền ký (TM., Q., KT., TL., TUQ.) theo thực tế. **Không tự điền** tên, chức vụ hay thẩm quyền. |
 | Nơi nhận | Danh sách cơ quan, cá nhân nhận và "Lưu: VT" (hoặc theo quy chế); chỉ ghi nơi người dùng nêu. |
 
 Ký hiệu loại văn bản thường gặp: BC (báo cáo), TTr (tờ trình), TB (thông báo), QĐ (quyết định),
-KH (kế hoạch), BB (biên bản), HD (hướng dẫn). Đối chiếu với bảng ký hiệu trong quy định/quy chế áp dụng.
+KH (kế hoạch), BB (biên bản), HD (hướng dẫn), GM (giấy mời). Đối chiếu với bảng ký hiệu trong quy định/quy chế áp dụng.
 
 ## Trình bày (thông số thường gặp)
 
-Khổ A4, phông chữ tiếng Việt Unicode (thường Times New Roman), cỡ chữ nội dung 13 đến 14. Lề thường:
-trên và dưới khoảng 20 đến 25 mm, trái khoảng 30 đến 35 mm, phải khoảng 15 đến 20 mm. Đây là mức phổ
-biến theo phụ lục thể thức; đối chiếu bản hiện hành hoặc quy chế đơn vị trước khi in ban hành.
+Khổ A4; phông Times New Roman (Unicode TCVN 6909:2001), màu đen; nội dung cỡ 13 đến 14, canh đều hai lề, đầu dòng lùi 1 cm
+hoặc 1,27 cm, cách đoạn tối thiểu 6pt, cách dòng từ dòng đơn đến 1,5 lines. Lề trên và dưới 20 đến 25 mm, trái 30 đến 35 mm,
+phải 15 đến 20 mm. Số trang ở giữa lề trên, không hiện ở trang đầu. Cỡ chữ, kiểu chữ của từng thành phần (quốc hiệu, tên cơ
+quan, trích yếu, căn cứ, điều khoản, khối ký, nơi nhận...) và danh sách mẫu trong phụ lục: `references/nd30-presentation.md`
+(đã đối chiếu với bản quét Nghị định 30/2020/NĐ-CP ngày 12/10/2026). Đối chiếu bản hiện hành hoặc quy chế đơn vị trước khi
+in ban hành.
 
 Khi dựng file Word: phần đầu (tên cơ quan bên trái, quốc hiệu bên phải) và khối ký dùng bảng hai cột không viền. Công văn và tờ trình theo thể thức nhà nước không dùng bảng kẻ khung cho nội dung; chứng từ kế toán và biểu mẫu theo mẫu số hiệu riêng thường có bảng viền. Tra mẫu số hiệu và văn bản hiện hành (kể cả còn hiệu lực hay đã bị thay thế) trước khi chọn; xem `office-documents` (`references/form-standardization.md`).
 

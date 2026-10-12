@@ -1,0 +1,17 @@
+{
+  "name": "ke-toan-noi-bo",
+  "version": "0.2.0",
+  "requires_core": "1.6",
+  "title": {
+    "vi": "Kế toán nội bộ: tạm ứng, thanh toán, chứng từ, hóa đơn, đối chiếu công nợ, lưu trữ",
+    "en": "Internal accounting: advances, payments, vouchers, invoices, reconciliations, retention"
+  },
+  "description": {
+    "vi": "Lập và kiểm tra đề nghị tạm ứng, thanh toán, hoàn ứng, bảng kê, đối chiếu công nợ; kiểm chứng từ và hóa đơn trước khi trình ký; thời hạn lưu trữ tài liệu kế toán theo Luật Kế toán, Thông tư 99/2025/TT-BTC, Nghị định 123/2020/NĐ-CP sửa đổi. Kèm bảng căn cứ có ngày đối chiếu.",
+    "en": "Preparing and checking advance, payment and settlement requests, schedules, balance confirmations; checking vouchers and invoices before signing; retention of accounting records under the Accounting Law, Circular 99/2025/TT-BTC and amended Decree 123/2020/ND-CP. With a dated legal-basis table."
+  },
+  "domain": "accounting",
+  "skills": [
+    "internal-accounting-vn"
+  ]
+}

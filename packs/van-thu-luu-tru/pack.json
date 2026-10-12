@@ -1,0 +1,17 @@
+{
+  "name": "van-thu-luu-tru",
+  "version": "0.2.0",
+  "requires_core": "1.6",
+  "title": {
+    "vi": "Văn thư - lưu trữ: văn bản đi, văn bản đến, sao văn bản, lập hồ sơ và nộp lưu",
+    "en": "Records management: outgoing and incoming documents, copies, files and archiving"
+  },
+  "description": {
+    "vi": "Quản lý văn bản đi và đến, sổ đăng ký, sao văn bản, danh mục hồ sơ, lập hồ sơ, nộp lưu, thời hạn bảo quản, hủy tài liệu hết thời hạn và tài liệu lưu trữ số theo Nghị định 30/2020/NĐ-CP và Luật Lưu trữ 2024. Kèm bảng căn cứ pháp lý có ngày đối chiếu.",
+    "en": "Managing outgoing and incoming documents, registers, copies, file lists, filing, transfer to the archive, retention, destruction and digital records under Decree 30/2020/ND-CP and the 2024 Archives Law. With a dated legal-basis table."
+  },
+  "domain": "records",
+  "skills": [
+    "records-management-vn"
+  ]
+}

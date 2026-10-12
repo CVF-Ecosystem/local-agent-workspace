@@ -16,6 +16,10 @@ Verified experience; open when actually building.
 - A note string that starts with "=" is read as a formula (`#NAME?`). Write "Calc: ..." instead of "= ...".
 - Multi-sheet formulas easily get a sheet or column name wrong without the code showing it, and a file created with openpyxl has no cached values. Recalculate with
   `recalc.py` (if available) or `soffice --convert-to xlsx`, then read it back with `openpyxl` using `data_only=True`; require 0 errors.
+- An empty cell with business meaning (for example "no adjustment = on time"): the formula returns 0 and a three-part number format `0;"Early "0;"On time"`; the cell shows text, the value stays a number for sums and filters.
+- Date-times written into cells: round to the minute `round(x*1440)/1440` (rounding by decimals shows 11:00 as 10:59). In formulas: `TEXT(ROUND(t*1440,0)/1440,"hh:mm")`.
+- Cross-checking with formulas (no arrays): the number of parent records containing time x is `SUMPRODUCT((col_from<=x)*(col_to>=x))`; when it is 1 get the code with
+  `INDEX(col_code,SUMPRODUCT((col_from<=x)*(col_to>=x)*(ROW(col_code)-first_row+1)))`; membership in a list with `ISERROR(SEARCH(code,list))`.
 
 ## Entry and formatting
 
@@ -38,6 +42,18 @@ Verified experience; open when actually building.
 - Add the new block at the bottom of the sheet; `insert_rows` shifts rows while formulas on other sheets still point at the old addresses.
 - When changing a user's file, save the new version under a new name and do not overwrite the original.
 
+## Editing the XML directly (books in use)
+
+An `.xlsx` file is a zip. Use this when everything openpyxl might drop must be kept (`x14` dropdowns, modern conditional formats).
+
+- Find a sheet's file through `xl/workbook.xml` and `xl/_rels/workbook.xml.rels`; the `sheetN.xml` order can differ between files made from the same template.
+- Replacing a cell: write the full formula in `<f>` and drop `<v>`; for a shared-formula column (`t="shared"`) replace the whole group; text uses `t="inlineStr"` or an existing `sharedStrings.xml` entry.
+- Adding a sheet: create `sheetN.xml` (reuse style indexes of a similar sheet), add the relationship in rels, an `Override` in `[Content_Types].xml`, a `<sheet>` element in the workbook;
+  when inserting before the last sheet shift the `localSheetId` of defined names from that position on; update `docProps/app.xml`. Dropdowns fed from another sheet: define a name (`definedName`) and use it.
+- Inserting a section in the middle of a report sheet: shift every following row (row numbers, cell references, merged ranges, `dimension`, page breaks, print area); assert no formula or range further down still points at old addresses.
+- Styles: add a `numFmt` and clone an `xf` in `styles.xml`. Remove `calcChain.xml` (with its rel and `Override`) and set `fullCalcOnLoad="1"` so Excel recalculates on opening.
+- Rewrite the zip keeping entry order; count dropdowns before and after; the patch script asserts each replaced string (exactly one match) and runs on the blank template and every period file.
+
 ## Checks before delivery
 
 1. Formulas recalculated, 0 errors; figures in Word and Excel match.
@@ -45,3 +61,4 @@ Verified experience; open when actually building.
 3. Try exceeding the report table's limit: there must be a clear warning line ("showing only N, see the full figures on the summary sheet") and no formula errors.
 4. With a blank threshold cell the formulas still run and raise no flag.
 5. State clearly what was not tried in real Excel.
+6. LibreOffice does not recalculate cells that still hold a cached value: for an XML-edited file make a test copy with every `<v>` after `</f>` removed, then `soffice --convert-to xlsx`, read with `data_only=True`, require 0 error cells. Use that copy only for checking; deliver the XML-edited file. Also test negative cases (deliberately wrong data must be flagged by the Check column).

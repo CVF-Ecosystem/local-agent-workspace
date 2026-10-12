@@ -18,6 +18,7 @@ Danh mục để tìm skill theo công việc. Không phải thứ tự ưu tiê
 | vn-admin-documents | LOCAL | SHARED | skills/local/shared/vn-admin-documents/SKILL.md | Soạn văn bản hành chính đúng thể thức (công văn, tờ trình, báo cáo, thông báo): số/ký hiệu, địa danh, trích yếu, nơi nhận, trình bày. | AVAILABLE | Biên soạn mới; căn cứ tham khảo là quy định về công tác văn thư, luôn kiểm bản hiện hành hoặc quy chế đơn vị; không dependency. |
 | excel-workbooks | LOCAL | SHARED | skills/local/shared/excel-workbooks/SKILL.md | Dựng sổ theo dõi, form nhập liệu, báo cáo tự tổng hợp hoặc phụ lục tính bằng Excel (openpyxl, công thức thật). | AVAILABLE | Viết lại từ kinh nghiệm thực tế của người duy trì, đã bỏ dữ liệu riêng của đơn vị; kèm ghi chú kỹ thuật; cần openpyxl. |
 | excel-html-viewer | LOCAL | SHARED | skills/local/shared/excel-html-viewer/SKILL.md | Dựng công cụ HTML một file, chạy offline, đọc file Excel của người dùng để xem số liệu (thẻ chỉ số, bộ lọc, tab kiểm tra dữ liệu). | AVAILABLE | Viết lại từ kinh nghiệm thực tế của người duy trì; đọc .xlsx cần thư viện đọc Excel nhúng vào file. |
+| source-library | LOCAL | SHARED | skills/local/shared/source-library/SKILL.md | Tổ chức, tra cứu thư viện nguồn trong references/ (pháp luật, quy chế nội bộ, mẫu biểu) với chỉ mục _INDEX.xlsx; tra trước khi trích dẫn văn bản. | AVAILABLE | Biên soạn mới; kèm mẫu chỉ mục Excel và tools/library.py (cần openpyxl). |
 
 ## Cách đọc danh mục
 

@@ -15,8 +15,9 @@ Các skill dùng chung được biên soạn cho tác nghiệp văn phòng.
 - `vn-admin-documents/`: văn bản hành chính đúng thể thức (công văn, tờ trình, báo cáo, thông báo).
 - `excel-workbooks/`: sổ theo dõi, form nhập liệu, báo cáo tự tổng hợp và phụ lục tính bằng Excel.
 - `excel-html-viewer/`: công cụ HTML một file, offline, đọc file Excel.
+- `source-library/`: thư viện nguồn trong `references/` và chỉ mục `_INDEX.xlsx`; tra trước khi trích dẫn.
 
-Không cần đọc cả mười ba hoặc áp dụng theo chuỗi. Mỗi skill có `SKILL.md` mô tả khi hữu
+Không cần đọc cả mười bốn hoặc áp dụng theo chuỗi. Mỗi skill có `SKILL.md` mô tả khi hữu
 ích; tài nguyên bên trong chỉ mở khi phù hợp. Mẫu minh họa không phải quy định đã
 được phê duyệt của dự án. Nguồn ý tưởng: `docs/NGUON_THAM_KHAO_VI.md` ở project root.
 

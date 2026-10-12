@@ -7,7 +7,7 @@ description: >-
   or drawing HTML charts (see `data-charts`).
   Triggers when the user says: "tracking workbook", "Excel data-entry form", "self-summarising report", "Excel appendix", "dashboard inside Excel".
 metadata:
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Building workbooks and reports in Excel
@@ -52,6 +52,20 @@ forwards from the actual output or demand, and ask the user for real operating f
 parameter changes, recompute the whole chain, not just one sheet. Suggested structure (drop or change per proposal): overview; investment cost by item;
 technical configuration linking quantities from the cost sheet; capacity analysis; operating cost; break-even; a roadmap with a formula-driven Gantt grid.
 Separate new investment from assets already owned; a shortened label that can be read as "already available" is written out in full.
+
+## Tools for many users and many periods
+
+- Each kind of object with a different nature gets its own input sheet (for example ships and barges): mixing them distorts counts, productivity and rates.
+- One file per period `YYYY-MM_<name>.xlsx`; do not combine periods with cross-file formulas (they break when files are renamed or moved). Combine periods
+  with an HTML tool that reads many files (`excel-html-viewer`).
+- A tool shared by many users: a folder with a fixed structure and a guide at the root, for example
+  `01_TEMPLATE` (blank template only), `02_DATA\<year>\`, `03_PRINTED` (signed PDFs), `_ARCHIVE` (old versions), `USER_GUIDE.txt`.
+  This folder holds only standardised files; raw files stay outside.
+- When the user sends a file back: compare md5 and modification time with the existing copies to know which is newest (it may be saved in the wrong place, for example the template folder).
+- Changing a book ALREADY IN USE (with modern dropdowns or conditional formats): do not open and re-save it with openpyxl, which can drop the dropdowns;
+  edit the XML inside the file directly, see `references/openpyxl-notes.md` section "Editing the XML directly". Put the old version in the archive before writing.
+- Data entered in the wrong place (object on the wrong sheet, numbers in the wrong column, times written in a note): split it with a script from the values and move it to the
+  right column/sheet; inferred values are marked "needs confirmation" in the note; never invent values without a basis.
 
 ## Before delivery
 

@@ -1,6 +1,6 @@
 # Daily use guide
 
-Local Agent Workspace v1.4 keeps your documents, context and results in one folder. The agent
+Local Agent Workspace v1.6 keeps your documents, context and results in one folder. The agent
 still chooses the approach, tools and skills that fit.
 
 ## 1. Give work in plain language
@@ -64,11 +64,15 @@ just edited, or a conclusion depends on one clause, check that part again.
 
 ## 5. Let the agent pick the skill
 
-The workspace has thirteen suggested skills, from drafting documents (`office-documents`,
+The workspace has fourteen suggested skills, from drafting documents (`office-documents`,
 `internal-comms`, `doc-coauthoring`), analysis (`document-comparison`, `spreadsheet-check`),
 charts and reports (`data-charts`, `html-reports`), processes and meetings (`process-mapping`,
 `meeting-minutes`), correctly formatted administrative documents (`vn-admin-documents`), Excel workbooks and tools (`excel-workbooks`, `excel-html-viewer`) to editing
-(`vietnamese-editing`). You do not have to call them by name.
+(`vietnamese-editing`) and the source library (`source-library`). You do not have to call them by name.
+
+There are also five domain packs to install when needed (legal, records management, ports and logistics, HR and administration,
+internal accounting), each with a dated legal-basis table. The agent uses installed packs by itself and suggests installing a
+missing one.
 
 The agent can use a native skill, a workspace skill, a combination, or no skill at all. The
 criterion is fit with the work and what is actually available, not where it comes from.
@@ -169,3 +173,15 @@ When you edit a Markdown guide yourself and want to update the presentation, run
 `python tools/build_guides_html.py` from the project root (see `tools/README.md`), or ask the
 agent to run it. The HTML does not sync by itself when you edit Markdown; add `--check` to see
 whether the HTML still matches.
+
+## 12. The control panel (APP.bat)
+
+Double-click `APP.bat` (Windows) or `APP.command` (macOS) to open the control panel in the browser. The Overview page shows
+the work status (read from `.agent/STATE.md`), the skills in the index and the number of files in `output/` and
+`references/`. The other pages call the tools in `tools/`: set up or bring into an existing project, upgrade, domain packs,
+check before delivery (`check_output.py`), copy skills into apps (`install_skills.py`), package maintenance.
+
+Actions that write files always run a preview first; read the result, then press "Apply". The panel runs on this computer
+(address 127.0.0.1, with a new access code each time), uses no network, deletes no files, and stops about 3 minutes after the
+page is closed. "Choose…" opens the computer's folder picker; if there is none, type or paste the path. The panel does not
+replace giving work to the agent; it only gathers the `python tools/...` commands in one place.

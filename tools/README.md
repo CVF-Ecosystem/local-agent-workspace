@@ -11,6 +11,24 @@ nguồn, ràng buộc; Enter để bỏ qua), gọi `init_project.py` với các
 dán vào Project/cloud vào clipboard. Nếu có `setup_answers.json` ở thư mục gốc (tải từ form "Khởi tạo nhanh" trong `START_HERE.html`), nó dùng file này và không hỏi lại. Không làm gì nếu thư mục đã khởi tạo. Các giá trị cũng dùng được trực tiếp qua
 `init_project.py --purpose --outputs --style --sources --constraints`.
 
+## app.py, app_ui.html
+
+Bảng điều khiển trong trình duyệt. Bấm đúp `APP.bat` (Windows) hoặc `APP.command` (macOS), hoặc chạy `python tools/app.py`
+(`--no-browser` để tự mở địa chỉ được in ra, `--port N` để chọn cổng). Máy chủ nhỏ chỉ nghe trên 127.0.0.1, mỗi lần mở có mã truy
+cập riêng, không dùng mạng. Mỗi nút gọi một công cụ có sẵn trong thư mục này với tham số cố định (`init_project`, `adopt_project`,
+`upgrade_package`, `pack`, `check_output`, `install_skills`, `check_package`, `build_guides_html`, `build_release`); thao tác có ghi
+luôn xem trước rồi mới thực hiện. Nút "Chọn…" dùng hộp chọn thư mục của `tkinter` nếu Python có. Tự tắt khoảng 3 phút sau khi
+đóng trang. Giao diện nằm trong `app_ui.html` (một file, không tài nguyên ngoài, tiếng Việt và tiếng Anh, sáng và tối).
+
+## library.py
+
+Thư viện nguồn trong `references/` (xem skill `source-library`). `init` tạo các thư mục nhóm (legal, policies, templates,
+source-documents) kèm README và chép mẫu chỉ mục thành `references/_INDEX.xlsx` nếu chưa có (không ghi đè). `check [--days 180]`
+kiểm chỉ mục, báo theo số dòng: thiếu file, file chưa vào chỉ mục, trùng số hiệu, "Còn hiệu lực" nhưng đã ghi bị thay thế, ngày
+kiểm tình trạng quá cũ, mức "Cần đối chiếu", văn bản Mật; mã thoát 1 khi có lỗi. `find <từ khóa> [--group "Pháp luật"] [--all]`
+tìm không phân biệt dấu và cho biết có toàn văn hay không. `stats` đếm theo nhóm, tình trạng. `--json` cho bảng điều khiển.
+Chỉ đọc sheet "Danh mục". Cần openpyxl.
+
 ## init_project.py
 
 Khởi tạo project mới sau khi giải nén và đổi tên thư mục:
@@ -39,7 +57,7 @@ So ba bên bằng `MANIFEST.sha256`: file chưa ai sửa thì cập nhật, file
 package cũng đổi thì lưu bản mới thành `<tên>.new`. Không đụng file của người dùng (PROJECT, STATE, INDEX, `references/`...), không xóa file nào.
 Từ chối chạy trên thư mục chưa khởi tạo (có thể là thư mục nguồn của package) trừ khi có `--allow-uninitialized`.
 
-Từ v1.4.0, `.agent/SKILL_INDEX.md` (file của bạn, không bị ghi đè) được **thêm** các dòng skill dùng chung còn thiếu của package mới để agent tìm thấy skill mới; dòng đã có không bị sửa. Project đang ở bản cũ hơn v1.4.0 nên chạy script từ thư mục package MỚI (cách thứ nhất ở trên), vì bản script nằm trong project còn cũ.
+Từ bản 1.4.0, `.agent/SKILL_INDEX.md` (file của bạn, không bị ghi đè) được **thêm** các dòng skill dùng chung còn thiếu của package mới để agent tìm thấy skill mới; dòng đã có không bị sửa. Project đang ở bản cũ hơn bản 1.4.0 nên chạy script từ thư mục package MỚI (cách thứ nhất ở trên), vì bản script nằm trong project còn cũ.
 
 ## adopt_project.py
 

@@ -6,7 +6,7 @@ description: >-
   organising content around the reader and the work; simple sentence edits can be done directly.
   Triggers when the user says: "draft a procedure", "SOP", "form", "internal guidance", "adjust the document to the template".
 metadata:
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Business documents
@@ -46,6 +46,7 @@ Choose a fitting template or the project's own; there is no need to open them al
 - `references/proposal-review.md`: reviewing and revising an existing proposal or internal regulation.
 - `references/form-standardization.md`: standardising old forms and documents in bulk.
 - `references/word-technical-notes.md`: technical notes for building or editing Word files.
+- `references/docx-default-layout.md`: the default Word layout when there is no template (within the ranges of Decree 30/2020/ND-CP), turning raw content into a document, a counting command to run after building.
 - Tracking workbooks, data-entry forms and calculation appendices in Excel: `excel-workbooks`; an HTML tool that reads Excel files: `excel-html-viewer`.
 
 The frames use blanks and contain no approved policy. You may drop, change or combine sections as

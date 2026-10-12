@@ -7,7 +7,7 @@ description: >-
   (xem `spreadsheet-check`) hay vẽ biểu đồ HTML (xem `data-charts`).
   Kích hoạt khi người dùng nói: “sổ theo dõi”, “form nhập liệu Excel”, “báo cáo tự tổng hợp”, “phụ lục Excel”, “bảng điều hành trong Excel”.
 metadata:
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Dựng sổ và báo cáo bằng Excel
@@ -53,6 +53,20 @@ vận hành thật thay vì chọn thông số "đẹp" rồi khớp ngược; m
 Cấu trúc gợi ý (bỏ hoặc đổi theo đề án): Tổng quan; chi phí đầu tư theo hạng mục; cấu hình kỹ thuật liên kết số lượng
 từ sheet chi phí; phân tích năng lực; chi phí vận hành; điểm hòa vốn; lộ trình có lưới Gantt bằng công thức.
 Phân biệt rõ hạng mục đầu tư mới với tài sản đã có; tên gọi rút gọn dễ đọc nhầm là "đã có sẵn" thì ghi đầy đủ.
+
+## Công cụ nhiều người dùng, nhiều kỳ
+
+- Mỗi loại đối tượng khác bản chất một sheet nhập riêng (ví dụ tàu và sà lan): nhập chung làm sai số lượng, năng suất, tỷ lệ.
+- Mỗi kỳ một file `YYYY-MM_<tên>.xlsx`; không gộp nhiều kỳ bằng công thức liên file (gãy khi đổi tên hoặc chuyển thư mục). Tổng hợp nhiều kỳ
+  bằng công cụ HTML đọc nhiều file (`excel-html-viewer`).
+- Công cụ giao cho nhiều người dùng chung: thư mục có cấu trúc cố định và một file hướng dẫn ở gốc, ví dụ
+  `01_MAU` (chỉ mẫu trống), `02_DU_LIEU\<năm>\`, `03_BAO_CAO_IN` (PDF đã trình ký), `_LUU_TRU` (bản cũ), `HUONG_DAN_SU_DUNG.txt`.
+  Thư mục này chỉ chứa file đã chuẩn hóa; file thô để ngoài.
+- Người dùng gửi lại file: so md5 và thời điểm sửa với các bản đang có để biết bản nào mới nhất (có thể lưu nhầm chỗ, ví dụ vào thư mục mẫu).
+- Sửa sổ ĐANG DÙNG (đã có danh sách chọn, định dạng có điều kiện kiểu mới): không mở rồi lưu lại bằng openpyxl vì có thể mất danh sách chọn;
+  sửa trực tiếp XML trong file, xem `references/openpyxl-notes.md` mục "Sửa trực tiếp XML". Bản cũ vào `_LUU_TRU` trước khi ghi.
+- Dữ liệu người dùng nhập sai chỗ (đối tượng sai sheet, số nằm sai cột, mốc thời gian viết trong ghi chú): tách bằng script từ giá trị, chuyển
+  đúng cột/sheet; giá trị suy luận ghi "cần xác nhận" ở ghi chú, không bịa giá trị không có căn cứ.
 
 ## Trước khi giao
 

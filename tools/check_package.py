@@ -179,6 +179,7 @@ def check_all(release=False):
     root_lang = [f for f in files if not f.startswith(('en/', 'docs/', 'tools/', 'dist/')) and f.endswith(('.md', '.html', '.csv', '.txt')) and
                  (f in ('AGENTS.md', 'CLAUDE.md', 'GEMINI.md', 'PROJECT.md', 'README.md') or f.startswith(('.agent/', 'archive/', 'output/', 'working/', 'references/', 'skills/', 'examples/')))
                  and '/scripts/' not in f and f not in ('.agent/PACKAGE_INFO.json',)
+                 and not (f.startswith(('archive/', 'output/', 'working/')) and f.count('/') > 1)  # nội dung của người dùng, chỉ README cần bản en/
                  and not f.startswith(('skills/local/project/', 'skills/local/packs/', 'skills/external/', 'skills/inbox/'))]  # skill của project/pack do người dùng quản lý, không bắt buộc bản en/
     root_lang.append('docs/README.md')
     for f in sorted(root_lang):

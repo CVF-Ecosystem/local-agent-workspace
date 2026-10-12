@@ -1,0 +1,17 @@
+{
+  "name": "phap-ly",
+  "version": "0.2.0",
+  "requires_core": "1.6",
+  "title": {
+    "vi": "Pháp lý: tra cứu và áp dụng văn bản quy phạm pháp luật Việt Nam",
+    "en": "Legal: researching and applying Vietnamese legal documents"
+  },
+  "description": {
+    "vi": "Phương pháp tra cứu văn bản quy phạm pháp luật Việt Nam: định danh vấn đề theo 5 trục, xác định văn bản áp dụng tại đúng thời điểm, tra chéo văn bản hướng dẫn, sửa đổi, thay thế, trích dẫn nguyên văn có tọa độ, xử lý xung đột và trình bày phương án. Hỗ trợ nghiên cứu, không thay thế ý kiến pháp lý chính thức.",
+    "en": "Method for researching Vietnamese legal documents: frame the issue on 5 axes, find the documents in force at the right date, cross-check implementing, amending and replacing documents, quote verbatim with exact coordinates, resolve conflicts and present options. Supports research; does not replace formal legal advice."
+  },
+  "domain": "legal",
+  "skills": [
+    "legal-research-vn"
+  ]
+}

@@ -1,4 +1,4 @@
-# Local Agent Workspace v1.4
+# Local Agent Workspace v1.6
 
 Workspace local cho công việc văn phòng với Claude, Codex, Gemini hoặc agent khác.
 
@@ -19,7 +19,7 @@ Dùng nút Code → Download ZIP của GitHub cũng được, nhưng bản đó 
 
 Đây là thư mục mẫu để bắt đầu mỗi dự án công việc văn phòng với trợ lý AI theo cùng một chuẩn. Nó giúp AI nhớ bối cảnh
 giữa các phiên (không phải giải thích lại), giữ file gọn và có luật làm việc rõ (không bịa số liệu, không ghi đè file gốc),
-kèm mười ba skill cho việc thường gặp; giải nén ở máy nào cũng cùng chuẩn. Phần giới thiệu đầy đủ có ở đầu `START_HERE.html`.
+kèm mười bốn skill cho việc thường gặp; giải nén ở máy nào cũng cùng chuẩn. Phần giới thiệu đầy đủ có ở đầu `START_HERE.html`.
 
 Đọc tài liệu, soạn quy trình, biểu mẫu, báo cáo; xử lý bảng tính khi cần; tiếp tục
 công việc qua nhiều phiên; tạo báo cáo HTML gọn nhẹ. Workspace giữ tài liệu và ngữ
@@ -40,6 +40,10 @@ python tools/init_project.py --name "Tên project" --lang vi
 
 `--lang en` chuyển toàn bộ file hướng dẫn agent, skill và README sang tiếng Anh. Không có Python thì làm tay theo
 `docs/HUONG_DAN_TAO_PROJECT_MOI_VI.md`. Phiên bản package nằm trong `VERSION`.
+
+Sau khi khởi tạo, bấm đúp `APP.bat` (Windows) hoặc `APP.command` (macOS) để mở **bảng điều khiển** trong trình duyệt: xem trạng
+thái công việc, cài gói lĩnh vực, kiểm tra file trước khi giao, nâng cấp package, chép skill vào Claude, Codex, Gemini. Bảng điều
+khiển chỉ là giao diện cho các công cụ trong `tools/`, chạy trên máy (không dùng mạng), tự tắt khi đóng trang.
 
 - Dự án mới: `docs/HUONG_DAN_TAO_PROJECT_MOI_VI.md` hoặc bản `.html` cùng tên.
 - Dự án có sẵn và nâng cấp package: `docs/HUONG_DAN_CHUYEN_DOI_PROJECT_CO_SAN_VI.md` hoặc `.html`.
@@ -66,8 +70,9 @@ không cần đọc thêm bản HTML. HTML dành cho người dùng, không ph�
 | `vn-admin-documents` | Văn bản hành chính đúng thể thức: công văn, tờ trình, báo cáo, thông báo. |
 | `excel-workbooks` | Dựng sổ theo dõi, form nhập liệu, báo cáo tự tổng hợp và phụ lục tính bằng Excel. |
 | `excel-html-viewer` | Công cụ HTML một file, offline, đọc file Excel để xem số liệu trực quan. |
+| `source-library` | Thư viện nguồn trong `references/` (pháp luật, quy chế, mẫu biểu) với chỉ mục Excel; tra trước khi trích dẫn. |
 
-Mười ba skill nằm trong `skills/local/shared/`, được ghi là `AVAILABLE` trong
+Mười bốn skill nằm trong `skills/local/shared/`, được ghi là `AVAILABLE` trong
 `.agent/SKILL_INDEX.md`. Agent chọn skill theo độ phù hợp, không ưu tiên cố định
 native hay local. Không dùng skill cũng là lựa chọn hợp lệ.
 
@@ -82,6 +87,7 @@ project/
 ├── START_HERE.html          Hướng dẫn cho người dùng (tiếng Việt)
 ├── START_HERE.en.html       Hướng dẫn cho người dùng (tiếng Anh)
 ├── SETUP.bat / SETUP.command  Bấm đúp để khởi tạo project (trình hướng dẫn tự chạy)
+├── APP.bat / APP.command      Bảng điều khiển trong trình duyệt (tùy chọn)
 ├── README.md
 ├── AGENTS.md                Hướng dẫn chung cho agent
 ├── PROJECT.md               Ngữ cảnh ổn định của dự án
@@ -97,7 +103,7 @@ project/
 ├── packs/                   Gói lĩnh vực (cài theo nhu cầu bằng tools/pack.py)
 ├── .agent/                  STATE, HANDOFF, INDEX, SKILL_INDEX, PENDING_LESSONS
 ├── skills/
-│   ├── local/shared/        Mười ba skill và các mẫu đi kèm
+│   ├── local/shared/        Mười bốn skill và các mẫu đi kèm
 │   ├── local/project/       Hướng dẫn riêng của dự án, nếu cần
 │   ├── external/            Skill bên ngoài do người dùng thêm
 │   └── inbox/               Chỗ tạm, không bắt buộc
@@ -110,7 +116,7 @@ project/
 ## Phiên bản tiếng Anh và công cụ bảo trì
 
 Thư mục `en/` chứa bản tiếng Anh của toàn bộ nội dung chỉ có tiếng Việt: file hướng dẫn agent
-(`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `PROJECT.md`), ghi chú `.agent/`, mười ba skill kèm tài liệu,
+(`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `PROJECT.md`), ghi chú `.agent/`, mười bốn skill kèm tài liệu,
 mẫu và script, README các thư mục, và bản README tiếng Anh này. Tên file và thư mục giống hệt bản
 tiếng Việt, chỉ khác ngôn ngữ nội dung, nên `python tools/init_project.py --lang en` chép đè `en/` lên
 thư mục gốc (trừ `en/PROJECT_INSTRUCTIONS_SNIPPET.md`, dùng để dán vào hướng dẫn Project). Giữ nguyên

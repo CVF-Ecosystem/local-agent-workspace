@@ -6,7 +6,7 @@ Dùng ngắn gọn, chọn phần phù hợp với sản phẩm. Không biến t
 ## Mọi sản phẩm
 
 - [ ] Đúng yêu cầu: loại sản phẩm, người đọc, phạm vi, định dạng.
-- [ ] Không còn chỗ chưa điền (`[Tên]`, `[...]`) và không còn nhãn "mẫu/minh họa/dữ liệu giả".
+- [ ] Không còn chỗ chưa điền (`[Tên]`, `[...]`) và không còn nhãn "mẫu/minh họa/dữ liệu giả"; với file Word, đếm trên chính file đã dựng (lệnh ở `references/docx-default-layout.md`).
 - [ ] Chỗ thiếu căn cứ đã ghi "cần xác nhận"; không có số liệu, ngày, tên, thời hạn bịa.
 - [ ] Dữ kiện lấy từ nguồn tách khỏi đề xuất của agent.
 - [ ] File gốc của người dùng không bị ghi đè; bản mới có tên rõ (và hậu tố phiên bản khi thay bản cũ). Thư mục kết quả chỉ chứa bản đang dùng; bản cũ chuyển vào thư mục lưu trữ bằng lệnh không ghi đè (`mv -n`) và kiểm tra lại; không xóa khi chưa được yêu cầu.

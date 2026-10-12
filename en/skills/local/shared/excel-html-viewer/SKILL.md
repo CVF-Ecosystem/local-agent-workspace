@@ -6,7 +6,7 @@ description: >-
   names and hand-typed values. Not for reports from fixed data (see `html-reports`) or for checking a file (see `spreadsheet-check`).
   Triggers when the user says: "dashboard that reads an Excel file", "see Excel figures visually", "offline HTML tool", "control board that reads Excel".
 metadata:
-  version: "1.0"
+  version: "1.2"
 ---
 
 # HTML tool that reads Excel files
@@ -17,7 +17,7 @@ input workbook see `excel-workbooks`; for charts see `data-charts`; for a report
 
 ## How to build
 
-- One HTML file, CSS and JavaScript embedded, no CDN. **Forbidden**: `<script src="http...">`, `<link href="http...">`, `fetch`, `XMLHttpRequest` and any network resource: the user opens the file without internet. Do not deliver a "CDN" version next to an "offline" one; deliver only the offline one. Self-check before handing over: `grep -E 'src="https?:|href="https?:|fetch\(' file.html` must return nothing (`http://` strings that are XML namespaces inside the library do not count). Reading `.xlsx` needs an Excel-reading library (for example the mini build of SheetJS)
+- One HTML file, CSS and JavaScript embedded, no CDN. **Forbidden**: `<script src="http...">`, `<link href="http...">`, `fetch`, `XMLHttpRequest` and any network resource, web fonts (Google Fonts) included: the user opens the file without internet. Do not deliver a "CDN" version next to an "offline" one; deliver only the offline one. Self-check before handing over: `grep -E 'src="https?:|href="https?:|fetch\(' file.html` must return nothing (`http://` strings that are XML namespaces inside the library do not count). Reading `.xlsx` needs an Excel-reading library (for example the mini build of SheetJS)
   embedded in the file; when embedding, replace the string `</script` inside the library with `<\/script`. Embed it as a plain `<script>` block (no base64 needed). Reading CSV only needs no library.
 - No library and no network to fetch one: embed `assets/xlsx-mini-reader.js` (reads `.xlsx` with no external library; needs a browser with `DecompressionStream`,
   tried on many real Excel files). Values only: dates are serial numbers to convert yourself, formulas without a calculated value come back empty. The .xlsx export button still needs a writing library.
@@ -60,6 +60,30 @@ People rename sheets, mix upper and lower case, use accents or not, leave extra 
 Clickable metric cards and a "Needs attention" block at the top; clicking a number or column opens a detail table with filter, sort and CSV export (add a BOM so Excel reads Vietnamese correctly);
 switch between chart and number table; light and dark themes; print or save as PDF; usable on a narrow screen. Charts follow `data-charts`: status colours always come with an icon
 and text, one axis, a legend and a number table.
+
+## Many files, many periods, remembering the last load
+
+- One Excel file per period (`YYYY-MM_…xlsx` in a year folder); combine periods in the HTML tool, not with cross-file formulas.
+- Loading: an "Open folder" button (`<input type="file" webkitdirectory>`), "Open files" (`multiple`) and drag-and-drop. Skip Excel's
+  `~$…` temporary files. Read each file, tag every record with its file name, merge, then check (a duplicate key ACROSS files is an error, reported with both file names).
+- Quick period choice Month / Quarter / Year and From – To; when the period spans more than a month add a by-month summary table. Charts with
+  a limit (for example a timeline ≤ 25 items, top-20 ranking) must say when they are cut.
+- Remember the last load: store the trimmed raw data and the load time in `localStorage` (wrapped in `try/catch`; the page still works when it
+  cannot store). Short badge "N data files · loaded at …", file names in the hover tooltip. Say when delivering: it does not re-read Excel when the
+  file changes; it only remembers on that computer and browser. To keep attached files or large data (a few MB or more), use
+  IndexedDB instead of `localStorage` (limit about 5 MB), also wrapped in `try/catch`.
+- De-duplicating records by code or document number: normalise before comparing (strip spaces, unify case, NFC, unify the "-"
+  and "–" dashes), so "12/2024/nđ-cp" and "12/2024/NĐ-CP " are the same.
+- Once the user works with real data, remove the sample-data button; the first screen is "No data yet" with loading instructions.
+- The load message shows only the number of files and errors; do not list every file name (cluttered with many files).
+
+## Cross-checking between tables
+
+"Blank = same as the row above" cells (voyage code, case code…) are a frequent source of mis-assignment. When a child record has a time and the
+parent record has a time window: check the child time lies within [parent start − tolerance; parent end + tolerance]; if not, report an error
+with the row number and **suggest** the parent record that was running then (faint text "suggestion: …"). An attribute that should match (for
+example equipment not in the parent's list) gives a warning, with exceptions written down. Use the same rule as the "Check" column in the Excel
+book; do not change the data automatically.
 
 ## Testing and limits when delivering
 

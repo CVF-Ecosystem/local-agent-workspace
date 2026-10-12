@@ -16,6 +16,10 @@ Kinh nghiệm đã kiểm chứng; mở khi dựng thật.
 - Chuỗi ghi chú bắt đầu bằng dấu "=" bị hiểu thành công thức (`#NAME?`). Viết "Tính: ..." thay vì "= ...".
 - Công thức nhiều sheet dễ sai tên sheet hoặc cột mà đọc mã không thấy; file tạo bằng openpyxl không có giá trị tính sẵn. Tính lại bằng
   `recalc.py` (nếu có) hoặc `soffice --convert-to xlsx` rồi đọc lại bằng `openpyxl` với `data_only=True`; yêu cầu 0 lỗi.
+- Ô trống mang nghĩa nghiệp vụ (ví dụ "không điều chỉnh = đúng giờ"): công thức trả 0 và định dạng số ba phần `0;"Sớm "0;"Đúng giờ"`; ô hiện chữ, giá trị vẫn là số để cộng, lọc.
+- Ngày giờ ghi vào ô: làm tròn đúng phút `round(x*1440)/1440` (làm tròn theo số thập phân làm 11:00 hiện 10:59). Trong công thức: `TEXT(ROUND(t*1440,0)/1440,"hh:mm")`.
+- Đối soát chéo bằng công thức (không mảng): số bản ghi cha chứa thời điểm x là `SUMPRODUCT((cot_tu<=x)*(cot_den>=x))`; khi bằng 1 lấy mã bằng
+  `INDEX(cot_ma,SUMPRODUCT((cot_tu<=x)*(cot_den>=x)*(ROW(cot_ma)-dong_dau+1)))`; thuộc tính có trong danh sách bằng `ISERROR(SEARCH(ma,danh_sach))`.
 
 ## Nhập liệu và định dạng
 
@@ -38,6 +42,18 @@ Kinh nghiệm đã kiểm chứng; mở khi dựng thật.
 - Thêm khối mới xuống cuối sheet; `insert_rows` đẩy lệch dòng mà công thức sheet khác vẫn trỏ địa chỉ cũ.
 - Sửa file người dùng: lưu bản mới tên mới, không ghi đè bản gốc.
 
+## Sửa trực tiếp XML (sổ đang dùng)
+
+File `.xlsx` là zip. Dùng khi phải giữ nguyên mọi thứ openpyxl có thể làm mất (danh sách chọn kiểu `x14`, định dạng có điều kiện mới).
+
+- Tìm file của sheet qua `xl/workbook.xml` và `xl/_rels/workbook.xml.rels`; thứ tự `sheetN.xml` có thể khác giữa các file cùng mẫu.
+- Thay ô: công thức viết đầy đủ trong `<f>`, bỏ `<v>`; cột dùng công thức chia sẻ (`t="shared"`) thì thay cả nhóm; chữ dùng `t="inlineStr"` hoặc trỏ chuỗi có sẵn trong `sharedStrings.xml`.
+- Thêm sheet: tạo `sheetN.xml` (dùng lại chỉ số kiểu của sheet tương tự), thêm quan hệ trong rels, `Override` trong `[Content_Types].xml`, thẻ `<sheet>` trong workbook;
+  chèn trước sheet cuối thì dịch `localSheetId` của các tên vùng từ vị trí đó trở đi; cập nhật `docProps/app.xml`. Danh sách chọn lấy từ sheet khác: đặt tên vùng (`definedName`) và dùng tên đó.
+- Chèn mục vào giữa sheet báo cáo: dời mọi dòng phía sau (số dòng, địa chỉ ô, vùng gộp, `dimension`, ngắt trang, vùng in); kiểm (assert) không có công thức hay vùng nào phía sau trỏ địa chỉ cũ.
+- Kiểu: thêm `numFmt` và nhân bản `xf` trong `styles.xml`. Bỏ `calcChain.xml` (cùng rel và `Override`) và đặt `fullCalcOnLoad="1"` để Excel tính lại khi mở.
+- Ghi lại zip giữ thứ tự mục; đếm danh sách chọn trước và sau; script sửa có assert cho từng chuỗi thay (khớp đúng một lần), chạy cho mẫu trống và mọi file kỳ.
+
 ## Kiểm tra trước khi giao
 
 1. Công thức tính lại, 0 lỗi; số liệu Word và Excel khớp.
@@ -45,3 +61,4 @@ Kinh nghiệm đã kiểm chứng; mở khi dựng thật.
 3. Nhập thử vượt giới hạn bảng báo cáo: phải có dòng cảnh báo rõ ("chỉ hiển thị N, xem số đủ ở sheet tổng hợp"), không lỗi công thức.
 4. Ô ngưỡng để trống thì công thức vẫn chạy, không gắn cờ.
 5. Nói rõ phần chưa thử với Excel thật.
+6. LibreOffice không tính lại ô còn giá trị lưu sẵn: với file sửa bằng XML, tạo bản thử đã xóa mọi `<v>` sau `</f>` rồi `soffice --convert-to xlsx`, đọc `data_only=True`, yêu cầu 0 ô lỗi. Chỉ dùng bản này để kiểm; giao bản sửa XML. Thử cả ca âm (cố ý làm sai dữ liệu để cột Kiểm tra báo).

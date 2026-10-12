@@ -6,7 +6,7 @@ description: >-
   và giá trị gõ tay không chuẩn. Không dành cho báo cáo từ dữ liệu cố định (xem `html-reports`) hay kiểm tra file (xem `spreadsheet-check`).
   Kích hoạt khi người dùng nói: “dashboard đọc file Excel”, “xem số liệu trực quan từ Excel”, “công cụ HTML chạy offline”, “bảng điều hành đọc Excel”.
 metadata:
-  version: "1.0"
+  version: "1.2"
 ---
 
 # Công cụ HTML đọc file Excel
@@ -17,7 +17,7 @@ thì xem `excel-workbooks`; biểu đồ xem `data-charts`; báo cáo từ dữ 
 
 ## Cách dựng
 
-- Một file HTML duy nhất, CSS và JavaScript nhúng sẵn, không CDN. **Cấm** `<script src="http...">`, `<link href="http...">`, `fetch`, `XMLHttpRequest` và mọi tài nguyên mạng: người dùng mở file khi không có mạng. Bản "có CDN" và bản "offline" không được giao song song; chỉ giao bản offline. Giao xong tự kiểm: `grep -E 'src="https?:|href="https?:|fetch\(' file.html` phải trống (chuỗi `http://` trong tên miền XML của thư viện thì không tính). Đọc `.xlsx` cần thư viện đọc Excel (ví dụ bản mini của SheetJS)
+- Một file HTML duy nhất, CSS và JavaScript nhúng sẵn, không CDN. **Cấm** `<script src="http...">`, `<link href="http...">`, `fetch`, `XMLHttpRequest` và mọi tài nguyên mạng, kể cả phông chữ web (Google Fonts): người dùng mở file khi không có mạng. Bản "có CDN" và bản "offline" không được giao song song; chỉ giao bản offline. Giao xong tự kiểm: `grep -E 'src="https?:|href="https?:|fetch\(' file.html` phải trống (chuỗi `http://` trong tên miền XML của thư viện thì không tính). Đọc `.xlsx` cần thư viện đọc Excel (ví dụ bản mini của SheetJS)
   nhúng vào file; nhúng thì thay chuỗi `</script` trong thư viện bằng `<\/script`. Nhúng thẳng thành thẻ `<script>` thường (không cần mã hóa base64). Chỉ đọc CSV thì không cần thư viện.
 - Không có thư viện và không có mạng để tải: nhúng `assets/xlsx-mini-reader.js` (đọc `.xlsx` không cần thư viện ngoài; cần trình duyệt có `DecompressionStream`,
   đã thử với nhiều file Excel thật). Chỉ đọc giá trị: ngày là số serial cần tự đổi, công thức chưa có giá trị đã tính trả về trống. Nút xuất .xlsx vẫn cần thư viện ghi.
@@ -59,6 +59,29 @@ Người dùng hay đổi tên sheet, gõ hoa thường lẫn lộn, có dấu h
 Thẻ chỉ số bấm được, khối "Việc cần chú ý" ở đầu trang; bấm số hoặc cột mở bảng chi tiết có lọc, sắp xếp, xuất CSV (thêm BOM để Excel đọc đúng tiếng Việt);
 chuyển biểu đồ và bảng số; giao diện sáng và tối; in hoặc lưu PDF; dùng được trên màn hình hẹp. Biểu đồ theo `data-charts`: màu trạng thái luôn kèm
 biểu tượng và chữ, một trục, có chú giải và bảng số.
+
+## Nhiều file, nhiều kỳ, nhớ lần nạp
+
+- Mỗi kỳ một file Excel (`YYYY-MM_…xlsx` trong thư mục năm); tổng hợp nhiều kỳ ở công cụ HTML, không gộp bằng công thức liên file.
+- Nạp: nút "Mở thư mục" (`<input type="file" webkitdirectory>`), "Mở file" (`multiple`) và kéo thả. Bỏ file tạm `~$…` của Excel.
+  Đọc từng file, gắn tên file vào mỗi bản ghi, gộp lại rồi mới kiểm tra (trùng khóa GIỮA các file là lỗi, báo kèm tên hai file).
+- Chọn kỳ nhanh Tháng / Quý / Năm và Từ ngày – Đến ngày; kỳ dài hơn một tháng thì thêm bảng tổng hợp theo tháng. Biểu đồ có
+  giới hạn (ví dụ dòng thời gian ≤ 25 mục, xếp hạng 20 mục đầu) phải ghi chú khi bị cắt.
+- Nhớ lần nạp gần nhất: lưu dữ liệu thô đã cắt gọn và thời điểm nạp vào `localStorage` (bọc `try/catch`, trang vẫn chạy khi
+  không lưu được). Nhãn ngắn "N file dữ liệu · nạp lúc …", tên file để trong chú thích khi rê chuột. Nói rõ khi giao: không tự đọc
+  lại Excel khi file đổi, chỉ nhớ trên máy và trình duyệt đó. Cần giữ cả file đính kèm hoặc dữ liệu lớn (vài MB trở lên) thì
+  dùng IndexedDB thay cho `localStorage` (giới hạn khoảng 5 MB), cũng bọc `try/catch`.
+- Chống trùng bản ghi theo mã hoặc số hiệu: chuẩn hóa trước khi so (bỏ khoảng trắng, thống nhất hoa thường, NFC, thống nhất
+  dấu gạch "-" và "–"), ví dụ "12/2024/nđ-cp" và "12/2024/NĐ-CP " là một.
+- Khi người dùng đã dùng dữ liệu thật thì bỏ nút dữ liệu mẫu; màn đầu là "Chưa có dữ liệu" kèm hướng dẫn nạp.
+- Thông báo nạp chỉ ghi số file và số lỗi; không liệt kê tên từng file (rối khi nhiều file).
+
+## Đối soát chéo giữa các bảng
+
+Ô "để trống = như dòng trên" (mã chuyến, mã vụ việc…) là nguồn gán nhầm hay gặp. Khi bản ghi con có thời điểm và bản ghi cha có
+khoảng thời gian: kiểm thời điểm con nằm trong [bắt đầu cha − dung sai; kết thúc cha + dung sai]; lệch thì báo lỗi kèm số dòng và
+**gợi ý** bản ghi cha đang diễn ra lúc đó (chữ nhạt "gợi ý: …"). Thuộc tính lẽ ra khớp (ví dụ thiết bị không có trong danh sách của
+bản ghi cha) thì báo cảnh báo, có ngoại lệ ghi rõ. Dùng cùng quy tắc với cột "Kiểm tra" trong sổ Excel; không tự sửa dữ liệu.
 
 ## Kiểm thử và giới hạn khi giao
 

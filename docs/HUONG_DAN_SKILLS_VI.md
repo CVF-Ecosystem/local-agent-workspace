@@ -110,6 +110,7 @@ Chín skill này ngắn, mỗi skill có phần “khi nào dừng” để agen
 | `vn-admin-documents` | Cần văn bản hành chính đúng thể thức. | Bản nháp có đủ thành phần thể thức; số, ngày, người ký để `[cần xác nhận]`. |
 | `excel-workbooks` | Cần sổ theo dõi, form nhập liệu hoặc phụ lục tính bằng Excel. | File Excel có sheet nhập, sheet báo cáo bằng công thức, dữ liệu mẫu tách riêng; đã tính lại không lỗi. |
 | `excel-html-viewer` | Muốn xem số liệu trực quan từ file Excel mà không cài phần mềm. | Một file HTML mở offline, đọc Excel, có tab kiểm tra dữ liệu; nêu rõ giới hạn khi giao. |
+| `source-library` | Lưu và tra văn bản pháp luật, quy chế, mẫu biểu của project; cần biết văn bản còn hiệu lực, đã xác minh tới đâu. | Khung `references/` theo nhóm và lĩnh vực, chỉ mục `_INDEX.xlsx`, lệnh `tools/library.py` (init, check, find); trích dẫn chỉ từ file có trong thư viện. |
 
 ```text
 Đối chiếu Quy_dinh_cu.docx với Quy_dinh_moi.docx. Chỉ lập bảng thay đổi có ý nghĩa,
@@ -151,16 +152,22 @@ Người dùng giữ quyền thêm/bỏ/sửa thư viện; agent chủ động l
 
 ## 9. Gói lĩnh vực và cài skill vào ứng dụng
 
-Lõi của package chỉ giữ quy tắc làm việc và mười ba skill dùng chung. Kiến thức riêng của một lĩnh vực (cảng và logistics,
+Lõi của package chỉ giữ quy tắc làm việc và mười bốn skill dùng chung. Kiến thức riêng của một lĩnh vực (cảng và logistics,
 nhân sự, tài chính...) nên nằm trong **gói lĩnh vực** trong `packs/`, cài vào project nào cần bằng
 `python tools/pack.py add <tên>` (xem `python tools/pack.py list`). Gói cài vào `skills/local/packs/` và được ghi trong
 `.agent/SKILL_INDEX.md` với Scope `PACK`; gỡ bằng `pack.py remove <tên>` (thư mục được chuyển vào `archive/`, không xóa).
-Quy tắc nhận một gói và cách viết gói mới ở `packs/README.md`. Package chưa kèm gói lĩnh vực nào ngoài khung `_template`.
+Quy tắc nhận một gói và cách viết gói mới ở `packs/README.md`. Package kèm năm gói lĩnh vực (thử nghiệm, bản 0.1.0): `phap-ly` (tra cứu, áp dụng văn bản quy phạm pháp luật), `van-thu-luu-tru`
+(văn bản đi, đến, sao văn bản, lập hồ sơ, nộp lưu), `cang-logistics` (báo cáo khai thác tàu, sà lan, sự cố thiết bị),
+`hanh-chinh-nhan-su` (quyết định nhân sự, phép năm, làm thêm giờ, kỷ luật, lương, bảo hiểm) và `ke-toan-noi-bo` (tạm ứng, thanh
+toán, chứng từ, hóa đơn, lưu trữ). Mỗi gói có bảng căn cứ (tệp legal-basis.md trong thư mục references của skill) ghi số hiệu, điều khoản, hiệu lực, nguồn và ngày đối
+chiếu để người dùng kiểm lại. Cài bằng `python tools/pack.py add <tên>` hoặc trang "Gói lĩnh vực" của bảng điều khiển. Ngoài ra
+là khung `_template` để viết gói mới.
 
 Mỗi project giữ bản sao skill của riêng mình, nên project luôn tự đủ và mang đi được; công cụ `tools/upgrade_package.py` giữ
 các bản sao này đồng bộ với package mới. Nếu muốn skill hiện trong menu của ứng dụng (ví dụ Claude), dùng
-`python tools/install_skills.py --dest <thư mục skill của ứng dụng> --yes` (mặc định chỉ xem trước, không ghi đè). Việc này là tùy chọn;
-agent vẫn đọc được skill như file.
+`python tools/install_skills.py --dest <thư mục skill của ứng dụng> --yes` (mặc định chỉ xem trước, không ghi đè), hoặc trang "Cài skill
+vào ứng dụng" của bảng điều khiển (`APP.bat`). Skill viết theo định dạng `SKILL.md` chung: Claude đọc `~/.claude/skills`; Codex và Gemini CLI
+cùng đọc `~/.agents/skills`, nên một lần chép dùng được cho cả hai. Việc này là tùy chọn; agent vẫn đọc được skill như file.
 
 Bảng thuật ngữ Việt–Anh cho văn bản hành chính: `docs/GLOSSARY_VI_EN.md`. Trước khi giao sản phẩm, có thể dùng
 `python tools/check_output.py <file>` và checklist `skills/local/shared/office-documents/references/delivery-checklist.md`.

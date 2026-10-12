@@ -113,6 +113,7 @@ These nine skills are short, and each has a “when to stop” part so the agent
 | `vn-admin-documents` | You need a correctly formatted administrative document. | A draft with all format components; numbers, dates and signatory left as `[needs confirmation]`. |
 | `excel-workbooks` | You need a tracking workbook, data-entry form or calculation appendix in Excel. | An Excel file with an input sheet, a formula-only report sheet and separate sample data; recalculated with no errors. |
 | `excel-html-viewer` | You want to see figures from Excel files visually without installing software. | One HTML file that opens offline, reads Excel and has a data-check tab; limits stated on delivery. |
+| `source-library` | Store and look up the project's legal documents, company rules and templates; know what is in force and how well it is verified. | A `references/` layout by group and domain, an `_INDEX.xlsx` index, the `tools/library.py` command (init, check, find); quotes only from files in the library. |
 
 ```text
 Compare Old_Regulation.docx with New_Regulation.docx. Only build a table of meaningful changes,
@@ -155,17 +156,23 @@ actively within the work.
 
 ## 9. Domain packs and installing skills into an app
 
-The package core only holds the working rules and the thirteen shared skills. Knowledge specific to a domain (port and logistics,
+The package core only holds the working rules and the fourteen shared skills. Knowledge specific to a domain (port and logistics,
 HR, finance...) belongs in a **domain pack** in `packs/`, installed into the projects that need it with
 `python tools/pack.py add <name>` (see `python tools/pack.py list`). A pack installs into `skills/local/packs/` and is recorded in
 `.agent/SKILL_INDEX.md` with Scope `PACK`; remove it with `pack.py remove <name>` (the folder is moved into `archive/`, not deleted).
-The rule for accepting a pack and how to write a new one are in `packs/README.md`. The package ships no domain pack apart from the
-`_template` skeleton.
+The rule for accepting a pack and how to write a new one are in `packs/README.md`. The package ships five domain packs (trial,
+version 0.1.0): `phap-ly` (researching and applying legal documents), `van-thu-luu-tru` (outgoing and incoming documents, copies,
+filing, archiving), `cang-logistics` (ship, barge and equipment-incident reports), `hanh-chinh-nhan-su` (personnel decisions,
+leave, overtime, discipline, pay, insurance) and `ke-toan-noi-bo` (advances, payments, vouchers, invoices, retention). Each pack
+has a legal-basis table (the legal-basis.md file in the skill’s references folder) with numbers, articles, effective dates, sources and a check date so users can verify them.
+Install with `python tools/pack.py add <name>` or the "Domain packs" page of the control panel. There is also the `_template`
+skeleton for writing new packs.
 
 Each project keeps its own copy of the skills, so a project is always self-contained and portable; `tools/upgrade_package.py` keeps
 these copies in sync with a new package. If you want the skills to show up in an app's menu (for example Claude), use
-`python tools/install_skills.py --dest <the app's skills folder> --yes` (preview only by default, never overwrites). This is optional;
-the agent can still read the skills as files.
+`python tools/install_skills.py --dest <the app's skills folder> --yes` (preview only by default, never overwrites), or the "Install skills
+into apps" page of the control panel (`APP.bat`). The skills use the common `SKILL.md` format: Claude reads `~/.claude/skills`; Codex and
+Gemini CLI both read `~/.agents/skills`, so one copy serves both. This is optional; the agent can still read the skills as files.
 
 Vietnamese–English glossary for administrative documents: `docs/GLOSSARY_VI_EN.md`. Before handing over a deliverable you can use
 `python tools/check_output.py <file>` and the checklist `skills/local/shared/office-documents/references/delivery-checklist.md`.
