@@ -2,7 +2,7 @@
 
 ## Foundation
 
-Package version v1.6 was written from a workspace skeleton the user supplied earlier. It lightens the guides
+Package version 1.6 was written from a workspace skeleton the user supplied earlier. It lightens the guides
 and adds the office resources that were agreed.
 The user's original files were not relabelled under a new blanket licence.
 
@@ -68,7 +68,7 @@ The presentation standard in `html-reports` (and both HTML templates restyled to
 and the shared-tool and direct-XML-editing parts of `excel-workbooks` were drawn from two of the maintainer's office projects (a ship-operations report and an
 engineering-equipment control board), October 2026. Unit names, signatories, figures and business rules were removed; those stay in each project's own skill. Nothing was copied from an outside repo.
 
-## Additions in v1.6.0
+## Additions in 1.6.0
 
 - `vn-admin-documents` 1.1 (`references/nd30-presentation.md`, three new frames in `document-frames.md`): the layout values,
   the size and style table for each component and the list of templates in the annex were checked by the maintainer directly
@@ -111,7 +111,7 @@ when opened or filtered.
 
 ## Limits of checking
 
-Version v1.6 was checked for files, internal paths, skill metadata (name matching folder and index),
+Version 1.6 was checked for files, internal paths, skill metadata (name matching folder and index),
 HTML pages rebuilt from Markdown (the Vietnamese and English sets, with two-way language links) and the
 `basic-charts.html` template in a local Chromium browser (no console errors, no network requests, no
 horizontal scrolling at phone width). The English translation was written by an agent and has not been

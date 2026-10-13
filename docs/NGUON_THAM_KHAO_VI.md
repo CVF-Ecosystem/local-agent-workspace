@@ -2,7 +2,7 @@
 
 ## Nền tảng
 
-Package bản v1.6 được biên soạn từ một bộ khung workspace do người dùng cung cấp trước đó, làm gọn
+Package bản 1.6 được biên soạn từ một bộ khung workspace do người dùng cung cấp trước đó, làm gọn
 hướng dẫn và bổ sung tài nguyên văn phòng đã thống nhất.
 Các file gốc của người dùng không được gán lại một giấy phép chung mới.
 
@@ -69,7 +69,7 @@ Chuẩn trình bày báo cáo trong `html-reports` (và hai mẫu HTML làm mớ
 phần công cụ nhiều người dùng và sửa trực tiếp XML trong `excel-workbooks` được rút từ hai project văn phòng của người duy trì (báo cáo khai thác tàu, bảng điều hành
 kỹ thuật – cơ giới), tháng 10/2026. Đã bỏ tên đơn vị, người ký, số liệu và nghiệp vụ riêng; những phần đó ở lại skill của từng project. Không sao chép từ repo ngoài.
 
-## Bổ sung v1.6.0
+## Bổ sung ở bản 1.6.0
 
 - `vn-admin-documents` 1.1 (`references/nd30-presentation.md`, ba khung mới trong `document-frames.md`): thông số trình bày,
   bảng cỡ chữ và kiểu chữ từng thành phần, danh sách mẫu trong phụ lục được người duy trì đối chiếu trực tiếp với bản quét
@@ -111,7 +111,7 @@ truy cập các địa chỉ này khi mở hoặc lọc dữ liệu.
 
 ## Giới hạn kiểm tra
 
-Bản v1.6 được kiểm tra file, đường dẫn nội bộ, metadata skill (tên khớp thư mục và index),
+Bản 1.6 được kiểm tra file, đường dẫn nội bộ, metadata skill (tên khớp thư mục và index),
 các trang HTML dựng lại từ Markdown (bộ tiếng Việt và bộ tiếng Anh, kèm nút chuyển ngôn ngữ hai chiều)
 và mẫu `basic-charts.html` trong trình duyệt Chromium local (không lỗi console, không yêu cầu mạng,
 không cuộn ngang ở chiều rộng điện thoại). Bản dịch tiếng Anh do agent viết, chưa được người bản ngữ rà soát.

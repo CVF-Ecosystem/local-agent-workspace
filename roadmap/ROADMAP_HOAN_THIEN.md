@@ -172,7 +172,7 @@ Thử đóng gói bằng `tools/build_release.py --out` trong thư mục tạm, 
 Phát hiện và sửa thêm lỗi hiển thị đường dẫn khi thư mục đóng gói nằm khác ổ đĩa trên Windows; thử lại đạt.
 
 Giới hạn còn lại: chưa thử macOS/Python 3.8; chưa có nghiệm thu người dùng mới; chưa kiểm toàn bộ tính năng giao diện.
-Chưa nâng VERSION hoặc phát hành. STATE ở kho làm việc đã ghi tiến độ; cần trả STATE về mẫu trong bản nguồn sạch trước lần đóng gói phát hành thực tế.
+Bản này sau đó được phát hành ở v1.7.0 (xem mục 13). STATE ở kho làm việc đã ghi tiến độ; cần trả STATE về mẫu trong bản nguồn sạch trước lần đóng gói phát hành thực tế.
 
 ## 10. Roadmap nâng cấp mức độ chuyên nghiệp
 
@@ -365,4 +365,4 @@ Giới hạn còn lại trước khi gọi là hoàn thiện:
 - Workflow CI chưa chạy lần nào (cần đẩy lên remote, chưa được cấp quyền). Chưa thử macOS, Python 3.8 hay trình đọc màn hình; mới chạy trên Windows 11 với Python 3.11.
 - Chưa nghiệm thu với người dùng mới theo kịch bản; tiêu chí của Giai đoạn 13 về người mới chưa đạt.
 - Hợp nhất `.new` vẫn thủ công; so sánh chỉ đọc. Bước `init_project.py` sau khi chuyển đổi chạy ngoài giao dịch của chuyển đổi.
-- Chưa nâng VERSION, chưa tạo bản phát hành; CHANGELOG ghi ở mục "Chưa phát hành".
+- Đã nâng VERSION lên 1.7.0 và phát hành; xem CHANGELOG mục v1.7.0.

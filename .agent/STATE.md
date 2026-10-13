@@ -4,7 +4,7 @@
 Hoàn thiện Local Agent Workspace theo roadmap/ROADMAP_HOAN_THIEN.md.
 
 ## Current phase
-Đã triển khai Giai đoạn 9 (phần còn lại), 10, 11, 12 và phần kỹ thuật của 13 trên nhánh roadmap-giai-doan-10-13 (PR vào main, chờ CI); chưa phát hành.
+Đã triển khai Giai đoạn 9 (phần còn lại), 10, 11, 12 và phần kỹ thuật của 13 đã gộp vào main (PR #1); đang phát hành v1.7.0.
 
 ## Completed
 - Giao dịch có nhật ký cho khởi tạo/chuyển đổi/nâng cấp; `tools/transaction.py` status/resume/rollback; đã thử kill giữa chừng rồi tiếp tục và phục hồi.
@@ -23,10 +23,10 @@ Hoàn thiện Local Agent Workspace theo roadmap/ROADMAP_HOAN_THIEN.md.
 - CI chưa chạy (cần push, chưa được phép); chưa thử macOS, Python 3.8, trình đọc màn hình.
 - Chưa nghiệm thu với người dùng mới theo kịch bản.
 - Hợp nhất `.new` vẫn thủ công; bước init sau chuyển đổi nằm ngoài giao dịch.
-- VERSION giữ nguyên; CHANGELOG ghi ở "Chưa phát hành".
+- VERSION 1.7.0 (MINOR: tính năng mới tương thích ngược); CHANGELOG mục v1.7.0.
 
 ## Waiting on user
-- Xem kết quả CI trên PR và quyết định gộp vào main; tổ chức một phiên nghiệm thu với người dùng mới; chọn số phiên bản khi phát hành.
+- Xem kết quả CI trên PR và quyết định gộp vào main; tổ chức một phiên nghiệm thu với người dùng mới; xem kết quả CI sau khi phát hành.
 
 ## Decisions
 - Người dùng giao hoàn thiện roadmap; orchestrator/reviewer điều phối subagent Haiku (xhigh) thi công theo phạm vi file tách biệt.

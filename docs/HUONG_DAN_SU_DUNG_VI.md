@@ -1,6 +1,6 @@
 # Hướng dẫn sử dụng hằng ngày
 
-Local Agent Workspace v1.6 giúp giữ tài liệu, ngữ cảnh và kết quả công việc trên
+Local Agent Workspace v1.7 giúp giữ tài liệu, ngữ cảnh và kết quả công việc trên
 cùng một thư mục. Agent vẫn chủ động chọn cách làm, công cụ và skill phù hợp.
 
 ## 1. Giao việc bằng ngôn ngữ tự nhiên

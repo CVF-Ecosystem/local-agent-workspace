@@ -1,4 +1,4 @@
-# Local Agent Workspace v1.6
+# Local Agent Workspace v1.7
 
 A local workspace for office work with Claude, Codex, Gemini or another agent.
 
