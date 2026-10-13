@@ -8,14 +8,19 @@ Dùng (chạy từ thư mục gốc của package/project):
   python tools/check_package.py --verify         so file của project với MANIFEST.sha256: file nào của package đã bị sửa
 
 Mã thoát: 0 đạt; 1 có lỗi (chế độ kiểm tra) hoặc có file đã đổi/thiếu (--verify); 2 lỗi dùng.
+Kiểm tra cũng gồm tương thích Python 3.8 (heuristic, xem check_py38). Cờ ẩn --result-json xuất envelope
+có cấu trúc (local-agent-workspace/result-v1); mã trong envelope luôn bằng mã thoát.
 """
-import argparse, ast, hashlib, io, json, os, re, subprocess, sys
+import argparse, ast, hashlib, io, json, os, re, subprocess, sys, tokenize
+from result_schema import emit, make
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEXT_EXT = ('.md', '.html', '.py', '.json', '.txt', '.sha256', '.css', '.js', '')
 SKIP_DIRS = {'.git', '__pycache__', 'dist', 'node_modules'}
 # Chỉ ở thư mục gốc: nơi quản lý feedback của người duy trì, không đưa vào gói phát hành
 ROOT_ONLY_SKIP = {'feedback', '.github', 'roadmap', 'tests', 'release_templates'}
+# Dữ liệu vận hành cục bộ (giao dịch, lịch sử thao tác): không vào MANIFEST hay ZIP / local runtime data, never packaged
+RUNTIME_DIR = '.agent/runtime'
 # File người dùng sửa trong project: không đưa vào MANIFEST
 USER_FILES = {'PROJECT.md', '.agent/STATE.md', '.agent/HANDOFF.md', '.agent/INDEX.md',
               '.agent/SKILL_INDEX.md', '.agent/PENDING_LESSONS.md', '.agent/PACKAGE_INFO.json',
@@ -37,7 +42,8 @@ def rd(rel): return io.open(P(rel), encoding='utf-8', newline='').read()
 def all_files():
     out = []
     for d, dirs, files in os.walk(ROOT):
-        dirs[:] = sorted(x for x in dirs if x not in SKIP_DIRS and not (d == ROOT and x in ROOT_ONLY_SKIP))
+        dirs[:] = sorted(x for x in dirs if x not in SKIP_DIRS and not (d == ROOT and x in ROOT_ONLY_SKIP)
+                         and os.path.relpath(os.path.join(d, x), ROOT).replace(os.sep, '/') != RUNTIME_DIR)
         for f in sorted(files):
             rel = os.path.relpath(os.path.join(d, f), ROOT).replace(os.sep, '/')
             if f.endswith(('.pyc', '.bak')) or '.bak-' in f:
@@ -63,6 +69,7 @@ def write_manifest():
     lines = ['%s  %s' % (sha(r), r) for r in all_files() if in_manifest(r)]
     io.open(P('MANIFEST.sha256'), 'w', encoding='utf-8', newline='').write('\n'.join(lines) + '\n')
     print('Đã ghi MANIFEST.sha256 (%d file).' % len(lines))
+    return len(lines)
 
 def read_manifest():
     if not os.path.isfile(P('MANIFEST.sha256')):
@@ -74,7 +81,9 @@ def read_manifest():
             m[p] = h
     return m
 
-def verify():
+def verify(findings=None):
+    """Trả về mã thoát; findings (nếu có) nhận mỗi file đã sửa/thiếu dưới dạng finding lỗi."""
+    findings = [] if findings is None else findings
     m = read_manifest()
     if m is None:
         print('Không có MANIFEST.sha256 trong thư mục này.')
@@ -97,8 +106,8 @@ def verify():
             changed.append(rel)
     ver = rd('VERSION').strip() if os.path.isfile(P('VERSION')) else '?'
     print('So với MANIFEST của package v%s (ngôn ngữ %s): %d file đã đổi, %d file thiếu.' % (ver, lang, len(changed), len(missing)))
-    for x in changed: print('  ĐÃ SỬA : ' + x)
-    for x in missing: print('  THIẾU  : ' + x)
+    for x in changed: print('  ĐÃ SỬA : ' + x); findings.append({'severity': 'error', 'message': 'Đã sửa so với MANIFEST: ' + x})
+    for x in missing: print('  THIẾU  : ' + x); findings.append({'severity': 'error', 'message': 'Thiếu so với MANIFEST: ' + x})
     if changed or missing:
         print('Gợi ý: file đã sửa có thể là chủ ý của bạn; khi nâng cấp hãy hợp nhất thay vì ghi đè.')
     return 1 if (changed or missing) else 0
@@ -120,6 +129,75 @@ def frontmatter(text):
 
 def strip_fences(t):
     return re.sub(r'```.*?```', '', t, flags=re.S)
+
+# ---------------------------------------------------------------- Python 3.8 (heuristic)
+# Đây là kiểm tra GẦN ĐÚNG, không thay thế việc chạy trên Python 3.8 thật (CI làm việc đó).
+# ast.parse(feature_version=(3, 8)) bắt cú pháp mới như `match`; các regex dưới đây chạy trên mã đã bỏ
+# chuỗi và chú thích để bắt API và kiểu chú thích 3.9+. Có thể báo nhầm (ví dụ `: list[` không phải chú thích)
+# hoặc bỏ sót (ví dụ toán tử `dict | dict`). Sửa cảnh báo bằng cách viết lại theo API 3.8.
+PY38_DENY = [
+    (r'\.removeprefix\s*\(', 'str.removeprefix() cần Python 3.9+'),
+    (r'\.removesuffix\s*\(', 'str.removesuffix() cần Python 3.9+'),
+    (r'\bfunctools\.cache\b', 'functools.cache cần Python 3.9+; dùng functools.lru_cache(maxsize=None)'),
+    (r'\bfrom\s+functools\s+import\b.*\bcache\b', 'functools.cache cần Python 3.9+'),
+    (r'^\s*@\s*cache\b', '@cache cần Python 3.9+; dùng @lru_cache(maxsize=None)'),
+    (r'^\s*(?:import|from)\s+zoneinfo\b', 'zoneinfo cần Python 3.9+'),
+    (r'\bmath\.lcm\s*\(', 'math.lcm() cần Python 3.9+'),
+    (r'\bast\.unparse\s*\(', 'ast.unparse() cần Python 3.9+'),
+    (r'\basyncio\.to_thread\s*\(', 'asyncio.to_thread() cần Python 3.9+'),
+    (r'\.(?:is_relative_to|with_stem)\s*\(', 'Path.is_relative_to/with_stem cần Python 3.9+'),
+    (r'\.bit_count\s*\(', 'int.bit_count() cần Python 3.10+'),
+    (r'\bzip\s*\(.*\bstrict\s*=', 'zip(strict=...) cần Python 3.10+'),
+    (r'^\s*with\s*\(\s*$', 'with (...) nhiều mục cần Python 3.9+; hãy tách thành with lồng nhau'),
+    (r'^\s*with\s*\(.*\bas\s+\w.*,', 'with (...) nhiều mục cần Python 3.9+; hãy tách thành with lồng nhau'),
+    (r'[\w\]]\s*\|\s*None\b', 'chú thích X | None cần Python 3.10+; dùng Optional[X]'),
+    (r'(?:->|:)\s*(?:list|dict|tuple|set|frozenset|type)\s*\[', 'chú thích list[...]/dict[...] lúc chạy cần Python 3.9+; dùng typing.List/Dict'),
+]
+
+def _code_only(src):
+    """Các dòng của src với chuỗi và chú thích thay bằng khoảng trắng (giữ nguyên số dòng và cột)."""
+    lines = src.split('\n')
+    try:
+        for tok in tokenize.generate_tokens(io.StringIO(src).readline):
+            if tok.type not in (tokenize.STRING, tokenize.COMMENT):
+                continue
+            (r1, c1), (r2, c2) = tok.start, tok.end
+            for r in range(r1, r2 + 1):
+                line = lines[r - 1]
+                a = c1 if r == r1 else 0
+                b = c2 if r == r2 else len(line)
+                lines[r - 1] = line[:a] + ' ' * (b - a) + line[b:]
+    except (tokenize.TokenError, SyntaxError):
+        pass  # file lỗi cú pháp đã được check_all báo
+    return lines
+
+def py38_problems(src, name='<src>'):
+    """Heuristic: [(dòng, mô tả)] các điểm có thể không chạy trên Python 3.8. Xem ghi chú trên PY38_DENY.
+    Luôn phân tích với feature_version=(3, 8), nên kết quả giống nhau trên mọi phiên bản Python đang chạy
+    (trên Python 3.8 thật, `match` là lỗi cú pháp thường và vẫn được báo)."""
+    out = []
+    code = _code_only(src)
+    try:
+        ast.parse(src, filename=name, feature_version=(3, 8))
+    except SyntaxError as e:
+        ln = e.lineno or 0
+        if 'Pattern matching' in str(e.msg):  # CPython báo ở cuối khối match: lấy dòng `match` đầu tiên
+            ln = next((i for i, l in enumerate(code, 1) if re.match(r'\s*match\s+[^=\n]+:\s*$', l)), ln)
+        out.append((ln, 'không phân tích được bằng cú pháp Python 3.8 (%s)' % e.msg))
+    for i, line in enumerate(code, 1):
+        for pat, msg in PY38_DENY:
+            if re.search(pat, line):
+                out.append((i, msg))
+    return out
+
+def check_py38():
+    """Heuristic cho mọi file .py của package: báo lỗi kèm đường dẫn file và số dòng (xem py38_problems)."""
+    errs = []
+    for f in all_files():
+        if f.endswith('.py'):
+            for ln, msg in py38_problems(rd(f), f):
+                errs.append('%s:%d: không tương thích Python 3.8 — %s.' % (f, ln, msg))
+    return errs
 
 def check_all(release=False):
     errs, warns = [], []
@@ -270,22 +348,43 @@ def check_all(release=False):
                 errs.append('Có file người dùng trong bản phát hành: %s.' % f)
     return errs, warns
 
+def run_checks(release=False):
+    """Mọi kiểm tra của chế độ kiểm tra: check_all (gồm HTML/Markdown) cộng tương thích Python 3.8."""
+    errs, warns = check_all(release=release)
+    return errs + check_py38(), warns
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--release', action='store_true')
     ap.add_argument('--write-manifest', action='store_true')
     ap.add_argument('--verify', action='store_true')
+    ap.add_argument('--result-json', action='store_true', help=argparse.SUPPRESS)
     a = ap.parse_args()
     if hasattr(sys.stdout, 'reconfigure'):
         sys.stdout.reconfigure(encoding='utf-8')
     if a.verify:
-        sys.exit(verify())
+        findings = []
+        code = verify(findings)
+        if a.result_json:
+            msg = {0: 'Khớp MANIFEST', 1: 'Có file đã sửa hoặc thiếu so với MANIFEST', 2: 'Không có MANIFEST.sha256'}.get(code, 'Lỗi')
+            emit(make({0: 'success', 1: 'issues'}.get(code, 'error'), code=code, message=msg, changes=False, findings=findings))
+        sys.exit(code)
     if a.write_manifest:
-        write_manifest(); return
-    errs, warns = check_all(release=a.release)
+        count = write_manifest()
+        if a.result_json:
+            emit(make('success', code=0, message='Đã ghi MANIFEST.sha256', changes=True,
+                      files=[{'path': 'MANIFEST.sha256', 'action': 'written'}], file_count=count))
+        return
+    errs, warns = run_checks(release=a.release)
     for w in warns: print('Cảnh báo: ' + w)
     for e in errs: print('LỖI: ' + e)
     print('\n%s: %d lỗi, %d cảnh báo.' % ('KHÔNG ĐẠT' if errs else 'ĐẠT', len(errs), len(warns)))
+    if a.result_json:
+        findings = [{'severity': 'error', 'message': e} for e in errs]
+        findings += [{'severity': 'warning', 'message': w} for w in warns]
+        emit(make('issues' if errs else 'success', code=1 if errs else 0,
+                  message=('Package chưa đạt kiểm tra (%d lỗi)' % len(errs)) if errs else 'Package đạt kiểm tra',
+                  changes=False, findings=findings))
     sys.exit(1 if errs else 0)
 
 if __name__ == '__main__':

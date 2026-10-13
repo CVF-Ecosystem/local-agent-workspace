@@ -32,7 +32,7 @@ The first time you bring the package into an existing project (no `VERSION` or `
 folder run `python tools/adopt_project.py --project "path" --name "Project name"` for a report, add `--apply` to write. It only adds missing files; an old
 `AGENTS.md`, `CLAUDE.md` or `GEMINI.md` is preserved and remains active; the differing package version is saved as `<name>.new` to merge, including when selecting English.
 If a differing `.new` already exists, the tool stops before writing. Unmerged instructions are explicitly reported as “MERGE REQUIRED”;
-any other conflicting file stays yours and the package version is saved as `<name>.new`; existing project skills get a row in `SKILL_INDEX.md`.
+any other conflicting file stays yours and the package version is saved as `<name>.new`; existing project skills get a row in `SKILL_INDEX.md`. If this step is interrupted, see section 9.
 Shared skills live in `skills/local/shared/`; skills with an organisation's own details live in `skills/local/project/`; do not copy shared content into a project skill.
 
 ## 3. Upgrade to a newer package version
@@ -53,8 +53,10 @@ reports first and writes only when you add `--apply`.
 - Step 4: Run `python tools/check_package.py --verify` and open a trial session. If you use domain packs, run
    `python tools/pack.py list` to see which have a newer version (`pack.py update <name> --apply`).
 
+If the `--apply` run is interrupted (power cut, computer shut down part-way), the tool reports INCOMPLETE and writes nothing more; see section 9.
+
 A project without `MANIFEST.sha256` (made before this version) cannot be compared safely: upgrade by hand, copying selectively the
-package files you have not edited. The tool deletes nothing; files no longer in the new package are only listed for you to decide.
+package files you have not edited. The upgrade tool deletes nothing (undoing an interrupted run is covered in section 9); files no longer in the new package are only listed for you to decide.
 
 Do not replace the project's real STATE, HANDOFF,
 sources and outputs with the sample files of the new version.
@@ -120,3 +122,32 @@ causes the noise.
 Use the copy you kept to restore any part that does not fit. You can keep only one skill or one
 useful HTML guide set; you do not need to upgrade everything at once. Do not delete state or new
 documents created during the trial without reviewing them.
+
+## 9. When a write is interrupted
+
+The tools write through a journaled transaction: they check first, back up the files that will change, then write each file. If the computer shuts down, loses power or the disk fails part-way, the next run reports **INCOMPLETE** and writes nothing more until you deal with that transaction.
+
+Choose one of two ways:
+
+- Command line, from the project folder: `python tools/transaction.py status` shows the id of the unfinished transaction. Then run `python tools/transaction.py resume <id>` to finish it, or `python tools/transaction.py rollback <id>` to roll it back.
+- Control panel: open the "App status" page, section "Unfinished transactions", and press "Resume" or "Roll back". The Overview page also shows a notice when a transaction is unfinished.
+
+Rolling back does the following:
+
+- Files you have not edited since the interruption return to their originals. New files that the interrupted run created are removed if you have not edited them.
+- Files you have edited since the interruption are kept and never overwritten. Their originals are in `.agent/runtime/transactions/<id>/backup/`. The transaction then has the status `rollback_partial`: compare the files and restore by hand if needed. This status does not block other work.
+- A completed transaction cannot be rolled back, because no backups remain. To get a different result, run the operation again.
+
+If the tool reports **NOTHING WRITTEN**, no file in the project was changed. If in doubt before rolling back, keep a copy of the project folder (section 1).
+
+## 10. Tested platforms and version policy
+
+Tested: Windows 11 with Python 3.11. Not yet tested: macOS; Python 3.8 (the tools are written to run on Python 3.8, but have not been run on 3.8); other operating systems and Python versions. If you hit a problem on an untested platform, report it with the output of `python tools/check_package.py --verify` and a diagnostics bundle from the control panel.
+
+Version numbers have the form MAJOR.MINOR.PATCH and are stored in the VERSION file:
+
+- MAJOR changes when a change breaks compatibility: the layout of the .agent folder or the project folder, the MANIFEST.sha256 format, the format of tool results, or removing an existing command or flag.
+- MINOR changes when new features are added compatibly: tools, skills, flags or new content sections.
+- PATCH changes for fixes, documentation or template updates that do not change your project data.
+
+Each version has its own entry in CHANGELOG.md. Read that entry before you upgrade.

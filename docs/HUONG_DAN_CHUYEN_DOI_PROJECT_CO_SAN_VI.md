@@ -29,7 +29,7 @@ Lần đầu đưa package vào project đã có (chưa có `VERSION` hay `.agen
 `python tools/adopt_project.py --project "đường dẫn" --name "Tên project"` để xem báo cáo, thêm `--apply` để ghi. Công cụ chỉ thêm file
 còn thiếu; `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` cũ giữ nguyên và vẫn có hiệu lực; bản package khác nội dung được lưu thành `<tên>.new` để hợp nhất, kể cả khi chọn tiếng Anh.
 Nếu bản `.new` đã tồn tại và khác nội dung, công cụ dừng trước khi ghi. Kết quả có hướng dẫn chưa hợp nhất sẽ báo rõ “CẦN HỢP NHẤT”;
-file khác bị trùng giữ nguyên của bạn và bản package lưu thành `<tên>.new`; skill riêng sẵn có được thêm dòng vào `SKILL_INDEX.md`.
+file khác bị trùng giữ nguyên của bạn và bản package lưu thành `<tên>.new`; skill riêng sẵn có được thêm dòng vào `SKILL_INDEX.md`. Nếu việc này bị gián đoạn, xem mục 9.
 Skill dùng chung ở `skills/local/shared/`, skill chứa thông tin riêng của đơn vị ở `skills/local/project/`; không chép nội dung chung vào skill riêng.
 
 Nếu đổi vị trí thư mục package hoặc tài liệu hướng dẫn, nhờ agent cập nhật những
@@ -53,8 +53,10 @@ trước rồi mới ghi khi bạn thêm `--apply`.
 - Bước 4: Chạy `python tools/check_package.py --verify` và mở một phiên thử. Nếu dùng gói lĩnh vực, chạy
    `python tools/pack.py list` để xem gói nào có bản mới (`pack.py update <tên> --apply`).
 
+Nếu lần chạy `--apply` bị gián đoạn (mất điện, máy tắt giữa chừng), công cụ báo CHƯA HOÀN TẤT và không ghi thêm gì; xem mục 9.
+
 Project cũ chưa có `MANIFEST.sha256` (làm từ trước bản này) thì công cụ không so sánh an toàn được: nâng cấp tay, chép có chọn lọc
-những file package bạn chưa sửa. Công cụ không xóa file nào; file không còn trong package mới chỉ được liệt kê để bạn tự quyết định.
+những file package bạn chưa sửa. Công cụ nâng cấp không xóa file nào (việc gỡ thay đổi khi phục hồi một giao dịch dở xem ở mục 9); file không còn trong package mới chỉ được liệt kê để bạn tự quyết định.
 
 Không thay STATE, HANDOFF, nguồn và đầu ra thật của project
 bằng các file mẫu của bản mới.
@@ -117,3 +119,32 @@ qua mọi index. Nếu hướng dẫn mới làm rườm rà, chỉnh hoặc b�
 Dùng bản sao đã giữ để phục hồi phần không phù hợp. Có thể chỉ giữ một skill hoặc
 bộ hướng dẫn HTML hữu ích, không cần nâng mọi phần cùng lúc. Không xóa trạng thái
 hoặc tài liệu mới phát sinh trong quá trình thử khi chưa xem lại.
+
+## 9. Khi việc ghi bị gián đoạn
+
+Công cụ ghi qua một giao dịch có nhật ký: kiểm tra trước, sao lưu các file sẽ đổi, rồi mới ghi từng file. Nếu máy tắt, mất điện hoặc ổ đĩa lỗi giữa chừng, lần chạy sau sẽ báo **CHƯA HOÀN TẤT** và không ghi thêm gì cho đến khi bạn xử lý giao dịch đó.
+
+Chọn một trong hai cách:
+
+- Dòng lệnh, chạy trong thư mục project: `python tools/transaction.py status` để xem mã giao dịch còn dở. Sau đó chạy `python tools/transaction.py resume <mã>` để hoàn tất, hoặc `python tools/transaction.py rollback <mã>` để phục hồi.
+- Bảng điều khiển: mở trang "Tình trạng ứng dụng", mục "Giao dịch chưa hoàn tất", rồi bấm "Tiếp tục" hoặc "Phục hồi". Trang Tổng quan cũng hiện thông báo khi có giao dịch dở.
+
+Phục hồi làm như sau:
+
+- File bạn chưa sửa sau sự cố được đưa về bản gốc. File mới do lần chạy dở tạo ra, nếu bạn chưa sửa, sẽ bị gỡ.
+- File bạn đã sửa sau sự cố được giữ nguyên, không bị ghi đè. Bản gốc của các file này nằm trong `.agent/runtime/transactions/<mã>/backup/`. Giao dịch khi đó có trạng thái `rollback_partial`: bạn so sánh và khôi phục tay nếu cần. Trạng thái này không chặn các việc khác.
+- Giao dịch đã hoàn tất thì không phục hồi được, vì không còn bản sao lưu. Muốn có kết quả khác, chạy lại thao tác.
+
+Nếu công cụ báo **CHƯA GHI GÌ**, không file nào trong project đã bị đổi. Nếu còn nghi ngờ trước khi phục hồi, hãy giữ một bản sao của thư mục project (mục 1).
+
+## 10. Nền tảng đã kiểm và chính sách phiên bản
+
+Đã kiểm: Windows 11 với Python 3.11. Chưa kiểm: macOS; Python 3.8 (công cụ được viết để chạy từ Python 3.8, nhưng chưa chạy thử trên 3.8); các hệ điều hành và phiên bản Python khác. Nếu gặp lỗi trên nền tảng chưa kiểm, báo lại kèm kết quả của `python tools/check_package.py --verify` và gói chẩn đoán từ bảng điều khiển.
+
+Số phiên bản có dạng MAJOR.MINOR.PATCH, nằm trong file VERSION:
+
+- MAJOR tăng khi có thay đổi không tương thích ngược: đổi cấu trúc thư mục .agent hoặc của project, đổi định dạng MANIFEST.sha256, đổi định dạng kết quả của công cụ, hoặc bỏ một lệnh hay cờ đã có.
+- MINOR tăng khi thêm tính năng tương thích ngược: công cụ, skill, cờ hoặc mục nội dung mới.
+- PATCH tăng khi sửa lỗi, sửa tài liệu hoặc cập nhật mẫu mà không đổi dữ liệu của project.
+
+Mỗi bản có mục riêng trong CHANGELOG.md. Hãy đọc mục đó trước khi nâng cấp.

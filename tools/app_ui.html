@@ -7,9 +7,9 @@
 <title>Workspace</title>
 <style>
 :root{
-  --bg:#f6f7f9;--panel:#ffffff;--panel-2:#f9fafb;--sunken:#f1f3f5;--ink:#111827;--ink-2:#374151;--muted:#6b7280;--faint:#9ca3af;
+  --bg:#f6f7f9;--panel:#ffffff;--panel-2:#f9fafb;--sunken:#f1f3f5;--ink:#111827;--ink-2:#374151;--muted:#636c7a;--faint:#7f8793;
   --line:#e5e7eb;--line-2:#eef0f3;--accent:#0f766e;--accent-2:#115e59;--accent-ink:#ffffff;--accent-soft:#e6f4f2;--accent-line:#b7e1dc;
-  --ok:#15803d;--ok-soft:#e8f5ec;--warn:#b45309;--warn-soft:#fdf3e2;--err:#b91c1c;--err-soft:#fdecec;--info:#1d4ed8;--info-soft:#e9effd;
+  --ok:#15733a;--ok-soft:#e8f5ec;--warn:#b45309;--warn-soft:#fdf3e2;--err:#b91c1c;--err-soft:#fdecec;--info:#1d4ed8;--info-soft:#e9effd;
   --term:#0f172a;--term-ink:#e2e8f0;--term-muted:#94a3b8;
   --r-lg:14px;--r:10px;--r-sm:8px;
   --sh-1:0 1px 2px rgba(16,24,40,.05);--sh-2:0 1px 3px rgba(16,24,40,.06),0 8px 24px rgba(16,24,40,.06);--sh-3:0 24px 48px rgba(16,24,40,.18);
@@ -28,6 +28,10 @@
   --term:#05080c;--sh-1:none;--sh-2:none;--sh-3:0 24px 48px rgba(0,0,0,.5)}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
+*:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.skip{position:absolute;left:-9999px;top:8px;z-index:60;background:var(--panel);color:var(--ink);padding:8px 12px;border-radius:var(--r-sm);border:1px solid var(--accent);font-weight:600}
+.skip:focus{left:12px}
 html,body{margin:0}
 body{background:var(--bg);color:var(--ink);font:14px/1.55 var(--font);-webkit-font-smoothing:antialiased}
 button,input,select,textarea{font:inherit;color:inherit}
@@ -47,7 +51,7 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
 .projcard .st{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--ok);display:inline-block}
 .dot.warn{background:var(--warn)}
-.navgroup{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);padding:14px 10px 6px}
+.navgroup{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:14px 10px 6px}
 .nav{display:grid;gap:2px}
 .nav button{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r-sm);color:var(--ink-2);font-size:13.5px;font-weight:500;width:100%}
 .nav button:hover{background:var(--sunken)}
@@ -62,12 +66,12 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
 .iconbtn:hover{color:var(--ink);background:var(--sunken)}
 .iconbtn:focus-visible,.lang button:focus-visible{outline:2px solid var(--accent)}
 .iconbtn svg.i{width:16px;height:16px}
-.ver{margin-left:auto;font-size:11.5px;color:var(--faint);font-family:var(--mono)}
+.ver{margin-left:auto;font-size:11.5px;color:var(--muted);font-family:var(--mono)}
 
 /* main */
 .main{min-width:0}
 .top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;padding:12px 32px;min-height:58px}
-.crumb{font-size:12.5px;color:var(--muted)}
+.crumb{font-size:12.5px;color:var(--muted);min-width:0;overflow-wrap:anywhere}
 .crumb b{color:var(--ink);font-weight:600}
 .top .acts{margin-left:auto;display:flex;gap:8px}
 .wrap{padding:26px 32px 64px;max-width:1180px}
@@ -111,7 +115,7 @@ h2{font-size:14.5px;font-weight:600;margin:0}
 .mono{font-family:var(--mono);font-size:12.5px}
 
 /* overview */
-.banner{display:flex;gap:14px;align-items:flex-start;border:1px solid var(--accent-line);background:var(--accent-soft);border-radius:var(--r-lg);padding:14px 16px;margin-bottom:16px}
+.banner{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start;border:1px solid var(--accent-line);background:var(--accent-soft);border-radius:var(--r-lg);padding:14px 16px;margin-bottom:16px}
 .banner.warn{border-color:#f5d9a8;background:var(--warn-soft)}
 .banner .ic{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;background:var(--panel);color:var(--accent);flex:none}
 .banner.warn .ic{color:var(--warn)}
@@ -120,9 +124,9 @@ h2{font-size:14.5px;font-weight:600;margin:0}
 .banner .r{margin-left:auto;align-self:center}
 .summary{display:flex;gap:16px;align-items:center;padding:18px}
 .summary .avatar{width:48px;height:48px;font-size:17px;border-radius:12px}
-.summary h1{font-size:20px;margin:0;letter-spacing:-.01em;font-weight:650}
+.summary h1{font-size:20px;margin:0;letter-spacing:-.01em;font-weight:650;overflow-wrap:anywhere}
 .summary .meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;align-items:center}
-.path{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-family:var(--mono);font-size:12px;cursor:pointer;border-radius:6px;padding:1px 4px;margin-left:-4px}
+.path{display:inline-flex;align-items:center;gap:6px;max-width:100%;min-width:0;color:var(--muted);font-family:var(--mono);font-size:12px;cursor:pointer;border:0;background:none;border-radius:6px;padding:1px 4px;margin-left:-4px;overflow-wrap:anywhere;text-align:left}
 .path:hover{background:var(--sunken);color:var(--ink)}
 .path svg.i{width:13px;height:13px}
 .kpi{padding:16px 18px;display:flex;gap:14px;align-items:center}
@@ -136,7 +140,7 @@ h2{font-size:14.5px;font-weight:600;margin:0}
 .dl .it{display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px;padding:10px 0;border-top:1px solid var(--line-2)}
 .dl .it:first-child{border-top:0;padding-top:0}
 .dl dt{font-size:12.5px;color:var(--muted);font-weight:600}
-.dl dd{margin:0;white-space:pre-wrap;font-size:13.5px;color:var(--ink-2)}
+.dl dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;min-width:0;font-size:13.5px;color:var(--ink-2)}
 .dl dd .sub-h{color:var(--ink);font-weight:600}.dl dd code{background:var(--sunken);border-radius:4px;padding:0 4px;font-size:12px}
 .empty{display:grid;place-items:center;text-align:center;gap:8px;padding:26px 12px;color:var(--muted);font-size:13.5px}
 .empty .ic{width:42px;height:42px;border-radius:12px;background:var(--sunken);display:grid;place-items:center;color:var(--faint)}
@@ -164,8 +168,8 @@ td.id{font-family:var(--mono);font-size:12.5px;color:var(--ink);white-space:nowr
 .tw{overflow-x:auto}
 
 /* forms */
-.form{display:grid;gap:16px}
-.field{display:grid;gap:6px}
+.form{display:grid;gap:16px;grid-template-columns:minmax(0,1fr)}
+.field{display:grid;gap:6px;grid-template-columns:minmax(0,1fr);min-width:0}
 .field>label,.flabel{font-size:13px;font-weight:600;color:var(--ink-2)}
 .field .hint{font-size:12.5px;color:var(--muted)}
 .req{color:var(--err);margin-left:2px}
@@ -174,7 +178,7 @@ input[type=text]:hover,textarea:hover{border-color:#d1d5db}
 textarea{min-height:68px;resize:vertical}
 .inline{display:flex;gap:8px}
 .inline input{flex:1;min-width:0}
-.seg{display:inline-flex;gap:3px;background:var(--sunken);padding:3px;border-radius:var(--r-sm);width:max-content}
+.seg{display:inline-flex;flex-wrap:wrap;gap:3px;background:var(--sunken);padding:3px;border-radius:var(--r-sm);max-width:100%}
 .seg button{all:unset;cursor:pointer;font-size:13px;font-weight:600;padding:6px 12px;border-radius:6px;color:var(--muted)}
 .seg button[aria-pressed="true"]{background:var(--panel);color:var(--ink);box-shadow:var(--sh-1)}
 .seg button:focus-visible{outline:2px solid var(--accent)}
@@ -186,7 +190,7 @@ textarea{min-height:68px;resize:vertical}
 .steps .s.on .n{background:var(--accent);color:var(--accent-ink)}
 .steps .s.on{color:var(--ink)}
 .steps .ln{width:22px;height:1px;background:var(--line)}
-.formfoot{display:flex;align-items:center;gap:12px;padding:14px 18px;border-top:1px solid var(--line-2);background:var(--panel-2);border-radius:0 0 var(--r-lg) var(--r-lg)}
+.formfoot{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:14px 18px;border-top:1px solid var(--line-2);background:var(--panel-2);border-radius:0 0 var(--r-lg) var(--r-lg)}
 .formfoot .r{margin-left:auto;display:flex;gap:8px}
 .note{display:flex;gap:10px;align-items:flex-start;border-radius:var(--r);padding:11px 13px;font-size:13px;background:var(--info-soft);color:var(--ink-2)}
 .note.warn{background:var(--warn-soft)}
@@ -206,8 +210,8 @@ textarea{min-height:68px;resize:vertical}
 .drop:hover{border-color:var(--accent);color:var(--accent)}
 .drop:focus-visible{outline:2px solid var(--accent)}
 .drop b{color:var(--ink);font-size:13.5px}
-.files{display:grid;gap:6px}
-.file{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:var(--r-sm);padding:7px 8px 7px 10px;background:var(--panel)}
+.files{display:grid;gap:6px;grid-template-columns:minmax(0,1fr);min-width:0}
+.file{display:flex;min-width:0;gap:10px;align-items:center;border:1px solid var(--line);border-radius:var(--r-sm);padding:7px 8px 7px 10px;background:var(--panel)}
 .file .mono{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .file svg.i{color:var(--muted);width:16px;height:16px}
 
@@ -234,26 +238,53 @@ textarea{min-height:68px;resize:vertical}
 /* result sheet */
 .scrim{position:fixed;inset:0;background:rgba(15,23,42,.32);opacity:0;pointer-events:none;transition:opacity .2s;z-index:30}
 .scrim.on{opacity:1;pointer-events:auto}
-.sheet{position:fixed;top:0;right:0;bottom:0;width:min(640px,100%);background:var(--panel);border-left:1px solid var(--line);box-shadow:var(--sh-3);transform:translateX(102%);transition:transform .24s cubic-bezier(.2,.8,.2,1);z-index:31;display:flex;flex-direction:column}
-.sheet.on{transform:none}
-.sh-h{display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid var(--line)}
-.sh-h .t{font-weight:650;font-size:15px}
+.sheet{position:fixed;top:0;right:0;bottom:0;width:min(640px,100%);background:var(--panel);border-left:1px solid var(--line);box-shadow:var(--sh-3);transform:translateX(102%);visibility:hidden;transition:transform .24s cubic-bezier(.2,.8,.2,1),visibility 0s linear .24s;z-index:31;display:flex;flex-direction:column}
+.sheet.on{transform:none;visibility:visible;transition:transform .24s cubic-bezier(.2,.8,.2,1),visibility 0s}
+.sh-h{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid var(--line)}
+.sh-h .t{font-weight:650;font-size:15px;min-width:0;overflow-wrap:anywhere}
 .sh-h .iconbtn{margin-left:auto}
-.sh-b{flex:1;overflow:auto;padding:16px 20px;display:grid;gap:12px;align-content:start}
+.sh-b{flex:1;overflow:auto;padding:16px 20px;display:grid;gap:12px;align-content:start;grid-template-columns:minmax(0,1fr)}
 .cmd{display:flex;gap:8px;align-items:center;border:1px solid var(--line);background:var(--panel-2);border-radius:var(--r-sm);padding:7px 8px 7px 11px}
 .cmd code{flex:1;min-width:0;font-family:var(--mono);font-size:12px;color:var(--ink-2);word-break:break-all}
 .term{background:var(--term);color:var(--term-ink);border-radius:var(--r);padding:14px 16px;font-family:var(--mono);font-size:12.5px;line-height:1.7;white-space:pre-wrap;word-break:break-word;min-height:120px;margin:0}
 .term .ok{color:#86efac}.term .warn{color:#fcd34d}.term .err{color:#fca5a5}.term .dim{color:var(--term-muted)}
-.sh-f{display:flex;gap:10px;align-items:center;padding:14px 20px;border-top:1px solid var(--line);background:var(--panel-2)}
-.sh-f .msg{font-size:12.5px;color:var(--muted);flex:1}
+.sh-f{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:14px 20px;border-top:1px solid var(--line);background:var(--panel-2)}
+.sh-f .msg{font-size:12.5px;color:var(--muted);flex:1 1 220px}
 .spin{width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .7s linear infinite;display:inline-block}
 @keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.sheet,.scrim,.page.on,.toast{transition:none!important;animation:none!important}}
 .toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,10px);background:var(--ink);color:var(--bg);padding:9px 14px;border-radius:var(--r-sm);font-size:13px;opacity:0;transition:.2s;z-index:40;pointer-events:none;box-shadow:var(--sh-2)}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 .off{position:fixed;inset:0;background:var(--bg);display:none;place-items:center;z-index:50;text-align:center;padding:30px}
 .off.on{display:grid}
 .off h1{font-size:20px;margin:12px 0 4px}
 .off p{color:var(--muted);margin:0}
+
+/* status page */
+.hrow{display:flex;gap:12px;align-items:flex-start;padding:12px 18px;border-top:1px solid var(--line-2);flex-wrap:wrap}
+.hrow:first-child{border-top:0}
+.hrow .hmain{flex:1;min-width:0}
+.hrow .hmain b{display:block;font-size:13.5px}
+.hrow .hsub{display:block;font-size:12.5px;color:var(--muted)}
+.hrow .hfix{margin-top:6px;font-size:12.5px;color:var(--ink-2)}
+.hrow .hfix .mono{margin-left:4px}
+.hact{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.dg-p{margin:0 0 8px;color:var(--ink-2);max-width:76ch}
+.dg-p.muted{color:var(--muted);margin:0}
+.sh-next{font-size:13px;color:var(--ink-2)}
+.sh-next b{display:block;margin-bottom:2px}
+.sh-next ul{margin:0;padding-left:18px}
+/* comparison view */
+.dfx{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--panel);font-family:var(--mono);font-size:12.5px;line-height:1.6;min-width:0}
+.dfx .dr{display:grid;grid-template-columns:44px 44px 18px minmax(0,1fr);min-width:0}
+.dfx .dr>span{padding:0 6px;min-width:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.dfx .dn{color:var(--muted);text-align:right;background:var(--panel-2);user-select:none}
+.dfx .ds{text-align:center;font-weight:700}
+.dfx .dr.add{background:var(--ok-soft);color:var(--ok)}
+.dfx .dr.del{background:var(--err-soft);color:var(--err)}
+.dfx .dr.ctx{color:var(--ink-2)}
+.dfx .dr.hunk{grid-template-columns:minmax(0,1fr);background:var(--info-soft);color:var(--info);font-weight:600}
+.dfx .dr.hunk>span{padding:2px 8px}
 
 @media (max-width:1100px){.c4{grid-template-columns:repeat(2,minmax(0,1fr))}.c-main{grid-template-columns:1fr}}
 @media (max-width:860px){
@@ -264,7 +295,7 @@ textarea{min-height:68px;resize:vertical}
   .top{position:static;padding:12px 16px;flex-wrap:wrap}
   .wrap{padding:20px 16px 48px}
   .c2,.c3{grid-template-columns:1fr}
-  .dl .it{grid-template-columns:1fr;gap:2px}
+  .dl .it{grid-template-columns:minmax(0,1fr);gap:2px}
   .card-h .r{margin-left:0;width:100%;flex-wrap:wrap}
   .search{flex:1;min-width:0}
   .search input[type=text]{width:100%}
@@ -272,10 +303,12 @@ textarea{min-height:68px;resize:vertical}
   .card-h{flex-wrap:wrap}
   .summary{flex-wrap:wrap}
 }
-@media (max-width:480px){.c4{grid-template-columns:1fr 1fr}.top .acts .btn span{display:none}}
+@media (max-width:480px){.c4{grid-template-columns:1fr 1fr}.top .acts .btn span{display:none}
+  .dfx .dr{grid-template-columns:30px 30px 14px minmax(0,1fr)}.dfx .dr>span{padding:0 4px}.hrow{padding:12px 14px}}
 </style>
 </head>
 <body>
+<a class="skip" href="#content" data-t="skip"></a>
 <div class="app">
 <aside class="side">
   <div class="brand"><div class="logo">LW</div><div><div class="brand-t">Local Agent Workspace</div><div class="brand-s" data-t="panel"></div></div></div>
@@ -285,27 +318,28 @@ textarea{min-height:68px;resize:vertical}
   <div class="navgroup" data-t="g_setup"></div>
   <div class="nav" id="nav2"></div>
   <div class="side-foot">
-    <div class="lang" role="group" aria-label="Language"><button data-lang="vi" aria-pressed="true">VI</button><button data-lang="en" aria-pressed="false">EN</button></div>
+    <div class="lang" role="group" data-tt="lang_group"><button data-lang="vi" aria-pressed="true">VI</button><button data-lang="en" aria-pressed="false">EN</button></div>
     <button class="iconbtn" id="b-theme" data-tt="theme"></button>
     <button class="iconbtn" id="b-quit" data-tt="quit"></button>
     <span class="ver" id="sb-ver"></span>
   </div>
 </aside>
 
-<div class="main">
+<main class="main">
   <header class="top">
     <div class="crumb"><span id="cr-proj"></span> / <b id="cr-page"></b></div>
     <div class="acts">
-      <button class="btn" data-open=""><span data-ico="folder"></span><span data-t="open_folder"></span></button>
-      <button class="btn" id="b-guide"><span data-ico="book"></span><span data-t="guide"></span></button>
+      <button class="btn" data-open="" data-tt="open_folder"><span data-ico="folder"></span><span data-t="open_folder"></span></button>
+      <button class="btn" id="b-guide" data-tt="guide"><span data-ico="book"></span><span data-t="guide"></span></button>
     </div>
   </header>
-  <div class="wrap">
+  <div class="wrap" id="content" tabindex="-1">
 
   <!-- OVERVIEW -->
   <section class="page on" id="pg-home">
     <div class="banner warn" id="bn-init" hidden><div class="ic" data-ico="alert"></div><div><b data-t="bn_init_t"></b><p data-t="bn_init_p"></p></div><div class="r"><button class="btn pri" data-goto="setup" data-t="bn_init_b"></button></div></div>
-    <div class="card mb"><div class="summary"><div class="avatar" id="ov-av">·</div><div style="min-width:0;flex:1"><h1 id="ov-name">…</h1><div class="meta"><span class="path" id="ov-path" data-tt="copy_path"></span></div><div class="meta" id="ov-tags"></div></div>
+    <div class="banner warn" id="bn-tx" hidden><div class="ic" data-ico="alert"></div><div><b data-t="tx_banner_t"></b><p data-t="tx_banner_p"></p></div><div class="r"><button class="btn pri" data-goto="health" data-t="tx_banner_b"></button></div></div>
+    <div class="card mb"><div class="summary"><div class="avatar" id="ov-av">·</div><div style="min-width:0;flex:1"><h1 id="ov-name">…</h1><div class="meta"><button type="button" class="path" id="ov-path"></button></div><div class="meta" id="ov-tags"></div></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-open="output"><span data-ico="inbox"></span><span data-t="open_output"></span></button><button class="btn" data-open=".agent/STATE.md"><span data-ico="file"></span>STATE.md</button></div></div></div>
     <div class="grid c4 mb">
       <div class="card kpi"><div class="ic" data-ico="spark"></div><div><div class="v" id="k-skills">0</div><div class="k" data-t="k_skills"></div></div></div>
@@ -318,7 +352,7 @@ textarea{min-height:68px;resize:vertical}
       <div class="card"><div class="card-h"><span data-ico="zap"></span><h2 data-t="quick_t"></h2></div><div class="card-b actions" id="quick"></div></div>
     </div>
     <div class="card"><div class="card-h"><span data-ico="spark"></span><h2 data-t="skills_t"></h2><span class="sub" id="sk-count"></span>
-      <div class="r"><div class="chips" id="sk-filter"></div><div class="search"><span data-ico="search"></span><input type="text" id="sk-q" aria-label="search"></div></div></div>
+      <div class="r"><div class="chips" id="sk-filter" data-tt="sk_filter"></div><div class="search"><span data-ico="search"></span><label class="sr" for="sk-q" data-t="sk_search"></label><input type="text" id="sk-q"></div></div></div>
       <div class="tw"><table><thead><tr><th style="width:230px">Skill</th><th style="width:110px" data-t="col_scope"></th><th data-t="col_use"></th></tr></thead><tbody id="sk-rows"></tbody></table></div></div>
   </section>
 
@@ -326,6 +360,7 @@ textarea{min-height:68px;resize:vertical}
   <section class="page" id="pg-library">
     <div class="ph"><h1 data-t="nav_library"></h1><p data-t="lb_p"></p></div>
     <div class="banner" id="lb-none" hidden><div class="ic" data-ico="library"></div><div><b data-t="lb_none_t"></b><p data-t="lb_none_p"></p></div><div class="r"><button class="btn pri" id="lb-init" data-t="lb_init"></button></div></div>
+    <div class="note warn mb" id="lb-warn" hidden></div>
     <div class="grid c4 mb" id="lb-kpi">
       <div class="card kpi"><div class="ic" data-ico="file"></div><div><div class="v" id="lb-rows">–</div><div class="k" data-t="lb_k1"></div></div></div>
       <div class="card kpi"><div class="ic g" data-ico="folder"></div><div><div class="v" id="lb-files">–</div><div class="k" data-t="lb_k2"></div></div></div>
@@ -333,11 +368,11 @@ textarea{min-height:68px;resize:vertical}
       <div class="card kpi"><div class="ic b" data-ico="search"></div><div><div class="v" id="lb-chk">–</div><div class="k" data-t="lb_k4"></div></div></div>
     </div>
     <div class="card mb"><div class="card-h"><span data-ico="search"></span><h2 data-t="lb_find"></h2><div class="r">
-      <div class="chips" id="lb-grp"></div>
+      <div class="chips" id="lb-grp" data-tt="lb_group"></div>
       <button class="btn" data-open="references/_INDEX.xlsx"><span data-ico="file"></span><span data-t="lb_open_idx"></span></button>
       <button class="btn" data-open="references"><span data-ico="folder"></span>references</button>
       <button class="btn" id="lb-check"><span data-ico="shield"></span><span data-t="lb_check"></span></button></div></div>
-      <div class="card-b"><div class="inline"><input type="text" id="lb-q"><button class="btn pri" id="lb-go"><span data-ico="search"></span><span data-t="lb_go"></span></button></div></div>
+      <div class="card-b"><div class="inline"><label class="sr" for="lb-q" data-t="lb_q_label"></label><input type="text" id="lb-q"><button class="btn pri" id="lb-go"><span data-ico="search"></span><span data-t="lb_go"></span></button></div></div>
       <div class="tw"><table><thead><tr><th style="width:190px" data-t="lb_c1"></th><th data-t="lb_c2"></th><th style="width:150px" data-t="lb_c3"></th><th style="width:170px" data-t="lb_c4"></th><th style="width:120px" data-t="lb_c5"></th></tr></thead><tbody id="lb-rows-t"></tbody></table></div>
     </div>
   </section>
@@ -388,13 +423,13 @@ textarea{min-height:68px;resize:vertical}
   <!-- SETUP -->
   <section class="page" id="pg-setup">
     <div class="ph"><h1 data-t="nav_setup"></h1><p data-t="su_p"></p></div>
-    <div class="seg mb" role="group" id="su-mode"><button aria-pressed="true" data-v="new" data-t="su_new"></button><button aria-pressed="false" data-v="adopt" data-t="su_adopt"></button></div>
+    <div class="seg mb" role="group" id="su-mode" data-tt="su_mode_group"><button aria-pressed="true" data-v="new" data-t="su_new"></button><button aria-pressed="false" data-v="adopt" data-t="su_adopt"></button></div>
     <div class="card" id="su-new" style="max-width:900px"><div class="card-b form">
       <div class="note warn" id="su-tpl" hidden><span data-ico="alert"></span><span data-t="su_tpl"></span></div>
       <div class="note" id="su-inited" hidden><span data-ico="info"></span><span data-t="su_inited"></span></div>
       <div class="grid c2">
         <div class="field"><label for="f-name"><span data-t="f_name"></span><span class="req">*</span></label><input type="text" id="f-name"></div>
-        <div class="field"><span class="flabel" data-t="f_lang"></span><div class="seg" role="group" id="f-lang"><button aria-pressed="true" data-v="vi">Tiếng Việt</button><button aria-pressed="false" data-v="en">English</button></div></div>
+        <div class="field"><span class="flabel" data-t="f_lang"></span><div class="seg" role="group" id="f-lang" data-tt="f_lang"><button aria-pressed="true" data-v="vi">Tiếng Việt</button><button aria-pressed="false" data-v="en">English</button></div></div>
         <div class="field"><label for="f-purpose" data-t="f_purpose"></label><textarea id="f-purpose"></textarea></div>
         <div class="field"><label for="f-outputs" data-t="f_outputs"></label><textarea id="f-outputs"></textarea></div>
         <div class="field"><label for="f-style" data-t="f_style"></label><textarea id="f-style"></textarea></div>
@@ -408,7 +443,7 @@ textarea{min-height:68px;resize:vertical}
       <div class="field"><label for="a-dir" data-t="a_dir"></label><div class="inline"><input type="text" id="a-dir" placeholder="D:\..."><button class="btn" data-pick="a-dir"><span data-t="choose"></span></button></div><span class="hint" data-t="a_hint"></span></div>
       <div class="grid c2">
         <div class="field"><label for="a-name"><span data-t="f_name"></span><span class="req">*</span></label><input type="text" id="a-name"></div>
-        <div class="field"><span class="flabel" data-t="f_lang"></span><div class="seg" role="group" id="a-lang"><button aria-pressed="true" data-v="vi">Tiếng Việt</button><button aria-pressed="false" data-v="en">English</button></div></div>
+        <div class="field"><span class="flabel" data-t="f_lang"></span><div class="seg" role="group" id="a-lang" data-tt="f_lang"><button aria-pressed="true" data-v="vi">Tiếng Việt</button><button aria-pressed="false" data-v="en">English</button></div></div>
       </div>
     </div><div class="formfoot"><div class="steps"><span class="s on"><span class="n">1</span><span data-t="preview"></span></span><span class="ln"></span><span class="s"><span class="n">2</span><span data-t="apply"></span></span></div><div class="r"><button class="btn pri lg" id="a-run"><span data-ico="eye"></span><span data-t="preview"></span></button></div></div></div>
   </section>
@@ -416,7 +451,7 @@ textarea{min-height:68px;resize:vertical}
   <!-- UPGRADE -->
   <section class="page" id="pg-upgrade">
     <div class="ph"><h1 data-t="nav_upgrade"></h1><p data-t="up_p"></p></div>
-    <div class="seg mb" role="group" id="up-mode"><button aria-pressed="true" data-v="self" data-t="up_self"></button><button aria-pressed="false" data-v="other" data-t="up_other"></button></div>
+    <div class="seg mb" role="group" id="up-mode" data-tt="up_mode_group"><button aria-pressed="true" data-v="self" data-t="up_self"></button><button aria-pressed="false" data-v="other" data-t="up_other"></button></div>
     <div class="card" style="max-width:900px"><div class="card-b form">
       <div class="note" id="up-other-n" hidden><span data-ico="info"></span><span data-t="up_other_p"></span></div>
       <div class="field"><label for="u-dir" id="u-lbl" data-t="up_from"></label><div class="inline"><input type="text" id="u-dir" placeholder="D:\goi-moi\local-agent-workspace-..."><button class="btn" data-pick="u-dir"><span data-t="choose"></span></button></div></div>
@@ -438,19 +473,37 @@ textarea{min-height:68px;resize:vertical}
       <div class="rw"><div class="ic" data-ico="package"></div><div><b data-t="mt4"></b><span data-t="mt4d"></span></div><button class="btn" id="m-release" data-t="run"></button></div>
     </div>
   </section>
+
+  <!-- HEALTH -->
+  <section class="page" id="pg-health">
+    <div class="ph"><h1 data-t="nav_health"></h1><p data-t="health_p"></p></div>
+    <div class="grid c2 mb">
+      <div class="card"><div class="card-h"><span data-ico="info"></span><h2 data-t="h_app"></h2></div><div class="card-b"><dl class="dl" id="hl-app"></dl></div></div>
+      <div class="card"><div class="card-h"><span data-ico="merge"></span><h2 data-t="hl_merges"></h2><div class="r"><button class="btn" data-goto="merges" data-t="hl_merge_go"></button></div></div><div id="hl-merges"></div></div>
+    </div>
+    <div class="card mb"><div class="card-h"><span data-ico="box"></span><h2 data-t="h_comp"></h2></div><p class="dg-p muted" style="padding:12px 18px 0" data-t="h_comp_p"></p><div id="hl-comp"></div></div>
+    <div class="card mb"><div class="card-h"><span data-ico="refresh"></span><h2 data-t="h_tx"></h2></div><p class="dg-p muted" style="padding:12px 18px 0" data-t="h_tx_p"></p><div id="hl-tx"></div></div>
+    <div class="card mb"><div class="card-h"><span data-ico="activity"></span><h2 data-t="hist_t"></h2><div class="r"><button class="btn danger" id="hist-clear"><span data-ico="trash"></span><span data-t="hist_clear"></span></button></div></div>
+      <p class="dg-p muted" style="padding:12px 18px 0" data-t="hist_p"></p><div id="hl-last"></div><div class="tw" id="hl-hist"></div></div>
+    <div class="card"><div class="card-h"><span data-ico="package"></span><h2 data-t="dg_title"></h2></div>
+      <div class="card-b"><p class="dg-p" data-t="dg_p"></p><p class="dg-p muted" data-t="dg_no"></p></div>
+      <div class="formfoot"><span class="note" style="background:none;padding:0"><span data-ico="shield"></span><span data-t="dg_decide"></span></span><div class="r"><button class="btn pri lg" id="dg-run"><span data-ico="package"></span><span data-t="dg_btn"></span></button></div></div></div>
+  </section>
   </div>
-</div>
+</main>
 </div>
 
 <div class="scrim" id="scrim"></div>
-<aside class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-t">
-  <div class="sh-h"><span id="sh-ic" data-ico="terminal"></span><span class="t" id="sh-t"></span><span id="sh-tag"></span><button class="iconbtn" id="sh-x" data-tt="close"></button></div>
+<aside class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-t" tabindex="-1">
+  <div class="sh-h"><span id="sh-ic" data-ico="terminal"></span><span class="t" id="sh-t"></span><span id="sh-tag" aria-live="polite"></span><button class="iconbtn" id="sh-x" data-tt="close"></button></div>
   <div class="sh-b">
     <div class="steps" id="sh-steps"><span class="s on" id="sh-s1"><span class="n">1</span><span data-t="preview"></span></span><span class="ln"></span><span class="s" id="sh-s2"><span class="n">2</span><span data-t="apply"></span></span></div>
     <div class="cmd" id="sh-cmd" hidden><code id="sh-code"></code><button class="iconbtn" id="sh-cc" data-tt="copy"></button></div>
-    <pre class="term" id="sh-out" tabindex="0"></pre>
+    <div class="sh-next" id="sh-extra" hidden></div>
+    <pre class="term" id="sh-out" tabindex="0" data-tt="sh_out_label"></pre>
+    <div id="sh-diff" role="region" hidden></div>
   </div>
-  <div class="sh-f"><span class="msg" id="sh-msg"></span><button class="btn" id="sh-close" data-t="close"></button><button class="btn pri" id="sh-apply" hidden></button></div>
+  <div class="sh-f"><span class="msg" id="sh-msg" aria-live="polite"></span><button class="btn" id="sh-close" data-t="close"></button><button class="btn pri" id="sh-apply" hidden></button></div>
 </aside>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="off" id="off"><div><div class="empty" style="padding:0"><div class="ic" data-ico="power"></div></div><h1 data-t="off_t"></h1><p data-t="off_p"></p></div></div>
@@ -493,6 +546,7 @@ var ICONS={
  chev:'<path d="m9 18 6-6-6-6"/>',
  trash:'<path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>',
  refresh:'<path d="M21 12a9 9 0 0 1-15.5 6.2L3 16M3 12A9 9 0 0 1 18.5 5.8L21 8M21 3v5h-5M3 21v-5h5"/>',
+ undo:'<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>',
  scale:'<path d="M12 3v18M5 7h14M7 7l-3 7a4 4 0 0 0 6 0zM17 7l-3 7a4 4 0 0 0 6 0z"/>',
  anchor:'<circle cx="12" cy="5" r="2"/><path d="M12 7v14M5 12H2a10 10 0 0 0 20 0h-3"/>',
  users:'<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M16 4a3 3 0 0 1 0 6M21 20a6 6 0 0 0-4-5.7"/>',
@@ -515,7 +569,7 @@ var D={
  st_ready:['Đã khởi tạo','Set up'],st_notinit:['Chưa khởi tạo','Not set up'],
  st_template:['Bộ mẫu chưa khởi tạo','Uninitialized template'],st_unknown:['Chưa xác định trạng thái','Status unknown'],
  evidence_project:['Có thông tin khởi tạo hợp lệ','Valid initialization record'],evidence_template:['PROJECT còn nguyên mẫu theo manifest; chưa có thông tin khởi tạo','PROJECT matches a manifest template; no initialization record'],evidence_unknown:['Chưa đủ thông tin để xác định; kiểm tra ngữ cảnh project trước khi khởi tạo','Insufficient evidence; check project context before setup'],
- check_pass:['Đã kiểm — đạt trong phạm vi hỗ trợ','Checked — passed within supported scope'],check_issues:['Đã kiểm — cần xem xét','Checked — needs review'],check_not_checked:['Chưa kiểm được đầy đủ','Not fully checked'],merge_required:['Còn hướng dẫn cần hợp nhất; bản cũ được giữ nguyên','Instructions need merging; existing files are preserved'],
+ check_pass:['Đã kiểm — đạt trong phạm vi hỗ trợ','Checked — passed within supported scope'],check_issues:['Đã kiểm — cần xem xét','Checked — needs review'],check_not_checked:['Chưa kiểm được đầy đủ','Not fully checked'],merge_required:['Cần hợp nhất','Merge needed'],merge_msg:['Còn file cần hợp nhất: bản hiện có được giữ nguyên, bản mới nằm cạnh với đuôi .new. Bước tiếp: mở Chờ hợp nhất để so sánh và xử lý từng file.','Some files need merging: the current versions are kept and the new ones sit beside them with a .new ending. Next step: open Pending merges to compare and handle each file.'],
  result_success:['Thành công','Succeeded'],result_preview:['Đã xem trước','Preview ready'],result_issues:['Cần xem xét','Needs review'],result_not_checked:['Chưa kiểm được','Not checked'],result_blocked:['Đang bị chặn','Blocked'],result_partial:['Chưa hoàn tất','Incomplete'],result_error:['Lỗi công cụ','Tool error'],
  mg_p:['Các bản `.new` do package hoặc gói lĩnh vực tạo khi cần giữ cả file hiện hành và bản mới.','Package or domain-pack `.new` files created when both the current and new versions must be preserved.'],
  mg_safe:['Ứng dụng chỉ theo dõi file do package quản lý, không tự hợp nhất và không ghi đè file hiện hành. Mục sẽ tự biến mất sau khi bạn xử lý và bỏ file `.new`.','The panel tracks only package-managed files. It never merges automatically or overwrites the current file. An item disappears after you handle and remove its `.new` file.'],
@@ -532,7 +586,7 @@ var D={
  skills_t:['Skill trong project','Skills in this project'],col_scope:['Phạm vi','Scope'],col_use:['Dùng khi','Use when'],all:['Tất cả','All'],f_shared:['Dùng chung','Shared'],f_pack:['Gói','Pack'],f_proj:['Riêng','Project'],no_match:['Không có skill phù hợp.','No matching skill.'],n_skills:['skill','skills'],
  ck_p:['Kiểm tra cơ học: chỗ chưa điền, nhãn mẫu minh họa còn sót, tài nguyên mạng trong HTML, lỗi bảng tính. Không thay việc đọc lại và đối chiếu số liệu với nguồn.','A mechanical check: unfilled placeholders, leftover demo labels, network resources in HTML, spreadsheet issues. It does not replace re-reading and checking figures against sources.'],
  ck_drop:['Chọn file cần kiểm tra','Choose files to check'],ck_types:['.docx · .xlsx · .csv · .html · .md · .txt','.docx · .xlsx · .csv · .html · .md · .txt'],ck_or:['Hoặc dán đường dẫn file','Or paste a file path'],add:['Thêm','Add'],
- ck_decl:['Đây là câu trả lời đã lưu của agent: kiểm khối "Khai báo thực hiện"','This is a saved agent reply: check the "Execution declaration" block'],ck_ro:['Chỉ đọc, không sửa file.','Read only; files are not changed.'],ck_run:['Kiểm tra','Check'],ck_none:['Chọn ít nhất một file.','Choose at least one file.'],
+ ck_decl:['Đây là câu trả lời đã lưu của agent: kiểm khối "Khai báo thực hiện"','This is a saved agent reply: check the "Execution declaration" block'],ck_ro:['Chỉ đọc, không sửa file.','Read only; files are not changed.'],ck_run:['Kiểm tra','Check'],ck_none:['Chưa có file nào để kiểm. Bước tiếp: bấm Chọn file hoặc dán đường dẫn, rồi bấm Thêm.','No file to check yet. Next step: press Choose files or paste a path, then press Add.'],
  pk_p:['Bộ skill theo mảng việc, cài vào project khi cần. Mỗi gói có bảng căn cứ pháp lý ghi số hiệu, điều khoản và ngày đối chiếu để bạn kiểm lại. Gỡ gói chỉ chuyển thư mục vào archive/.','Skill sets by line of work, installed into a project when needed. Each pack has a legal-basis table with numbers, articles and the check date so you can verify. Removing a pack only moves its folder into archive/.'],
  pk_need:['Đây là thư mục package gốc, chưa phải project, nên chưa cài gói ở đây. Để dùng gói cho một project (ví dụ TIEN 081): đưa bản package này vào project đó, rồi mở APP.bat trong thư mục project để cài gói.','This is the original package folder, not a project, so packs are not installed here. To use packs in a project: bring this package version into that project, then open APP.bat in the project folder to install packs.'],
  pk_need_a:['Đưa vào project →','Bring into a project →'],pk_to_proj:['Cài vào project','Install in a project'],
@@ -559,14 +613,60 @@ var D={
  mt3:['Dựng lại hướng dẫn HTML','Rebuild the HTML guides'],mt3d:['Sau khi sửa Markdown trong docs/','After editing the Markdown in docs/'],
  mt4:['Đóng gói phát hành','Build a release'],mt4d:['Chỉ dùng trong kho nguồn: kiểm tra và đóng ZIP vào dist/ mà không sửa dữ liệu phát triển','Source repository only: validate and build the ZIP in dist/ without changing development data'],run:['Chạy','Run'],
  close:['Đóng','Close'],copy:['Chép','Copy'],copied:['Đã chép','Copied'],running:['Đang chạy…','Running…'],ok:['Thành công','Succeeded'],fail:['Cần xem lại','Needs attention'],bad:['Thiếu thông tin','Missing input'],
- m_preview:['Mới xem trước, chưa ghi gì. Đọc kết quả rồi bấm Thực hiện.','Preview only, nothing written yet. Read it, then press Apply.'],m_nothing:['Không có gì cần thay đổi.','Nothing to change.'],m_done:['Đã ghi thay đổi.','Changes written.'],m_ro:['Chỉ đọc, không ghi gì.','Read only, nothing written.'],
- pick_fail:['Không mở được hộp chọn; hãy dán đường dẫn.','The picker is not available; paste the path instead.'],
+ m_preview:['Mới xem trước, chưa ghi gì. Đọc kết quả rồi bấm Thực hiện.','Preview only, nothing written yet. Read it, then press Apply.'],m_nothing:['Không có gì cần thay đổi.','Nothing to change.'],m_done:['Đã ghi thay đổi. Bước tiếp: kiểm lại kết quả ở trang tương ứng.','Changes written. Next step: check the result on the matching page.'],m_ro:['Chỉ đọc, không ghi gì.','Read only, nothing written.'],
+ pick_fail:['Không mở được hộp chọn. Không có gì bị thay đổi. Bước tiếp: dán đường dẫn vào ô bên cạnh.','The picker could not open. Nothing was changed. Next step: paste the path into the field beside it.'],
  off_t:['Đã tắt bảng điều khiển','The control panel has stopped'],off_p:['Có thể đóng trang này. Mở lại bằng APP.bat hoặc APP.command.','You can close this page. Open it again with APP.bat or APP.command.'],
  t_init:['Khởi tạo project','Set up project'],t_adopt:['Đưa vào project đã có','Bring into existing project'],t_up:['Nâng cấp package','Upgrade package'],t_pack:['Gói','Pack'],t_check:['Kiểm tra trước khi giao','Check before delivery'],t_install:['Cài skill vào ứng dụng','Install skills'],
- SEC_Goal:['Mục tiêu','Goal'],'SEC_Current phase':['Giai đoạn hiện tại','Current phase'],SEC_Completed:['Đã xong','Completed'],'SEC_Current artifact':['Sản phẩm hiện hành','Current artifact'],'SEC_Open items':['Việc còn mở','Open items'],'SEC_Waiting on user':['Đang chờ bạn','Waiting on you'],SEC_Decisions:['Quyết định','Decisions'],'SEC_Next milestone':['Mốc tiếp theo','Next milestone']
+ nav_health:['Tình trạng ứng dụng','App status'],
+ health_p:['Phiên bản, chức năng tùy chọn, giao dịch dở và lịch sử thao tác gần đây. Ứng dụng không tự cài thêm gì; các nút trên trang chỉ làm việc khi bạn bấm.','Version, optional features, unfinished transactions and recent operations. The app installs nothing automatically; the buttons on this page act only when you press them.'],
+ h_app:['Ứng dụng','Application'],h_version:['Phiên bản package','Package version'],h_kind:['Loại workspace','Workspace type'],h_evidence:['Căn cứ nhận diện','Basis of identification'],h_python:['Python','Python'],h_platform:['Hệ điều hành','Operating system'],
+ h_comp:['Chức năng tùy chọn','Optional features'],h_comp_p:['Chức năng cần thư viện hoặc thành phần thêm. Phần còn lại của ứng dụng vẫn dùng được.','Features that need an extra library or component. The rest of the app still works.'],
+ usable:['Dùng được','Usable'],not_usable:['Chưa dùng được','Not usable'],why_label:['Vì sao','Why'],fix_label:['Cách khắc phục','How to fix'],
+ f_python:['Python 3.8 trở lên','Python 3.8 or newer'],f_library:['Thư viện nguồn: tra cứu và kiểm chỉ mục','Source library: search and index check'],f_xlsx:['Kiểm tra file .xlsx','Check .xlsx files'],f_picker:['Hộp chọn file và thư mục','File and folder picker'],
+ why_opx:['Chưa cài thư viện openpyxl','The openpyxl library is not installed'],why_tk:['Python này không có tkinter','This Python has no tkinter'],why_py:['Python quá cũ','Python is too old'],
+ fix_opx:['Chạy lệnh sau trong cửa sổ terminal. Ứng dụng không tự cài.','Run this in a terminal window. The app never installs anything by itself.'],fix_tk:['Dùng nút dán đường dẫn, hoặc cài Python từ python.org và bật Tcl/Tk. Các chức năng khác không bị ảnh hưởng.','Paste the path instead, or install Python from python.org with Tcl/Tk enabled. Other features are not affected.'],fix_py:['Cài Python 3.8 trở lên.','Install Python 3.8 or newer.'],
+ hl_merges:['Chờ hợp nhất','Pending merges'],hl_merge_go:['Mở trang chờ hợp nhất','Open pending merges'],hl_merge_count:['file đang chờ hợp nhất','file(s) waiting to be merged'],hl_none_merge:['Không có file nào đang chờ hợp nhất.','No files are waiting to be merged.'],
+ h_tx:['Giao dịch chưa hoàn tất','Unfinished transactions'],h_tx_p:['Thao tác ghi nhiều file bị gián đoạn. Tiếp tục để hoàn tất, hoặc phục hồi để đưa file về trạng thái trước khi ghi.','A multi-file write that was interrupted. Resume to finish it, or roll back to return the files to their state before the write.'],h_tx_none:['Không có giao dịch dở.','No unfinished transactions.'],
+ tx_st:['Còn dở','Unfinished'],
+ tx_op_init:['Khởi tạo','Set up'],tx_op_adopt:['Đưa vào project đã có','Bring into existing project'],tx_op_upgrade:['Nâng cấp package','Upgrade package'],
+ tx_resume:['Tiếp tục','Resume'],tx_rollback:['Phục hồi','Roll back'],tx_rb_confirm:['Phục hồi giao dịch này? File bạn chưa sửa sẽ về bản gốc; file mới do thao tác dở tạo ra sẽ bị xóa nếu bạn chưa sửa; file bạn đã sửa sau khi bị gián đoạn được giữ nguyên.','Roll back this transaction? Files you have not edited return to their originals; files the interrupted run created are removed if you have not edited them; files you edited after the interruption are kept.'],
+ tx_partial:['Chưa hoàn tất: giao dịch vẫn còn dở, nên file có thể đang ở giữa hai trạng thái. Bước tiếp: bấm Tiếp tục để hoàn tất, hoặc Phục hồi để đưa file về trước khi ghi.','Not complete: the transaction is still open, so files may be between two states. Next step: press Resume to finish, or Roll back to return the files to before the write.'],
+ tx_partial_rb:['Phục hồi chưa xong: file bạn đã sửa được giữ nguyên, phần còn lại không tự phục hồi được. Bước tiếp: làm theo các bước bên dưới, rồi kiểm lại file.','Rollback is not complete: files you edited are kept, and the rest could not be restored automatically. Next step: follow the steps below, then check the files.'],
+ tx_banner_t:['Có giao dịch chưa hoàn tất','An unfinished transaction is waiting'],tx_banner_p:['Một thao tác ghi bị gián đoạn. Mở Tình trạng ứng dụng để tiếp tục hoặc phục hồi trước khi làm việc khác.','A write was interrupted. Open App status to resume or roll back before other work.'],tx_banner_b:['Mở tình trạng','Open status'],
+ sh_next:['Bước tiếp theo','Next steps'],
+ hist_t:['Lịch sử thao tác','Operations history'],hist_p:['Chỉ ghi thời điểm, tên thao tác, trạng thái, số file tác động và mã giao dịch. Không ghi nội dung, tên file, tên người hay dữ liệu đã nhập.','Only records the time, action, status, number of files affected and transaction id. Never records content, file names, names of people or typed data.'],
+ hist_last_ok:['Lần thành công gần nhất','Last success'],hist_last_fail:['Lần lỗi gần nhất','Last failure'],hist_last_unf:['Lần dang dở gần nhất','Last unfinished'],hist_none:['Chưa có','None yet'],hist_empty:['Chưa có thao tác nào được ghi.','No operations recorded yet.'],
+ hist_c_time:['Thời điểm','Time'],hist_c_act:['Thao tác','Action'],hist_c_st:['Trạng thái','Status'],hist_c_files:['File','Files'],
+ hist_clear:['Xóa lịch sử','Clear history'],hist_clear_confirm:['Xóa toàn bộ lịch sử thao tác cục bộ? Chỉ xóa file .agent/runtime/operations.jsonl. Tài liệu, STATE và giao dịch không bị ảnh hưởng.','Delete the whole local operations history? Only the file .agent/runtime/operations.jsonl is deleted. Documents, STATE and transactions are not affected.'],hist_cleared:['Đã xóa lịch sử.','History cleared.'],
+ dg_title:['Gói chẩn đoán','Diagnostics bundle'],dg_p:['Tạo một file ZIP trong .agent/runtime/diagnostics/ để gửi cho người hỗ trợ khi gặp lỗi. Gói gồm: phiên bản package, loại workspace, Python và hệ điều hành, tình trạng chức năng tùy chọn, số file chờ hợp nhất (chỉ đường dẫn tương đối), giao dịch dở, lịch sử thao tác và kết quả kiểm tra toàn vẹn package.','Creates a ZIP in .agent/runtime/diagnostics/ to send to a helper when something goes wrong. It contains: package version, workspace type, Python and operating system, optional-feature status, pending merge files (relative paths only), unfinished transactions, operations history and the package integrity check.'],
+ dg_no:['Không có nội dung tài liệu, tên người, tên project hay đường dẫn tuyệt đối. Đường dẫn thư mục và tên người dùng máy tính đã được che. Bạn tự quyết định có chia sẻ gói này hay không.','No document content, names of people, project name or absolute paths. Folder paths and the computer user name are masked. You decide whether to share this bundle.'],dg_decide:['Chỉ tạo file trên máy này; không gửi đi đâu.','Only creates a file on this computer; nothing is sent anywhere.'],
+ dg_btn:['Tạo gói chẩn đoán','Create diagnostics bundle'],dg_open:['Mở thư mục gói','Open the bundle folder'],dg_done:['Đã tạo gói chẩn đoán. Mở thư mục để xem trước khi quyết định chia sẻ.','Diagnostics bundle created. Open the folder to review it before deciding whether to share it.'],
+ lb_nochk_t:['Thư viện nguồn chưa dùng được.','The source library is not usable yet.'],
+ mg_compare:['So sánh','Compare'],df_title:['So sánh bản hiện hành với bản .new','Current version compared with the .new copy'],df_same:['Giống nhau','Identical'],df_identical:['Hai bản giống hệt nhau; không cần hợp nhất nội dung.','The two versions are identical; no content needs merging.'],
+ df_cannot:['Không so sánh được','Cannot compare'],df_binary:['File nhị phân hoặc không phải UTF-8: không hiển thị nội dung. Mở hai bản bằng ứng dụng gốc để xem.','Binary file or not UTF-8: content is not shown. Open both versions in their own app.'],df_large:['File lớn hơn %d KB: không so sánh trong giao diện. Mở hai bản bằng ứng dụng gốc để xem.','File larger than %d KB: not compared in the panel. Open both versions in their own app.'],
+ df_new:['Bản mới','New file'],df_missing:['Chưa có file hiện hành; toàn bộ bản .new là phần thêm.','The current file is missing; the whole .new copy is additions.'],df_diff:['+%d thêm · -%d bỏ','+%d added · -%d removed'],df_trunc:['Kết quả dài: chỉ hiện phần đầu.','The result is long: only the first part is shown.'],
+ df_ro:['Chỉ đọc, không lưu và không hợp nhất tự động. Tự sửa file rồi xóa bản .new khi xong.','Read only, nothing is saved or merged automatically. Edit the file yourself, then remove the .new copy when done.'],
+ act_init:['Khởi tạo project','Set up project'],act_adopt:['Đưa vào project đã có','Bring into existing project'],act_upgrade:['Nâng cấp package','Upgrade package'],act_upgrade_other:['Nâng cấp project khác','Upgrade another project'],
+ act_pack_list:['Danh sách gói','Pack list'],act_pack_add:['Cài gói','Install pack'],act_pack_remove:['Gỡ gói','Remove pack'],act_pack_update:['Cập nhật gói','Update pack'],act_check_output:['Kiểm tra trước khi giao','Check before delivery'],act_install_skills:['Cài skill vào ứng dụng','Install skills'],
+ act_library_init:['Tạo khung thư viện','Create the library'],act_library_check:['Kiểm tra thư viện','Check the library'],act_library_stats:['Thống kê thư viện','Library statistics'],act_library_find:['Tra cứu thư viện','Library search'],
+ act_check_package:['Kiểm tra package','Check the package'],act_build_guides:['Dựng hướng dẫn HTML','Build HTML guides'],act_build_release:['Đóng gói phát hành','Build a release'],act_merge_state:['Đổi trạng thái hợp nhất','Change merge state'],act_merge_diff:['So sánh bản hợp nhất','Compare a merge item'],
+ act_diagnostics:['Gói chẩn đoán','Diagnostics bundle'],act_tx_resume:['Tiếp tục giao dịch','Resume transaction'],act_tx_rollback:['Phục hồi giao dịch','Roll back transaction'],act_unknown:['Thao tác khác','Other action'],
+ SEC_Goal:['Mục tiêu','Goal'],'SEC_Current phase':['Giai đoạn hiện tại','Current phase'],SEC_Completed:['Đã xong','Completed'],'SEC_Current artifact':['Sản phẩm hiện hành','Current artifact'],'SEC_Open items':['Việc còn mở','Open items'],'SEC_Waiting on user':['Đang chờ bạn','Waiting on you'],SEC_Decisions:['Quyết định','Decisions'],'SEC_Next milestone':['Mốc tiếp theo','Next milestone'],
+ skip:['Bỏ qua menu, đến nội dung','Skip the menu, go to content'],lang_group:['Ngôn ngữ giao diện','Interface language'],su_mode_group:['Cách thiết lập','How to set up'],up_mode_group:['Project cần nâng cấp','Project to upgrade'],
+ lb_group:['Nhóm văn bản','Document group'],sk_filter:['Lọc skill theo phạm vi','Filter skills by scope'],sh_out_label:['Kết quả chi tiết','Detailed output'],remove_file:['Bỏ file này khỏi danh sách','Remove this file from the list'],
+ lb_q_label:['Từ khóa tra cứu','Search keyword'],sk_search:['Tìm skill','Search skills'],
+ busy_wait:['Thao tác đang chạy; đợi xong rồi thử lại.','An action is running; wait for it to finish, then try again.'],
+ err_conn:['Không nhận được kết quả từ bảng điều khiển, nên chưa biết thao tác đã xong hay chưa. Bước tiếp: mở Tình trạng ứng dụng để xem giao dịch dở, rồi thử lại. Giữ cửa sổ APP.bat đang mở.','No result came back from the panel, so it is not known whether the change finished. Next step: open App status to check for an unfinished transaction, then try again. Keep the APP.bat window open.'],
+ err_tool:['Công cụ không hoàn tất, chưa rõ đã ghi hết hay chưa. Bước tiếp: mở Tình trạng ứng dụng để xem giao dịch dở; nếu không có, đọc thông báo phía trên rồi thử lại.','The tool did not finish; it is not yet clear whether every change was written. Next step: open App status to check for an unfinished transaction; if there is none, read the message above and try again.'],
+ err_blocked:['Chưa ghi gì. Bước tiếp: sửa thông tin đã nêu ở trên, rồi xem trước lại.','Nothing was written. Next step: fix the input named above, then preview again.'],
+ ck_not_checked_next:['Chưa kiểm được đầy đủ: không phải kết quả đạt. Bước tiếp: đọc lại file và đối chiếu bằng tay.','Not fully checked: this is not a pass. Next step: re-read the file and check it by hand.'],
+ merge_state_fail:['Không lưu được trạng thái. Không file tài liệu nào bị thay đổi. Bước tiếp: thử lại; nếu vẫn lỗi, kiểm tra quyền ghi của thư mục .agent.','The status could not be saved. No document was changed. Next step: try again; if it still fails, check write permission on the .agent folder.'],
+ diff_fail:['Không so sánh được file này. Không có gì bị thay đổi. Bước tiếp: kiểm tra file .new còn tồn tại, rồi thử lại.','This file could not be compared. Nothing was changed. Next step: check that the .new file still exists, then try again.'],
+ lb_nochk_safe:['Chỉ đọc: không có file nào bị thay đổi.','Read only: no file was changed.'],
+ copy_fail:['Không chép được. Hãy chọn đường dẫn bằng chuột rồi chép thủ công.','Could not copy. Select the path with the mouse and copy it by hand.']
 };
 var PACK_ICON={'phap-ly':'scale','van-thu-luu-tru':'archive','cang-logistics':'anchor','hanh-chinh-nhan-su':'users','ke-toan-noi-bo':'calc'};
-var NAV=[['nav1',[['home','home','nav_home'],['library','library','nav_library'],['check','check','nav_check'],['merges','merge','nav_merges'],['packs','box','nav_packs'],['skills','monitor','nav_skills']]],['nav2',[['setup','plus','nav_setup'],['upgrade','up','nav_upgrade'],['maintain','gear','nav_maintain']]]];
+var NAV=[['nav1',[['home','home','nav_home'],['library','library','nav_library'],['check','check','nav_check'],['merges','merge','nav_merges'],['packs','box','nav_packs'],['skills','monitor','nav_skills']]],['nav2',[['setup','plus','nav_setup'],['upgrade','up','nav_upgrade'],['maintain','gear','nav_maintain'],['health','activity','nav_health']]]];
 var lang='vi',S=null,files=[],pending=null,page='home',skFilter='all';
 function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);}catch(e){return null;}}
 function $(id){return document.getElementById(id);}
@@ -582,7 +682,7 @@ function paint(){
   document.querySelectorAll('[data-tt]').forEach(function(el){el.title=t(el.dataset.tt);el.setAttribute('aria-label',t(el.dataset.tt));});
   document.querySelectorAll('.lang button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.lang===lang?'true':'false');});
   $('sk-q').placeholder=lang==='en'?'Search skills':'Tìm skill';
-  NAV.forEach(function(g){$(g[0]).innerHTML=g[1].map(function(n){var badge=n[0]==='packs'&&S?(S.packs.items||[]).length:n[0]==='merges'&&S?(S.merges||[]).length:null;return'<button data-page="'+n[0]+'"'+(n[0]===page?' aria-current="page"':'')+'>'+ico(n[1])+'<span>'+esc(t(n[2]))+'</span>'+(badge!==null?'<span class="badge">'+badge+'</span>':'')+'</button>';}).join('');});
+  NAV.forEach(function(g){$(g[0]).innerHTML=g[1].map(function(n){var badge=n[0]==='packs'&&S?(S.packs.items||[]).length:n[0]==='merges'&&S?(S.merges||[]).length:n[0]==='health'&&S&&(S.transactions||[]).length?S.transactions.length:null;return'<button data-page="'+n[0]+'"'+(n[0]===page?' aria-current="page"':'')+'>'+ico(n[1])+'<span>'+esc(t(n[2]))+'</span>'+(badge!==null?'<span class="badge">'+badge+'</span>':'')+'</button>';}).join('');});
   document.querySelectorAll('.nav button').forEach(function(b){b.addEventListener('click',function(){go(b.dataset.page);});});
   $('cr-page').textContent=t(NAV[0][1].concat(NAV[1][1]).filter(function(n){return n[0]===page;})[0][2]);
   if(S)render();
@@ -590,11 +690,11 @@ function paint(){
 document.querySelectorAll('[data-ico]').forEach(function(el){el.insertAdjacentHTML('afterbegin',ico(el.dataset.ico));});
 $('b-quit').innerHTML=ico('power');$('sh-x').innerHTML=ico('x');$('sh-cc').innerHTML=ico('copy');
 function themeIcon(){var d=document.documentElement.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');$('b-theme').innerHTML=ico(d==='dark'?'sun':'moon');}
-function go(p){if(p==='library'){setTimeout(function(){lbStats();lbChips();if(!$('lb-rows-t').innerHTML)lbFind();},0);}page=p;document.querySelectorAll('.page').forEach(function(x){x.classList.toggle('on',x.id==='pg-'+p);});store('panel.page',p);paint();window.scrollTo(0,0);}
+function go(p){if(p==='library'){setTimeout(function(){lbStats();lbChips();if(!$('lb-rows-t').innerHTML)lbFind();},0);}if(p==='health')setTimeout(refresh,0);page=p;document.querySelectorAll('.page').forEach(function(x){x.classList.toggle('on',x.id==='pg-'+p);});store('panel.page',p);paint();window.scrollTo(0,0);}
 document.addEventListener('click',function(e){var g=e.target.closest('[data-goto]');if(g){e.preventDefault();go(g.dataset.goto);}var o=e.target.closest('[data-open]');if(o)openPath(o.dataset.open);});
 function openPath(p){api('/api/open',{path:p}).then(function(r){if(r.input_error)toast(r.out);});}
 $('b-guide').addEventListener('click',function(){openPath(lang==='en'?'START_HERE.en.html':'START_HERE.html');});
-$('ov-path').addEventListener('click',function(){if(!S)return;(navigator.clipboard?navigator.clipboard.writeText(S.root):Promise.reject()).then(function(){toast(t('copied'));},function(){});});
+$('ov-path').addEventListener('click',function(){if(!S)return;(navigator.clipboard?navigator.clipboard.writeText(S.root):Promise.reject()).then(function(){toast(t('copied'));},function(){toast(t('copy_fail'));});});
 function seg(id,cb){var g=$(id);g.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){g.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});if(cb)cb(b.dataset.v);});});}
 function segVal(id){var b=$(id).querySelector('[aria-pressed="true"]');return b?b.dataset.v:'vi';}
 seg('f-lang');seg('a-lang');seg('su-mode',function(v){$('su-new').hidden=v!=='new';$('su-adopt').hidden=v!=='adopt';});
@@ -602,72 +702,120 @@ document.querySelectorAll('[data-pick]').forEach(function(b){b.addEventListener(
   api('/api/pick',{kind:'dir'}).then(function(r){b.disabled=false;if(r.paths&&r.paths.length){$(b.dataset.pick).value=r.paths[0];if(b.dataset.pick==='a-dir')autoName();}else if(r.error)toast(t('pick_fail'));}).catch(function(){b.disabled=false;toast(t('pick_fail'));});});});
 // result sheet
 var lastFocus=null;
-function openSheet(title,icon,steps){lastFocus=document.activeElement;$('sh-t').textContent=title;$('sh-ic').innerHTML=ico(icon||'terminal');$('sh-steps').hidden=!steps;$('sh-s1').classList.add('on');$('sh-s2').classList.remove('on');
-  $('sh-tag').innerHTML='<span class="tag info"><span class="spin"></span>'+esc(t('running'))+'</span>';$('sh-cmd').hidden=true;$('sh-out').innerHTML='';$('sh-msg').textContent='';$('sh-apply').hidden=true;
-  $('sheet').classList.add('on');$('scrim').classList.add('on');setTimeout(function(){$('sh-x').focus();},50);}
-function closeSheet(){$('sheet').classList.remove('on');$('scrim').classList.remove('on');pending=null;if(lastFocus)lastFocus.focus();}
+function openSheet(title,icon,steps){if(!$('sheet').classList.contains('on'))lastFocus=document.activeElement;$('sh-t').textContent=title;$('sh-ic').innerHTML=ico(icon||'terminal');$('sh-steps').hidden=!steps;$('sh-s1').classList.add('on');$('sh-s2').classList.remove('on');
+  $('sh-tag').innerHTML='<span class="tag info"><span class="spin"></span>'+esc(t('running'))+'</span>';$('sh-cmd').hidden=true;$('sh-out').innerHTML='';$('sh-out').hidden=false;$('sh-msg').textContent='';$('sh-apply').hidden=true;
+  $('sh-extra').hidden=true;$('sh-extra').innerHTML='';$('sh-diff').hidden=true;$('sh-diff').innerHTML='';
+  setInert(true);$('sheet').classList.add('on');$('scrim').classList.add('on');setTimeout(function(){$('sh-x').focus();},50);}
+// while the sheet is open the page behind it is inert: Tab stays inside the dialog
+var busy=false;
+function setInert(on){var a=document.querySelector('.app');if(a){if(on)a.setAttribute('inert','');else a.removeAttribute('inert');}}
+function setBusy(on,btn){busy=on;if(btn)btn.disabled=on;$('sh-apply').disabled=on;$('sheet').setAttribute('aria-busy',on?'true':'false');}
+function focusable(root){return Array.prototype.filter.call(root.querySelectorAll('button,[href],input,select,textarea,[tabindex]'),function(el){return!el.disabled&&el.getAttribute('tabindex')!=='-1'&&el.getClientRects().length>0;});}
+// focus returns to the control that opened the sheet, or to the current page link when that control is gone
+function closeSheet(){$('sheet').classList.remove('on');$('scrim').classList.remove('on');pending=null;setInert(false);
+  var back=lastFocus&&document.body.contains(lastFocus)&&!$('sheet').contains(lastFocus)&&!lastFocus.disabled&&lastFocus.getClientRects().length>0?lastFocus:document.querySelector('.nav button[aria-current="page"]');
+  if(back)back.focus();}
 $('sh-x').addEventListener('click',closeSheet);$('sh-close').addEventListener('click',closeSheet);$('scrim').addEventListener('click',closeSheet);
-document.addEventListener('keydown',function(e){if(e.key==='Escape'&&$('sheet').classList.contains('on'))closeSheet();});
-$('sh-cc').addEventListener('click',function(){var x=$('sh-code').textContent+'\n\n'+$('sh-out').textContent;(navigator.clipboard?navigator.clipboard.writeText(x):Promise.reject()).then(function(){toast(t('copied'));},function(){});});
+document.addEventListener('keydown',function(e){if(!$('sheet').classList.contains('on'))return;
+  if(e.key==='Escape'){e.preventDefault();closeSheet();return;}
+  if(e.key!=='Tab')return;
+  var f=focusable($('sheet'));if(!f.length){e.preventDefault();return;}
+  var first=f[0],last=f[f.length-1],a=document.activeElement,inside=$('sheet').contains(a);
+  if(e.shiftKey){if(!inside||a===first){e.preventDefault();last.focus();}}
+  else if(!inside||a===last){e.preventDefault();first.focus();}});
+$('sh-cc').addEventListener('click',function(){var x=$('sh-code').textContent+'\n\n'+$('sh-out').textContent;(navigator.clipboard?navigator.clipboard.writeText(x):Promise.reject()).then(function(){toast(t('copied'));},function(){toast(t('copy_fail'));});});
 function colorize(s){return esc(s).split('\n').map(function(l){
   if(/^\s*(LỖI|ERROR|KHÔNG ĐẠT|CẦN SỬA|FAIL)/i.test(l))return'<span class="err">'+l+'</span>';
   if(/^\s*(CẢNH BÁO|WARNING|Cảnh báo)/i.test(l))return'<span class="warn">'+l+'</span>';
   if(/^\s*(ĐẠT|PASS|Đã |Xong|Done|OK\b)/.test(l))return'<span class="ok">'+l+'</span>';
   if(/^\s*\[(XEM TRƯỚC|CHẠY THỬ|PREVIEW|DRY RUN)/i.test(l))return'<span class="dim">'+l+'</span>';return l;}).join('\n');}
-function run(title,icon,act,params,opts){opts=opts||{};openSheet(title,icon,opts.preview);
-  return api('/api/run',{action:act,params:params}).then(function(r){
+// one action at a time: its button and the sheet's Apply are disabled while it runs (no double submit)
+function run(title,icon,act,params,opts){opts=opts||{};if(busy){toast(t('busy_wait'));return;}var btn=opts.btn||null;
+  openSheet(title,icon,opts.preview);setBusy(true,btn);
+  return api('/api/run',{action:act,params:params}).then(function(r){setBusy(false,btn);
     if(r.cmd){$('sh-code').textContent=r.cmd;$('sh-cmd').hidden=false;}
     $('sh-out').innerHTML=colorize(r.out||'');
     var res=r.result||{status:(r.code===0?'success':'error'),changes:null,merge_required:false},ok=r.code===0;
-    var tone=/^(success|preview)$/.test(res.status)?'ok':(/^(issues|not_checked|blocked)$/.test(res.status)?'warn':'err');
+    var tone=/^(success|preview)$/.test(res.status)?'ok':(/^(issues|not_checked|blocked|partial)$/.test(res.status)?'warn':'err');
     var label=t('result_'+res.status);
     if(res.merge_required){label=t('merge_required');tone='warn';}
     $('sh-tag').innerHTML='<span class="tag '+tone+'">'+ico(tone==='ok'?'check':'alert')+esc(label)+'</span>';
-    if(params&&params.apply){$('sh-s2').classList.add('on');if(ok)$('sh-msg').textContent=t(res.merge_required?'merge_required':'m_done');}
-    else if(opts.preview&&ok){
-      if(res.changes===false){$('sh-msg').textContent=t('m_nothing');}
-      else{$('sh-msg').textContent=t('m_preview');var a=$('sh-apply');a.innerHTML=ico('check')+esc(t('apply'));a.hidden=false;
-        pending=function(){run(title,icon,act,Object.assign({},params,{apply:true}),{preview:true,after:opts.after});};}}
-    else if(opts.ro){$('sh-msg').textContent=t('m_ro');}
+    if(params&&params.apply)$('sh-s2').classList.add('on');
+    // every outcome says what happened, whether data is safe, and the next step (see the err_* and *_next strings)
+    var msg='';
+    if(!ok)msg=res.status==='blocked'?t('err_blocked'):res.status==='not_checked'?t('ck_not_checked_next'):res.status==='partial'?'':t('err_tool');
+    else if(params&&params.apply)msg=t(res.merge_required?'merge_msg':'m_done');
+    else if(opts.preview){
+      if(res.changes===false){msg=t('m_nothing');}
+      else{msg=t('m_preview');var a=$('sh-apply');a.innerHTML=ico('check')+esc(t('apply'));a.hidden=false;
+        pending=function(){run(title,icon,act,Object.assign({},params,{apply:true}),{preview:true,after:opts.after,always:opts.always});};}}
+    else if(opts.ro){msg=t(res.status==='not_checked'?'ck_not_checked_next':'m_ro');}
+    if(ok&&opts.done)msg=t(opts.done);
+    $('sh-msg').textContent=msg;
+    sheetExtra(res,opts,ok,act);
     if(ok&&opts.after)opts.after();
-  }).catch(function(e){$('sh-tag').innerHTML='<span class="tag err">'+esc(t('fail'))+'</span>';$('sh-out').textContent=String(e);});}
+    if(opts.always)opts.always();
+  }).catch(function(e){setBusy(false,btn);$('sh-tag').innerHTML='<span class="tag err">'+ico('alert')+esc(t('fail'))+'</span>';$('sh-msg').textContent=t('err_conn');$('sh-out').textContent=String(e);});}
+// next steps, recovery buttons for an interrupted transaction, and the folder button after a bundle is made
+function sheetExtra(res,opts,ok,act){var box=$('sh-extra'),h='';
+  if(res.transaction&&res.status==='partial'){var id=esc(res.transaction);
+    h+='<div class="note warn">'+ico('alert')+'<span>'+esc(t(act==='tx_rollback'?'tx_partial_rb':'tx_partial'))+' <span class="mono">'+id+'</span></span></div>';
+    // after a rollback that stays partial, the transaction cannot be resumed: only the manual steps below apply
+    if(act!=='tx_rollback')h+='<div class="hact"><button class="btn pri" data-txa="resume" data-tx="'+id+'">'+ico('refresh')+esc(t('tx_resume'))+'</button>'
+      +'<button class="btn" data-txa="rollback" data-tx="'+id+'">'+ico('undo')+esc(t('tx_rollback'))+'</button></div>';}
+  if(res.next_actions&&res.next_actions.length)h+='<div class="sh-next"><b>'+esc(t('sh_next'))+'</b><ul>'+res.next_actions.map(function(x){return'<li>'+esc(x)+'</li>';}).join('')+'</ul></div>';
+  if(ok&&opts.openDir)h+='<div class="hact"><button class="btn" data-open="'+esc(opts.openDir)+'">'+ico('folder')+esc(t('dg_open'))+'</button></div>';
+  box.innerHTML=h;box.hidden=!h;}
+// recovery: resume or roll back an unfinished transaction (rollback asks first)
+function txRun(kind,id,btn){var resume=kind==='resume';if(!resume&&!confirm(t('tx_rb_confirm')))return;
+  run(t(resume?'tx_resume':'tx_rollback'),resume?'refresh':'undo',resume?'tx_resume':'tx_rollback',{txid:id,lang:lang==='en'?'en':'vi'},{always:refresh,btn:btn});}
+document.addEventListener('click',function(e){var b=e.target.closest('[data-txa]');if(b)txRun(b.dataset.txa,b.dataset.tx,b);});
 $('sh-apply').addEventListener('click',function(){if(pending){var f=pending;pending=null;f();}});
 // actions
-$('su-run').addEventListener('click',function(){var p={name:$('f-name').value,lang:segVal('f-lang')};['purpose','outputs','style','sources','constraints','sensitivity'].forEach(function(k){p[k]=$('f-'+k).value;});run(t('t_init'),'plus','init',p,{preview:true,after:refresh});});
+$('su-run').addEventListener('click',function(){var p={name:$('f-name').value,lang:segVal('f-lang')};['purpose','outputs','style','sources','constraints','sensitivity'].forEach(function(k){p[k]=$('f-'+k).value;});run(t('t_init'),'plus','init',p,{preview:true,after:refresh,btn:$('su-run')});});
 function autoName(){var v=$('a-dir').value.trim().replace(/[\\\/]+$/,'');if(v&&!$('a-name').value.trim())$('a-name').value=v.split(/[\\\/]/).pop();}
 $('a-dir').addEventListener('change',autoName);$('a-dir').addEventListener('blur',autoName);
-$('a-run').addEventListener('click',function(){autoName();run(t('t_adopt'),'merge','adopt',{project:$('a-dir').value,name:$('a-name').value,lang:segVal('a-lang')},{preview:true,after:refresh});});
+$('a-run').addEventListener('click',function(){autoName();run(t('t_adopt'),'merge','adopt',{project:$('a-dir').value,name:$('a-name').value,lang:segVal('a-lang')},{preview:true,after:refresh,btn:$('a-run')});});
 var upMode='self';
 seg('up-mode',function(v){setUpMode(v);});
 function setUpMode(v){upMode=v;$('up-mode').querySelectorAll('button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.v===v?'true':'false');});$('up-other-n').hidden=v!=='other';$('u-lbl').textContent=t(v==='other'?'up_to':'up_from');$('u-dir').placeholder=v==='other'?'D:\\UNG DUNG AI\\TEN PROJECT':'D:\\goi-moi\\local-agent-workspace-...';}
-$('u-run').addEventListener('click',function(){if(upMode==='other')run(t('up_other'),'up','upgrade_other',{project:$('u-dir').value},{preview:true,after:refresh});else run(t('t_up'),'up','upgrade',{source:$('u-dir').value},{preview:true,after:refresh});});
+$('u-run').addEventListener('click',function(){if(upMode==='other')run(t('up_other'),'up','upgrade_other',{project:$('u-dir').value},{preview:true,after:refresh,btn:$('u-run')});else run(t('t_up'),'up','upgrade',{source:$('u-dir').value},{preview:true,after:refresh,btn:$('u-run')});});
 function target(){var c=document.querySelector('input[name=tg]:checked');return c?c.value:'claude';}
 document.querySelectorAll('input[name=tg]').forEach(function(r){r.addEventListener('change',function(){$('sk-dest-f').hidden=target()!=='custom';});});
-$('sk-run').addEventListener('click',function(){run(t('t_install'),'monitor','install_skills',{target:target(),dest:$('sk-dest').value,include_packs:$('sk-packs').checked,overwrite:$('sk-over').checked},{preview:true});});
-function drawFiles(){$('ck-files').innerHTML=files.map(function(f,i){return'<div class="file">'+ico('file')+'<span class="mono" title="'+esc(f)+'">'+esc(f)+'</span><button class="iconbtn" data-rm="'+i+'" aria-label="x">'+ico('x')+'</button></div>';}).join('');
+$('sk-run').addEventListener('click',function(){run(t('t_install'),'monitor','install_skills',{target:target(),dest:$('sk-dest').value,include_packs:$('sk-packs').checked,overwrite:$('sk-over').checked},{preview:true,btn:$('sk-run')});});
+function drawFiles(){$('ck-files').innerHTML=files.map(function(f,i){return'<div class="file">'+ico('file')+'<span class="mono" title="'+esc(f)+'">'+esc(f)+'</span><button class="iconbtn" data-rm="'+i+'" aria-label="'+esc(t('remove_file'))+'" title="'+esc(t('remove_file'))+'">'+ico('x')+'</button></div>';}).join('');
   $('ck-files').querySelectorAll('[data-rm]').forEach(function(b){b.addEventListener('click',function(){files.splice(+b.dataset.rm,1);drawFiles();});});}
 $('ck-drop').addEventListener('click',function(){api('/api/pick',{kind:'files'}).then(function(r){(r.paths||[]).forEach(function(p){if(files.indexOf(p)<0)files.push(p);});if(r.error)toast(t('pick_fail'));drawFiles();}).catch(function(){toast(t('pick_fail'));});});
 $('ck-add').addEventListener('click',function(){var v=$('ck-path').value.trim().replace(/^"|"$/g,'');if(v&&files.indexOf(v)<0)files.push(v);$('ck-path').value='';drawFiles();});
 $('ck-path').addEventListener('keydown',function(e){if(e.key==='Enter')$('ck-add').click();});
-$('ck-run').addEventListener('click',function(){if(!files.length){toast(t('ck_none'));return;}run(t('t_check'),'check','check_output',{files:files,declaration:$('ck-decl').checked},{ro:true});});
-$('m-verify').addEventListener('click',function(){run(t('mt1'),'shield','check_package',{verify:true},{ro:true});});
-$('m-check').addEventListener('click',function(){run(t('mt2'),'list','check_package',{},{ro:true});});
-$('m-guides').addEventListener('click',function(){run(t('mt3'),'book','build_guides',{});});
-$('m-release').addEventListener('click',function(){run(t('mt4'),'package','build_release',{});});
+$('ck-run').addEventListener('click',function(){if(!files.length){toast(t('ck_none'));return;}run(t('t_check'),'check','check_output',{files:files,declaration:$('ck-decl').checked},{ro:true,btn:$('ck-run')});});
+$('m-verify').addEventListener('click',function(){run(t('mt1'),'shield','check_package',{verify:true},{ro:true,btn:$('m-verify')});});
+$('m-check').addEventListener('click',function(){run(t('mt2'),'list','check_package',{},{ro:true,btn:$('m-check')});});
+$('m-guides').addEventListener('click',function(){run(t('mt3'),'book','build_guides',{},{btn:$('m-guides')});});
+$('m-release').addEventListener('click',function(){run(t('mt4'),'package','build_release',{},{btn:$('m-release')});});
+$('dg-run').addEventListener('click',function(){run(t('dg_title'),'package','diagnostics',{},{done:'dg_done',openDir:'.agent/runtime/diagnostics',always:refresh,btn:$('dg-run')});});
+$('hist-clear').addEventListener('click',function(){if(!confirm(t('hist_clear_confirm')))return;run(t('hist_clear'),'trash','history_clear',{},{done:'hist_cleared',always:refresh,btn:$('hist-clear')});});
 var lbGroup='';
-function lbStats(){api('/api/run',{action:'library_stats',params:{}}).then(function(r){var d=null;try{d=JSON.parse(r.out);}catch(e){}
-  var none=!d||!d.index;$('lb-none').hidden=!none;
+// a library result that was not checked (for example openpyxl missing): show why and the next step, never "no index"
+function libNote(r){var acts=(r.result&&r.result.next_actions)||[];return'<div class="note warn">'+ico('alert')+'<span><b>'+esc(t('lb_nochk_t'))+'</b> '+esc((r.result&&r.result.message)||r.out||'')+' '+esc(t('lb_nochk_safe'))
+  +acts.map(function(x){return'<br>'+esc(x);}).join('')+'</span></div>';}
+function lbStats(){api('/api/run',{action:'library_stats',params:{}}).then(function(r){var st=r.result&&r.result.status,d=null;
+  $('lb-warn').hidden=st!=='not_checked';if(st==='not_checked')$('lb-warn').innerHTML=libNote(r);
+  if(st==='success'){try{d=JSON.parse(r.out);}catch(e){}}
+  var none=!d||!d.index;$('lb-none').hidden=!none||st==='not_checked';
   $('lb-rows').textContent=d&&d.index?d.rows:'–';$('lb-files').textContent=d?d.files:'–';$('lb-noft').textContent=d&&d.index?d.no_fulltext:'–';$('lb-chk').textContent=d&&d.index?d.needs_check:'–';});}
 function lbTag(st){var f=(st||'').toLowerCase();var c=f.indexOf('còn')===0?'ok':(f.indexOf('hết hiệu lực một')===0?'warn':(f.indexOf('hết')===0?'err':(f.indexOf('sắp')===0?'info':'')));return'<span class="tag '+c+'">'+esc(st||'?')+'</span>';}
 function lbFind(){var q=$('lb-q').value.trim();if(!q){$('lb-rows-t').innerHTML='<tr><td colspan="5"><div class="empty" style="padding:14px">'+esc(t('lb_empty'))+'</div></td></tr>';return;}
-  api('/api/run',{action:'library_find',params:{query:q,group:lbGroup}}).then(function(r){var d=null;try{d=JSON.parse(r.out);}catch(e){}
+  api('/api/run',{action:'library_find',params:{query:q,group:lbGroup}}).then(function(r){var st=r.result&&r.result.status,d=null;
+    if(st==='not_checked'){$('lb-rows-t').innerHTML='<tr><td colspan="5">'+libNote(r)+'</td></tr>';return;}
+    if(st==='success'){try{d=JSON.parse(r.out);}catch(e){}}
     if(!d){$('lb-rows-t').innerHTML='<tr><td colspan="5"><div class="empty" style="padding:14px">'+esc(r.out||'')+'</div></td></tr>';return;}
     $('lb-rows-t').innerHTML=d.hits.length?d.hits.map(function(h){var vc=/toàn văn/i.test(h.verify)?'ok':(/chính thống/i.test(h.verify)?'info':(/tóm tắt/i.test(h.verify)?'warn':'err'));
       return'<tr><td class="id">'+esc(h.number||h.id)+'<div style="font-family:var(--font);color:var(--muted);font-size:12px">'+esc([h.type,h.group].filter(Boolean).join(' · '))+'</div></td><td>'+esc(h.title)+(h.replaced_by?'<div style="color:var(--muted);font-size:12px">↳ '+esc(h.replaced_by)+'</div>':'')+(h.articles?'<div style="color:var(--muted);font-size:12px">'+esc(h.articles)+'</div>':'')+'</td><td>'+lbTag(h.status)+(h.checked?'<div style="color:var(--muted);font-size:12px;margin-top:3px">'+esc(h.checked)+'</div>':'')+'</td><td><span class="tag '+vc+'">'+esc(h.verify||'?')+'</span></td><td>'+(h.fulltext?'<button class="btn" data-open="'+esc(h.file)+'">'+ico('file')+esc(t('lb_open'))+'</button>':'<span class="tag warn">'+esc(t('lb_noft'))+'</span>')+'</td></tr>';}).join('')
       :'<tr><td colspan="5"><div class="empty" style="padding:14px">'+esc(t('lb_nohit'))+'</div></td></tr>';});}
 $('lb-go').addEventListener('click',lbFind);$('lb-q').addEventListener('keydown',function(e){if(e.key==='Enter')lbFind();});
-$('lb-check').addEventListener('click',function(){run(t('lb_t_check'),'shield','library_check',{},{ro:true});});
-$('lb-init').addEventListener('click',function(){run(t('lb_t_init'),'library','library_init',{},{after:lbStats});});
+$('lb-check').addEventListener('click',function(){run(t('lb_t_check'),'shield','library_check',{},{ro:true,btn:$('lb-check')});});
+$('lb-init').addEventListener('click',function(){run(t('lb_t_init'),'library','library_init',{},{after:lbStats,btn:$('lb-init')});});
 function lbChips(){$('lb-grp').innerHTML=[['','all'],['Pháp luật','Pháp luật'],['Nội bộ','Nội bộ'],['Mẫu biểu','Mẫu biểu']].map(function(g){return'<button data-g="'+esc(g[0])+'" aria-pressed="'+(lbGroup===g[0])+'">'+esc(g[1]==='all'?t('all'):g[1])+'</button>';}).join('');
   $('lb-grp').querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){lbGroup=b.dataset.g;lbChips();if($('lb-q').value.trim())lbFind();});});
   $('lb-q').placeholder=t('lb_ph');}
@@ -681,12 +829,13 @@ function render(){
   var kind=s.workspace_kind||'unknown',statusLabel=t(kind==='project'?'st_ready':kind==='template'?'st_template':'st_unknown');
   $('sb-dot').className='dot'+(s.initialized?'':' warn');$('sb-st').textContent=statusLabel;$('sb-st').title=t('evidence_'+kind);
   $('sb-ver').textContent='v'+s.version;$('cr-proj').textContent=name;
-  $('ov-name').textContent=name;$('ov-path').innerHTML=ico('folder')+esc(s.root);
+  $('ov-name').textContent=name;$('ov-path').innerHTML=ico('folder')+esc(s.root);$('ov-path').title=t('copy_path');
   var tags=['<span class="tag acc">package v'+esc(s.version)+'</span>','<span class="tag '+(s.initialized?'ok':'warn')+'">'+esc(statusLabel)+'</span>','<span class="tag">'+esc(t('evidence_'+kind))+'</span>'];
   if(s.initialized)tags.push('<span class="tag">'+(s.lang==='en'?'English':'Tiếng Việt')+'</span>');
   if(s.info&&s.info.initialized)tags.push('<span class="tag">'+esc(s.info.initialized)+'</span>');
   $('ov-tags').innerHTML=tags.join('');
   $('bn-init').hidden=kind!=='template';
+  $('bn-tx').hidden=!(s.transactions||[]).length;
   $('m-release').closest('.rw').hidden=!s.release_source;
   $('k-skills').textContent=s.skills.length;$('k-packs').textContent=inst;$('k-out').textContent=s.counts.output;$('k-ref').textContent=s.counts.references;
   var secs=(s.state.sections||[]).filter(function(x){return!x.empty&&x.lines.length;});
@@ -699,6 +848,7 @@ function render(){
   $('sk-filter').querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){skFilter=b.dataset.f;render();});});
   drawSkills();
   drawMerges();
+  drawHealth();
   // packs
   $('pk-need').hidden=s.initialized;
   var items=s.packs.items||[];
@@ -712,7 +862,7 @@ function render(){
   if(s.packs.error)$('pk-list').insertAdjacentHTML('afterbegin','<div class="note warn">'+esc(s.packs.error)+'</div>');
   $('pk-list').querySelectorAll('[data-pk]').forEach(function(b){b.addEventListener('click',function(){var n=b.dataset.n,k=b.dataset.pk;
     if(k==='remove'&&!confirm(t('confirm_remove')))return;
-    run(t('t_pack')+' · '+n,PACK_ICON[n]||'box',k==='update'?'pack_update':'pack_'+k,{pack:n},{preview:k==='update',after:refresh});});});
+    run(t('t_pack')+' · '+n,PACK_ICON[n]||'box',k==='update'?'pack_update':'pack_'+k,{pack:n},{preview:k==='update',after:refresh,btn:b});});});
   // forms
   $('d-claude').textContent=s.dests.claude;$('d-agents').textContent=s.dests.agents;
   $('up-cur').textContent=t('cur')+': v'+s.version;
@@ -723,10 +873,64 @@ function render(){
   drawFiles();
 }
 function drawMerges(){var rows=S.merges||[];$('mg-count').textContent=rows.length;
-  $('mg-rows').innerHTML=rows.length?rows.map(function(m){var state='mg_'+m.state,btn=m.state==='unseen'?'<button class="btn pri" data-ms="reviewing" data-mp="'+esc(m.pending)+'">'+esc(t('mg_start'))+'</button>':m.state==='reviewing'?'<button class="btn pri" data-ms="ready" data-mp="'+esc(m.pending)+'">'+esc(t('mg_ready_b'))+'</button>':'<button class="btn" data-ms="reviewing" data-mp="'+esc(m.pending)+'">'+esc(t('mg_reopen'))+'</button>';
-    return'<tr><td class="id">'+esc(m.path)+'<div style="color:var(--muted);font-size:11.5px">'+esc(m.pending)+'</div></td><td><span class="tag">'+esc(t(m.origin==='domain_pack'?'mg_domain_pack':'mg_package'))+'</span></td><td><span class="tag '+(m.state==='ready'?'ok':m.state==='reviewing'?'info':'warn')+'">'+esc(t(state))+'</span></td><td><div style="display:flex;gap:6px;flex-wrap:wrap">'+(m.current_exists?'<button class="btn" data-open="'+esc(m.path)+'">'+esc(t('mg_open_current'))+'</button>':'')+'<button class="btn" data-open="'+esc(m.pending)+'">'+esc(t('mg_open_new'))+'</button>'+btn+'</div></td></tr>';}).join('')
+  $('mg-rows').innerHTML=rows.length?rows.map(function(m,i){var state='mg_'+m.state,btn=m.state==='unseen'?'<button class="btn pri" data-ms="reviewing" data-mp="'+esc(m.pending)+'">'+esc(t('mg_start'))+'</button>':m.state==='reviewing'?'<button class="btn pri" data-ms="ready" data-mp="'+esc(m.pending)+'">'+esc(t('mg_ready_b'))+'</button>':'<button class="btn" data-ms="reviewing" data-mp="'+esc(m.pending)+'">'+esc(t('mg_reopen'))+'</button>';
+    return'<tr><td class="id">'+esc(m.path)+'<div style="color:var(--muted);font-size:11.5px">'+esc(m.pending)+'</div></td><td><span class="tag">'+esc(t(m.origin==='domain_pack'?'mg_domain_pack':'mg_package'))+'</span></td><td><span class="tag '+(m.state==='ready'?'ok':m.state==='reviewing'?'info':'warn')+'">'+esc(t(state))+'</span></td><td><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn" data-md="'+i+'">'+esc(t('mg_compare'))+'</button>'+(m.current_exists?'<button class="btn" data-open="'+esc(m.path)+'">'+esc(t('mg_open_current'))+'</button>':'')+'<button class="btn" data-open="'+esc(m.pending)+'">'+esc(t('mg_open_new'))+'</button>'+btn+'</div></td></tr>';}).join('')
     :'<tr><td colspan="4"><div class="empty">'+ico('check')+'<span>'+esc(t('mg_none'))+'</span></div></td></tr>';
-  $('mg-rows').querySelectorAll('[data-ms]').forEach(function(b){b.addEventListener('click',function(){api('/api/run',{action:'merge_state',params:{path:b.dataset.mp,state:b.dataset.ms}}).then(function(r){if(r.code===0)refresh();else toast(r.out||t('fail'));});});});}
+  $('mg-rows').querySelectorAll('[data-md]').forEach(function(b){b.addEventListener('click',function(){var m=rows[+b.dataset.md];openDiff(m.pending,m.path);});});
+  $('mg-rows').querySelectorAll('[data-ms]').forEach(function(b){b.addEventListener('click',function(){api('/api/run',{action:'merge_state',params:{path:b.dataset.mp,state:b.dataset.ms}}).then(function(r){if(r.code===0)refresh();else toast(t('merge_state_fail'));}).catch(function(){toast(t('merge_state_fail'));});});});}
+// merge comparison: read only, nothing stored; unified view with line numbers
+function openDiff(pending,rel){openSheet(t('mg_compare')+' · '+rel,'merge');$('sh-out').hidden=true;var box=$('sh-diff');box.hidden=false;box.setAttribute('aria-label',t('df_title'));
+  box.innerHTML='<div class="empty"><span class="spin"></span></div>';
+  function fail(detail){box.hidden=true;$('sh-out').hidden=false;$('sh-out').textContent=detail||'';$('sh-tag').innerHTML='<span class="tag err">'+ico('alert')+esc(t('fail'))+'</span>';$('sh-msg').textContent=t('diff_fail');}
+  api('/api/run',{action:'merge_diff',params:{path:pending}}).then(function(r){var d=r.result&&r.result.diff;
+    if(!d){fail(r.out);return;}
+    drawDiff(d);}).catch(function(e){fail(String(e));});}
+function drawDiff(d){var box=$('sh-diff'),tone='info',label,body='';
+  if(d.identical){tone='ok';label=t('df_same');body=t('df_identical');}
+  else if(d.binary){tone='warn';label=t('df_cannot');body=t('df_binary');}
+  else if(d.too_large){tone='warn';label=t('df_cannot');body=t('df_large').replace('%d',String(Math.round((d.max_bytes||0)/1024)));}
+  else{label=(d.current_missing?t('df_new')+' · ':'')+t('df_diff').replace('%d',String(d.added)).replace('%d',String(d.removed));if(d.current_missing)body=t('df_missing');}
+  $('sh-tag').innerHTML='<span class="tag '+tone+'">'+ico(tone==='ok'?'check':(tone==='warn'?'alert':'info'))+esc(label)+'</span>';
+  $('sh-msg').textContent=t('df_ro');
+  var rows=d.hunks.map(function(h){return'<div class="dr hunk"><span>@@ -'+h.old_start+','+h.old_count+' +'+h.new_start+','+h.new_count+' @@</span></div>'+h.lines.map(function(l){
+    var cls=l.op==='added'?'add':(l.op==='removed'?'del':'ctx'),sign=l.op==='added'?'+':(l.op==='removed'?'-':' ');
+    return'<div class="dr '+cls+'"><span class="dn">'+(l.old==null?'':l.old)+'</span><span class="dn">'+(l.new==null?'':l.new)+'</span><span class="ds">'+sign+'</span><span class="dt">'+(esc(l.text)||' ')+'</span></div>';}).join('');}).join('');
+  box.innerHTML=(body?'<div class="note">'+ico('info')+'<span>'+esc(body)+'</span></div>':'')
+    +(rows?'<div class="dfx">'+rows+'</div>':'')
+    +(d.truncated?'<div class="note warn">'+ico('alert')+'<span>'+esc(t('df_trunc'))+'</span></div>':'');}
+// status page (read only apart from the buttons that act on purpose)
+function actLabel(a){return t(D['act_'+a]?'act_'+a:'act_unknown');}
+function fmtIso(s){var d=new Date(s);return isNaN(d.getTime())?String(s||''):fmtDate(d.getTime()/1000);}
+var TONE={success:'ok',preview:'info',issues:'warn',not_checked:'warn',blocked:'warn',partial:'warn',error:'err'};
+function stTag(st){return'<span class="tag '+(TONE[st]||'')+'">'+esc(t('result_'+st))+'</span>';}
+function drawHealth(){var s=S,kind=s.workspace_kind||'unknown';
+  $('hl-app').innerHTML=[[t('h_version'),'v'+esc(s.version)],
+    [t('h_kind'),'<span class="tag '+(s.initialized?'ok':'warn')+'">'+esc(t(kind==='project'?'st_ready':kind==='template'?'st_template':'st_unknown'))+'</span>'],
+    [t('h_evidence'),esc(t('evidence_'+kind))],[t('h_python'),esc(s.python)],[t('h_platform'),esc(s.platform||'')]
+  ].map(function(x){return'<div class="it"><dt>'+esc(x[0])+'</dt><dd>'+x[1]+'</dd></div>';}).join('');
+  var FEAT={python:'f_python',library:'f_library',xlsx:'f_xlsx',picker:'f_picker'};
+  $('hl-comp').innerHTML=(s.components||[]).map(function(c){var ok=!!c.usable,fix='',why=esc(t('why_label')),how=esc(t('fix_label'));
+    if(!ok&&c.feature==='python')fix='<div class="hfix"><b>'+why+':</b> '+esc(t('why_py'))+'<br><b>'+how+':</b> '+esc(t('fix_py'))+'</div>';
+    else if(!ok&&c.feature==='picker')fix='<div class="hfix"><b>'+why+':</b> '+esc(t('why_tk'))+'<br><b>'+how+':</b> '+esc(t('fix_tk'))+'</div>';
+    else if(!ok)fix='<div class="hfix"><b>'+why+':</b> '+esc(t('why_opx'))+'<br><b>'+how+':</b> <code class="mono">python -m pip install openpyxl</code><br>'+esc(t('fix_opx'))+'</div>';
+    var sub=c.feature==='python'?'Python '+esc(c.version):'<span class="mono">'+esc(c.needs)+'</span>';
+    return'<div class="hrow"><div class="hmain"><b>'+esc(t(FEAT[c.feature]||c.feature))+'</b><span class="hsub">'+sub+'</span>'+fix+'</div><span class="tag '+(ok?'ok':'warn')+'">'+ico(ok?'check':'alert')+esc(t(ok?'usable':'not_usable'))+'</span></div>';}).join('');
+  var tx=s.transactions||[];
+  // one row per unfinished transaction; the buttons wrap below the details on narrow screens
+  $('hl-tx').innerHTML=tx.length?tx.map(function(x){var id=esc(x.id),op=D['tx_op_'+x.operation]?t('tx_op_'+x.operation):esc(x.operation||'');
+      return'<div class="hrow"><div class="hmain"><b>'+op+'</b><span class="hsub mono">'+id+'</span>'
+        +'<span class="hsub"><span class="tag warn">'+esc(t('tx_st'))+'</span> '+esc(String(x.done))+'/'+esc(String(x.total))+' · '+esc(fmtIso(x.created))+'</span></div>'
+        +'<div class="hact"><button class="btn pri" data-txa="resume" data-tx="'+id+'">'+ico('refresh')+esc(t('tx_resume'))+'</button><button class="btn" data-txa="rollback" data-tx="'+id+'">'+ico('undo')+esc(t('tx_rollback'))+'</button></div></div>';}).join('')
+    :'<div class="empty" style="padding:16px">'+ico('check')+'<span>'+esc(t('h_tx_none'))+'</span></div>';
+  var n=(s.merges||[]).length;
+  $('hl-merges').innerHTML=n?'<div class="hrow"><div class="hmain"><b>'+n+'</b><span class="hsub">'+esc(t('hl_merge_count'))+'</span></div></div>'
+    :'<div class="empty" style="padding:16px">'+ico('check')+'<span>'+esc(t('hl_none_merge'))+'</span></div>';
+  var sum=s.history_summary||{},hist=s.history||[];
+  function last(label,r){return'<div class="hrow"><div class="hmain"><b>'+esc(t(label))+'</b><span class="hsub">'+(r?esc(fmtIso(r.time))+' · '+esc(actLabel(r.action))+' · '+stTag(r.status):esc(t('hist_none')))+'</span></div></div>';}
+  $('hl-last').innerHTML=last('hist_last_ok',sum.last_success)+last('hist_last_fail',sum.last_failure)+last('hist_last_unf',sum.last_unfinished);
+  $('hl-hist').innerHTML=hist.length?'<table><thead><tr><th>'+esc(t('hist_c_time'))+'</th><th>'+esc(t('hist_c_act'))+'</th><th>'+esc(t('hist_c_st'))+'</th><th style="width:90px">'+esc(t('hist_c_files'))+'</th></tr></thead><tbody>'
+    +hist.map(function(r){return'<tr><td>'+esc(fmtIso(r.time))+'</td><td>'+esc(actLabel(r.action))+'</td><td>'+stTag(r.status)+'</td><td>'+esc(String(r.files))+'</td></tr>';}).join('')+'</tbody></table>'
+    :'<div class="empty" style="padding:16px">'+esc(t('hist_empty'))+'</div>';}
 function drawSkills(){var q=($('sk-q').value||'').toLowerCase(),rows=S.skills.filter(function(r){return(skFilter==='all'||r.scope===skFilter)&&(!q||(r.id+' '+r.use).toLowerCase().indexOf(q)>=0);});
   $('sk-count').textContent=S.skills.length+' '+t('n_skills');
   $('sk-rows').innerHTML=rows.length?rows.map(function(r){var c=r.scope==='PACK'?'acc':(r.scope==='PROJECT'?'warn':'');return'<tr><td class="id">'+esc(r.id)+'</td><td><span class="tag '+c+'">'+esc(r.scope==='SHARED'?t('f_shared'):r.scope==='PACK'?t('f_pack'):r.scope==='PROJECT'?t('f_proj'):r.scope)+'</span></td><td>'+esc(r.use)+'</td></tr>';}).join('')

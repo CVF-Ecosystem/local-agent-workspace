@@ -6,5 +6,6 @@ __pycache__/
 setup_answers.json
 .agent/PACKAGE_INFO.json
 .agent/MERGE_STATUS.json
+.agent/runtime/
 Thumbs.db
 .DS_Store

@@ -1,0 +1,74 @@
+# Kiểm package, hướng dẫn HTML, bộ kiểm thử hành vi và bản release candidate trên ma trận chính thức.
+# Chưa được chạy trên GitHub Actions tại thời điểm viết; xem .github/RELEASING.md (mục giới hạn còn lại).
+# Thư mục .github/ là của người bảo trì và không bao giờ vào gói phát hành.
+#
+# Ghi chú ma trận / matrix notes:
+# - Python 3.8 và 3.12 trên ubuntu-latest và windows-latest.
+# - macOS: Python 3.12 chạy trên macos-latest (Apple silicon). Python 3.8 chạy trên macos-13 (Intel)
+#   vì macos-latest là Apple silicon, nơi không bảo đảm có bản Python 3.8 từ setup-python. Đây là lựa chọn
+#   chưa kiểm chứng; nếu GitHub gỡ macos-13 hoặc job không tìm được Python 3.8, cập nhật image ở đây và
+#   trong RELEASING.md.
+# - Mỗi cặp (hệ điều hành, Python) là một job riêng; fail-fast tắt để thấy đủ kết quả.
+# - Bước build release candidate chạy lại cổng đầy đủ (kể cả bộ kiểm thử) như bản phát hành thật.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PYTHONUTF8: '1'
+
+jobs:
+  test:
+    name: ${{ matrix.os }} / Python ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python: ['3.8', '3.12']
+        exclude:
+          - os: macos-latest
+            python: '3.8'
+        include:
+          - os: macos-13
+            python: '3.8'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install dependencies
+        run: python -m pip install openpyxl
+
+      - name: Package check (release)
+        run: python tools/check_package.py --release
+
+      - name: Guides HTML in sync with Markdown
+        run: python tools/build_guides_html.py --check
+
+      - name: Behaviour tests
+        run: python -B -m unittest discover -s tests -v
+
+      - name: Release candidate build
+        run: python tools/build_release.py --rc 0 --out "${{ runner.temp }}/release-out"
+
+      - name: Upload release candidate and gate report
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-candidate-${{ matrix.os }}-py${{ matrix.python }}
+          path: |
+            ${{ runner.temp }}/release-out/*.zip
+            ${{ runner.temp }}/release-out/*.gate.json
+          if-no-files-found: error

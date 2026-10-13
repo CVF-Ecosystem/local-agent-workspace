@@ -1,43 +1,38 @@
 # PROJECT STATE
 
 ## Goal
-Hoàn thiện Local Agent Workspace theo roadmap đã được người dùng yêu cầu triển khai.
+Hoàn thiện Local Agent Workspace theo roadmap/ROADMAP_HOAN_THIEN.md.
 
 ## Current phase
-Đã hoàn thành nhóm ưu tiên 1, 3 và 4; đang ở bước kiểm tra cuối, chưa phát hành phiên bản mới.
+Đã triển khai Giai đoạn 9 (phần còn lại), 10, 11, 12 và phần kỹ thuật của 13 trên nhánh roadmap-giai-doan-10-13 (PR vào main, chờ CI); chưa phát hành.
 
 ## Completed
-- Lưu roadmap và tiến độ trong roadmap/ROADMAP_HOAN_THIEN.md.
-- Bảo toàn hướng dẫn riêng VI/EN; chặn ghi đè bản chờ hợp nhất khi chuyển đổi/nâng cấp.
-- Checker phân loại 0/1/2; mở rộng Word; báo thiếu thành phần; giao diện hiển thị tương ứng.
-- Giữ ngữ cảnh điền một phần khi đổi ngôn ngữ; rút gọn README; đồng bộ hướng dẫn HTML VI/EN.
-- 15 kiểm thử hành vi đạt; kiểm package 0 lỗi, 0 cảnh báo.
-- Đã thử giao diện với file không hỗ trợ; không ghi nhận lỗi JavaScript trong lượt thử.
-- ZIP tạm đã tạo, giải nén và xác minh; không giữ bản phát hành. Sửa lỗi output khác ổ đĩa Windows.
-- Tách mẫu phát hành khỏi STATE phát triển; build dựng trong cây tạm, không sửa working tree.
-- Thêm schema kết quả v1 và bỏ quyết định giao diện dựa trên dò câu chữ ở luồng chạy công cụ.
-- Thêm trang Chờ hợp nhất, giới hạn file theo manifest/gói và lưu trạng thái bằng dấu vân tay.
+- Giao dịch có nhật ký cho khởi tạo/chuyển đổi/nâng cấp; `tools/transaction.py` status/resume/rollback; đã thử kill giữa chừng rồi tiếp tục và phục hồi.
+- Trang "Tình trạng ứng dụng", lịch sử thao tác, gói chẩn đoán đã che dữ liệu, nút Tiếp tục/Phục hồi, "So sánh" ở trang Chờ hợp nhất.
+- Mọi công cụ bảng điều khiển gọi phát kết quả có cấu trúc.
+- Cổng phát hành bắt buộc, `--rc`, báo cáo cổng, kiểm Python 3.8 (heuristic), CI workflow, `.github/RELEASING.md`.
+- Rà truy cập (bàn phím, focus, tương phản, màn hẹp), kiểm thử giao diện bằng Playwright; kịch bản nghiệm thu người dùng.
+- Tài liệu VI/EN, CHANGELOG, tools/README, HTML hướng dẫn đồng bộ; roadmap mục 13 ghi tiến độ.
+- 87 kiểm thử hành vi đạt; kiểm package 0 lỗi; MANIFEST đã ghi lại.
 
 ## Current artifact
-- roadmap/ROADMAP_HOAN_THIEN.md
-- tests/test_workflows.py
-- Thay đổi công cụ, bảng điều khiển, tài liệu và MANIFEST trong working tree; xem git diff.
+- roadmap/ROADMAP_HOAN_THIEN.md (mục 13), roadmap/KICH_BAN_NGHIEM_THU_NGUOI_DUNG.md
+- Thay đổi trong working tree; xem git status/diff.
 
 ## Open items
-- Các công cụ ít dùng mới có envelope do backend chuẩn hóa, chưa phát chi tiết native; chưa có trình so sánh nội dung.
-- Chưa thử macOS/Python 3.8, chưa nghiệm thu với người dùng mới, chưa kiểm toàn bộ giao diện.
-- VERSION giữ nguyên; CHANGELOG ghi phần chưa phát hành.
-- STATE hiện là tiến độ công việc: cần khôi phục mẫu trong bản nguồn sạch trước phát hành, không bỏ qua kiểm release.
+- CI chưa chạy (cần push, chưa được phép); chưa thử macOS, Python 3.8, trình đọc màn hình.
+- Chưa nghiệm thu với người dùng mới theo kịch bản.
+- Hợp nhất `.new` vẫn thủ công; bước init sau chuyển đổi nằm ngoài giao dịch.
+- VERSION giữ nguyên; CHANGELOG ghi ở "Chưa phát hành".
 
 ## Waiting on user
-- None
+- Xem kết quả CI trên PR và quyết định gộp vào main; tổ chức một phiên nghiệm thu với người dùng mới; chọn số phiên bản khi phát hành.
 
 ## Decisions
-- Người dùng yêu cầu lưu roadmap và tiến hành fix; không khởi chạy agent phụ.
-- Người dùng đồng ý đưa nhóm đề xuất nâng cấp mức độ chuyên nghiệp vào roadmap; ưu tiên đợt tiếp theo là Giai đoạn 7, 9 rồi 8.
-- Người dùng yêu cầu xử lý trước mục 1, 3 và 4; ba mục đã được triển khai trong working tree.
-- tests/ và roadmap/ chỉ dành cho kho nguồn, không đưa vào package người dùng.
-- Chưa commit, đẩy lên remote hoặc phát hành.
+- Người dùng giao hoàn thiện roadmap; orchestrator/reviewer điều phối subagent Haiku (xhigh) thi công theo phạm vi file tách biệt.
+- Dữ liệu vận hành cục bộ nằm trong thư mục runtime dưới .agent, không vào MANIFEST, ZIP, git.
+- tests/, roadmap/, .github/ chỉ dành cho kho nguồn, không vào package người dùng.
+- Người dùng đồng ý commit và push để chạy CI: commit trên nhánh roadmap-giai-doan-10-13, mở PR vào main; chưa gộp, chưa phát hành.
 
 ## Next milestone
-Triển khai phục hồi giao dịch giữa chừng (Giai đoạn 10) sau khi nghiệm thu ba hạng mục vừa hoàn thành.
+Chạy CI trên ma trận đa nền tảng và một phiên nghiệm thu với người dùng mới; sau đó chọn phiên bản và tạo release candidate.

@@ -17,7 +17,8 @@ Chỉ đọc sheet "Danh mục"; sheet "Ví dụ" chỉ để xem. Không xóa, 
 Reads only the "Danh mục" sheet. Never deletes or edits user files (init only creates what is missing).
 Cần Python 3.8+ và openpyxl (pip install openpyxl). Không dùng mạng. / Needs Python 3.8+ and openpyxl. No network.
 """
-import datetime, io, json, os, re, shutil, sys, unicodedata
+import datetime, io, json, os, re, shutil, sys, traceback, unicodedata
+from result_schema import emit, make
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REF = os.path.join(ROOT, 'references')
@@ -52,6 +53,22 @@ def L(vi, en):
     return en if LANG == 'en' else vi
 
 
+RESULT_REQUESTED = '--result-json' in sys.argv  # cờ ẩn: phát một kết quả có cấu trúc / hidden flag: emit one structured result
+LAST_RESULT = None
+CREATED = []  # khung đã tạo trong lượt này / folders and files created in this run, for partial results
+
+
+def set_result(status, code, message, **kw):
+    global LAST_RESULT
+    LAST_RESULT = make(status, code=code, message=message, **kw)
+
+
+def stop(msg, status='blocked', **kw):
+    """Như sys.exit(msg) (mã 1), nhưng ghi kết quả có cấu trúc trước / Like sys.exit(msg) (code 1), recording the structured result first."""
+    set_result(status, 1, msg, changes=False, **kw)
+    sys.exit(msg)
+
+
 def fold(s):
     s = unicodedata.normalize('NFD', str(s or '')).replace('đ', 'd').replace('Đ', 'D')
     return ''.join(c for c in s if unicodedata.category(c) != 'Mn').lower().strip()
@@ -62,8 +79,11 @@ def need_openpyxl():
         import openpyxl  # noqa: F401
         return openpyxl
     except ImportError:
-        print(L('CHƯA KIỂM ĐƯỢC: thư viện nguồn cần openpyxl. Chạy "python -m pip install openpyxl" rồi thử lại. Các công cụ văn bản vẫn dùng được.',
-                'NOT CHECKED: the source library requires openpyxl. Run "python -m pip install openpyxl" and retry. Text tools still work.'), file=sys.stderr)
+        msg = L('CHƯA KIỂM ĐƯỢC: thư viện nguồn cần openpyxl. Chạy "python -m pip install openpyxl" rồi thử lại. Các công cụ văn bản vẫn dùng được.',
+                'NOT CHECKED: the source library requires openpyxl. Run "python -m pip install openpyxl" and retry. Text tools still work.')
+        print(msg, file=sys.stderr)
+        set_result('not_checked', 2, msg, changes=False, unchecked=[{'tool': 'library.py', 'reason': 'openpyxl_missing'}],
+                   next_actions=[L('Chạy: python -m pip install openpyxl', 'Run: python -m pip install openpyxl')])
         sys.exit(2)
 
 
@@ -89,11 +109,11 @@ def fmt(v):
 def load():
     opx = need_openpyxl()
     if not os.path.isfile(INDEX):
-        sys.exit(L('Chưa có references/_INDEX.xlsx. Chạy: python tools/library.py init',
-                   'references/_INDEX.xlsx not found. Run: python tools/library.py init'))
+        stop(L('Chưa có references/_INDEX.xlsx. Chạy: python tools/library.py init',
+               'references/_INDEX.xlsx not found. Run: python tools/library.py init'))
     wb = opx.load_workbook(INDEX, data_only=True, read_only=True)
     if SHEET not in wb.sheetnames:
-        sys.exit(L('Chỉ mục thiếu sheet "%s".', 'The index has no "%s" sheet.') % SHEET)
+        stop(L('Chỉ mục thiếu sheet "%s".', 'The index has no "%s" sheet.') % SHEET)
     ws = wb[SHEET]
     rows = list(ws.iter_rows(values_only=True))
     if len(rows) < HEADER_ROW:
@@ -137,7 +157,7 @@ def norm_path(p):
 
 # ---------------------------------------------------------------- lệnh / commands
 def cmd_init(args):
-    made = []
+    made = CREATED
     os.makedirs(REF, exist_ok=True)
     for d, (grp, vi, en) in GROUP_DIRS.items():
         p = os.path.join(REF, d)
@@ -153,10 +173,15 @@ def cmd_init(args):
             made.append('references/%s/README.md' % d)
     if not os.path.isfile(INDEX):
         if not os.path.isfile(TEMPLATE):
-            sys.exit(L('Thiếu mẫu chỉ mục: %s', 'Index template missing: %s') % os.path.relpath(TEMPLATE, ROOT))
+            stop(L('Thiếu mẫu chỉ mục: %s', 'Index template missing: %s') % os.path.relpath(TEMPLATE, ROOT), status='error')
         shutil.copy2(TEMPLATE, INDEX)
         made.append('references/_INDEX.xlsx')
     out = {'created': made}
+    set_result('success', 0, L('Đã tạo %d mục trong khung thư viện.', 'Created %d items in the library frame.') % len(made) if made
+               else L('Khung thư viện đã có đủ; không tạo gì.', 'The library is already set up; nothing created.'),
+               changes=bool(made), files=[{'path': x, 'action': 'create'} for x in made],
+               next_actions=[L('Đặt file vào thư mục nhóm/lĩnh vực, thêm dòng vào sheet "Danh mục", rồi chạy: python tools/library.py check',
+                               'Put files in group/domain folders, add rows to the "Danh mục" sheet, then run: python tools/library.py check')])
     if args.get('json'):
         print(json.dumps(out, ensure_ascii=False))
         return 0
@@ -231,6 +256,13 @@ def cmd_check(args):
         warns.append((0, L('file chưa có trong chỉ mục: references/%s', 'file not in the index: references/%s') % f))
     out = {'rows': len(data), 'errors': [{'row': n, 'msg': m} for n, m in errs], 'warnings': [{'row': n, 'msg': m} for n, m in warns],
            'unindexed': unindexed}
+    findings = [{'row': n or None, 'severity': 'error', 'message': m} for n, m in errs] + \
+        [{'row': n or None, 'severity': 'warning', 'message': m} for n, m in warns]
+    msg = L('Chỉ mục: %d dòng; %d lỗi, %d cảnh báo.', 'Index: %d rows; %d errors, %d warnings.') % (len(data), len(errs), len(warns))
+    if errs:
+        set_result('issues', 1, msg, changes=False, rows=len(data), errors=len(errs), warnings=len(warns), findings=findings)
+    else:
+        set_result('success', 0, msg, changes=False, rows=len(data), errors=len(errs), warnings=len(warns), findings=findings)
     if args.get('json'):
         print(json.dumps(out, ensure_ascii=False))
     else:
@@ -255,7 +287,7 @@ def show(r):
 def cmd_find(args):
     q = fold(args.get('query') or '')
     if not q:
-        sys.exit(L('Cần từ khóa. Ví dụ: python tools/library.py find "30/2020"', 'A keyword is required. Example: python tools/library.py find "30/2020"'))
+        stop(L('Cần từ khóa. Ví dụ: python tools/library.py find "30/2020"', 'A keyword is required. Example: python tools/library.py find "30/2020"'))
     _, data = load()
     grp = fold(args.get('group') or '')
     words = q.split()
@@ -266,6 +298,8 @@ def cmd_find(args):
         hay = fold(' '.join(str(r.get(k) or '') for k in ('id', 'number', 'title', 'domain', 'issuer', 'type', 'articles', 'notes', 'used_by')))
         if all(w in hay for w in words):
             hits.append(show(r))
+    set_result('success', 0, L('%d văn bản khớp "%s".', '%d documents match "%s".') % (len(hits), args.get('query')), changes=False,
+               query=args.get('query'), count=len(hits), rows=[h['row'] for h in hits])
     limit = None if args.get('all') else 30
     if args.get('json'):
         print(json.dumps({'query': args.get('query'), 'count': len(hits), 'hits': hits[:limit]}, ensure_ascii=False))
@@ -302,6 +336,9 @@ def cmd_stats(args):
     verify = sum(1 for r in data if fold(r.get('verify')) == 'can doi chieu')
     out = {'rows': len(data), 'groups': groups, 'no_fulltext': no_ft, 'needs_check': verify,
            'files': len(library_files()), 'index': os.path.isfile(INDEX)}
+    set_result('success', 0, L('Chỉ mục: %d văn bản; %d file trong references/.', 'Index: %d documents; %d files in references/.') % (len(data), out['files']),
+               changes=False, rows=len(data), groups=groups, no_fulltext=no_ft, needs_check=verify,
+               reference_files=out['files'], index=out['index'])
     if args.get('json'):
         print(json.dumps(out, ensure_ascii=False))
         return 0
@@ -339,10 +376,54 @@ def main(argv):
     args['query'] = ' '.join(rest)
     fn = {'init': cmd_init, 'check': cmd_check, 'find': cmd_find, 'stats': cmd_stats}.get(cmd)
     if not fn:
-        print(L('Lệnh không có: %s. Dùng: init | check | find | stats', 'Unknown command: %s. Use: init | check | find | stats') % cmd)
+        msg = L('Lệnh không có: %s. Dùng: init | check | find | stats', 'Unknown command: %s. Use: init | check | find | stats') % cmd
+        print(msg)
+        set_result('blocked', 2, msg, changes=False)
         return 2
     return fn(args)
 
 
+def finish(code, msg, fallback):
+    """Phát đúng một kết quả; mã trong kết quả luôn bằng mã thoát / Emit exactly one result; its code always equals the exit code."""
+    res = LAST_RESULT
+    if res is None:
+        res = make(fallback, code=code, message=msg)
+    elif res['code'] != code:
+        res = make('error', code=code, message=L('Mã kết quả không khớp mã thoát.', 'Result code does not match the exit code.'))
+    emit(res)
+    return code
+
+
+def run_with_result(argv):
+    if hasattr(sys.stdout, 'reconfigure'):
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    code, msg, fallback = 0, '', 'success'
+    try:
+        code = main(argv) or 0
+    except SystemExit as e:
+        code = e.code if isinstance(e.code, int) else (0 if e.code is None else 1)
+        fallback = 'success' if code == 0 else 'blocked'
+        if isinstance(e.code, str):
+            msg = e.code
+            print(msg, file=sys.stderr)  # như sys.exit(msg) / same as sys.exit(msg)
+        elif code:  # argparse đã in lỗi cú pháp / argparse has printed the usage error
+            msg = L('Tham số không hợp lệ; xem trợ giúp của lệnh.', 'Invalid arguments; see the command help.')
+    except OSError as e:
+        code, msg, fallback = 1, str(e), 'error'
+        if CREATED:
+            set_result('partial', 1, msg, changes=True, files=[{'path': x, 'action': 'create'} for x in CREATED],
+                       next_actions=[L('Chạy lại python tools/library.py init: chỉ tạo phần còn thiếu, không ghi đè.',
+                                       'Run python tools/library.py init again: it only creates what is still missing, never overwrites.')])
+            print('CHƯA HOÀN TẤT / INCOMPLETE: %s. Có thể đã tạo một số mục; chưa tự hoàn tác. / Some items may have been created; no automatic rollback.' % e, file=sys.stderr)
+        else:
+            print('Lỗi / Error: %s' % e, file=sys.stderr)
+    except Exception as e:  # lỗi bất ngờ vẫn phát kết quả / unexpected errors still emit a result
+        traceback.print_exc()
+        code, msg, fallback = 1, repr(e), 'error'
+    return finish(code, msg, fallback)
+
+
 if __name__ == '__main__':
+    if RESULT_REQUESTED:
+        sys.exit(run_with_result([x for x in sys.argv[1:] if x != '--result-json']))
     sys.exit(main(sys.argv[1:]))

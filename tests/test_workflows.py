@@ -19,6 +19,7 @@ sys.path.insert(0, str(ROOT / 'tools'))
 import check_output as co
 import check_package as cp
 import adopt_project as adopt
+import transaction as tx
 import app
 import library
 import merge_center
@@ -37,8 +38,10 @@ def write(root, rel, text):
     return p
 
 
-def run(script, *args, base=ROOT):
+def run(script, *args, base=ROOT, nested=False):
     env = dict(os.environ, PYTHONUTF8='1', PYTHONDONTWRITEBYTECODE='1')
+    if nested:  # đang ở trong bộ kiểm thử: build lồng không chạy lại cả bộ / already inside the suite
+        env['LOCAL_AGENT_WORKSPACE_GATE_NESTED'] = '1'
     return subprocess.run([sys.executable, str(base / 'tools' / script), *map(str, args)],
                           cwd=base, env=env, capture_output=True, encoding='utf-8', timeout=60)
 
@@ -203,13 +206,14 @@ class Workflows(unittest.TestCase):
     def test_adopt_write_failure_keeps_original(self):
         target = self.root / 'project'
         write(target, 'AGENTS.md', 'PRIVATE')
-        with patch.object(adopt.shutil, 'copy2', side_effect=PermissionError('synthetic denial')), \
+        with patch.dict(os.environ, {tx.FAULT_ENV: 'commit:1'}), \
                 patch.object(sys, 'argv', ['adopt', '--project', str(target), '--name', 'Test', '--apply']), \
                 contextlib.redirect_stdout(io.StringIO()) as out:
-            with self.assertRaises(PermissionError):
+            with self.assertRaises(OSError):
                 adopt.main()
         self.assertEqual((target / 'AGENTS.md').read_text(), 'PRIVATE')
         self.assertNotIn('Package added.', out.getvalue())
+        self.assertEqual([x['status'] for x in tx.incomplete(str(target))], ['committing'])
 
     def test_output_mixed_unsupported_missing_and_review(self):
         good = write(self.root, 'good.txt', 'A complete text with enough content.')
@@ -301,7 +305,7 @@ class Workflows(unittest.TestCase):
         before_state = (ROOT / '.agent/STATE.md').read_bytes()
         before_manifest = (ROOT / 'MANIFEST.sha256').read_bytes()
         out = self.root / 'release-out'
-        result = run('build_release.py', '--out', out, '--result-json')
+        result = run('build_release.py', '--out', out, '--result-json', nested=True)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertEqual((ROOT / '.agent/STATE.md').read_bytes(), before_state)
         self.assertEqual((ROOT / 'MANIFEST.sha256').read_bytes(), before_manifest)
@@ -314,7 +318,7 @@ class Workflows(unittest.TestCase):
             self.assertNotIn('15 kiểm thử', state)
             self.assertFalse(any('/release_templates/' in n or '/tests/' in n or '/roadmap/' in n for n in names))
         first_hash = hashlib.sha256(archive.read_bytes()).hexdigest()
-        result = run('build_release.py', '--out', out, '--result-json')
+        result = run('build_release.py', '--out', out, '--result-json', nested=True)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertEqual(hashlib.sha256(archive.read_bytes()).hexdigest(), first_hash)
 
