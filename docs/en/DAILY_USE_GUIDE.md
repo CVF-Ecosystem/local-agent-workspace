@@ -179,11 +179,19 @@ whether the HTML still matches.
 Double-click `APP.bat` (Windows) or `APP.command` (macOS) to open the control panel in the browser. The Overview page shows
 the work status (read from `.agent/STATE.md`), the skills in the index and the number of files in `output/` and
 `references/`. The other pages call the tools in `tools/`: set up or bring into an existing project, upgrade, domain packs,
-check before delivery (`check_output.py`), copy skills into apps (`install_skills.py`), package maintenance.
+check before delivery (`check_output.py`), copy skills into apps (`install_skills.py`), the source library, pending merges and package maintenance. The **App status** page shows the version, Python, optional features still missing (with how to fix each), unfinished transactions and recent operations.
 
 Actions that write files always run a preview first; read the result, then press "Apply". The panel runs on this computer
-(address 127.0.0.1, with a new access code each time), uses no network, deletes no files, and stops about 3 minutes after the
+(address 127.0.0.1, with a new access code each time), uses no network, and stops about 3 minutes after the
 page is closed. "Choose…" opens the computer's folder picker; if there is none, type or paste the path. The panel does not
 replace giving work to the agent; it only gathers the `python tools/...` commands in one place.
 
 Output checks have three states: passed within supported scope; findings/review required; not checked. Missing files, unsupported formats and missing dependencies never count as a pass. Word checks cover body, headers/footers and footnotes/endnotes, not layout, image text, comments or tracked changes. Excel and the source library require `openpyxl`; if missing, run `python -m pip install openpyxl`. Tools never install it automatically.
+
+The panel deletes none of your files, with two exceptions. "Roll back" on an unfinished transaction removes the new files that transaction created, if you have not edited them. "Clear history" removes only the operations log. Both ask for confirmation first. If a write was interrupted, see section 9 of `EXISTING_PROJECT_UPGRADE_GUIDE.md`.
+
+**Operations history.** Each button press writes one line: the time, the action name, the result, the number of files affected and the transaction id if there is one. It never records document content, file names, names of people or typed values. The panel keeps the latest 500 lines; the App status page shows the latest 20. To delete the history, press "Clear history"; documents and transactions are not affected.
+
+**Diagnostics bundle.** "Create diagnostics bundle" writes one ZIP file on this computer, to `.agent/runtime/diagnostics/diagnostics-<time>.zip`, for a helper to look at when something goes wrong. It contains the package version, workspace type, Python and operating system, the state of optional features, pending merge files (relative paths only), unfinished transactions, the operations history and the package integrity check. It contains no document content, project name, names of people or absolute paths; folder paths and the computer's user name are masked. It is never sent automatically. Press "Open the bundle folder" to review it; you decide whether to share it.
+
+**Compare on the Pending merges page.** "Compare" shows the differences between the current file and its `.new` copy, as blocks with line numbers. It is read-only: it stores nothing and does not merge or overwrite. Files over 256 KB, or files that are not UTF-8 text, are not shown in the panel; open both versions in their own app. After you merge by hand, delete the `.new` file.

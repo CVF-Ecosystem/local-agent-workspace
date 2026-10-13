@@ -22,14 +22,16 @@ import argparse
 import datetime
 import os
 import re
-import shutil
 import subprocess
 import sys
 from result_schema import emit, make
+import transaction as tx
+import upgrade_package as up
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SKIP_DIRS = {'.git', 'dist', '__pycache__', 'roadmap', 'tests', '.github'}
-SKIP_PREFIX = ('feedback/records/',)
+SKIP_PREFIX = ('feedback/records/', tx.RUNTIME_DIR + '/')
+TX = {'id': None}  # mã giao dịch đang ghi / transaction id of the current write
 SKIP_FILES = {'.agent/PACKAGE_INFO.json', '.agent/MERGE_STATUS.json', 'setup_answers.json'}
 USER_KEEP = {'PROJECT.md', '.agent/STATE.md', '.agent/HANDOFF.md', '.agent/INDEX.md', '.agent/SKILL_INDEX.md', '.agent/PENDING_LESSONS.md'}
 ADAPTERS = ('AGENTS.md', 'CLAUDE.md', 'GEMINI.md')
@@ -150,23 +152,41 @@ def main():
         print('\nThêm --apply để thực hiện.')
         return
 
-    for rel in add:
-        d = os.path.join(proj, rel)
-        os.makedirs(os.path.dirname(d), exist_ok=True)
-        shutil.copy2(source(rel), d)
-    for rel in new:
-        candidate = os.path.join(proj, rel + '.new')
-        if not os.path.exists(candidate):
-            with open(source(rel), 'rb') as src, open(candidate, 'xb') as dst:
-                shutil.copyfileobj(src, dst)
+    open_tx = tx.incomplete(proj)
+    if open_tx:
+        txid = open_tx[0]['id']
+        msg = tx.blocked_message(proj)
+        LAST_RESULT = make('blocked', code=1, message=msg, changes=False, transaction=txid,
+                           next_actions=up.tx_next_actions(txid))
+        sys.exit(msg)
 
-    # skill riêng sẵn có -> SKILL_INDEX
+    missing_src = [rel for rel in add + new if not os.path.isfile(source(rel))]
+    if missing_src:
+        LAST_RESULT = make('blocked', code=1, message='Missing source files', changes=False,
+                           files=[{'path': x, 'action': 'missing'} for x in missing_src[:40]],
+                           next_actions=['Use a complete package folder, then retry.'])
+        sys.exit('CHƯA GHI GÌ / NOTHING WRITTEN: thiếu file trong package / package files missing: %s' % ', '.join(missing_src[:5]))
+
+    def data_of(rel):
+        with open(source(rel), 'rb') as f:
+            return f.read()
+
+    t = tx.Transaction(proj, 'adopt')
+    for rel in add:
+        t.add(rel, data_of(rel), 'create')
+    for rel in new:
+        if not os.path.exists(os.path.join(proj, rel + '.new')):
+            t.add(rel + '.new', data_of(rel), 'create_exclusive')
+
+    # skill riêng sẵn có + dòng skill dùng chung -> một thao tác SKILL_INDEX / own and shared rows -> one SKILL_INDEX op
     idx = os.path.join(proj, '.agent', 'SKILL_INDEX.md')
-    if own and os.path.isfile(idx):
-        t = open(idx, encoding='utf-8').read()
+    own_rows, shared_rows, new_idx = [], [], None
+    if os.path.isfile(idx):
+        text = open(idx, encoding='utf-8').read()
+        new_idx = text
         rows = ''
         for d in own:
-            if re.search(r'^\|\s*%s\s*\|' % re.escape(d), t, re.M):
+            if re.search(r'^\|\s*%s\s*\|' % re.escape(d), new_idx, re.M):
                 continue
             desc = (frontmatter(os.path.join(pdir, d, 'SKILL.md')).get('description') or d).replace('|', '/')
             if len(desc) > 220:
@@ -174,21 +194,33 @@ def main():
             rows += '| %s | LOCAL | PROJECT | skills/local/project/%s/SKILL.md | %s | AVAILABLE | Có sẵn trước khi đưa package vào (%s); rà lại mô tả và phần trùng với skill dùng chung. |\n' % (
                 d, d, desc, datetime.date.today().isoformat())
         if rows:
-            m = re.search(r'\n\n## ', t)
-            t = (t[:m.start()].rstrip('\n') + '\n' + rows + t[m.start():]) if m else t.rstrip('\n') + '\n' + rows
-            open(idx, 'w', encoding='utf-8').write(t)
-            print('  Đã thêm %d dòng skill riêng vào .agent/SKILL_INDEX.md' % rows.count('\n'))
+            m = re.search(r'\n\n## ', new_idx)
+            new_idx = (new_idx[:m.start()].rstrip('\n') + '\n' + rows + new_idx[m.start():]) if m else new_idx.rstrip('\n') + '\n' + rows
+            own_rows = rows.splitlines()
+        try:
+            found = up.index_rows(proj, ROOT, a.lang, {'add': []})
+            ids_in = {m.group(1) for m in up.ROW_RE.finditer(new_idx)}
+            shared_rows = [r for r in found if r.split('|')[1].strip() not in ids_in]
+            if shared_rows:
+                new_idx = up.render_index_rows(new_idx, shared_rows)
+        except Exception as e:
+            shared_rows = []
+            print('  Chưa thêm được dòng skill dùng chung vào SKILL_INDEX (%s); chạy upgrade_package.py sau.' % e)
+        if new_idx != text:
+            t.add('.agent/SKILL_INDEX.md', new_idx.encode('utf-8'), 'write')
 
-    # dòng skill dùng chung còn thiếu trong SKILL_INDEX của project / shared-skill rows missing from the project index
+    TX['id'] = t.txid if t.journal['ops'] else None
     try:
-        sys.path.insert(0, os.path.join(ROOT, 'tools'))
-        import upgrade_package as up
-        rows = up.index_rows(proj, ROOT, a.lang, {'add': []})
-        if rows:
-            up.write_index_rows(proj, rows)
-            print('  Đã thêm %d dòng skill dùng chung vào .agent/SKILL_INDEX.md' % len(rows))
-    except Exception as e:
-        print('  Chưa thêm được dòng skill dùng chung vào SKILL_INDEX (%s); chạy upgrade_package.py sau.' % e)
+        t.run()
+    except tx.TransactionError as e:
+        TX['id'] = None
+        LAST_RESULT = make('blocked', code=1, message=str(e), changes=False, merge_required=bool(bak),
+                           next_actions=['Fix the problem above, then retry.'])
+        sys.exit('CHƯA GHI GÌ / NOTHING WRITTEN: %s' % e)
+    if own_rows:
+        print('  Đã thêm %d dòng skill riêng vào .agent/SKILL_INDEX.md' % len(own_rows))
+    if shared_rows:
+        print('  Đã thêm %d dòng skill dùng chung vào .agent/SKILL_INDEX.md' % len(shared_rows))
 
     cmd = [sys.executable, os.path.join(proj, 'tools', 'init_project.py'), '--name', a.name, '--lang', a.lang]
     if partial:
@@ -197,18 +229,24 @@ def main():
         cmd += ['--purpose', a.purpose]
     r = subprocess.run(cmd, cwd=proj)
     if r.returncode:
-        sys.exit('init_project.py lỗi; xem thông báo ở trên.')
+        rerun = 'python tools/init_project.py --name "%s" --lang %s --force' % (a.name, a.lang)
+        LAST_RESULT = make('partial', code=1, message='Package files written; init_project.py failed (exit %d).' % r.returncode,
+                           changes=bool(planned), merge_required=bool(bak), files=planned, transaction=TX['id'],
+                           next_actions=['Read the init_project.py messages above; if it left a transaction, run its resume or rollback.',
+                                         'Then run: ' + rerun] + (['Merge the .new instruction files.'] if bak else []))
+        sys.exit('CHƯA HOÀN TẤT / INCOMPLETE: init_project.py lỗi; xem thông báo ở trên. / init_project.py failed; see the messages above.')
     print('\n' + ('Đã đưa package vào; CẦN HỢP NHẤT hướng dẫn .new / Package added; MERGE REQUIRED.' if bak else 'Đã đưa package vào / Package added.'))
     print('Việc tiếp theo: (1) hợp nhất bản .new nếu có; (2) điền .agent/INDEX.md trỏ tới nguồn sẵn có; '
           '(3) chạy python tools/check_package.py --verify trong project.')
     LAST_RESULT = make('success', message='Package adopted', changes=bool(planned),
                        merge_required=bool(bak), files=planned,
-                       next_actions=(['Merge the .new instruction files.'] if bak else []))
+                       next_actions=(['Merge the .new instruction files.'] if bak else []),
+                       transaction=TX['id'])
 
 
 if __name__ == '__main__':
     if hasattr(sys.stdout, 'reconfigure'):
-        sys.stdout.reconfigure(encoding='utf-8')
+        sys.stdout.reconfigure(encoding='utf-8'); sys.stderr.reconfigure(encoding='utf-8')
     try:
         main()
         if RESULT_REQUESTED:
@@ -219,7 +257,12 @@ if __name__ == '__main__':
             emit(LAST_RESULT or make('blocked', code=code, message=str(e), changes=False))
         raise
     except OSError as e:
+        if TX['id']:
+            msg = ('CHƯA HOÀN TẤT / INCOMPLETE: %s. Giao dịch %s còn dở: chạy resume hoặc rollback. / Transaction %s is unfinished: run resume or rollback.'
+                   % (e, TX['id'], TX['id']))
+        else:
+            msg = 'LỖI / ERROR: %s. Chưa ghi file nào / No file was written.' % e
         if RESULT_REQUESTED:
-            emit(make('partial', code=1, message=str(e), changes=None,
-                      next_actions=['Inspect files already added before retrying.']))
-        sys.exit('CHƯA HOÀN TẤT / INCOMPLETE: %s. Có thể đã thêm một số file; chưa tự hoàn tác. / Some files may have been added; no automatic rollback.' % e)
+            emit(make('partial' if TX['id'] else 'error', code=1, message=msg, changes=None, transaction=TX['id'],
+                      next_actions=up.tx_next_actions(TX['id']) if TX['id'] else ['Check the project folder, then retry.']))
+        sys.exit(msg)

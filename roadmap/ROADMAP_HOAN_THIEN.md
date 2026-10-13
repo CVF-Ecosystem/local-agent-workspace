@@ -346,3 +346,23 @@ Không mở rộng thêm skill, gói lĩnh vực, tài khoản hay đồng bộ 
 Đã bổ sung kiểm thử cho schema, ranh giới file hợp nhất, trạng thái bị đặt lại khi bản `.new` đổi, bản phát hành sạch và tính lặp lại. Giao diện đã được thử với một xung đột giả có trạng thái lưu qua reload và một file không hỗ trợ trả “Chưa kiểm được”; không ghi nhận lỗi JavaScript trong lượt thử. File giả và trạng thái thử đã được loại bỏ sau kiểm tra.
 
 Giới hạn còn lại của ba hạng mục: chưa có trình so sánh nội dung trong giao diện; người dùng vẫn hợp nhất bằng công cụ chỉnh sửa hiện có. Các công cụ ít dùng được backend bọc schema tối thiểu, chưa phát chi tiết `files/findings` trực tiếp. Phục hồi giao dịch giữa chừng thuộc Giai đoạn 10, chưa nằm trong đợt này.
+
+## 13. Tiến độ đợt hoàn thiện Giai đoạn 10–13 — 2026-10-13
+
+Đợt này do orchestrator điều phối, các worker thi công theo phạm vi file tách biệt; orchestrator review và chạy lại kiểm tra độc lập. Trạng thái dưới đây chỉ ghi điều đã kiểm được trên máy phát triển.
+
+| Giai đoạn | Trạng thái | Bằng chứng / giới hạn |
+|---|---|---|
+| 9 — Kết quả có cấu trúc (phần còn lại) | Đã triển khai | Mọi công cụ bảng điều khiển gọi (11 công cụ) phát envelope trực tiếp; đầu ra cho người đọc không đổi (đối chiếu 117 lần chạy trước/sau) |
+| 10 — Giao dịch và phục hồi | Đã triển khai | `tools/transaction.py`: kiểm trước, staging, sao lưu, commit từng thao tác, `status/resume/rollback`; khởi tạo, chuyển đổi, nâng cấp ghi qua giao dịch. Review vòng 1 sửa 4 lỗi (chặn vĩnh viễn sau phục hồi một phần, báo sai "chưa ghi gì" khi commit dở, nhật ký treo khi lỗi trước commit, khôi phục không nguyên tử). Orchestrator thử độc lập: kill giữa chừng → tiếp tục đúng trạng thái cuối; kill → phục hồi giống từng byte; nhật ký không có nội dung hay đường dẫn tuyệt đối |
+| 11 — Trang tình trạng và nhật ký | Đã triển khai | Trang "Tình trạng ứng dụng", lịch sử thao tác `.agent/runtime/operations.jsonl` (không nội dung, tối đa 500 dòng), gói chẩn đoán đã che đường dẫn và tên người dùng (orchestrator kiểm: không lộ đường dẫn project, thư mục home, tên máy, tên project, dữ liệu đã gõ, mã truy cập), nút Tiếp tục/Phục hồi, xóa lịch sử có phạm vi rõ. Đóng thêm giới hạn của mục 12: trang Chờ hợp nhất có "So sánh" (chỉ đọc) |
+| 12 — Cổng chất lượng và phát hành | Đã triển khai, CI chưa chạy | `build_release.py` có 4 cổng bắt buộc, `--rc N`, `--skip-check` chỉ với RC, báo cáo `.gate.json` ghi hệ điều hành và Python; kiểm tương thích Python 3.8 (heuristic); `.github/workflows/ci.yml` (Windows/Ubuntu/macOS × 3.8/3.12) và `.github/RELEASING.md`; kiểm thử giao diện bằng trình duyệt (Playwright, tự bỏ qua khi không có) |
+| 13 — Nghiệm thu trải nghiệm | Phần kỹ thuật xong; nghiệm thu người dùng chưa làm | Bàn phím, bẫy focus hộp kết quả, tên truy cập, tương phản ≥ 4,5:1 cả hai giao diện, không tràn ngang ở 360/390 px, trạng thái đang chạy chặn bấm hai lần, thông báo lỗi nói việc đã xảy ra/dữ liệu có an toàn/bước tiếp theo. Kịch bản nghiệm thu: `roadmap/KICH_BAN_NGHIEM_THU_NGUOI_DUNG.md`. Chưa có phiên thử với người dùng mới thật |
+
+Kiểm thử hành vi: 87 bài (bài giao diện bỏ qua khi thiếu Playwright). Lệnh: `python -B -m unittest discover -s tests -v`.
+
+Giới hạn còn lại trước khi gọi là hoàn thiện:
+- Workflow CI chưa chạy lần nào (cần đẩy lên remote, chưa được cấp quyền). Chưa thử macOS, Python 3.8 hay trình đọc màn hình; mới chạy trên Windows 11 với Python 3.11.
+- Chưa nghiệm thu với người dùng mới theo kịch bản; tiêu chí của Giai đoạn 13 về người mới chưa đạt.
+- Hợp nhất `.new` vẫn thủ công; so sánh chỉ đọc. Bước `init_project.py` sau khi chuyển đổi chạy ngoài giao dịch của chuyển đổi.
+- Chưa nâng VERSION, chưa tạo bản phát hành; CHANGELOG ghi ở mục "Chưa phát hành".

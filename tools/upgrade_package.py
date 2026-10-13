@@ -18,8 +18,10 @@ Script không xóa file nào. Cần Python 3.8+, không dùng mạng.
 """
 import argparse, datetime, hashlib, io, json, os, re, shutil, sys
 from result_schema import emit, make
+import transaction as tx
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+TX = {'id': None}  # mã giao dịch đang ghi / transaction id of the current write
 TEXT_EXT = ('.md', '.html', '.py', '.json', '.txt', '.sha256', '.css', '.js', '')
 USER_FILES = {'PROJECT.md', '.agent/STATE.md', '.agent/HANDOFF.md', '.agent/INDEX.md',
               '.agent/SKILL_INDEX.md', '.agent/PENDING_LESSONS.md', '.agent/PACKAGE_INFO.json',
@@ -120,35 +122,26 @@ def index_rows(project, source, lang, plan_):
             out.append(m.group(0))
     return out
 
-def write_index_rows(project, rows):
-    dst_i = os.path.join(project, '.agent', 'SKILL_INDEX.md')
-    txt = io.open(dst_i, encoding='utf-8').read()
+def render_index_rows(txt, rows):
+    """Nội dung SKILL_INDEX sau khi thêm dòng (không ghi file). / SKILL_INDEX text with rows appended (no write)."""
     last = None
     for m in re.finditer(r'^\| [a-z0-9-]+ \| [A-Z]+ \| [A-Z]+ \|.*\n?', txt, re.M):
         last = m
     ins = ''.join(r + '\n' for r in rows)
     if last is None:
-        txt = txt.rstrip('\n') + '\n' + ins
-    else:
-        end = last.end()
-        if not txt[end - 1:end] == '\n':
-            txt = txt[:end] + '\n' + txt[end:]; end += 1
-        txt = txt[:end] + ins + txt[end:]
-    io.open(dst_i, 'w', encoding='utf-8', newline='').write(txt)
+        return txt.rstrip('\n') + '\n' + ins
+    end = last.end()
+    if not txt[end - 1:end] == '\n':
+        txt = txt[:end] + '\n' + txt[end:]; end += 1
+    return txt[:end] + ins + txt[end:]
 
-def copy(source, src_rel, project, dst_rel, suffix=''):
-    dst = os.path.join(project, *dst_rel.split('/')) + suffix
-    os.makedirs(os.path.dirname(dst), exist_ok=True)
-    src = os.path.join(source, *src_rel.split('/'))
-    if suffix and os.path.exists(dst):
-        if open(src, 'rb').read() == open(dst, 'rb').read():
-            return
-        raise OSError('Pending merge already exists: ' + dst)
-    if suffix:
-        with open(src, 'rb') as inp, open(dst, 'xb') as out:
-            shutil.copyfileobj(inp, out)
-    else:
-        shutil.copyfile(src, dst)
+def read_bytes(base, rel):
+    with open(os.path.join(base, *rel.split('/')), 'rb') as f:
+        return f.read()
+
+def tx_next_actions(txid):
+    return ['python tools/transaction.py resume %s' % txid, 'python tools/transaction.py rollback %s' % txid]
+
 
 def main():
     global LANG, LAST_RESULT
@@ -161,7 +154,7 @@ def main():
     ap.add_argument('--result-json', action='store_true', help=argparse.SUPPRESS)
     a = ap.parse_args()
     if hasattr(sys.stdout, 'reconfigure'):
-        sys.stdout.reconfigure(encoding='utf-8')
+        sys.stdout.reconfigure(encoding='utf-8'); sys.stderr.reconfigure(encoding='utf-8')
     project = os.path.abspath(a.project) if a.project else HERE
     source = os.path.abspath(a.source) if a.source else HERE
     if os.path.normcase(project) == os.path.normcase(source):
@@ -230,6 +223,20 @@ def main():
         print('\n' + L('Không có gì cần cập nhật.', 'Nothing to update.'))
 
     if a.apply:
+        open_tx = tx.incomplete(project)
+        if open_tx:
+            txid = open_tx[0]['id']
+            msg = tx.blocked_message(project)
+            LAST_RESULT = make('blocked', code=1, message=msg, changes=False, transaction=txid,
+                               next_actions=tx_next_actions(txid), from_version=ov, to_version=nv)
+            sys.exit(msg)
+        missing_src = [s for _, s in p['update'] + p['add'] + p['user_missing'] + p['conflict']
+                       if not os.path.isfile(os.path.join(source, *s.split('/')))]
+        if missing_src:
+            LAST_RESULT = make('blocked', code=1, message='Missing source files', changes=False,
+                               files=[{'path': x, 'action': 'missing'} for x in missing_src[:40]],
+                               next_actions=['Use a complete package folder, then retry.'], from_version=ov, to_version=nv)
+            sys.exit('CHƯA GHI GÌ / NOTHING WRITTEN: thiếu file trong package / package files missing: %s' % ', '.join(missing_src[:5]))
         for rel, src in p['conflict']:
             pending = os.path.join(project, rel + '.new')
             if os.path.exists(pending) and (not os.path.isfile(pending) or
@@ -239,17 +246,30 @@ def main():
                                    next_actions=['Resolve or remove the existing .new file, then retry.'],
                                    from_version=ov, to_version=nv)
                 sys.exit('XUNG ĐỘT / CONFLICT: %s đã có nội dung khác; chưa ghi gì / pending merge differs; nothing written.' % pending)
+        t = tx.Transaction(project, 'upgrade')
         for rel, src in p['update'] + p['add'] + p['user_missing']:
-            copy(source, src, project, rel)
+            t.add(rel, read_bytes(source, src), 'create' if not os.path.exists(os.path.join(project, *rel.split('/'))) else 'write')
         for rel, src in p['conflict']:
-            copy(source, src, project, rel, '.new')
+            pending = rel + '.new'
+            if not os.path.exists(os.path.join(project, *pending.split('/'))):
+                t.add(pending, read_bytes(source, src), 'create_exclusive')
         if idx_rows:
-            write_index_rows(project, idx_rows)
-        shutil.copyfile(os.path.join(source, 'MANIFEST.sha256'), os.path.join(project, 'MANIFEST.sha256'))
+            dst_i = os.path.join(project, '.agent', 'SKILL_INDEX.md')
+            new_i = render_index_rows(io.open(dst_i, encoding='utf-8').read(), idx_rows)
+            t.add('.agent/SKILL_INDEX.md', new_i.encode('utf-8'), 'write')
+        t.add('MANIFEST.sha256', read_bytes(source, 'MANIFEST.sha256'), 'write')
         if info:
             info['version'] = nv
             info['upgraded'] = datetime.date.today().isoformat()
-            io.open(info_p, 'w', encoding='utf-8', newline='').write(json.dumps(info, ensure_ascii=False, indent=2) + '\n')
+            t.add('.agent/PACKAGE_INFO.json', (json.dumps(info, ensure_ascii=False, indent=2) + '\n').encode('utf-8'), 'write')
+        TX['id'] = t.txid if t.journal['ops'] else None
+        try:
+            t.run()
+        except tx.TransactionError as e:
+            TX['id'] = None
+            LAST_RESULT = make('blocked', code=1, message=str(e), changes=False,
+                               next_actions=['Fix the problem above, then retry.'], from_version=ov, to_version=nv)
+            sys.exit('CHƯA GHI GÌ / NOTHING WRITTEN: %s' % e)
         print('\n' + L('Đã ghi. MANIFEST.sha256 đã theo bản mới.', 'Written. MANIFEST.sha256 now follows the new version.'))
         if p['conflict']:
             print(L('Việc cần làm: mở từng file có <tên>.new, hợp nhất phần bạn muốn giữ, rồi xóa file .new.',
@@ -259,7 +279,7 @@ def main():
         LAST_RESULT = make('success', message='Upgrade applied', changes=bool(result_files),
                            merge_required=bool(p['conflict']), files=result_files,
                            next_actions=(['Merge the .new files.'] if p['conflict'] else []),
-                           from_version=ov, to_version=nv)
+                           from_version=ov, to_version=nv, transaction=TX['id'])
     else:
         print('\n' + L('Thêm --apply để thực hiện.', 'Add --apply to carry it out.'))
 
@@ -274,7 +294,9 @@ if __name__ == '__main__':
             emit(LAST_RESULT or make('blocked', code=code, message=str(e), changes=False))
         raise
     except OSError as e:
+        msg = ('CHƯA HOÀN TẤT / INCOMPLETE: %s. Giao dịch %s còn dở: chạy resume hoặc rollback. / Transaction %s is unfinished: run resume or rollback.'
+               % (e, TX['id'], TX['id'])) if TX['id'] else ('CHƯA HOÀN TẤT / INCOMPLETE: %s. / %s' % (e, e))
         if RESULT_REQUESTED:
-            emit(make('partial', code=1, message=str(e), changes=None,
-                      next_actions=['Inspect files already updated before retrying.']))
-        sys.exit('CHƯA HOÀN TẤT / INCOMPLETE: %s. Có thể đã cập nhật một số file; chưa tự hoàn tác. / Some files may have changed; no automatic rollback.' % e)
+            emit(make('partial', code=1, message=msg, changes=None, transaction=TX['id'],
+                      next_actions=tx_next_actions(TX['id']) if TX['id'] else ['Inspect the project folder before retrying.']))
+        sys.exit(msg)

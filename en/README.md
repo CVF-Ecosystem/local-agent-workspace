@@ -42,7 +42,7 @@ python tools/init_project.py --name "Project name" --lang en
 
 After setup, double-click `APP.bat` (Windows) or `APP.command` (macOS) to open the **control panel** in the browser: see the
 work status, install domain packs, check files before delivery, upgrade the package, copy skills into Claude, Codex, Gemini. The
-panel is only an interface for the tools in `tools/`; it runs on your computer (no network) and stops when the page is closed.
+panel is only an interface for the tools in `tools/`; it runs on your computer (no network) and stops when the page is closed. If a write was interrupted, the **App status** page lets you resume or roll it back (see `docs/en/EXISTING_PROJECT_UPGRADE_GUIDE.md`, section 9).
 
 - New project: `docs/en/NEW_PROJECT_GUIDE.md` or the `.html` file of the same name.
 - Existing project and package upgrade: `docs/en/EXISTING_PROJECT_UPGRADE_GUIDE.md` or `.html`.

@@ -13,10 +13,10 @@ Runs on this computer only (127.0.0.1) with a per-session access code. No networ
 Each button calls one existing script in tools/ with fixed arguments; writing actions always have a preview step.
 Shuts down about 3 minutes after the page is closed, or with "Quit". Python 3.8+ only.
 """
-import http.server, io, json, os, re, secrets, socketserver, subprocess, sys, threading, time, webbrowser
+import datetime, getpass, http.server, importlib.util, io, json, os, platform, re, secrets, socketserver, subprocess, sys, threading, time, webbrowser, zipfile
 import urllib.parse
 import hashlib
-import merge_center
+import merge_center, ops_log, transaction
 from result_schema import make, split_output
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,10 +24,21 @@ TOOLS = os.path.join(ROOT, 'tools')
 UI_FILE = os.path.join(TOOLS, 'app_ui.html')
 TOKEN = secrets.token_urlsafe(18)
 NAME_RE = re.compile(r'^[a-z][a-z0-9]*(-[a-z0-9]+)*$')
+TXID_RE = re.compile(r'[0-9A-Za-z-]{1,80}')
 IDLE_LIMIT = 180          # giây không có tín hiệu từ trang thì tắt / seconds without a ping before shutdown
 FIRST_GRACE = 600         # chờ lần mở trang đầu / wait for the first page load
+HISTORY_SHOWN = 20        # thao tác gần nhất hiện ở trang tình trạng / recent operations shown on the status page
+DIAG_REL = '.agent/runtime/diagnostics'
+HISTORY_REL = '.agent/runtime/operations.jsonl'
 STATE = {'last_ping': None, 'started': time.time(), 'server': None, 'port': 0}
-STRUCTURED_TOOLS = {'adopt_project.py', 'upgrade_package.py', 'check_output.py', 'build_release.py'}
+# mọi công cụ có envelope có cấu trúc / every tool that returns a native result envelope
+STRUCTURED_TOOLS = {'init_project.py', 'adopt_project.py', 'upgrade_package.py', 'check_output.py', 'build_release.py',
+                    'check_package.py', 'pack.py', 'install_skills.py', 'library.py', 'build_guides_html.py', 'transaction.py'}
+# tên thao tác được phép ghi vào lịch sử; còn lại ghi là 'unknown' / action names allowed in the history
+ACTION_NAMES = {'init', 'upgrade', 'upgrade_other', 'adopt', 'pack_list', 'pack_add', 'pack_remove', 'pack_update',
+                'check_output', 'install_skills', 'library_init', 'library_check', 'library_stats', 'library_find',
+                'check_package', 'build_guides', 'build_release', 'merge_state', 'merge_diff', 'diagnostics',
+                'tx_resume', 'tx_rollback', 'history_clear'}
 
 sys.path.insert(0, TOOLS)
 
@@ -125,16 +136,43 @@ def tk_available():
         return False
 
 
-def status():
-    info, name = project_info()
-    lang = info.get('language') or info.get('lang') or ('en' if re.search(r'^- Project name:', rd('PROJECT.md'), re.M) else 'vi')
-    home = os.path.expanduser('~')
+def workspace_kind(info):
+    """project | template | unknown, từ bằng chứng trong file, không từ tên thư mục / from file evidence, never the folder name."""
+    if info:
+        return 'project'
     # Identify a template by its contents, never by the folder name alone.
     project_hash = hashlib.sha256(rd('PROJECT.md').replace('\r\n', '\n').encode('utf-8')).hexdigest()
     template = not rd('.agent/PACKAGE_INFO.json') and any(
         line == project_hash + '  PROJECT.md' or line == project_hash + '  en/PROJECT.md'
         for line in rd('MANIFEST.sha256').splitlines())
-    kind = 'project' if info else ('template' if template else 'unknown')
+    return 'template' if template else 'unknown'
+
+
+def _has_module(name):
+    try:
+        return importlib.util.find_spec(name) is not None
+    except (ImportError, ValueError):
+        return False
+
+
+def components():
+    """Chức năng tùy chọn và có dùng được không; panel không tự cài gì / Optional features and whether they can run.
+    Nothing is installed here; the status page shows the command to run."""
+    opx = _has_module('openpyxl')
+    return [
+        {'feature': 'python', 'needs': '3.8', 'usable': sys.version_info >= (3, 8), 'version': sys.version.split()[0]},
+        {'feature': 'library', 'needs': 'openpyxl', 'usable': opx},
+        {'feature': 'xlsx', 'needs': 'openpyxl', 'usable': opx},
+        {'feature': 'picker', 'needs': 'tkinter', 'usable': tk_available()},
+    ]
+
+
+def status():
+    info, name = project_info()
+    lang = info.get('language') or info.get('lang') or ('en' if re.search(r'^- Project name:', rd('PROJECT.md'), re.M) else 'vi')
+    home = os.path.expanduser('~')
+    kind = workspace_kind(info)
+    records = ops_log.read(ROOT)
     return {
         'version': rd('VERSION').strip(),
         'initialized': bool(info),
@@ -155,6 +193,11 @@ def status():
         'dests': {'claude': os.path.join(home, '.claude', 'skills'), 'agents': os.path.join(home, '.agents', 'skills')},
         'picker': tk_available(),
         'python': sys.version.split()[0],
+        'platform': '%s %s' % (platform.system(), platform.release()),
+        'transactions': transaction.incomplete(ROOT),
+        'components': components(),
+        'history': list(reversed(records))[:HISTORY_SHOWN],
+        'history_summary': ops_log.summary(records),
     }
 
 
@@ -211,6 +254,13 @@ def need_text(p, key, msg):
     v = (p.get(key) or '').strip()
     if not v:
         raise BadInput(msg)
+    return v
+
+
+def need_txid(p):
+    v = str(p.get('txid') or '')  # không cắt khoảng trắng: phải khớp đúng / no trimming: must match exactly
+    if not TXID_RE.fullmatch(v):  # chỉ chữ, số và dấu gạch ngang / letters, digits and hyphens only
+        raise BadInput('Mã giao dịch không hợp lệ / Invalid transaction id.')
     return v
 
 
@@ -300,7 +350,105 @@ def action(name, p):
             raise BadInput(str(e))
         return {'code': 0, 'out': '', 'cmd': '', 'result': make('success', message='Merge state updated',
                 changes=True, files=[changed])}
+    if name == 'merge_diff':  # chỉ đọc; không lưu kết quả / read-only; the result is not stored
+        try:
+            diff = merge_center.diff(ROOT, need_text(p, 'path', 'Cần đường dẫn file hợp nhất.'))
+        except ValueError as e:
+            raise BadInput(str(e))
+        return {'code': 0, 'out': '', 'cmd': '', 'result': make('success', message='Compared', changes=False, diff=diff)}
+    if name in ('tx_resume', 'tx_rollback'):
+        lang = 'en' if p.get('lang') == 'en' else 'vi'
+        return run_tool('transaction.py', [name[3:], need_txid(p), '--project', ROOT, '--lang', lang])
+    if name == 'diagnostics':
+        rel = diagnostics_bundle()
+        return {'code': 0, 'out': 'Đã tạo / Created: %s' % rel, 'cmd': '',
+                'result': make('success', message='Diagnostics bundle created', changes=True,
+                               files=[{'path': rel, 'action': 'created'}])}
+    if name == 'history_clear':
+        removed = ops_log.clear(ROOT)
+        return {'code': 0, 'out': '', 'cmd': '',
+                'result': make('success', message='History cleared', changes=removed,
+                               files=[{'path': HISTORY_REL, 'action': 'removed'}] if removed else [])}
     raise BadInput('Thao tác không có / Unknown action: %s' % name)
+
+
+# ------------------------------------------------------------------ gói chẩn đoán / diagnostics bundle
+def _user_names():
+    names = {os.environ.get(k) for k in ('USERNAME', 'USER', 'LOGNAME')}
+    try:
+        names.add(getpass.getuser())
+    except Exception:  # không lấy được tên thì không có gì để che / no user name: nothing to hide
+        pass
+    return [n for n in names if n]
+
+
+def mask_pairs():
+    """Chuỗi cần che: thư mục project, thư mục người dùng, tên người dùng, kể cả dạng gạch chéo và dạng JSON.
+    Strings to hide: project folder, home folder, user name; including slash and JSON-escaped forms."""
+    pairs, home = [], os.path.expanduser('~')
+    for raw, repl in ((ROOT, '<PROJECT>'), (os.path.realpath(ROOT), '<PROJECT>'), (home, '~'), (os.path.realpath(home), '~')):
+        for form in {raw, raw.replace('\\', '/'), raw.replace('\\', '\\\\')}:
+            if form:
+                pairs.append((form, repl))
+    pairs += [(n, '<USER>') for n in _user_names()]
+    return sorted(pairs, key=lambda x: len(x[0]), reverse=True)
+
+
+def mask_text(text, pairs):
+    for raw, repl in pairs:
+        text = re.sub(re.escape(raw), repl, text, flags=re.I)
+    return text
+
+
+def _mask_obj(value, pairs):
+    if isinstance(value, dict):
+        return {mask_text(str(k), pairs): _mask_obj(v, pairs) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_mask_obj(v, pairs) for v in value]
+    if isinstance(value, str):
+        return mask_text(value, pairs)
+    return value
+
+
+def diagnostics_bundle():
+    """Ghi ZIP chẩn đoán (đã che đường dẫn và tên người dùng); trả về đường dẫn tương đối của ZIP.
+    Writes the diagnostics ZIP with paths and user name masked; returns its package-relative path.
+    Contains JSON only: no document text, no project name, no typed values."""
+    info, _ = project_info()
+    pairs = mask_pairs()
+    merges = merge_center.scan(ROOT)
+    by_state = {}
+    for m in merges:
+        by_state[m['state']] = by_state.get(m['state'], 0) + 1
+    check = run_tool('check_package.py', ['--verify'])['result'] or {}
+    data = {
+        'schema': 'local-agent-workspace/diagnostics-v1',
+        'created': datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+        'package': {'version': rd('VERSION').strip(), 'installed_version': info.get('version')},
+        'workspace_kind': workspace_kind(info),
+        'python': {'version': sys.version.split()[0], 'implementation': platform.python_implementation()},
+        'platform': {'system': platform.system(), 'release': platform.release(), 'machine': platform.machine()},
+        'components': components(),
+        'merges': {'count': len(merges), 'by_state': by_state,
+                   'items': [{'path': m['path'], 'pending': m['pending'], 'state': m['state'],
+                              'origin': m['origin'], 'current_exists': m['current_exists']} for m in merges]},
+        'transactions': transaction.incomplete(ROOT),
+        'history': ops_log.read(ROOT),
+        'package_check': {'status': check.get('status'), 'code': check.get('code'), 'message': check.get('message'),
+                          'findings': [{'severity': f.get('severity'), 'message': f.get('message')}
+                                       for f in (check.get('findings') or [])]},
+    }
+    text = mask_text(json.dumps(_mask_obj(data, pairs), ensure_ascii=False, indent=2), pairs)
+    folder = os.path.join(ROOT, *DIAG_REL.split('/'))
+    os.makedirs(folder, exist_ok=True)
+    stamp = datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%SZ')
+    name, n = 'diagnostics-%s.zip' % stamp, 1
+    while os.path.exists(os.path.join(folder, name)):
+        n += 1
+        name = 'diagnostics-%s-%d.zip' % (stamp, n)
+    with zipfile.ZipFile(os.path.join(folder, name), 'w', zipfile.ZIP_DEFLATED) as z:
+        z.writestr('diagnostics.json', text.encode('utf-8'))
+    return DIAG_REL + '/' + name
 
 
 # ------------------------------------------------------------------ chọn file, mở thư mục / pickers, open
@@ -344,6 +492,51 @@ def open_path(rel):
     else:
         subprocess.Popen(['xdg-open', target], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     return {'ok': True}
+
+
+def _record(name, res, started):
+    """Một dòng lịch sử cho mỗi thao tác; lỗi ghi nhật ký không làm hỏng thao tác / One line per action;
+    a logging failure never breaks the action."""
+    try:
+        result = res.get('result') or {}
+        status_value = result.get('status') or ('success' if res.get('code') == 0 else 'error')
+        tx = result.get('transaction')
+        ops_log.record(ROOT, name if name in ACTION_NAMES else 'unknown', status_value, res.get('code', -1),
+                       len(result.get('files') or []), tx if isinstance(tx, str) else None,
+                       int((time.time() - started) * 1000))
+    except Exception:
+        pass
+
+
+def unexpected_result(e):
+    """Envelope cho lỗi bất ngờ của bảng điều khiển / envelope for an unexpected panel error."""
+    return make('error', code=-1, message='Lỗi bất ngờ trong bảng điều khiển / Unexpected panel error: %s' % type(e).__name__,
+                changes=None, next_actions=[
+                    'Xem trang Tình trạng ứng dụng: nếu có giao dịch dở, chọn Tiếp tục hoặc Phục hồi. / '
+                    'Open App status: if a transaction is unfinished, choose Resume or Roll back.',
+                    'Nếu lỗi lặp lại, tạo gói chẩn đoán và gửi cho người hỗ trợ. / '
+                    'If it happens again, create a diagnostics bundle and send it to support.'])
+
+
+def run_api(body):
+    """Chạy một thao tác và ghi lịch sử; trả về (mã HTTP, nội dung) / Run one action and record it; returns (HTTP code, payload)."""
+    name = body.get('action', '')
+    if not isinstance(name, str):
+        name = ''
+    params = body.get('params') or {}
+    if not isinstance(params, dict):
+        params = {}
+    started, http_code = time.time(), 200
+    try:
+        res = action(name, params)
+    except BadInput as e:
+        res = {'code': 2, 'out': str(e), 'cmd': '', 'input_error': True,
+               'result': make('blocked', code=2, message=str(e), changes=False)}
+    except Exception as e:  # lỗi bất ngờ vẫn trả về trang / unexpected errors still reach the page
+        res, http_code = {'code': -1, 'out': 'Lỗi / Error: %r' % (e,), 'cmd': '', 'result': unexpected_result(e)}, 500
+    if name != 'history_clear':  # xóa lịch sử thì không ghi thêm dòng nào / clearing the history writes nothing
+        _record(name, res, started)
+    return http_code, res
 
 
 # ------------------------------------------------------------------ máy chủ / server
@@ -398,7 +591,8 @@ class Handler(http.server.BaseHTTPRequestHandler):
             if path == '/api/status':
                 return self._send(200, status())
             if path == '/api/run':
-                return self._send(200, action(body.get('action', ''), body.get('params') or {}))
+                code, payload = run_api(body)
+                return self._send(code, payload)
             if path == '/api/pick':
                 return self._send(200, pick(body.get('kind')))
             if path == '/api/open':
@@ -411,7 +605,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
             return self._send(200, {'code': 2, 'out': str(e), 'cmd': '', 'input_error': True,
                               'result': make('blocked', code=2, message=str(e), changes=False)})
         except Exception as e:  # lỗi bất ngờ vẫn trả về trang / unexpected errors still reach the page
-            return self._send(500, {'code': -1, 'out': 'Lỗi / Error: %r' % (e,), 'cmd': ''})
+            return self._send(500, {'code': -1, 'out': 'Lỗi / Error: %r' % (e,), 'cmd': '', 'result': unexpected_result(e)})
         return self._send(404, {'error': 'not found'})
 
 

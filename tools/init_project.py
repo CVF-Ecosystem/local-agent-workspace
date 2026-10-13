@@ -12,9 +12,13 @@ Việc script làm:
   - nếu có --purpose/--outputs/--style/--sources/--constraints/--sensitivity: điền các dòng tương ứng trong PROJECT.md;
   - đặt .agent/STATE.md sạch;
   - ghi .agent/PACKAGE_INFO.json (phiên bản package, ngôn ngữ, ngày khởi tạo).
+Mọi thay đổi ghi qua một giao dịch có nhật ký (tools/transaction.py); nếu bị gián đoạn, chạy resume hoặc rollback.
+All changes go through one journaled transaction; if interrupted, run resume or rollback.
 Script không xóa file nào và không dùng mạng. Chỉ cần Python 3.8+.
 """
-import argparse, datetime, io, json, os, re, shutil, sys
+import argparse, datetime, io, json, os, re, sys
+from result_schema import emit, make
+import transaction as tx
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OVERLAY_SKIP = {'en/PROJECT_INSTRUCTIONS_SNIPPET.md'}
@@ -45,13 +49,13 @@ PHASE_TEXT = {'vi': 'Mới khởi tạo từ package v%s ngày %s; chưa có cô
               'en': 'Just initialised from package v%s on %s; no work yet.'}
 
 LANG = 'vi'
+RESULT_REQUESTED = '--result-json' in sys.argv
+LAST_RESULT = None
+TX = {'id': None}  # mã giao dịch đang ghi / transaction id of the current write
 def L(vi, en): return en if LANG == 'en' else vi
 
 def P(rel): return os.path.join(ROOT, *rel.split('/'))
 def rd(rel): return io.open(P(rel), encoding='utf-8', newline='').read()
-def wr(rel, text):
-    os.makedirs(os.path.dirname(P(rel)), exist_ok=True)
-    io.open(P(rel), 'w', encoding='utf-8', newline='').write(text)
 
 def is_original(rel):
     """True nếu file còn đúng như trong package (theo MANIFEST), nên không cần sao lưu khi thay."""
@@ -64,6 +68,7 @@ def is_original(rel):
         return False
 
 def main():
+    global LANG, LAST_RESULT
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--name', required=True, help='tên project / project name')
     ap.add_argument('--lang', choices=['vi', 'en'], default='vi')
@@ -71,11 +76,11 @@ def main():
         ap.add_argument('--' + k, default='', help='điền dòng "%s" trong PROJECT.md / fill the "%s" line' % labels)
     ap.add_argument('--dry-run', action='store_true', help='chỉ in việc sẽ làm, không ghi')
     ap.add_argument('--force', action='store_true', help='chạy lại trên project đã khởi tạo')
+    ap.add_argument('--result-json', action='store_true', help=argparse.SUPPRESS)
     a = ap.parse_args()
-    global LANG
     LANG = a.lang
     if hasattr(sys.stdout, 'reconfigure'):
-        sys.stdout.reconfigure(encoding='utf-8')
+        sys.stdout.reconfigure(encoding='utf-8'); sys.stderr.reconfigure(encoding='utf-8')
     name = a.name.strip()
     if not name:
         sys.exit(L('Tên project không được để trống.', 'The project name must not be empty.'))
@@ -88,15 +93,11 @@ def main():
     today = datetime.date.today().isoformat()
     stamp = today.replace('-', '')
     log = []
+    virt = {}    # rel -> nội dung text sau khi ghi / text content after the write
+    baks = []    # (đường dẫn .bak, bytes cũ) / (backup path, old bytes)
 
-    def do(msg, fn):
-        log.append(msg)
-        if not a.dry_run:
-            fn()
-
-    def do_quiet(fn):
-        if not a.dry_run:
-            fn()
+    def cur(rel):
+        return virt[rel] if rel in virt else rd(rel)
 
     def pristine(dst):
         """File còn ở dạng mẫu (chưa điền) thì được thay bằng bản tiếng Anh."""
@@ -120,32 +121,22 @@ def main():
                 log.append(L('Giữ nguyên %s (đã có nội dung của bạn).', 'Kept %s (it has your own content).') % dst)
                 continue
             keep = old is not None and not is_original(dst)  # file đã sửa (kể cả mẫu người dùng) luôn được sao lưu trước khi thay
-            def swap(src=src, dst=dst, new=new, keep=keep):
-                if keep:
-                    shutil.copyfile(P(dst), P(dst) + '.bak-' + stamp)
-                wr(dst, new)
             swapped += 1
             if keep or dst in USER_TEMPLATES or swapped <= 6:
                 log.append(L('Chép %s -> %s', 'Copied %s -> %s') % (src, dst) +
                            (L(' (sao lưu bản cũ .bak-%s)', ' (old copy saved as .bak-%s)') % stamp if keep else ''))
-            do_quiet(swap)
+            if keep:
+                with open(P(dst), 'rb') as f:
+                    baks.append((dst + '.bak-' + stamp, f.read()))
+            virt[dst] = new
         if swapped > 6:
             log.append(L('... và %d file khác trong en/ (tổng %d file đã chép).', '... and %d more files from en/ (%d copied in total).') % (max(swapped - 6, 0), swapped))
 
-    # Nội dung PROJECT.md / STATE.md như sẽ có sau bước chép (để --dry-run báo đúng)
-    def future(dst):
-        if a.lang == 'en' and a.dry_run and os.path.isfile(P('en/' + dst)) and pristine(dst):
-            return rd('en/' + dst)
-        return rd(dst)
-
     line = next((v for v in (NAME_LINE[a.lang], NAME_LINE['vi'], NAME_LINE['en'])
-                 if v in future('PROJECT.md')), NAME_LINE[a.lang])
-    if line in future('PROJECT.md'):
-        def fill():
-            cur = rd('PROJECT.md')
-            if line in cur:
-                wr('PROJECT.md', cur.replace(line, line.split('[')[0] + name, 1))
-        do(L('Điền tên project vào PROJECT.md', 'Fill the project name into PROJECT.md'), fill)
+                 if v in cur('PROJECT.md')), NAME_LINE[a.lang])
+    if line in cur('PROJECT.md'):
+        log.append(L('Điền tên project vào PROJECT.md', 'Fill the project name into PROJECT.md'))
+        virt['PROJECT.md'] = cur('PROJECT.md').replace(line, line.split('[')[0] + name, 1)
     else:
         log.append(L('Cảnh báo: PROJECT.md không còn dòng "%s" (đã điền tay?); bỏ qua bước điền tên.', 'Warning: PROJECT.md no longer has the line "%s" (filled in by hand?); skipping the name step.') % line)
 
@@ -153,43 +144,102 @@ def main():
         val = getattr(a, k).strip().replace('\n', ' ')
         if not val:
             continue
-        label = next((v for v in labels if re.search(r'^- %s:' % re.escape(v), future('PROJECT.md'), re.M)),
+        label = next((v for v in labels if re.search(r'^- %s:' % re.escape(v), cur('PROJECT.md'), re.M)),
                      labels[0 if a.lang == 'vi' else 1])
         pat = re.compile(r'^(- %s: )\[[^\n]*\]$' % re.escape(label), re.M)
-        if pat.search(future('PROJECT.md')):
-            def fill_field(pat=pat, val=val):
-                cur = rd('PROJECT.md')
-                wr('PROJECT.md', pat.sub(lambda m: m.group(1) + val, cur, count=1))
-            do(L('Điền "%s" vào PROJECT.md', 'Fill "%s" into PROJECT.md') % label, fill_field)
+        if pat.search(cur('PROJECT.md')):
+            log.append(L('Điền "%s" vào PROJECT.md', 'Fill "%s" into PROJECT.md') % label)
+            virt['PROJECT.md'] = pat.sub(lambda m, val=val: m.group(1) + val, cur('PROJECT.md'), count=1)
         else:
             log.append(L('Bỏ qua "%s": dòng này trong PROJECT.md đã có nội dung.', 'Skipped "%s": that line in PROJECT.md already has content.') % label)
 
-    ph = next((v for v in PHASE_PLACEHOLDER.values() if v in future('.agent/STATE.md')), PHASE_PLACEHOLDER[a.lang])
-    if ph in future('.agent/STATE.md'):
-        def state():
-            cur = rd('.agent/STATE.md')
-            if ph in cur:
-                wr('.agent/STATE.md', cur.replace(ph, PHASE_TEXT[a.lang] % (ver, today), 1))
-        do(L('Đặt trạng thái khởi đầu trong .agent/STATE.md', 'Set the starting state in .agent/STATE.md'), state)
+    ph = next((v for v in PHASE_PLACEHOLDER.values() if v in cur('.agent/STATE.md')), PHASE_PLACEHOLDER[a.lang])
+    if ph in cur('.agent/STATE.md'):
+        log.append(L('Đặt trạng thái khởi đầu trong .agent/STATE.md', 'Set the starting state in .agent/STATE.md'))
+        virt['.agent/STATE.md'] = cur('.agent/STATE.md').replace(ph, PHASE_TEXT[a.lang] % (ver, today), 1)
     else:
-        if L('Giữ nguyên .agent/STATE.md (đã có nội dung của bạn).', 'Kept .agent/STATE.md (it has your own content).') not in log:
-            log.append(L('Giữ nguyên .agent/STATE.md (đã có nội dung của bạn).', 'Kept .agent/STATE.md (it has your own content).'))
+        kept = L('Giữ nguyên .agent/STATE.md (đã có nội dung của bạn).', 'Kept .agent/STATE.md (it has your own content).')
+        if kept not in log:
+            log.append(kept)
 
     info = {'package': 'local-agent-workspace', 'version': ver, 'language': a.lang,
             'project_name': name, 'initialized': today}
-    do(L('Ghi %s', 'Wrote %s') % info_path, lambda: wr(info_path, json.dumps(info, ensure_ascii=False, indent=2) + '\n'))
+    log.append(L('Ghi %s', 'Wrote %s') % info_path)
+    virt[info_path] = json.dumps(info, ensure_ascii=False, indent=2) + '\n'
 
-    print((L('[CHẠY THỬ, chưa ghi gì] ', '[DRY RUN, nothing written] ') if a.dry_run else '') + L('Khởi tạo project "%s" (package v%s, ngôn ngữ %s):', 'Initializing project "%s" (package v%s, language %s):') % (name, ver, a.lang))
+    # chỉ những file thật sự đổi / only files whose bytes really change
+    writes = []
+    for rel, text in virt.items():
+        data = text.encode('utf-8')
+        old = open(P(rel), 'rb').read() if os.path.isfile(P(rel)) else None
+        if old != data:
+            writes.append((rel, data))
+    files = ([{'path': rel, 'action': 'write'} for rel, _ in writes] +
+             [{'path': bak, 'action': 'backup'} for bak, _ in baks])
+    header = ((L('[CHẠY THỬ, chưa ghi gì] ', '[DRY RUN, nothing written] ') if a.dry_run else '') +
+              L('Khởi tạo project "%s" (package v%s, ngôn ngữ %s):', 'Initializing project "%s" (package v%s, language %s):') % (name, ver, a.lang))
+
+    if a.dry_run:
+        print(header)
+        for m in log:
+            print(' - ' + m)
+        LAST_RESULT = make('preview', message='Initialization preview', changes=bool(files), files=files,
+                           next_actions=[])
+        return
+
+    blocker = tx.blocked_message(ROOT)
+    if blocker:
+        open_tx = tx.incomplete(ROOT)[0]['id']
+        LAST_RESULT = make('blocked', code=1, message=blocker, changes=False, transaction=open_tx,
+                           next_actions=['python tools/transaction.py resume %s' % open_tx,
+                                         'python tools/transaction.py rollback %s' % open_tx])
+        sys.exit(blocker)
+    for bak, data in baks:
+        if os.path.exists(P(bak)) and open(P(bak), 'rb').read() != data:
+            msg = L('Đã có %s khác nội dung; không ghi đè bản sao lưu cũ. Chưa ghi gì.',
+                    '%s already exists with other content; will not overwrite an old backup. Nothing written.') % bak
+            LAST_RESULT = make('blocked', code=1, message=msg, changes=False, next_actions=['Move or rename the existing .bak file, then retry.'])
+            sys.exit(msg)
+    t = tx.Transaction(ROOT, 'init')
+    for bak, data in baks:
+        t.add(bak, data, 'create_exclusive')
+    for rel, data in writes:
+        t.add(rel, data, 'write')
+    TX['id'] = t.txid if t.journal['ops'] else None
+    try:
+        t.run()
+    except tx.TransactionError as e:
+        TX['id'] = None
+        LAST_RESULT = make('blocked', code=1, message=str(e), changes=False, next_actions=['Fix the problem above, then retry.'])
+        sys.exit('CHƯA GHI GÌ / NOTHING WRITTEN: %s' % e)
+    print(header)
     for m in log:
         print(' - ' + m)
-    if not a.dry_run:
-        print(L('\nXong. Việc tiếp theo: mở PROJECT.md điền mục đích, người đọc, đầu ra; sau đó giao việc đầu tiên cho agent.', '\nDone. Next: open PROJECT.md and fill in the purpose, readers and outputs; then give the agent the first task.'))
-        print('Nếu dùng Project/cloud: dán đoạn hướng dẫn trong mục 5 của docs/HUONG_DAN_TAO_PROJECT_MOI_VI.md'
-              if a.lang == 'vi' else
-              'If you use a Project/cloud: paste the text in section 5 of docs/en/NEW_PROJECT_GUIDE.md')
+    print(L('\nXong. Việc tiếp theo: mở PROJECT.md điền mục đích, người đọc, đầu ra; sau đó giao việc đầu tiên cho agent.', '\nDone. Next: open PROJECT.md and fill in the purpose, readers and outputs; then give the agent the first task.'))
+    print('Nếu dùng Project/cloud: dán đoạn hướng dẫn trong mục 5 của docs/HUONG_DAN_TAO_PROJECT_MOI_VI.md'
+          if a.lang == 'vi' else
+          'If you use a Project/cloud: paste the text in section 5 of docs/en/NEW_PROJECT_GUIDE.md')
+    LAST_RESULT = make('success', message='Project initialized', changes=bool(files), files=files,
+                       transaction=TX['id'])
 
 if __name__ == '__main__':
     try:
         main()
+        if RESULT_REQUESTED:
+            emit(LAST_RESULT or make('success', message='Project initialized', changes=None))
+    except SystemExit as e:
+        if RESULT_REQUESTED:
+            code = e.code if isinstance(e.code, int) else 1
+            emit(LAST_RESULT or make('blocked', code=code, message=str(e), changes=False))
+        raise
     except OSError as e:
-        sys.exit('CHƯA HOÀN TẤT / INCOMPLETE: %s. Có thể đã cập nhật một số file; chưa tự hoàn tác. / Some files may have changed; no automatic rollback.' % e)
+        if TX['id']:
+            msg = ('CHƯA HOÀN TẤT / INCOMPLETE: %s. Giao dịch %s còn dở: chạy resume hoặc rollback. / Transaction %s is unfinished: run resume or rollback.'
+                   % (e, TX['id'], TX['id']))
+        else:
+            msg = 'LỖI / ERROR: %s. Chưa ghi file nào / No file was written.' % e
+        if RESULT_REQUESTED:
+            emit(make('partial' if TX['id'] else 'error', code=1, message=msg, changes=None, transaction=TX['id'],
+                      next_actions=['python tools/transaction.py resume %s' % TX['id'],
+                                    'python tools/transaction.py rollback %s' % TX['id']] if TX['id'] else ['Check the project folder, then retry.']))
+        sys.exit(msg)

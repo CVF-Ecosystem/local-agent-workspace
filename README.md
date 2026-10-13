@@ -41,7 +41,7 @@ python tools/init_project.py --name "Tên project" --lang vi
 
 Sau khi khởi tạo, bấm đúp `APP.bat` (Windows) hoặc `APP.command` (macOS) để mở **bảng điều khiển** trong trình duyệt: xem trạng
 thái công việc, cài gói lĩnh vực, kiểm tra file trước khi giao, nâng cấp package, chép skill vào Claude, Codex, Gemini. Bảng điều
-khiển chỉ là giao diện cho các công cụ trong `tools/`, chạy trên máy (không dùng mạng), tự tắt khi đóng trang.
+khiển chỉ là giao diện cho các công cụ trong `tools/`, chạy trên máy (không dùng mạng), tự tắt khi đóng trang. Nếu một lần ghi bị gián đoạn, trang **Tình trạng ứng dụng** cho phép tiếp tục hoặc phục hồi (xem `docs/HUONG_DAN_CHUYEN_DOI_PROJECT_CO_SAN_VI.md`, mục 9).
 
 - Dự án mới: `docs/HUONG_DAN_TAO_PROJECT_MOI_VI.md` hoặc bản `.html` cùng tên.
 - Dự án có sẵn và nâng cấp package: `docs/HUONG_DAN_CHUYEN_DOI_PROJECT_CO_SAN_VI.md` hoặc `.html`.

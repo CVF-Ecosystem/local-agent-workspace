@@ -25,10 +25,24 @@ import hashlib
 import io
 import re
 import sys
+import traceback
 import unicodedata
 from pathlib import Path
+from result_schema import emit, make
 
 ROOT = Path(__file__).resolve().parent.parent
+RESULT_REQUESTED = '--result-json' in sys.argv  # cờ ẩn: phát một kết quả có cấu trúc / hidden flag: emit one structured result
+LAST_RESULT = None
+DONE = []  # trang đã ghi trong lượt này / pages written in this run, for partial results
+
+
+def set_result(status, code, message, **kw):
+    global LAST_RESULT
+    LAST_RESULT = make(status, code=code, message=message, **kw)
+
+
+def rel_of(p):
+    return p.relative_to(ROOT).as_posix()
 
 # Mỗi ngôn ngữ: file START_HERE, thư mục trang riêng, các hướng dẫn (tên file Markdown không đuôi,
 # tiền tố id chương trong START_HERE), file nguồn tham khảo và các chuỗi do script sinh ra.
@@ -289,7 +303,9 @@ def main(argv):
         sys.stdout.reconfigure(encoding='utf-8')
     unknown = [a for a in argv if a not in ('--check',)]
     if unknown:
-        print('Tham số không hợp lệ: %s\nDùng: python tools/build_guides_html.py [--check]' % ' '.join(unknown))
+        msg = 'Tham số không hợp lệ: %s\nDùng: python tools/build_guides_html.py [--check]' % ' '.join(unknown)
+        print(msg)
+        set_result('blocked', 2, msg, changes=False)
         return 2
     check = '--check' in argv
     outputs = {}
@@ -304,8 +320,13 @@ def main(argv):
                 outputs[p] = new
             p, new = rebuild_start_here(loc)
             outputs[p] = new
-    except (BuildError, OSError) as e:
+    except BuildError as e:
         print('LỖI:', e)
+        set_result('blocked', 2, str(e), changes=False, findings=[{'message': str(e)}])
+        return 2
+    except OSError as e:
+        print('LỖI:', e)
+        set_result('error', 2, str(e), changes=False)
         return 2
     if skipped:
         print('Bỏ qua ngôn ngữ chưa có START_HERE: ' + ', '.join(skipped))
@@ -314,14 +335,53 @@ def main(argv):
         if stale:
             print('HTML lệch Markdown ở: ' + ', '.join(str(p.relative_to(ROOT)) for p in stale))
             print('Chạy: python tools/build_guides_html.py')
+            set_result('issues', 1, 'HTML lệch Markdown ở %d trang / %d page(s) out of sync with Markdown.' % (len(stale), len(stale)), changes=False,
+                       findings=[{'path': rel_of(p), 'message': 'HTML lệch Markdown / out of sync with its Markdown'} for p in stale],
+                       pages=len(outputs), skipped=skipped, next_actions=['Chạy / Run: python tools/build_guides_html.py'])
             return 1
         print('HTML đã khớp Markdown (%d trang).' % len(outputs))
+        set_result('success', 0, 'HTML đã khớp Markdown (%d trang). / HTML matches Markdown (%d pages).' % (len(outputs), len(outputs)),
+                   changes=False, pages=len(outputs), skipped=skipped)
         return 0
     for p in stale:
         io.open(p, 'w', encoding='utf-8', newline='').write(outputs[p])
+        DONE.append({'path': rel_of(p), 'action': 'rebuilt'})
     print('Đã cập nhật %d trang; %d trang không đổi.' % (len(stale), len(outputs) - len(stale)))
+    set_result('success', 0, 'Đã cập nhật %d trang; %d trang không đổi. / Rebuilt %d page(s); %d unchanged.' % (len(stale), len(outputs) - len(stale), len(stale), len(outputs) - len(stale)),
+               changes=bool(stale), files=list(DONE), pages=len(outputs), skipped=skipped)
     return 0
 
 
+def finish(code, msg, fallback):
+    """Phát đúng một kết quả; mã trong kết quả luôn bằng mã thoát / Emit exactly one result; its code always equals the exit code."""
+    res = LAST_RESULT
+    if res is None:
+        res = make(fallback, code=code, message=msg)
+    elif res['code'] != code:
+        res = make('error', code=code, message='Mã kết quả không khớp mã thoát. / Result code does not match the exit code.')
+    emit(res)
+    return code
+
+
+def run_with_result(argv):
+    code, msg = 1, ''
+    try:
+        code = main(argv)
+    except OSError as e:  # ghi một trang lỗi giữa chừng / a page failed to write
+        code, msg = 1, str(e)
+        if DONE:
+            set_result('partial', 1, msg, changes=True, files=list(DONE),
+                       next_actions=['Chạy lại python tools/build_guides_html.py: chỉ dựng lại các trang còn lệch. / Run it again: only out-of-sync pages are rebuilt.'])
+            print('CHƯA HOÀN TẤT / INCOMPLETE: %s. Có thể đã ghi một số trang; chưa tự hoàn tác. / Some pages may have been written; no automatic rollback.' % e, file=sys.stderr)
+        else:
+            print('Lỗi / Error: %s' % e, file=sys.stderr)
+    except Exception as e:  # lỗi bất ngờ vẫn phát kết quả / unexpected errors still emit a result
+        traceback.print_exc()
+        code, msg = 1, repr(e)
+    return finish(code, msg, 'error')
+
+
 if __name__ == '__main__':
+    if RESULT_REQUESTED:
+        sys.exit(run_with_result([a for a in sys.argv[1:] if a != '--result-json']))
     sys.exit(main(sys.argv[1:]))

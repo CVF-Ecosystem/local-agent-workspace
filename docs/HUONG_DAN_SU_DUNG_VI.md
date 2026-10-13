@@ -170,11 +170,19 @@ có còn khớp không.
 Bấm đúp `APP.bat` (Windows) hoặc `APP.command` (macOS) để mở bảng điều khiển trong trình duyệt. Trang Tổng quan cho thấy
 trạng thái công việc (đọc từ `.agent/STATE.md`), các skill trong chỉ mục, số file trong `output/` và `references/`. Các trang
 còn lại gọi đúng các công cụ trong `tools/`: khởi tạo hoặc đưa vào project đã có, nâng cấp, gói lĩnh vực, kiểm tra trước khi
-giao (`check_output.py`), chép skill vào ứng dụng (`install_skills.py`), bảo trì package.
+giao (`check_output.py`), chép skill vào ứng dụng (`install_skills.py`), thư viện nguồn, chờ hợp nhất và bảo trì package. Trang **Tình trạng ứng dụng** cho biết phiên bản, Python, chức năng tùy chọn còn thiếu (kèm cách khắc phục), giao dịch chưa hoàn tất và lịch sử thao tác gần đây.
 
 Thao tác có ghi file luôn chạy xem trước; đọc kết quả rồi mới bấm "Thực hiện". Bảng điều khiển chạy trên máy này (địa chỉ
-127.0.0.1, có mã truy cập riêng mỗi lần mở), không dùng mạng, không xóa file, tự tắt khoảng 3 phút sau khi đóng trang. Nút
+127.0.0.1, có mã truy cập riêng mỗi lần mở), không dùng mạng, tự tắt khoảng 3 phút sau khi đóng trang. Nút
 "Chọn…" mở hộp chọn thư mục của máy; nếu máy không có, gõ hoặc dán đường dẫn. Bảng điều khiển không thay việc giao việc cho
 agent; nó chỉ gom các lệnh `python tools/...` vào một chỗ.
 
 Kiểm tra đầu ra có ba trạng thái: đã kiểm đạt trong phạm vi hỗ trợ; đã kiểm có vấn đề/cần xem xét; chưa kiểm được. Thiếu file, định dạng không hỗ trợ hoặc thiếu thư viện không được coi là đạt. Word được kiểm chữ trong thân bài, đầu/chân trang và chú thích chân trang/cuối tài liệu; chưa kiểm bố cục, chữ trong ảnh, bình luận hoặc thay đổi được theo dõi. Excel và thư viện nguồn cần `openpyxl`; nếu thiếu, chạy `python -m pip install openpyxl`. Công cụ không tự cài.
+
+Bảng điều khiển không xóa file của bạn, trừ hai trường hợp. "Phục hồi" một giao dịch dở gỡ các file mới do giao dịch đó tạo ra (nếu bạn chưa sửa chúng). "Xóa lịch sử" chỉ xóa nhật ký thao tác. Hai thao tác này đều hỏi xác nhận trước khi chạy. Nếu việc ghi bị gián đoạn, xem mục 9 trong `HUONG_DAN_CHUYEN_DOI_PROJECT_CO_SAN_VI.md`.
+
+**Lịch sử thao tác.** Mỗi lần bấm một nút ghi một dòng: thời điểm, tên thao tác, kết quả, số file tác động và mã giao dịch nếu có. Không ghi nội dung tài liệu, tên file, tên người hay dữ liệu đã gõ. Bảng điều khiển giữ tối đa 500 dòng; trang Tình trạng ứng dụng hiện 20 dòng gần nhất. Muốn xóa, bấm "Xóa lịch sử"; việc này không ảnh hưởng tài liệu hay giao dịch.
+
+**Gói chẩn đoán.** Nút "Tạo gói chẩn đoán" tạo một file ZIP trên máy này, trong `.agent/runtime/diagnostics/diagnostics-<thời điểm>.zip`, để gửi cho người hỗ trợ khi gặp lỗi. Gói gồm phiên bản package, loại workspace, Python và hệ điều hành, tình trạng chức năng tùy chọn, số file chờ hợp nhất (chỉ đường dẫn tương đối), giao dịch dở, lịch sử thao tác và kết quả kiểm tra package. Gói không có nội dung tài liệu, tên project, tên người hay đường dẫn tuyệt đối. Gói không được gửi đi tự động. Bấm "Mở thư mục gói" để xem trước; bạn tự quyết định có chia sẻ hay không.
+
+**So sánh ở trang Chờ hợp nhất.** Nút "So sánh" cho thấy chỗ khác nhau giữa bản hiện hành và bản `.new`, theo từng đoạn có số dòng. Chỉ đọc: không lưu gì và không tự hợp nhất hay ghi đè. File lớn hơn 256 KB, hoặc không phải văn bản UTF-8, không hiện nội dung trong bảng điều khiển; mở hai bản bằng ứng dụng gốc để xem. Sau khi tự hợp nhất, bạn xóa file .new.
