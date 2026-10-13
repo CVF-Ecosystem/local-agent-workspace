@@ -27,7 +27,8 @@ hữu ích thay vì chấp nhận ghi đè hàng loạt.
 
 Lần đầu đưa package vào project đã có (chưa có `VERSION` hay `.agent/`), dùng công cụ thay vì chép tay: từ thư mục package chạy
 `python tools/adopt_project.py --project "đường dẫn" --name "Tên project"` để xem báo cáo, thêm `--apply` để ghi. Công cụ chỉ thêm file
-còn thiếu; `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` cũ khác bản package được lưu thành `<tên>.bak-<ngày>` (hãy hợp nhất phần riêng vào `PROJECT.md`);
+còn thiếu; `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` cũ giữ nguyên và vẫn có hiệu lực; bản package khác nội dung được lưu thành `<tên>.new` để hợp nhất, kể cả khi chọn tiếng Anh.
+Nếu bản `.new` đã tồn tại và khác nội dung, công cụ dừng trước khi ghi. Kết quả có hướng dẫn chưa hợp nhất sẽ báo rõ “CẦN HỢP NHẤT”;
 file khác bị trùng giữ nguyên của bạn và bản package lưu thành `<tên>.new`; skill riêng sẵn có được thêm dòng vào `SKILL_INDEX.md`.
 Skill dùng chung ở `skills/local/shared/`, skill chứa thông tin riêng của đơn vị ở `skills/local/project/`; không chép nội dung chung vào skill riêng.
 

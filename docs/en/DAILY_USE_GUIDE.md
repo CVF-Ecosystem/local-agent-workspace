@@ -185,3 +185,5 @@ Actions that write files always run a preview first; read the result, then press
 (address 127.0.0.1, with a new access code each time), uses no network, deletes no files, and stops about 3 minutes after the
 page is closed. "Choose…" opens the computer's folder picker; if there is none, type or paste the path. The panel does not
 replace giving work to the agent; it only gathers the `python tools/...` commands in one place.
+
+Output checks have three states: passed within supported scope; findings/review required; not checked. Missing files, unsupported formats and missing dependencies never count as a pass. Word checks cover body, headers/footers and footnotes/endnotes, not layout, image text, comments or tracked changes. Excel and the source library require `openpyxl`; if missing, run `python -m pip install openpyxl`. Tools never install it automatically.

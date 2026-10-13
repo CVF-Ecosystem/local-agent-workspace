@@ -7,10 +7,14 @@ Dùng / Usage:
   python tools/check_output.py --declaration <reply.txt|.md>   (kiểm khối "Khai báo thực hiện" / check the "Execution declaration" block)
 
 Hỗ trợ: .md .txt .html .docx .csv .xlsx (CSV/Excel được chuyển cho skill spreadsheet-check). Chỉ đọc, không sửa file.
-Mã thoát: 0 không có lỗi cần sửa; 1 có điều cần sửa trước khi giao. Chỉ cần Python 3.8+, không dùng mạng.
+Mã thoát: 0 đã kiểm đạt; 1 đã kiểm có vấn đề/cần xem xét; 2 chưa kiểm được ít nhất một file.
+Python 3.8+; Excel cần openpyxl. Không dùng mạng.
 Đây là kiểm tra cơ học, không thay thế việc đọc lại và đối chiếu số liệu với nguồn.
 """
 import argparse, io, os, re, subprocess, sys, zipfile
+import importlib.util
+import xml.etree.ElementTree as ET
+from result_schema import emit, make
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LANG = 'vi'
@@ -24,10 +28,16 @@ def text_of(path):
     ext = os.path.splitext(path)[1].lower()
     if ext == '.docx':
         with zipfile.ZipFile(path) as z:
-            x = z.read('word/document.xml').decode('utf-8', 'replace')
-        x = re.sub(r'</w:p>', '\n', x)
-        return re.sub(r'<[^>]+>', '', x)
-    return io.open(path, encoding='utf-8', errors='replace').read()
+            parts = ['word/document.xml'] + sorted(n for n in z.namelist() if
+                re.fullmatch(r'word/(?:header\d+|footer\d+|footnotes|endnotes)\.xml', n))
+            texts = []
+            ns = '{http://schemas.openxmlformats.org/wordprocessingml/2006/main}'
+            for part in parts:
+                root = ET.fromstring(z.read(part))
+                for p in root.iter(ns + 'p'):
+                    texts.append(''.join(e.text or '' for e in p.iter(ns + 't')))
+            return '\n'.join(texts)
+    return io.open(path, encoding='utf-8').read()
 
 def check_text(path, text, ext):
     must, note = [], []
@@ -106,6 +116,7 @@ def main():
     ap.add_argument('files', nargs='+')
     ap.add_argument('--lang', choices=['vi', 'en'], default=None)
     ap.add_argument('--declaration', action='store_true', help='kiểm khối Khai báo thực hiện trong câu trả lời đã lưu / check the Execution declaration block in a saved reply')
+    ap.add_argument('--result-json', action='store_true', help=argparse.SUPPRESS)
     a = ap.parse_args()
     if hasattr(sys.stdout, 'reconfigure'):
         sys.stdout.reconfigure(encoding='utf-8')
@@ -116,41 +127,73 @@ def main():
             LANG = json.load(io.open(os.path.join(ROOT, '.agent', 'PACKAGE_INFO.json'), encoding='utf-8')).get('language', 'vi')
         except (OSError, ValueError):
             pass
-    bad = 0
+    statuses, records = [], []
+    current_file = [None]
+    def result(code):
+        statuses.append(code)
+        records.append({'path': current_file[0], 'status': ('pass', 'issues', 'not_checked')[code]})
+        print('  ' + [L('ĐÃ KIỂM — ĐẠT trong phạm vi hỗ trợ.', 'CHECKED — PASS within supported scope.'),
+                      L('ĐÃ KIỂM — CÓ VẤN ĐỀ / CẦN XEM XÉT.', 'CHECKED — ISSUES / REVIEW REQUIRED.'),
+                      L('CHƯA KIỂM ĐƯỢC.', 'NOT CHECKED.')][code])
     for f in a.files:
+        current_file[0] = f
         ext = os.path.splitext(f)[1].lower()
         print('== %s ==' % f)
         if not os.path.isfile(f):
-            print('  ' + L('Không thấy file.', 'File not found.')); bad += 1; continue
+            print('  ' + L('Không thấy file.', 'File not found.')); result(2); continue
         if a.declaration:
-            must, note = check_declaration(io.open(f, encoding='utf-8', errors='replace').read())
+            try:
+                must, note = check_declaration(io.open(f, encoding='utf-8').read())
+            except (OSError, UnicodeError) as e:
+                print('  ' + str(e)); result(2); continue
             for m_ in must: print('  ' + L('CẦN SỬA: ', 'FIX: ') + m_)
             for n_ in note: print('  ' + L('LƯU Ý: ', 'NOTE: ') + n_)
             if not must and not note: print('  ' + L('Khai báo đủ các mục.', 'Declaration has all items.'))
-            bad += len(must); continue
+            result(1 if must or note else 0); continue
         if ext in ('.csv', '.xlsx', '.xlsm'):
+            if ext != '.csv' and importlib.util.find_spec('openpyxl') is None:
+                print(L('Thiếu openpyxl cho Excel. Cài bằng: python -m pip install openpyxl. CSV vẫn dùng được.',
+                        'Excel requires openpyxl. Install with: python -m pip install openpyxl. CSV still works.'))
+                result(2); continue
             sc = os.path.join(ROOT, 'skills', 'local', 'shared', 'spreadsheet-check', 'scripts', 'check_spreadsheet.py')
-            r = subprocess.run([sys.executable, sc, f, '--lang', LANG], capture_output=True)
+            try:
+                r = subprocess.run([sys.executable, sc, f, '--lang', LANG, '--status-exit'], capture_output=True)
+            except OSError as e:
+                print('  ' + str(e)); result(2); continue
             print(r.stdout.decode('utf-8', 'replace').rstrip() or r.stderr.decode('utf-8', 'replace').rstrip())
-            if r.returncode != 0:
+            if r.returncode not in (0, 1):
                 err = r.stderr.decode('utf-8', 'replace').strip().splitlines()
                 print('  ' + L('LỖI CÔNG CỤ: skill spreadsheet-check không chạy xong (mã %d) - KHÔNG kiểm được file này, đừng hiểu là không có lỗi. %s', 'TOOL ERROR: the spreadsheet-check skill did not finish (code %d) - this file was NOT checked, do not read it as no problems. %s') % (r.returncode, err[-1] if err else ''))
-                bad += 1
+                result(2)
+            else:
+                result(r.returncode)
             continue
         if ext not in ('.md', '.txt', '.html', '.docx'):
-            print('  ' + L('Định dạng chưa hỗ trợ (%s).', 'Unsupported format (%s).') % ext); continue
+            print('  ' + L('Định dạng chưa hỗ trợ (%s).', 'Unsupported format (%s).') % ext); result(2); continue
+        if ext == '.docx':
+            print(L('  Phạm vi: thân bài, đầu/chân trang, chú thích chân trang/cuối tài liệu; chưa kiểm bố cục, chữ trong ảnh, bình luận hoặc thay đổi được theo dõi.',
+                    '  Scope: body, headers/footers, footnotes/endnotes; layout, text in images, comments and tracked changes are not verified.'))
         try:
             must, note = check_text(f, text_of(f), ext)
-        except (zipfile.BadZipFile, KeyError, OSError) as e:
-            print('  ' + L('Không đọc được file (%s).', 'Could not read the file (%s).') % e); bad += 1; continue
+        except (zipfile.BadZipFile, KeyError, OSError, ET.ParseError, UnicodeError, RuntimeError) as e:
+            print('  ' + L('Không đọc được file (%s).', 'Could not read the file (%s).') % e); result(2); continue
         for m in must: print('  ' + L('CẦN SỬA: ', 'FIX: ') + m)
         for n in note: print('  ' + L('LƯU Ý: ', 'NOTE: ') + n)
         if not must and not note:
             print('  ' + L('Không phát hiện vấn đề cơ học.', 'No mechanical problems found.'))
-        bad += len(must)
+        result(1 if must or note else 0)
     print('\n' + L('Kiểm tra cơ học, chưa thay việc đọc lại và đối chiếu số liệu với nguồn (xem delivery-checklist).',
                   'A mechanical check; it does not replace re-reading and checking figures against sources (see delivery-checklist).'))
-    sys.exit(1 if bad else 0)
+    print(L('Tổng kết: %d đạt; %d cần xem xét; %d chưa kiểm được.',
+            'Summary: %d passed; %d need review; %d not checked.') % tuple(statuses.count(i) for i in range(3)))
+    code = max(statuses, default=2)
+    if a.result_json:
+        emit(make(('success', 'issues', 'not_checked')[code], code=code,
+                  message=L('Kiểm tra đầu ra đã hoàn tất.', 'Output check completed.'),
+                  changes=False, files=records,
+                  findings=[x for x in records if x['status'] == 'issues'],
+                  unchecked=[x for x in records if x['status'] == 'not_checked']))
+    sys.exit(code)
 
 if __name__ == '__main__':
     main()

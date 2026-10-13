@@ -176,3 +176,5 @@ Thao tác có ghi file luôn chạy xem trước; đọc kết quả rồi mới
 127.0.0.1, có mã truy cập riêng mỗi lần mở), không dùng mạng, không xóa file, tự tắt khoảng 3 phút sau khi đóng trang. Nút
 "Chọn…" mở hộp chọn thư mục của máy; nếu máy không có, gõ hoặc dán đường dẫn. Bảng điều khiển không thay việc giao việc cho
 agent; nó chỉ gom các lệnh `python tools/...` vào một chỗ.
+
+Kiểm tra đầu ra có ba trạng thái: đã kiểm đạt trong phạm vi hỗ trợ; đã kiểm có vấn đề/cần xem xét; chưa kiểm được. Thiếu file, định dạng không hỗ trợ hoặc thiếu thư viện không được coi là đạt. Word được kiểm chữ trong thân bài, đầu/chân trang và chú thích chân trang/cuối tài liệu; chưa kiểm bố cục, chữ trong ảnh, bình luận hoặc thay đổi được theo dõi. Excel và thư viện nguồn cần `openpyxl`; nếu thiếu, chạy `python -m pip install openpyxl`. Công cụ không tự cài.

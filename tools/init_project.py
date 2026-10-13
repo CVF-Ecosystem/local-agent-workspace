@@ -100,16 +100,9 @@ def main():
 
     def pristine(dst):
         """File còn ở dạng mẫu (chưa điền) thì được thay bằng bản tiếng Anh."""
-        cur = rd(dst)
         if is_original(dst):
             return True
-        if dst == 'PROJECT.md':
-            return any(l in cur for l in NAME_LINE.values())
-        if dst == '.agent/STATE.md':
-            return any(p in cur for p in PHASE_PLACEHOLDER.values())
-        if dst == '.agent/HANDOFF.md':
-            return '\nNone' in cur[:40]
-        if dst in USER_TEMPLATES:
+        if dst in USER_TEMPLATES or dst in ('AGENTS.md', 'CLAUDE.md', 'GEMINI.md'):
             return False
         return True
 
@@ -145,7 +138,8 @@ def main():
             return rd('en/' + dst)
         return rd(dst)
 
-    line = NAME_LINE[a.lang]
+    line = next((v for v in (NAME_LINE[a.lang], NAME_LINE['vi'], NAME_LINE['en'])
+                 if v in future('PROJECT.md')), NAME_LINE[a.lang])
     if line in future('PROJECT.md'):
         def fill():
             cur = rd('PROJECT.md')
@@ -159,7 +153,8 @@ def main():
         val = getattr(a, k).strip().replace('\n', ' ')
         if not val:
             continue
-        label = labels[0 if a.lang == 'vi' else 1]
+        label = next((v for v in labels if re.search(r'^- %s:' % re.escape(v), future('PROJECT.md'), re.M)),
+                     labels[0 if a.lang == 'vi' else 1])
         pat = re.compile(r'^(- %s: )\[[^\n]*\]$' % re.escape(label), re.M)
         if pat.search(future('PROJECT.md')):
             def fill_field(pat=pat, val=val):
@@ -169,7 +164,7 @@ def main():
         else:
             log.append(L('Bỏ qua "%s": dòng này trong PROJECT.md đã có nội dung.', 'Skipped "%s": that line in PROJECT.md already has content.') % label)
 
-    ph = PHASE_PLACEHOLDER[a.lang]
+    ph = next((v for v in PHASE_PLACEHOLDER.values() if v in future('.agent/STATE.md')), PHASE_PLACEHOLDER[a.lang])
     if ph in future('.agent/STATE.md'):
         def state():
             cur = rd('.agent/STATE.md')
@@ -194,4 +189,7 @@ def main():
               'If you use a Project/cloud: paste the text in section 5 of docs/en/NEW_PROJECT_GUIDE.md')
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except OSError as e:
+        sys.exit('CHƯA HOÀN TẤT / INCOMPLETE: %s. Có thể đã cập nhật một số file; chưa tự hoàn tác. / Some files may have changed; no automatic rollback.' % e)

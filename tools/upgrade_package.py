@@ -17,13 +17,17 @@ Quy tắc so sánh ba bên (bản gốc cũ trong MANIFEST của project, bản 
 Script không xóa file nào. Cần Python 3.8+, không dùng mạng.
 """
 import argparse, datetime, hashlib, io, json, os, re, shutil, sys
+from result_schema import emit, make
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEXT_EXT = ('.md', '.html', '.py', '.json', '.txt', '.sha256', '.css', '.js', '')
 USER_FILES = {'PROJECT.md', '.agent/STATE.md', '.agent/HANDOFF.md', '.agent/INDEX.md',
-              '.agent/SKILL_INDEX.md', '.agent/PENDING_LESSONS.md', '.agent/PACKAGE_INFO.json', 'setup_answers.json'}
+              '.agent/SKILL_INDEX.md', '.agent/PENDING_LESSONS.md', '.agent/PACKAGE_INFO.json',
+              '.agent/MERGE_STATUS.json', 'setup_answers.json'}
 OVERLAY_SKIP = {'en/PROJECT_INSTRUCTIONS_SNIPPET.md'}
 LANG = 'vi'
+RESULT_REQUESTED = '--result-json' in sys.argv
+LAST_RESULT = None
 
 def L(vi, en): return en if LANG == 'en' else vi
 
@@ -135,16 +139,26 @@ def write_index_rows(project, rows):
 def copy(source, src_rel, project, dst_rel, suffix=''):
     dst = os.path.join(project, *dst_rel.split('/')) + suffix
     os.makedirs(os.path.dirname(dst), exist_ok=True)
-    shutil.copyfile(os.path.join(source, *src_rel.split('/')), dst)
+    src = os.path.join(source, *src_rel.split('/'))
+    if suffix and os.path.exists(dst):
+        if open(src, 'rb').read() == open(dst, 'rb').read():
+            return
+        raise OSError('Pending merge already exists: ' + dst)
+    if suffix:
+        with open(src, 'rb') as inp, open(dst, 'xb') as out:
+            shutil.copyfileobj(inp, out)
+    else:
+        shutil.copyfile(src, dst)
 
 def main():
-    global LANG
+    global LANG, LAST_RESULT
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--from', dest='source', help='thư mục package MỚI / the NEW package folder')
     ap.add_argument('--project', help='thư mục project cần nâng cấp / the project folder to upgrade')
     ap.add_argument('--apply', action='store_true', help='ghi thay đổi (mặc định chỉ báo cáo) / write changes (default: report only)')
     ap.add_argument('--allow-uninitialized', action='store_true', help='cho phép project chưa có .agent/PACKAGE_INFO.json / allow a project without .agent/PACKAGE_INFO.json')
     ap.add_argument('--force', action='store_true', help='cho phép "nâng cấp" xuống bản thấp hơn / allow a downgrade')
+    ap.add_argument('--result-json', action='store_true', help=argparse.SUPPRESS)
     a = ap.parse_args()
     if hasattr(sys.stdout, 'reconfigure'):
         sys.stdout.reconfigure(encoding='utf-8')
@@ -191,6 +205,15 @@ def main():
         if len(items) > 40:
             print('  ... +%d' % (len(items) - 40))
     idx_rows = index_rows(project, source, LANG, p)
+    result_files = []
+    for key in ('update', 'add', 'user_missing'):
+        result_files += [{'path': x[0], 'action': key} for x in p[key]]
+    result_files += [{'path': x[0] + '.new', 'action': 'merge'} for x in p['conflict']]
+    result_files += [{'path': '.agent/SKILL_INDEX.md', 'action': 'append'} for _ in idx_rows[:1]]
+    LAST_RESULT = make('preview', message='Upgrade preview', changes=bool(result_files),
+                       merge_required=bool(p['conflict']), files=result_files,
+                       next_actions=(['Merge the .new files after applying.'] if p['conflict'] else []),
+                       from_version=ov, to_version=nv)
     if idx_rows:
         print('\n%s (%d):' % (L('Thêm vào .agent/SKILL_INDEX.md các dòng skill dùng chung còn thiếu (không sửa dòng đã có)',
                                 'Added to .agent/SKILL_INDEX.md: shared-skill rows still missing (existing rows are not touched)'), len(idx_rows)))
@@ -207,6 +230,15 @@ def main():
         print('\n' + L('Không có gì cần cập nhật.', 'Nothing to update.'))
 
     if a.apply:
+        for rel, src in p['conflict']:
+            pending = os.path.join(project, rel + '.new')
+            if os.path.exists(pending) and (not os.path.isfile(pending) or
+                    open(pending, 'rb').read() != open(os.path.join(source, src), 'rb').read()):
+                LAST_RESULT = make('blocked', code=1, message='Pending merge conflict', changes=False,
+                                   merge_required=True, files=[{'path': rel + '.new', 'action': 'blocked'}],
+                                   next_actions=['Resolve or remove the existing .new file, then retry.'],
+                                   from_version=ov, to_version=nv)
+                sys.exit('XUNG ĐỘT / CONFLICT: %s đã có nội dung khác; chưa ghi gì / pending merge differs; nothing written.' % pending)
         for rel, src in p['update'] + p['add'] + p['user_missing']:
             copy(source, src, project, rel)
         for rel, src in p['conflict']:
@@ -224,8 +256,25 @@ def main():
                     'To do: open each file that has a <name>.new, merge what you want to keep, then delete the .new file.'))
         print(L('Nếu dùng gói lĩnh vực: chạy "python tools/pack.py list" để xem gói nào có bản mới.',
                 'If you use domain packs: run "python tools/pack.py list" to see which have a newer version.'))
+        LAST_RESULT = make('success', message='Upgrade applied', changes=bool(result_files),
+                           merge_required=bool(p['conflict']), files=result_files,
+                           next_actions=(['Merge the .new files.'] if p['conflict'] else []),
+                           from_version=ov, to_version=nv)
     else:
         print('\n' + L('Thêm --apply để thực hiện.', 'Add --apply to carry it out.'))
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+        if RESULT_REQUESTED:
+            emit(LAST_RESULT or make('success', message='Upgrade completed', changes=None))
+    except SystemExit as e:
+        if RESULT_REQUESTED:
+            code = e.code if isinstance(e.code, int) else 1
+            emit(LAST_RESULT or make('blocked', code=code, message=str(e), changes=False))
+        raise
+    except OSError as e:
+        if RESULT_REQUESTED:
+            emit(make('partial', code=1, message=str(e), changes=None,
+                      next_actions=['Inspect files already updated before retrying.']))
+        sys.exit('CHƯA HOÀN TẤT / INCOMPLETE: %s. Có thể đã cập nhật một số file; chưa tự hoàn tác. / Some files may have changed; no automatic rollback.' % e)

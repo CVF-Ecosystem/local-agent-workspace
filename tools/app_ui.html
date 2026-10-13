@@ -353,6 +353,15 @@ textarea{min-height:68px;resize:vertical}
     </div><div class="formfoot"><span class="note" style="background:none;padding:0"><span data-ico="info"></span><span data-t="ck_ro"></span></span><div class="r"><button class="btn pri lg" id="ck-run"><span data-ico="check"></span><span data-t="ck_run"></span></button></div></div></div>
   </section>
 
+  <!-- MERGES -->
+  <section class="page" id="pg-merges">
+    <div class="ph"><h1 data-t="nav_merges"></h1><p data-t="mg_p"></p></div>
+    <div class="note warn mb"><span data-ico="shield"></span><span data-t="mg_safe"></span></div>
+    <div class="card"><div class="card-h"><span data-ico="merge"></span><h2 data-t="mg_title"></h2><span class="sub" id="mg-count"></span></div>
+      <div class="tw"><table><thead><tr><th data-t="mg_file"></th><th style="width:130px" data-t="mg_origin"></th><th style="width:150px" data-t="mg_state"></th><th style="width:310px" data-t="mg_actions"></th></tr></thead><tbody id="mg-rows"></tbody></table></div>
+    </div>
+  </section>
+
   <!-- PACKS -->
   <section class="page" id="pg-packs">
     <div class="ph"><h1 data-t="nav_packs"></h1><p data-t="pk_p"></p></div>
@@ -493,7 +502,7 @@ var ICONS={
 function ico(n,c){return'<svg class="i'+(c?' '+c:'')+'" viewBox="0 0 24 24" aria-hidden="true">'+(ICONS[n]||'')+'</svg>';}
 var D={
  panel:['Bảng điều khiển','Control panel'],g_work:['Làm việc','Work'],g_setup:['Thiết lập','Setup'],
- nav_home:['Tổng quan','Overview'],nav_check:['Kiểm tra trước khi giao','Check before delivery'],nav_packs:['Gói lĩnh vực','Domain packs'],nav_skills:['Cài skill vào ứng dụng','Install skills into apps'],
+ nav_home:['Tổng quan','Overview'],nav_check:['Kiểm tra trước khi giao','Check before delivery'],nav_merges:['Chờ hợp nhất','Pending merges'],nav_packs:['Gói lĩnh vực','Domain packs'],nav_skills:['Cài skill vào ứng dụng','Install skills into apps'],
  nav_setup:['Khởi tạo','Set up'],nav_library:['Thư viện nguồn','Source library'],
  lb_p:['Văn bản pháp luật, quy chế nội bộ, mẫu biểu của project trong references/, ghi trong một chỉ mục references/_INDEX.xlsx. Agent tra ở đây trước khi trích dẫn; không có toàn văn thì không trích nguyên văn.','The project\u2019s legal documents, internal rules and templates in references/, recorded in one index references/_INDEX.xlsx. The agent looks here before quoting; without full text there are no verbatim quotes.'],
  lb_none_t:['Chưa có chỉ mục thư viện','No library index yet'],lb_none_p:['Tạo khung thư mục (legal, policies, templates, source-documents) và file chỉ mục mẫu. Không ghi đè gì đã có.','Create the folders (legal, policies, templates, source-documents) and the index template. Nothing existing is overwritten.'],lb_init:['Tạo khung thư viện','Create the library'],
@@ -504,6 +513,14 @@ var D={
  lb_open:['Mở','Open'],lb_noft:['Không có','None'],lb_t_check:['Kiểm tra thư viện nguồn','Check the source library'],lb_t_init:['Tạo khung thư viện','Create the library'],nav_upgrade:['Nâng cấp package','Upgrade package'],nav_maintain:['Bảo trì','Maintenance'],
  theme:['Đổi nền sáng/tối','Toggle light/dark'],quit:['Tắt bảng điều khiển','Stop the panel'],open_folder:['Mở thư mục','Open folder'],guide:['Hướng dẫn','Guide'],open_output:['Mở output','Open output'],copy_path:['Bấm để chép đường dẫn','Click to copy the path'],
  st_ready:['Đã khởi tạo','Set up'],st_notinit:['Chưa khởi tạo','Not set up'],
+ st_template:['Bộ mẫu chưa khởi tạo','Uninitialized template'],st_unknown:['Chưa xác định trạng thái','Status unknown'],
+ evidence_project:['Có thông tin khởi tạo hợp lệ','Valid initialization record'],evidence_template:['PROJECT còn nguyên mẫu theo manifest; chưa có thông tin khởi tạo','PROJECT matches a manifest template; no initialization record'],evidence_unknown:['Chưa đủ thông tin để xác định; kiểm tra ngữ cảnh project trước khi khởi tạo','Insufficient evidence; check project context before setup'],
+ check_pass:['Đã kiểm — đạt trong phạm vi hỗ trợ','Checked — passed within supported scope'],check_issues:['Đã kiểm — cần xem xét','Checked — needs review'],check_not_checked:['Chưa kiểm được đầy đủ','Not fully checked'],merge_required:['Còn hướng dẫn cần hợp nhất; bản cũ được giữ nguyên','Instructions need merging; existing files are preserved'],
+ result_success:['Thành công','Succeeded'],result_preview:['Đã xem trước','Preview ready'],result_issues:['Cần xem xét','Needs review'],result_not_checked:['Chưa kiểm được','Not checked'],result_blocked:['Đang bị chặn','Blocked'],result_partial:['Chưa hoàn tất','Incomplete'],result_error:['Lỗi công cụ','Tool error'],
+ mg_p:['Các bản `.new` do package hoặc gói lĩnh vực tạo khi cần giữ cả file hiện hành và bản mới.','Package or domain-pack `.new` files created when both the current and new versions must be preserved.'],
+ mg_safe:['Ứng dụng chỉ theo dõi file do package quản lý, không tự hợp nhất và không ghi đè file hiện hành. Mục sẽ tự biến mất sau khi bạn xử lý và bỏ file `.new`.','The panel tracks only package-managed files. It never merges automatically or overwrites the current file. An item disappears after you handle and remove its `.new` file.'],
+ mg_title:['Danh sách cần xử lý','Items to resolve'],mg_file:['File','File'],mg_origin:['Nguồn','Origin'],mg_state:['Trạng thái','Status'],mg_actions:['Thao tác','Actions'],mg_none:['Không có file package nào đang chờ hợp nhất.','No package-managed files are waiting to be merged.'],
+ mg_package:['Package','Package'],mg_domain_pack:['Gói lĩnh vực','Domain pack'],mg_unseen:['Chưa xem','Not reviewed'],mg_reviewing:['Đang xem','Reviewing'],mg_ready:['Đã xem, chờ xử lý','Reviewed; awaiting merge'],mg_open_current:['Mở bản hiện hành','Open current'],mg_open_new:['Mở bản mới','Open new'],mg_start:['Bắt đầu xem','Start review'],mg_ready_b:['Đánh dấu đã xem','Mark reviewed'],mg_reopen:['Xem lại','Review again'],
  bn_init_t:['Thư mục này chưa là project','This folder is not a project yet'],bn_init_p:['Khởi tạo để điền PROJECT.md, đặt STATE sạch và bật các chức năng cài gói, nâng cấp.','Set it up to fill PROJECT.md, start a clean STATE and enable packs and upgrades.'],bn_init_b:['Khởi tạo','Set up'],
  k_skills:['Skill trong chỉ mục','Skills in the index'],k_packs:['Gói lĩnh vực đã cài','Domain packs installed'],k_out:['File trong output','Files in output'],k_ref:['File nguồn (references)','Source files (references)'],
  state_t:['Trạng thái công việc','Work status'],quick_t:['Lối tắt','Shortcuts'],state_empty:['Chưa có trạng thái','No status yet'],state_empty_p:['Agent ghi vào .agent/STATE.md khi làm việc: mục tiêu, giai đoạn, việc chờ bạn.','The agent writes .agent/STATE.md while working: goal, phase, what waits on you.'],
@@ -529,7 +546,7 @@ var D={
  preview:['Xem trước','Preview'],apply:['Thực hiện','Apply'],
  su_p:['Tạo project từ thư mục này, hoặc đưa package vào một project đã có. Mọi thao tác xem trước rồi mới ghi; không xóa file nào.','Create a project from this folder, or bring the package into an existing project. Every action is previewed before writing; no file is deleted.'],
  su_new:['Project mới (thư mục này)','New project (this folder)'],su_adopt:['Project đã có','Existing project'],
- su_tpl:['Thư mục này mang tên package gốc. Nên sao chép ra thư mục mới đặt theo tên project rồi khởi tạo ở đó, để giữ bản gốc dùng cho project khác.','This folder still has the original package name. Copy it to a new folder named after the project and set up there, keeping the original for other projects.'],
+ su_tpl:['PROJECT còn nguyên mẫu và chưa có thông tin khởi tạo. Nên sao chép bộ mẫu ra thư mục project riêng rồi khởi tạo ở đó.','PROJECT is an unchanged template with no initialization record. Copy the template into a separate project folder before setup.'],
  su_inited:['Thư mục này đã khởi tạo. Chạy lại chỉ điền các dòng còn trống trong PROJECT.md; dòng đã có nội dung và STATE được giữ nguyên.','This folder is already set up. Running again only fills empty lines in PROJECT.md; lines with content and STATE are kept.'],
  f_name:['Tên project','Project name'],f_lang:['Ngôn ngữ của project','Project language'],f_purpose:['Mục đích và người đọc','Purpose and readers'],f_outputs:['Đầu ra mong đợi','Expected outputs'],f_style:['Ngôn ngữ và văn phong','Language and style'],f_sources:['Nguồn, mẫu chính đã duyệt','Main approved sources and templates'],f_constraints:['Ràng buộc quan trọng','Important constraints'],f_sensitivity:['Mức nhạy cảm dữ liệu','Data sensitivity'],
  f_hint:['Ô nào chưa biết thì để trống, điền sau trong PROJECT.md.','Leave unknown fields empty and fill them in PROJECT.md later.'],
@@ -540,7 +557,7 @@ var D={
  mt1:['Kiểm tra nguyên vẹn','Integrity check'],mt1d:['So file với MANIFEST: file nào của package đã bị sửa hoặc thiếu','Compare with MANIFEST: which package files were changed or are missing'],
  mt2:['Kiểm tra package','Check the package'],mt2d:['Cấu trúc, chỉ mục skill, bản tiếng Anh, số phiên bản, các gói','Structure, skill index, English copies, versions, packs'],
  mt3:['Dựng lại hướng dẫn HTML','Rebuild the HTML guides'],mt3d:['Sau khi sửa Markdown trong docs/','After editing the Markdown in docs/'],
- mt4:['Đóng gói phát hành','Build a release'],mt4d:['Kiểm tra, ghi MANIFEST, đóng ZIP vào dist/; working/, output/, archive/ phải trống','Check, write MANIFEST, build the ZIP into dist/; working/, output/, archive/ must be empty'],run:['Chạy','Run'],
+ mt4:['Đóng gói phát hành','Build a release'],mt4d:['Chỉ dùng trong kho nguồn: kiểm tra và đóng ZIP vào dist/ mà không sửa dữ liệu phát triển','Source repository only: validate and build the ZIP in dist/ without changing development data'],run:['Chạy','Run'],
  close:['Đóng','Close'],copy:['Chép','Copy'],copied:['Đã chép','Copied'],running:['Đang chạy…','Running…'],ok:['Thành công','Succeeded'],fail:['Cần xem lại','Needs attention'],bad:['Thiếu thông tin','Missing input'],
  m_preview:['Mới xem trước, chưa ghi gì. Đọc kết quả rồi bấm Thực hiện.','Preview only, nothing written yet. Read it, then press Apply.'],m_nothing:['Không có gì cần thay đổi.','Nothing to change.'],m_done:['Đã ghi thay đổi.','Changes written.'],m_ro:['Chỉ đọc, không ghi gì.','Read only, nothing written.'],
  pick_fail:['Không mở được hộp chọn; hãy dán đường dẫn.','The picker is not available; paste the path instead.'],
@@ -549,7 +566,7 @@ var D={
  SEC_Goal:['Mục tiêu','Goal'],'SEC_Current phase':['Giai đoạn hiện tại','Current phase'],SEC_Completed:['Đã xong','Completed'],'SEC_Current artifact':['Sản phẩm hiện hành','Current artifact'],'SEC_Open items':['Việc còn mở','Open items'],'SEC_Waiting on user':['Đang chờ bạn','Waiting on you'],SEC_Decisions:['Quyết định','Decisions'],'SEC_Next milestone':['Mốc tiếp theo','Next milestone']
 };
 var PACK_ICON={'phap-ly':'scale','van-thu-luu-tru':'archive','cang-logistics':'anchor','hanh-chinh-nhan-su':'users','ke-toan-noi-bo':'calc'};
-var NAV=[['nav1',[['home','home','nav_home'],['library','library','nav_library'],['check','check','nav_check'],['packs','box','nav_packs'],['skills','monitor','nav_skills']]],['nav2',[['setup','plus','nav_setup'],['upgrade','up','nav_upgrade'],['maintain','gear','nav_maintain']]]];
+var NAV=[['nav1',[['home','home','nav_home'],['library','library','nav_library'],['check','check','nav_check'],['merges','merge','nav_merges'],['packs','box','nav_packs'],['skills','monitor','nav_skills']]],['nav2',[['setup','plus','nav_setup'],['upgrade','up','nav_upgrade'],['maintain','gear','nav_maintain']]]];
 var lang='vi',S=null,files=[],pending=null,page='home',skFilter='all';
 function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);}catch(e){return null;}}
 function $(id){return document.getElementById(id);}
@@ -565,7 +582,7 @@ function paint(){
   document.querySelectorAll('[data-tt]').forEach(function(el){el.title=t(el.dataset.tt);el.setAttribute('aria-label',t(el.dataset.tt));});
   document.querySelectorAll('.lang button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.lang===lang?'true':'false');});
   $('sk-q').placeholder=lang==='en'?'Search skills':'Tìm skill';
-  NAV.forEach(function(g){$(g[0]).innerHTML=g[1].map(function(n){return'<button data-page="'+n[0]+'"'+(n[0]===page?' aria-current="page"':'')+'>'+ico(n[1])+'<span>'+esc(t(n[2]))+'</span>'+(n[0]==='packs'&&S?'<span class="badge">'+(S.packs.items||[]).length+'</span>':'')+'</button>';}).join('');});
+  NAV.forEach(function(g){$(g[0]).innerHTML=g[1].map(function(n){var badge=n[0]==='packs'&&S?(S.packs.items||[]).length:n[0]==='merges'&&S?(S.merges||[]).length:null;return'<button data-page="'+n[0]+'"'+(n[0]===page?' aria-current="page"':'')+'>'+ico(n[1])+'<span>'+esc(t(n[2]))+'</span>'+(badge!==null?'<span class="badge">'+badge+'</span>':'')+'</button>';}).join('');});
   document.querySelectorAll('.nav button').forEach(function(b){b.addEventListener('click',function(){go(b.dataset.page);});});
   $('cr-page').textContent=t(NAV[0][1].concat(NAV[1][1]).filter(function(n){return n[0]===page;})[0][2]);
   if(S)render();
@@ -597,16 +614,18 @@ function colorize(s){return esc(s).split('\n').map(function(l){
   if(/^\s*(CẢNH BÁO|WARNING|Cảnh báo)/i.test(l))return'<span class="warn">'+l+'</span>';
   if(/^\s*(ĐẠT|PASS|Đã |Xong|Done|OK\b)/.test(l))return'<span class="ok">'+l+'</span>';
   if(/^\s*\[(XEM TRƯỚC|CHẠY THỬ|PREVIEW|DRY RUN)/i.test(l))return'<span class="dim">'+l+'</span>';return l;}).join('\n');}
-var NOTHING=/Không có gì cần|Nothing to (update|do|change)|0 file đã đổi, 0 file thiếu/i;
 function run(title,icon,act,params,opts){opts=opts||{};openSheet(title,icon,opts.preview);
   return api('/api/run',{action:act,params:params}).then(function(r){
     if(r.cmd){$('sh-code').textContent=r.cmd;$('sh-cmd').hidden=false;}
     $('sh-out').innerHTML=colorize(r.out||'');
-    var ok=r.code===0;
-    $('sh-tag').innerHTML='<span class="tag '+(ok?'ok':(r.input_error?'warn':'err'))+'">'+ico(ok?'check':'alert')+esc(ok?t('ok'):(r.input_error?t('bad'):t('fail')))+'</span>';
-    if(params&&params.apply){$('sh-s2').classList.add('on');if(ok)$('sh-msg').textContent=t('m_done');}
+    var res=r.result||{status:(r.code===0?'success':'error'),changes:null,merge_required:false},ok=r.code===0;
+    var tone=/^(success|preview)$/.test(res.status)?'ok':(/^(issues|not_checked|blocked)$/.test(res.status)?'warn':'err');
+    var label=t('result_'+res.status);
+    if(res.merge_required){label=t('merge_required');tone='warn';}
+    $('sh-tag').innerHTML='<span class="tag '+tone+'">'+ico(tone==='ok'?'check':'alert')+esc(label)+'</span>';
+    if(params&&params.apply){$('sh-s2').classList.add('on');if(ok)$('sh-msg').textContent=t(res.merge_required?'merge_required':'m_done');}
     else if(opts.preview&&ok){
-      if(NOTHING.test(r.out||'')){$('sh-msg').textContent=t('m_nothing');}
+      if(res.changes===false){$('sh-msg').textContent=t('m_nothing');}
       else{$('sh-msg').textContent=t('m_preview');var a=$('sh-apply');a.innerHTML=ico('check')+esc(t('apply'));a.hidden=false;
         pending=function(){run(title,icon,act,Object.assign({},params,{apply:true}),{preview:true,after:opts.after});};}}
     else if(opts.ro){$('sh-msg').textContent=t('m_ro');}
@@ -617,11 +636,11 @@ $('sh-apply').addEventListener('click',function(){if(pending){var f=pending;pend
 $('su-run').addEventListener('click',function(){var p={name:$('f-name').value,lang:segVal('f-lang')};['purpose','outputs','style','sources','constraints','sensitivity'].forEach(function(k){p[k]=$('f-'+k).value;});run(t('t_init'),'plus','init',p,{preview:true,after:refresh});});
 function autoName(){var v=$('a-dir').value.trim().replace(/[\\\/]+$/,'');if(v&&!$('a-name').value.trim())$('a-name').value=v.split(/[\\\/]/).pop();}
 $('a-dir').addEventListener('change',autoName);$('a-dir').addEventListener('blur',autoName);
-$('a-run').addEventListener('click',function(){autoName();run(t('t_adopt'),'merge','adopt',{project:$('a-dir').value,name:$('a-name').value,lang:segVal('a-lang')},{preview:true});});
+$('a-run').addEventListener('click',function(){autoName();run(t('t_adopt'),'merge','adopt',{project:$('a-dir').value,name:$('a-name').value,lang:segVal('a-lang')},{preview:true,after:refresh});});
 var upMode='self';
 seg('up-mode',function(v){setUpMode(v);});
 function setUpMode(v){upMode=v;$('up-mode').querySelectorAll('button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.v===v?'true':'false');});$('up-other-n').hidden=v!=='other';$('u-lbl').textContent=t(v==='other'?'up_to':'up_from');$('u-dir').placeholder=v==='other'?'D:\\UNG DUNG AI\\TEN PROJECT':'D:\\goi-moi\\local-agent-workspace-...';}
-$('u-run').addEventListener('click',function(){if(upMode==='other')run(t('up_other'),'up','upgrade_other',{project:$('u-dir').value},{preview:true});else run(t('t_up'),'up','upgrade',{source:$('u-dir').value},{preview:true,after:refresh});});
+$('u-run').addEventListener('click',function(){if(upMode==='other')run(t('up_other'),'up','upgrade_other',{project:$('u-dir').value},{preview:true,after:refresh});else run(t('t_up'),'up','upgrade',{source:$('u-dir').value},{preview:true,after:refresh});});
 function target(){var c=document.querySelector('input[name=tg]:checked');return c?c.value:'claude';}
 document.querySelectorAll('input[name=tg]').forEach(function(r){r.addEventListener('change',function(){$('sk-dest-f').hidden=target()!=='custom';});});
 $('sk-run').addEventListener('click',function(){run(t('t_install'),'monitor','install_skills',{target:target(),dest:$('sk-dest').value,include_packs:$('sk-packs').checked,overwrite:$('sk-over').checked},{preview:true});});
@@ -659,14 +678,16 @@ function render(){
   var s=S,name=s.project_name||s.folder,inst=(s.packs.items||[]).filter(function(p){return p.installed;}).length;
   document.title=name+' · Workspace';
   $('sb-av').textContent=$('ov-av').textContent=initials(name);$('sb-name').textContent=name;$('sb-name').title=name;
-  $('sb-dot').className='dot'+(s.initialized?'':' warn');$('sb-st').textContent=s.initialized?t('st_ready'):t('st_notinit');
+  var kind=s.workspace_kind||'unknown',statusLabel=t(kind==='project'?'st_ready':kind==='template'?'st_template':'st_unknown');
+  $('sb-dot').className='dot'+(s.initialized?'':' warn');$('sb-st').textContent=statusLabel;$('sb-st').title=t('evidence_'+kind);
   $('sb-ver').textContent='v'+s.version;$('cr-proj').textContent=name;
   $('ov-name').textContent=name;$('ov-path').innerHTML=ico('folder')+esc(s.root);
-  var tags=['<span class="tag acc">package v'+esc(s.version)+'</span>','<span class="tag '+(s.initialized?'ok':'warn')+'">'+esc(s.initialized?t('st_ready'):t('st_notinit'))+'</span>'];
+  var tags=['<span class="tag acc">package v'+esc(s.version)+'</span>','<span class="tag '+(s.initialized?'ok':'warn')+'">'+esc(statusLabel)+'</span>','<span class="tag">'+esc(t('evidence_'+kind))+'</span>'];
   if(s.initialized)tags.push('<span class="tag">'+(s.lang==='en'?'English':'Tiếng Việt')+'</span>');
   if(s.info&&s.info.initialized)tags.push('<span class="tag">'+esc(s.info.initialized)+'</span>');
   $('ov-tags').innerHTML=tags.join('');
-  $('bn-init').hidden=s.initialized;
+  $('bn-init').hidden=kind!=='template';
+  $('m-release').closest('.rw').hidden=!s.release_source;
   $('k-skills').textContent=s.skills.length;$('k-packs').textContent=inst;$('k-out').textContent=s.counts.output;$('k-ref').textContent=s.counts.references;
   var secs=(s.state.sections||[]).filter(function(x){return!x.empty&&x.lines.length;});
   $('st-box').innerHTML=secs.length?'<dl class="dl">'+secs.map(function(x){var k='SEC_'+x.title;return'<div class="it"><dt>'+esc(D[k]?t(k):x.title)+'</dt><dd>'+mdl(x.lines)+'</dd></div>';}).join('')+'</dl>'
@@ -677,6 +698,7 @@ function render(){
   $('sk-filter').innerHTML=[['all','all'],['SHARED','f_shared'],['PACK','f_pack'],['PROJECT','f_proj']].map(function(f){return'<button data-f="'+f[0]+'" aria-pressed="'+(skFilter===f[0])+'">'+esc(t(f[1]))+'</button>';}).join('');
   $('sk-filter').querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){skFilter=b.dataset.f;render();});});
   drawSkills();
+  drawMerges();
   // packs
   $('pk-need').hidden=s.initialized;
   var items=s.packs.items||[];
@@ -700,6 +722,11 @@ function render(){
   document.querySelectorAll('[data-pick]').forEach(function(b){b.hidden=!s.picker;});$('ck-drop').hidden=!s.picker;
   drawFiles();
 }
+function drawMerges(){var rows=S.merges||[];$('mg-count').textContent=rows.length;
+  $('mg-rows').innerHTML=rows.length?rows.map(function(m){var state='mg_'+m.state,btn=m.state==='unseen'?'<button class="btn pri" data-ms="reviewing" data-mp="'+esc(m.pending)+'">'+esc(t('mg_start'))+'</button>':m.state==='reviewing'?'<button class="btn pri" data-ms="ready" data-mp="'+esc(m.pending)+'">'+esc(t('mg_ready_b'))+'</button>':'<button class="btn" data-ms="reviewing" data-mp="'+esc(m.pending)+'">'+esc(t('mg_reopen'))+'</button>';
+    return'<tr><td class="id">'+esc(m.path)+'<div style="color:var(--muted);font-size:11.5px">'+esc(m.pending)+'</div></td><td><span class="tag">'+esc(t(m.origin==='domain_pack'?'mg_domain_pack':'mg_package'))+'</span></td><td><span class="tag '+(m.state==='ready'?'ok':m.state==='reviewing'?'info':'warn')+'">'+esc(t(state))+'</span></td><td><div style="display:flex;gap:6px;flex-wrap:wrap">'+(m.current_exists?'<button class="btn" data-open="'+esc(m.path)+'">'+esc(t('mg_open_current'))+'</button>':'')+'<button class="btn" data-open="'+esc(m.pending)+'">'+esc(t('mg_open_new'))+'</button>'+btn+'</div></td></tr>';}).join('')
+    :'<tr><td colspan="4"><div class="empty">'+ico('check')+'<span>'+esc(t('mg_none'))+'</span></div></td></tr>';
+  $('mg-rows').querySelectorAll('[data-ms]').forEach(function(b){b.addEventListener('click',function(){api('/api/run',{action:'merge_state',params:{path:b.dataset.mp,state:b.dataset.ms}}).then(function(r){if(r.code===0)refresh();else toast(r.out||t('fail'));});});});}
 function drawSkills(){var q=($('sk-q').value||'').toLowerCase(),rows=S.skills.filter(function(r){return(skFilter==='all'||r.scope===skFilter)&&(!q||(r.id+' '+r.use).toLowerCase().indexOf(q)>=0);});
   $('sk-count').textContent=S.skills.length+' '+t('n_skills');
   $('sk-rows').innerHTML=rows.length?rows.map(function(r){var c=r.scope==='PACK'?'acc':(r.scope==='PROJECT'?'warn':'');return'<tr><td class="id">'+esc(r.id)+'</td><td><span class="tag '+c+'">'+esc(r.scope==='SHARED'?t('f_shared'):r.scope==='PACK'?t('f_pack'):r.scope==='PROJECT'?t('f_proj'):r.scope)+'</span></td><td>'+esc(r.use)+'</td></tr>';}).join('')

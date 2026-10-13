@@ -15,10 +15,11 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEXT_EXT = ('.md', '.html', '.py', '.json', '.txt', '.sha256', '.css', '.js', '')
 SKIP_DIRS = {'.git', '__pycache__', 'dist', 'node_modules'}
 # Chỉ ở thư mục gốc: nơi quản lý feedback của người duy trì, không đưa vào gói phát hành
-ROOT_ONLY_SKIP = {'feedback', '.github'}
+ROOT_ONLY_SKIP = {'feedback', '.github', 'roadmap', 'tests', 'release_templates'}
 # File người dùng sửa trong project: không đưa vào MANIFEST
 USER_FILES = {'PROJECT.md', '.agent/STATE.md', '.agent/HANDOFF.md', '.agent/INDEX.md',
-              '.agent/SKILL_INDEX.md', '.agent/PENDING_LESSONS.md', '.agent/PACKAGE_INFO.json', 'setup_answers.json'}
+              '.agent/SKILL_INDEX.md', '.agent/PENDING_LESSONS.md', '.agent/PACKAGE_INFO.json',
+              '.agent/MERGE_STATUS.json', 'setup_answers.json'}
 USER_DIRS = ('working/', 'output/', 'archive/', 'references/', 'skills/external/', 'skills/inbox/', 'skills/local/project/', 'skills/local/packs/')
 OVERLAY_SKIP = {'en/PROJECT_INSTRUCTIONS_SNIPPET.md'}
 PAIRS = [('AGENTS.md', 'en/AGENTS.md'), ('PROJECT.md', 'en/PROJECT.md'),
@@ -27,7 +28,7 @@ PAIRS = [('AGENTS.md', 'en/AGENTS.md'), ('PROJECT.md', 'en/PROJECT.md'),
          ('docs/HUONG_DAN_SKILLS_VI.md', 'docs/en/SKILLS_GUIDE.md'),
          ('docs/HUONG_DAN_CHUYEN_DOI_PROJECT_CO_SAN_VI.md', 'docs/en/EXISTING_PROJECT_UPGRADE_GUIDE.md'),
          ('docs/NGUON_THAM_KHAO_VI.md', 'docs/en/SOURCES_AND_REFERENCES.md')]
-GENERATED = {'.agent/PACKAGE_INFO.json', 'MANIFEST.sha256'}
+GENERATED = {'.agent/PACKAGE_INFO.json', '.agent/MERGE_STATUS.json', 'MANIFEST.sha256'}
 # Mỗi file trong en/ (trừ OVERLAY_SKIP) thay cho file cùng đường dẫn không có tiền tố en/
 
 def P(rel): return os.path.join(ROOT, *rel.split('/'))
@@ -253,9 +254,17 @@ def check_all(release=False):
     if release:
         if os.path.exists(P('setup_answers.json')): errs.append('Bản phát hành không được có setup_answers.json.')
         if os.path.exists(P('.agent/PACKAGE_INFO.json')): errs.append('Bản phát hành không được có .agent/PACKAGE_INFO.json.')
-        for f, marker in (('PROJECT.md', '[Tên]'), ('en/PROJECT.md', '[Name]'), ('.agent/STATE.md', '[Phase/trạng thái hiện tại]'), ('en/.agent/STATE.md', '[Current phase/status]')):
-            if marker not in rd(f): errs.append('%s không còn ở dạng mẫu (thiếu %s).' % (f, marker))
-        if not rd('.agent/HANDOFF.md').lstrip().startswith('# HANDOFF\n\nNone') or not rd('en/.agent/HANDOFF.md').lstrip().startswith('# HANDOFF\n\nNone'): errs.append('.agent/HANDOFF.md không ở dạng mẫu "None".')
+        prefix = 'release_templates/' if os.path.isdir(P('release_templates')) else ''
+        templates = ((prefix + 'PROJECT.md', '[Tên]'),
+                     (prefix + 'en/PROJECT.md', '[Name]'),
+                     (prefix + '.agent/STATE.md', '[Phase/trạng thái hiện tại]'),
+                     (prefix + 'en/.agent/STATE.md', '[Current phase/status]'))
+        for f, marker in templates:
+            if not os.path.isfile(P(f)) or marker not in rd(f):
+                errs.append('%s thiếu hoặc không còn ở dạng mẫu (cần %s).' % (f, marker))
+        handoffs = (prefix + '.agent/HANDOFF.md', prefix + 'en/.agent/HANDOFF.md')
+        if any(not os.path.isfile(P(f)) or not rd(f).lstrip().startswith('# HANDOFF\n\nNone') for f in handoffs):
+            errs.append('Mẫu HANDOFF phát hành thiếu hoặc không ở dạng "None".')
         for f in files:
             if f.startswith(USER_DIRS) and os.path.basename(f) != 'README.md':
                 errs.append('Có file người dùng trong bản phát hành: %s.' % f)

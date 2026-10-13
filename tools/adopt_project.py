@@ -12,8 +12,7 @@ Quy tắc (không xóa, không ghi đè file của bạn / never deletes, never 
   - file package chưa có trong project              -> thêm;
   - file đã có và giống hệt                          -> bỏ qua;
   - AGENTS.md, CLAUDE.md, GEMINI.md đã có, khác bản package
-                                                     -> lưu bản cũ thành <tên>.bak-<ngày>, dùng bản package.
-                                                        PHẢI hợp nhất phần riêng của bản cũ vào PROJECT.md (script nhắc);
+                                                     -> giữ nguyên; bản package lưu thành <tên>.new để hợp nhất;
   - file khác đã có và khác bản package               -> giữ của bạn, bản package lưu thành <tên>.new;
   - skill riêng sẵn có trong skills/local/project/    -> thêm dòng vào .agent/SKILL_INDEX.md (nếu chưa có), không sửa skill;
   - cuối cùng chạy init_project.py (điền tên, ghi PACKAGE_INFO.json).
@@ -26,14 +25,17 @@ import re
 import shutil
 import subprocess
 import sys
+from result_schema import emit, make
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SKIP_DIRS = {'.git', 'dist', '__pycache__'}
+SKIP_DIRS = {'.git', 'dist', '__pycache__', 'roadmap', 'tests', '.github'}
 SKIP_PREFIX = ('feedback/records/',)
-SKIP_FILES = {'.agent/PACKAGE_INFO.json', 'setup_answers.json'}
+SKIP_FILES = {'.agent/PACKAGE_INFO.json', '.agent/MERGE_STATUS.json', 'setup_answers.json'}
 USER_KEEP = {'PROJECT.md', '.agent/STATE.md', '.agent/HANDOFF.md', '.agent/INDEX.md', '.agent/SKILL_INDEX.md', '.agent/PENDING_LESSONS.md'}
 ADAPTERS = ('AGENTS.md', 'CLAUDE.md', 'GEMINI.md')
 ROW_HEAD = '| Skill ID | Origin | Scope |'
+RESULT_REQUESTED = '--result-json' in sys.argv
+LAST_RESULT = None
 
 
 def package_files():
@@ -69,12 +71,14 @@ def frontmatter(path):
 
 
 def main():
+    global LAST_RESULT
     ap = argparse.ArgumentParser(description='Đưa package vào project đã có / adopt the package into an existing project')
     ap.add_argument('--project', required=True, help='thư mục project cũ / the existing project folder')
     ap.add_argument('--name', required=True, help='tên project / project name')
     ap.add_argument('--lang', choices=('vi', 'en'), default='vi')
     ap.add_argument('--purpose', default='', help='điền dòng "Mục đích và người đọc" trong PROJECT.md')
     ap.add_argument('--apply', action='store_true', help='ghi thay đổi (mặc định chỉ báo cáo)')
+    ap.add_argument('--result-json', action='store_true', help=argparse.SUPPRESS)
     a = ap.parse_args()
 
     proj = os.path.abspath(a.project)
@@ -91,16 +95,22 @@ def main():
     if partial:
         print('Project có .agent/PACKAGE_INFO.json nhưng chưa có VERSION, MANIFEST: đưa package vào như lần đầu; PACKAGE_INFO sẽ được ghi lại.')
 
-    today = datetime.date.today().strftime('%Y%m%d')
     add, skip, bak, new = [], [], [], []
+    def source(rel):
+        overlay = os.path.join(ROOT, 'en', rel)
+        if a.lang == 'en' and rel in ADAPTERS and os.path.isfile(overlay):
+            return overlay
+        return os.path.join(ROOT, rel)
+
     for rel in package_files():
-        s, d = os.path.join(ROOT, rel), os.path.join(proj, rel)
+        s, d = source(rel), os.path.join(proj, rel)
         if not os.path.exists(d):
             add.append(rel)
         elif same(s, d):
             skip.append(rel)
         elif rel in ADAPTERS:
             bak.append(rel)
+            new.append(rel)
         elif rel in USER_KEEP:
             skip.append(rel)  # file của người dùng: giữ nguyên, không tạo .new / user-owned: kept, no .new
         else:
@@ -111,29 +121,44 @@ def main():
     if os.path.isdir(pdir):
         own = sorted(d for d in os.listdir(pdir) if os.path.isfile(os.path.join(pdir, d, 'SKILL.md')))
 
-    print('[%s] Đưa package v%s vào project: %s' % ('GHI' if a.apply else 'BÁO CÁO, chưa ghi gì', open(os.path.join(ROOT, 'VERSION')).read().strip(), proj))
+    with open(os.path.join(ROOT, 'VERSION'), encoding='utf-8') as version_file:
+        version = version_file.read().strip()
+    print('[%s] Đưa package v%s vào project: %s' % ('GHI' if a.apply else 'BÁO CÁO, chưa ghi gì', version, proj))
     print('  Thêm %d file; bỏ qua (giống hệt hoặc file của bạn) %d.' % (len(add), len(skip)))
-    for rel in bak:
-        print('  THAY (lưu bản cũ thành %s.bak-%s): %s' % (rel, today, rel))
+    blocked = []
     for rel in new:
         print('  GIỮ của bạn, bản package lưu thành %s.new: %s' % (rel, rel))
+        candidate = os.path.join(proj, rel + '.new')
+        if os.path.exists(candidate) and (not os.path.isfile(candidate) or not same(source(rel), candidate)):
+            blocked.append(rel + '.new')
     for d in own:
         print('  Skill riêng sẵn có: skills/local/project/%s (sẽ thêm vào SKILL_INDEX nếu chưa có)' % d)
     if bak:
-        print('\nLƯU Ý: %s là hướng dẫn riêng của project cũ. Sau khi ghi, hợp nhất phần riêng của bản .bak vào PROJECT.md '
-              '(không nhân bản nội dung chung đã có trong AGENTS.md).' % ', '.join(bak))
+        print('\nCẦN HỢP NHẤT / MERGE REQUIRED: %s. Hướng dẫn cũ vẫn được giữ và có hiệu lực; '
+              'xem bản .new và hợp nhất trước khi dùng hướng dẫn mới. / Existing instructions remain active; merge .new before switching.' % ', '.join(bak))
+    if blocked:
+        LAST_RESULT = make('blocked', code=1, message='Pending merge conflict', changes=False,
+                           merge_required=True, files=[{'path': x, 'action': 'blocked'} for x in blocked],
+                           next_actions=['Resolve or remove the existing .new file, then retry.'])
+        sys.exit('XUNG ĐỘT / CONFLICT: bản chờ hợp nhất đã có nội dung khác; chưa ghi file nào / nothing written: ' + ', '.join(blocked))
+    planned = ([{'path': x, 'action': 'add'} for x in add] +
+               [{'path': x + '.new', 'action': 'merge'} for x in new])
+    LAST_RESULT = make('preview', message='Adoption preview', changes=bool(planned),
+                       merge_required=bool(bak), files=planned,
+                       next_actions=(['Merge the .new instruction files.'] if bak else []))
     if not a.apply:
         print('\nThêm --apply để thực hiện.')
         return
 
-    for rel in bak:
-        shutil.copy2(os.path.join(proj, rel), os.path.join(proj, rel + '.bak-' + today))
-    for rel in add + bak:
+    for rel in add:
         d = os.path.join(proj, rel)
         os.makedirs(os.path.dirname(d), exist_ok=True)
-        shutil.copy2(os.path.join(ROOT, rel), d)
+        shutil.copy2(source(rel), d)
     for rel in new:
-        shutil.copy2(os.path.join(ROOT, rel), os.path.join(proj, rel + '.new'))
+        candidate = os.path.join(proj, rel + '.new')
+        if not os.path.exists(candidate):
+            with open(source(rel), 'rb') as src, open(candidate, 'xb') as dst:
+                shutil.copyfileobj(src, dst)
 
     # skill riêng sẵn có -> SKILL_INDEX
     idx = os.path.join(proj, '.agent', 'SKILL_INDEX.md')
@@ -173,9 +198,28 @@ def main():
     r = subprocess.run(cmd, cwd=proj)
     if r.returncode:
         sys.exit('init_project.py lỗi; xem thông báo ở trên.')
-    print('\nXong. Việc tiếp theo: (1) hợp nhất bản .bak vào PROJECT.md nếu có; (2) điền .agent/INDEX.md trỏ tới nguồn sẵn có; '
+    print('\n' + ('Đã đưa package vào; CẦN HỢP NHẤT hướng dẫn .new / Package added; MERGE REQUIRED.' if bak else 'Đã đưa package vào / Package added.'))
+    print('Việc tiếp theo: (1) hợp nhất bản .new nếu có; (2) điền .agent/INDEX.md trỏ tới nguồn sẵn có; '
           '(3) chạy python tools/check_package.py --verify trong project.')
+    LAST_RESULT = make('success', message='Package adopted', changes=bool(planned),
+                       merge_required=bool(bak), files=planned,
+                       next_actions=(['Merge the .new instruction files.'] if bak else []))
 
 
 if __name__ == '__main__':
-    main()
+    if hasattr(sys.stdout, 'reconfigure'):
+        sys.stdout.reconfigure(encoding='utf-8')
+    try:
+        main()
+        if RESULT_REQUESTED:
+            emit(LAST_RESULT or make('success', message='Package adopted', changes=None))
+    except SystemExit as e:
+        if RESULT_REQUESTED:
+            code = e.code if isinstance(e.code, int) else 1
+            emit(LAST_RESULT or make('blocked', code=code, message=str(e), changes=False))
+        raise
+    except OSError as e:
+        if RESULT_REQUESTED:
+            emit(make('partial', code=1, message=str(e), changes=None,
+                      next_actions=['Inspect files already added before retrying.']))
+        sys.exit('CHƯA HOÀN TẤT / INCOMPLETE: %s. Có thể đã thêm một số file; chưa tự hoàn tác. / Some files may have been added; no automatic rollback.' % e)

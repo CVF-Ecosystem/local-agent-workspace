@@ -1,7 +1,8 @@
 # tools/
 
-Công cụ của package. Chỉ cần Python 3.8+, không cài thêm, không dùng mạng. Chạy từ thư mục gốc của project.
-Khi làm việc văn phòng hằng ngày chỉ cần `init_project.py` (một lần); các công cụ còn lại dành cho người bảo trì.
+Công cụ của package, chạy từ thư mục gốc project. Khởi tạo, chuyển đổi, nâng cấp và kiểm tra văn bản/CSV chỉ cần Python 3.8+.
+Kiểm tra Excel và thư viện nguồn cần `openpyxl`: `python -m pip install openpyxl`. Công cụ không tự cài thêm;
+cài thư viện có thể cần mạng, còn các thao tác trên file chạy cục bộ. Bảng điều khiển hỗ trợ cả người dùng hằng ngày và người bảo trì.
 
 ## setup_wizard.py
 
@@ -19,6 +20,15 @@ cập riêng, không dùng mạng. Mỗi nút gọi một công cụ có sẵn t
 `upgrade_package`, `pack`, `check_output`, `install_skills`, `check_package`, `build_guides_html`, `build_release`); thao tác có ghi
 luôn xem trước rồi mới thực hiện. Nút "Chọn…" dùng hộp chọn thư mục của `tkinter` nếu Python có. Tự tắt khoảng 3 phút sau khi
 đóng trang. Giao diện nằm trong `app_ui.html` (một file, không tài nguyên ngoài, tiếng Việt và tiếng Anh, sáng và tối).
+
+Mọi phản hồi từ `/api/run` có trường `result` theo schema `local-agent-workspace/result-v1`: trạng thái, mã kết quả,
+có thay đổi hay không, file liên quan, phần chưa kiểm và việc cần làm. Các luồng chuyển đổi, nâng cấp, kiểm đầu ra và đóng gói
+phát schema ngay từ công cụ; backend kiểm schema và mã thoát trước khi chuyển cho giao diện. Công cụ khác được backend
+chuẩn hóa tối thiểu, nên giao diện không quyết định hành động bằng cách dò câu chữ trong output.
+
+Trang **Chờ hợp nhất** liệt kê `.new` thuộc manifest package hoặc gói đã cài. Trạng thái xem được lưu trong
+`.agent/MERGE_STATUS.json`, chỉ gồm đường dẫn tương đối, dấu vân tay và trạng thái; không lưu nội dung tài liệu. File `.new`
+ngoài phạm vi package không bị đưa vào danh sách. Ứng dụng không tự hợp nhất hoặc xóa file.
 
 ## library.py
 
@@ -41,7 +51,7 @@ python tools/init_project.py --name "Project name" --lang en --dry-run
 Điền tên vào `PROJECT.md`, đặt `.agent/STATE.md` sạch, ghi `.agent/PACKAGE_INFO.json` (phiên bản package, ngôn
 ngữ, ngày khởi tạo). `--lang en` chép đè toàn bộ cây `en/` (trừ `en/PROJECT_INSTRUCTIONS_SNIPPET.md`) lên thư mục gốc: hướng dẫn agent,
 ghi chú `.agent`, skill, README. File của package đã bị sửa được sao lưu thành `.bak-<ngày>`; file đã có nội dung của bạn
-(PROJECT, STATE, HANDOFF, INDEX... đã điền) được giữ nguyên. Thông báo của script theo ngôn ngữ `--lang`.
+(PROJECT, STATE, HANDOFF, INDEX... kể cả điền một phần) và hướng dẫn agent đã sửa được giữ nguyên. Thông báo của script theo ngôn ngữ `--lang`.
 `--dry-run` chỉ in việc sẽ làm; chạy lần hai cần `--force`. Script không xóa file nào.
 
 ## upgrade_package.py
@@ -67,8 +77,9 @@ Từ bản 1.4.0, `.agent/SKILL_INDEX.md` (file của bạn, không bị ghi đ�
 python tools/adopt_project.py --project "đường dẫn project cũ" --name "Tên project" [--lang vi|en] [--purpose "..."] [--apply]   # chạy từ thư mục package
 ```
 
-Chỉ thêm file còn thiếu; không xóa, không ghi đè file của bạn. `AGENTS.md`/`CLAUDE.md`/`GEMINI.md` cũ khác bản package được lưu `<tên>.bak-<ngày>` rồi
-thay bằng bản package (hợp nhất phần riêng vào `PROJECT.md`); file khác trùng tên và khác thì giữ của bạn, bản package lưu `<tên>.new`. Skill riêng sẵn có trong
+Chỉ thêm file còn thiếu; không xóa, không ghi đè file của bạn. `AGENTS.md`/`CLAUDE.md`/`GEMINI.md` cũ vẫn giữ nguyên và có hiệu lực;
+bản package khác nội dung được lưu `<tên>.new` để hợp nhất. Áp dụng cả khi chọn tiếng Anh. File `.new` đã có nội dung khác sẽ chặn thao tác trước khi ghi.
+File khác trùng tên và khác cũng giữ của bạn, bản package lưu `<tên>.new`. Skill riêng sẵn có trong
 `skills/local/project/` được thêm dòng vào `.agent/SKILL_INDEX.md`. Cuối cùng chạy `init_project.py`. Từ chối chạy nếu project đã có package (dùng `upgrade_package.py`).
 
 ## pack.py
@@ -79,7 +90,12 @@ Quản lý gói lĩnh vực (`packs/`): `list`, `add <tên>`, `update <tên> [--
 ## check_output.py
 
 Kiểm tra cơ học một sản phẩm trước khi giao: `python tools/check_output.py <file>...` cho `.md`, `.txt`, `.html`, `.docx` (chỗ chưa điền, nhãn
-mẫu minh họa, `isDemo`, tài nguyên mạng trong HTML) và chuyển `.csv`/`.xlsx` cho `spreadsheet-check`. Chỉ đọc; mã thoát 1 nếu có điều cần sửa.
+mẫu minh họa, `isDemo`, tài nguyên mạng trong HTML) và chuyển `.csv`/`.xlsx` cho `spreadsheet-check`. Chỉ đọc.
+Mã thoát: **0** đã kiểm đạt trong phạm vi hỗ trợ; **1** đã kiểm có vấn đề/cần xem xét; **2** có file chưa kiểm được.
+Kiểm nhiều file lấy trạng thái nghiêm trọng nhất, đồng thời báo từng file. Caller cũ cần cập nhật cách hiểu mã 1 và 2.
+Word: đọc thân bài, đầu/chân trang, chú thích chân trang/cuối tài liệu, kể cả chữ chia thành nhiều đoạn định dạng.
+Chưa kiểm bố cục, chữ trong ảnh, bình luận và thay đổi được theo dõi. File lỗi hoặc định dạng không hỗ trợ không được báo đạt.
+The same exit codes apply in English: 0 passed within scope, 1 findings/review, 2 not fully checked.
 `python tools/check_output.py --declaration <file>` kiểm một câu trả lời của agent đã lưu thành file: có khối "Khai báo thực hiện" / "Execution declaration" với đủ mục Cách làm, Nguồn, File, Chưa kiểm hay không; cảnh báo khi nói "sai lệch" mà không có con số.
 
 ## install_skills.py
@@ -106,13 +122,22 @@ trong tài liệu, số mục khớp giữa bản Việt và bản Anh, HTML kh�
 python tools/build_release.py                    kiểm, ghi MANIFEST, đóng dist/local-agent-workspace-v<VERSION>.zip
 ```
 
-Đóng gói từ nguồn sạch (không có file project, không có `PACKAGE_INFO.json`), dòng kết thúc LF, thứ tự file cố định,
-rồi giải nén ZIP vào thư mục tạm và chạy `--verify` để chắc ZIP khớp MANIFEST.
+Dựng cây phát hành trong thư mục tạm và không sửa working tree. PROJECT, STATE và HANDOFF sạch lấy từ bộ mẫu phát hành
+riêng của kho nguồn; STATE phát triển không đi vào ZIP. Công cụ tạo MANIFEST trong cây tạm, đóng file theo thứ tự cố định,
+rồi giải nén ZIP vào thư mục tạm khác và chạy `--verify`. Bộ mẫu nguồn, roadmap, tests, feedback và dữ liệu project không
+đi vào package người dùng. Công cụ này chỉ dùng tại kho nguồn; bảng điều khiển tự ẩn nút đóng gói trong package đã phát hành.
+
+## result_schema.py, merge_center.py
+
+`result_schema.py` định nghĩa envelope kết quả ổn định giữa công cụ và bảng điều khiển. `merge_center.py` nhận diện file
+chờ hợp nhất từ manifest và gói đã cài, lưu trạng thái xem mà không lưu nội dung file. Hai module chỉ dùng thư viện chuẩn.
 
 ## Quy trình phát hành một phiên bản mới
 
 1. Sửa nguồn; nâng số trong `VERSION`; thêm mục vào `CHANGELOG.md`; sửa các chuỗi "vX.Y" còn lại (script báo chỗ lệch).
 2. `python tools/build_guides_html.py` rồi `python tools/check_package.py --release` cho đến khi đạt.
+   Chạy `python -B -m unittest discover -s tests -v` trong kho nguồn để kiểm hành vi trên dữ liệu giả, thư mục tạm.
+   Thư mục tests và roadmap chỉ dành cho người duy trì, không đưa vào package người dùng.
 3. `python tools/build_release.py` và dùng file ZIP trong `dist/`.
 
 

@@ -15,6 +15,9 @@ Shuts down about 3 minutes after the page is closed, or with "Quit". Python 3.8+
 """
 import http.server, io, json, os, re, secrets, socketserver, subprocess, sys, threading, time, webbrowser
 import urllib.parse
+import hashlib
+import merge_center
+from result_schema import make, split_output
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TOOLS = os.path.join(ROOT, 'tools')
@@ -24,13 +27,15 @@ NAME_RE = re.compile(r'^[a-z][a-z0-9]*(-[a-z0-9]+)*$')
 IDLE_LIMIT = 180          # giây không có tín hiệu từ trang thì tắt / seconds without a ping before shutdown
 FIRST_GRACE = 600         # chờ lần mở trang đầu / wait for the first page load
 STATE = {'last_ping': None, 'started': time.time(), 'server': None, 'port': 0}
+STRUCTURED_TOOLS = {'adopt_project.py', 'upgrade_package.py', 'check_output.py', 'build_release.py'}
 
 sys.path.insert(0, TOOLS)
 
 
 def rd(rel, default=''):
     try:
-        return io.open(os.path.join(ROOT, *rel.split('/')), encoding='utf-8').read()
+        with io.open(os.path.join(ROOT, *rel.split('/')), encoding='utf-8') as src:
+            return src.read()
     except (OSError, UnicodeDecodeError):
         return default
 
@@ -42,6 +47,8 @@ def project_info():
     if raw:
         try:
             info = json.loads(raw)
+            if not isinstance(info, dict) or info.get('package') != 'local-agent-workspace' or not info.get('version'):
+                info = {}
         except ValueError:
             info = {}
     name = None
@@ -122,20 +129,29 @@ def status():
     info, name = project_info()
     lang = info.get('language') or info.get('lang') or ('en' if re.search(r'^- Project name:', rd('PROJECT.md'), re.M) else 'vi')
     home = os.path.expanduser('~')
+    # Identify a template by its contents, never by the folder name alone.
+    project_hash = hashlib.sha256(rd('PROJECT.md').replace('\r\n', '\n').encode('utf-8')).hexdigest()
+    template = not rd('.agent/PACKAGE_INFO.json') and any(
+        line == project_hash + '  PROJECT.md' or line == project_hash + '  en/PROJECT.md'
+        for line in rd('MANIFEST.sha256').splitlines())
+    kind = 'project' if info else ('template' if template else 'unknown')
     return {
         'version': rd('VERSION').strip(),
         'initialized': bool(info),
+        'workspace_kind': kind,
         'info': info,
         'project_name': name,
         'folder': os.path.basename(ROOT),
         'root': ROOT,
         'lang': lang,
         'state': state_summary(),
+        'merges': merge_center.scan(ROOT),
         'skills': skill_rows(),
         'packs': pack_info(lang),
         'counts': {k: count_files(k) for k in ('output', 'references', 'working', 'archive')},
-        'is_source': os.path.isdir(os.path.join(ROOT, 'packs')) and not info,
-        'template_folder': os.path.basename(ROOT).lower().startswith('local-agent-workspace'),
+        'is_source': kind == 'template',
+        'release_source': os.path.isdir(os.path.join(ROOT, 'release_templates')),
+        'template_folder': kind == 'template',
         'dests': {'claude': os.path.join(home, '.claude', 'skills'), 'agents': os.path.join(home, '.agents', 'skills')},
         'picker': tk_available(),
         'python': sys.version.split()[0],
@@ -145,7 +161,8 @@ def status():
 # ------------------------------------------------------------------ chạy script / run scripts
 def run_tool(script, args, timeout=600):
     env = dict(os.environ, PYTHONIOENCODING='utf-8', PYTHONUTF8='1')
-    cmd = [sys.executable, os.path.join(TOOLS, script)] + args
+    tool_args = list(args) + (['--result-json'] if script in STRUCTURED_TOOLS else [])
+    cmd = [sys.executable, os.path.join(TOOLS, script)] + tool_args
     shown = 'python tools/%s %s' % (script, ' '.join('"%s"' % a if (' ' in a or not a) else a for a in args))
     try:
         p = subprocess.run(cmd, cwd=ROOT, capture_output=True, env=env, timeout=timeout, stdin=subprocess.DEVNULL)
@@ -153,9 +170,23 @@ def run_tool(script, args, timeout=600):
         err = p.stderr.decode('utf-8', 'replace')
         if err.strip():
             out += '\n' + err
-        return {'code': p.returncode, 'out': out.strip(), 'cmd': shown.strip()}
+        human, structured = split_output(out.strip())
+        if structured is not None and structured.get('code') != p.returncode:
+            structured = None
+        if script in STRUCTURED_TOOLS and structured is None:
+            structured = make('error', code=-2, message='Tool did not return a valid result schema.',
+                              changes=None, unchecked=[{'tool': script, 'reason': 'invalid_result_schema'}])
+            return {'code': -2, 'out': human, 'cmd': shown.strip(), 'result': structured}
+        if structured is None:
+            structured = make('success' if p.returncode == 0 else 'error', code=p.returncode,
+                              message='', changes=None)
+        return {'code': p.returncode, 'out': human, 'cmd': shown.strip(), 'result': structured}
     except subprocess.TimeoutExpired:
-        return {'code': -1, 'out': 'Quá thời gian chờ / Timed out (%ds).' % timeout, 'cmd': shown}
+        structured = make('not_checked' if script == 'check_output.py' else 'error', code=-1,
+                          message='Timed out', changes=None,
+                          unchecked=[{'tool': script, 'reason': 'timeout'}])
+        return {'code': -1, 'out': 'Quá thời gian chờ / Timed out (%ds).' % timeout,
+                'cmd': shown, 'result': structured}
 
 
 class BadInput(Exception):
@@ -225,9 +256,6 @@ def action(name, p):
         files = [f.strip().strip('"') for f in (p.get('files') or []) if f and f.strip()]
         if not files:
             raise BadInput('Chọn ít nhất một file / Choose at least one file.')
-        for f in files:
-            if not os.path.isfile(f):
-                raise BadInput('Không thấy file / File not found: %s' % f)
         return run_tool('check_output.py', (['--declaration'] if p.get('declaration') else []) + files)
     if name == 'install_skills':
         target = p.get('target')
@@ -264,6 +292,14 @@ def action(name, p):
         return run_tool('build_guides_html.py', [])
     if name == 'build_release':
         return run_tool('build_release.py', [], timeout=900)
+    if name == 'merge_state':
+        try:
+            changed = merge_center.set_state(ROOT, need_text(p, 'path', 'Cần đường dẫn file hợp nhất.'),
+                                             need_text(p, 'state', 'Cần trạng thái hợp nhất.'))
+        except ValueError as e:
+            raise BadInput(str(e))
+        return {'code': 0, 'out': '', 'cmd': '', 'result': make('success', message='Merge state updated',
+                changes=True, files=[changed])}
     raise BadInput('Thao tác không có / Unknown action: %s' % name)
 
 
@@ -372,7 +408,8 @@ class Handler(http.server.BaseHTTPRequestHandler):
                 threading.Thread(target=STATE['server'].shutdown, daemon=True).start()
                 return None
         except BadInput as e:
-            return self._send(200, {'code': 2, 'out': str(e), 'cmd': '', 'input_error': True})
+            return self._send(200, {'code': 2, 'out': str(e), 'cmd': '', 'input_error': True,
+                              'result': make('blocked', code=2, message=str(e), changes=False)})
         except Exception as e:  # lỗi bất ngờ vẫn trả về trang / unexpected errors still reach the page
             return self._send(500, {'code': -1, 'out': 'Lỗi / Error: %r' % (e,), 'cmd': ''})
         return self._send(404, {'error': 'not found'})

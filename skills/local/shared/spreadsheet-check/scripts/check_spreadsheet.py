@@ -334,7 +334,9 @@ def main():
     ap.add_argument('--lang', choices=['vi', 'en'], default='vi', help='ngôn ngữ kết quả / output language')
     ap.add_argument('--khoa', '--key', dest='khoa', default='', help='cột khóa/mã, cách nhau bằng dấu phẩy / key columns, comma-separated')
     ap.add_argument('--toi-da-vi-du', '--max-examples', dest='toi_da_vi_du', type=int, default=3)
+    ap.add_argument('--status-exit', action='store_true', help='exit 0: pass, 1: findings, 2: not checked')
     a = ap.parse_args()
+    # Optional machine status; default invocation remains backward compatible.
     global LANG
     LANG = 0 if a.lang == 'vi' else 1
     keys = [k.strip() for k in a.khoa.split(',') if k.strip()]
@@ -357,6 +359,19 @@ def main():
     except OSError:
         h = '?'
     print(T('trace') % (os.path.basename(a.file), h, datetime.datetime.now().strftime('%Y-%m-%d %H:%M')))
+    if '--status-exit' in sys.argv:
+        sys.exit(1 if any(R.values()) else 0)
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except SystemExit as e:
+        if '--status-exit' in sys.argv and not isinstance(e.code, int):
+            print('NOT CHECKED: %s' % e.code, file=sys.stderr)
+            sys.exit(2)
+        raise
+    except Exception as e:
+        if '--status-exit' not in sys.argv:
+            raise
+        print('NOT CHECKED: %s' % e, file=sys.stderr)
+        sys.exit(2)

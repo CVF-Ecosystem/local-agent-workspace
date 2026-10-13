@@ -62,7 +62,9 @@ def need_openpyxl():
         import openpyxl  # noqa: F401
         return openpyxl
     except ImportError:
-        sys.exit(L('Cần openpyxl: chạy "pip install openpyxl" rồi thử lại.', 'openpyxl is required: run "pip install openpyxl" and retry.'))
+        print(L('CHƯA KIỂM ĐƯỢC: thư viện nguồn cần openpyxl. Chạy "python -m pip install openpyxl" rồi thử lại. Các công cụ văn bản vẫn dùng được.',
+                'NOT CHECKED: the source library requires openpyxl. Run "python -m pip install openpyxl" and retry. Text tools still work.'), file=sys.stderr)
+        sys.exit(2)
 
 
 def as_date(v):

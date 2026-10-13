@@ -7,13 +7,11 @@ in a browser, with no installation, server, online font or network connection.
 
 ## Getting started
 
-If you are reading this page on GitHub, the package runs on your own computer, so download it first:
+1. **Create a project:** download the ZIP from [Releases](https://github.com/CVF-Ecosystem/local-agent-workspace/releases/latest), unzip into a separate folder, then run `SETUP.bat` (Windows) or `SETUP.command` (macOS). Already have this folder? No download is needed. Do not work inside the ZIP.
+2. **Add sources:** put documents in `references/` or point to existing source paths. Keep originals intact.
+3. **Give the first task:** open the folder in your AI app, name the source and the result you need. Try the synthetic examples in `examples/demo-project/README.md` first if useful.
 
-1. Go to https://github.com/CVF-Ecosystem/local-agent-workspace/releases/latest and download `local-agent-workspace-v….zip` (the lean build, with only what users need). Unzip it into a folder.
-2. Run `SETUP.bat` (Windows) or `SETUP.command` (macOS); or open `START_HERE.en.html` and use the "Quick setup" form.
-3. Open that folder in the AI app you use (Claude, Codex, Gemini...), then try the 3 exercises in `START_HERE.en.html`.
-
-GitHub's Code → Download ZIP also works, but that copy includes folders meant for the maintainer.
+A template creates projects; a working project keeps its own context in `PROJECT.md` and progress in STATE. Basic setup needs Python 3.8+. Excel checking and the source library also need `openpyxl` (`python -m pip install openpyxl`); tools never install it automatically. Without Python, follow the new-project guide manually.
 
 ## What is it for?
 
@@ -30,7 +28,7 @@ The guides are working suggestions, not a mandatory process for every task. Smal
 jobs that need a source or a template open only the useful part. This is not an application, an agent
 framework or a software development kit.
 
-## Getting started
+## Optional setup and reference guides
 
 Unzip the whole ZIP, rename the folder to the project name, then open `START_HERE.en.html`. Do not work
 directly inside the ZIP. The easiest way: double-click `SETUP.bat` (Windows) or `SETUP.command` (macOS); the wizard asks a few questions, then initializes the project and fills in `PROJECT.md`. Or use the command (once, needs Python 3.8+; nothing else to install):

@@ -3,6 +3,19 @@
 Định dạng phiên bản: `MAJOR.MINOR.PATCH`. Số phiên bản nằm trong `VERSION`; hướng dẫn nâng cấp ở
 `docs/HUONG_DAN_CHUYEN_DOI_PROJECT_CO_SAN_VI.md`.
 
+## Chưa phát hành — 2026-10-13
+
+- Chuyển đổi project giữ hướng dẫn riêng, lưu bản package thành `.new`; chặn file chờ hợp nhất có nội dung khác trước khi ghi. Áp dụng cả khi chọn tiếng Anh; khởi tạo giữ ngữ cảnh đã điền một phần.
+- Nâng cấp không ghi đè bản `.new` đang hợp nhất; lỗi ghi file được báo chưa hoàn tất, có thể có thay đổi một phần, không tự hoàn tác.
+- Kiểm đầu ra: mã 0 đạt trong phạm vi hỗ trợ; 1 có phát hiện/cần xem xét; 2 chưa kiểm được. Caller cần cập nhật cách hiểu mã; bảng điều khiển hiển thị nhãn tương ứng. Spreadsheet checker có `--status-exit` tùy chọn, giữ hành vi mặc định cũ.
+- Word đọc thêm đầu/chân trang và chú thích chân trang/cuối tài liệu, ghép chữ chia thành nhiều đoạn định dạng; công bố phần chưa kiểm. Thiếu openpyxl được giải thích tại chức năng cần dùng.
+- README rút gọn lối bắt đầu; bảng điều khiển phân biệt project/bộ mẫu/chưa xác định theo nội dung và thông tin khởi tạo, không theo tên thư mục.
+- Thêm kiểm thử hành vi bằng dữ liệu giả trong thư mục tạm. Roadmap và tests không đi vào package người dùng. Chưa công bố phiên bản mới; chưa thử macOS hoặc nghiệm thu với người dùng mới.
+- Sửa lỗi báo đường dẫn khi đóng gói sang ổ đĩa khác trên Windows; đã thử ZIP tạm, giải nén và đối chiếu manifest.
+- Nguồn phát hành tách khỏi STATE đang làm việc: PROJECT/STATE/HANDOFF sạch nằm trong `release_templates/`; đóng gói dựng cây tạm, không sửa working tree, cho kết quả ZIP lặp lại từ cùng nguồn.
+- Thêm schema `local-agent-workspace/result-v1`; bảng điều khiển dùng trường kết quả có cấu trúc thay cho dò câu thông báo. Chuyển đổi, nâng cấp, kiểm đầu ra và đóng gói phát schema trực tiếp; backend kiểm schema và mã thoát.
+- Thêm trang "Chờ hợp nhất": chỉ nhận `.new` thuộc package/gói lĩnh vực, mở bản hiện hành và bản mới, lưu trạng thái xem bằng dấu vân tay; không đọc lưu nội dung, không tự hợp nhất hay ghi đè.
+
 ## v1.6.0 — 2026-10-12
 
 Học từ ba skill văn phòng, pháp lý bên ngoài và một công cụ HTML của người dùng; đối chiếu lại với văn bản gốc trước khi đưa vào (xem `docs/NGUON_THAM_KHAO_VI.md`)

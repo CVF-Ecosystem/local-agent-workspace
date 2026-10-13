@@ -7,13 +7,11 @@ trong trình duyệt, không cần cài đặt, máy chủ, font trực tuyến 
 
 ## Cách bắt đầu
 
-Nếu bạn đang xem trang này trên GitHub, package chạy trên máy của bạn nên cần tải về trước:
+1. **Tạo project:** tải ZIP từ [Releases](https://github.com/CVF-Ecosystem/local-agent-workspace/releases/latest), giải nén ra thư mục riêng, rồi chạy `SETUP.bat` (Windows) hoặc `SETUP.command` (macOS). Đã có thư mục này thì không cần tải lại. Không làm việc bên trong ZIP.
+2. **Thêm nguồn:** đặt tài liệu cần dùng vào `references/` hoặc chỉ rõ đường dẫn nguồn đang có. Giữ nguyên file gốc.
+3. **Giao việc đầu tiên:** mở thư mục bằng ứng dụng AI, nêu file nguồn và kết quả cần nhận. Có thể thử bằng dữ liệu giả trong `examples/demo-project/README.md` trước.
 
-1. Vào https://github.com/CVF-Ecosystem/local-agent-workspace/releases/latest và tải file `local-agent-workspace-v….zip` (bản gọn, chỉ gồm phần dành cho người dùng). Giải nén ra một thư mục.
-2. Chạy `SETUP.bat` (Windows) hoặc `SETUP.command` (macOS); hoặc mở `START_HERE.html` và dùng form "Khởi tạo nhanh".
-3. Mở thư mục đó bằng ứng dụng AI bạn dùng (Claude, Codex, Gemini...), rồi thử 3 bài trong `START_HERE.html`.
-
-Dùng nút Code → Download ZIP của GitHub cũng được, nhưng bản đó còn kèm thư mục dành cho người duy trì.
+Bộ mẫu dùng để tạo project; project làm việc giữ ngữ cảnh riêng trong `PROJECT.md` và tiến độ trong STATE. Khởi tạo cơ bản chỉ cần Python 3.8+. Kiểm tra Excel và thư viện nguồn cần `openpyxl` (`python -m pip install openpyxl`); công cụ không tự cài thêm. Không có Python thì xem hướng dẫn tạo project để làm tay.
 
 ## Dùng để làm gì?
 
@@ -29,7 +27,7 @@ Các hướng dẫn là gợi ý tác nghiệp, không phải quy trình bắt b
 Việc nhỏ có thể làm trực tiếp; việc cần nguồn hoặc mẫu thì mở đúng phần hữu ích.
 Đây không phải ứng dụng, framework agent hay bộ công cụ phát triển phần mềm.
 
-## Bắt đầu
+## Thiết lập tùy chọn và hướng dẫn tra cứu
 
 Giải nén toàn bộ ZIP, đổi tên thư mục thành tên project rồi mở `START_HERE.html`. Không làm việc
 trực tiếp bên trong ZIP. Cách dễ nhất: bấm đúp `SETUP.bat` (Windows) hoặc `SETUP.command` (macOS); trình hướng dẫn hỏi vài câu rồi tự khởi tạo và điền `PROJECT.md`. Hoặc dùng lệnh (một lần, cần Python 3.8+; không cài thêm gì):
