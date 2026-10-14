@@ -30,7 +30,7 @@ Origin: `LOCAL` (tự biên soạn), `EXTERNAL` (nhập ngoài), `PROVIDER` (nat
 Scope: `SHARED` (dùng chung), `PROJECT` (riêng dự án), `GLOBAL` (theo provider), `PACK` (gói lĩnh vực cài bằng `tools/pack.py`).
 Status: `AVAILABLE` (đã nhận cho phạm vi ghi ở dòng, sẵn dùng), `ACTIVE` (đã nhận, thường dùng), `REVIEW` (ứng viên
 chưa qua tiếp nhận: chỉ dùng thử trong project khi người dùng đã đặt/cài, nói rõ là bản thử; không chép sang ứng dụng),
-`DISABLED` (người dùng đã chọn không dùng). Cài gói, chép file hay kiểm cấu trúc không tự đổi `REVIEW` thành `AVAILABLE`.
+`DISABLED` (người dùng đã chọn không dùng). Cài gói, chép file hay kiểm cấu trúc không tự đổi `REVIEW` thành `AVAILABLE`; với gói, bước đó là `pack.py confirm` của người dùng (gõ tay `AVAILABLE` vào đây không làm skill của gói xuất được).
 `AVAILABLE` của mười bốn skill dùng chung nghĩa là người duy trì đã đưa chúng vào bộ mẫu gốc trước khi có chuẩn tiếp nhận này;
 chúng chưa được so lại với native theo chuẩn mới và chưa chạy thử trên mọi ứng dụng (giới hạn kiểm thử: `docs/NGUON_THAM_KHAO_VI.md`).
 

@@ -172,8 +172,8 @@ The package core only holds the working rules and the fourteen shared skills. Kn
 HR, finance...) belongs in a **domain pack** in `packs/`, installed into the projects that need it with
 `python tools/pack.py add <name>` (see `python tools/pack.py list`). A pack installs into `skills/local/packs/` and is recorded in
 `.agent/SKILL_INDEX.md` with Scope `PACK`; remove it with `pack.py remove <name>` (the folder is moved into `archive/`, not deleted).
-The rule for accepting a pack and how to write a new one are in `packs/README.md`. A pack not through intake can still be installed
-for trial; its skills are recorded as `REVIEW` and are not copied into apps. The package ships five domain packs (trial,
+The rule for accepting a pack and how to write a new one are in `packs/README.md`. Every installed pack is recorded `REVIEW` (trial; not copied into apps); the `intake` block inside a pack is only its own claim. After reading the record,
+if you accept it for this project, install with `python tools/pack.py add <name> --confirm` (already installed: `pack.py confirm <name>`; in the control panel it is the "Install and accept" / "Confirm intake" button, one dialog and done); changing the pack content afterwards requires confirming again. The package ships five domain packs (trial,
 version 0.2.0): `phap-ly` (researching and applying legal documents), `van-thu-luu-tru` (outgoing and incoming documents, copies,
 filing, archiving), `cang-logistics` (ship, barge and equipment-incident reports), `hanh-chinh-nhan-su` (personnel decisions,
 leave, overtime, discipline, pay, insurance) and `ke-toan-noi-bo` (advances, payments, vouchers, invoices, retention). Each pack

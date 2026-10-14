@@ -4,17 +4,23 @@ Manage "domain packs": a set of skills and templates for one domain, installed p
 
 Dùng / Usage (chạy từ thư mục project / run from the project folder):
   python tools/pack.py list                 liệt kê gói có sẵn và gói đã cài / list available and installed packs
-  python tools/pack.py add <tên>            cài gói vào skills/local/packs/<tên>/ và ghi vào .agent/SKILL_INDEX.md
-  python tools/pack.py update <tên>         cập nhật gói đã cài lên bản trong packs/ (file bạn đã sửa -> <tên>.new)
+  python tools/pack.py add <tên> [--confirm]  cài gói vào skills/local/packs/<tên>/ và ghi vào .agent/SKILL_INDEX.md (--confirm: cài và nhận luôn)
+  python tools/pack.py update <tên>         cập nhật gói đã cài lên bản trong packs/ (file bạn đã sửa -> <tên>.new); --apply ghi, thêm --confirm để nhận lại luôn
   python tools/pack.py remove <tên>         gỡ gói: chuyển vào archive/, bỏ khỏi SKILL_INDEX (không xóa file)
+  python tools/pack.py confirm <tên>        nhận gói đã cài cho project này, chạy luôn (--dry-run: chỉ xem)
   python tools/pack.py check [<tên>]        kiểm tra cấu trúc gói (người viết gói dùng)
   python tools/pack.py new <tên>            tạo gói mới trong packs/<tên>/ từ packs/_template (người viết gói dùng)
 
 Một gói là thư mục packs/<tên>/ có pack.json và skills/<skill-id>/SKILL.md. Xem packs/README.md.
-Cài hay kiểm cấu trúc không phải tiếp nhận: gói không có hồ sơ tiếp nhận hợp lệ cho đúng phiên bản (khối "intake" trong
-pack.json, xem skills/README.md) được ghi Status REVIEW (ứng viên, dùng thử), chỉ gói đã tiếp nhận mới ghi AVAILABLE.
-Installing or checking the structure is not intake: a pack without a valid intake record for its exact version is recorded
-as REVIEW (candidate, trial use); only an accepted pack is recorded as AVAILABLE. No script of a pack is ever run.
+Cài, cập nhật hay kiểm cấu trúc không phải tiếp nhận. Khối "intake" trong pack.json chỉ là LỜI KHAI của gói (skills/README.md);
+gói cài vào project mặc định ghi Status REVIEW (ứng viên, dùng thử). Chỉ hành động xác nhận rõ ràng của người dùng (--confirm khi cài
+hoặc cập nhật, hoặc lệnh "confirm"; gắn với đúng nội dung đang cài) mới ghi AVAILABLE, và chỉ khi lời khai hợp lệ: hồ sơ giải được tới một file local có thật. Nội dung đổi sau khi xác
+nhận, hoặc hồ sơ từ chối đúng bản đã cài, thì xác nhận không còn hiệu lực.
+Installing, updating or checking the structure is not intake. The "intake" block in pack.json is only the pack's CLAIM
+(skills/README.md); a pack installed into a project is recorded as REVIEW by default (candidate, trial use). Only an explicit
+confirmation by the user (--confirm on install or update, or the "confirm" command; bound to the exact installed content) records AVAILABLE, and only when the claim is valid: its record
+resolves to a real local file. Content changed after confirming, or a record refusing the installed version, voids it.
+No script of a pack is ever run.
 Chỉ cần Python 3.8+, không dùng mạng, không chạy script nào của gói.
 """
 import argparse, datetime, hashlib, io, json, os, re, shutil, sys, traceback
@@ -33,7 +39,6 @@ USABLE = ('ADD_MISSING_PART', 'PROJECT_ONLY', 'ROOT_ELIGIBLE')
 REFUSED = ('REUSE_NO_IMPORT', 'REJECT_VERSION')
 DECISIONS = USABLE + REFUSED + ('DEFER',)
 RELATIONS = ('SUPPLEMENT', 'REPLACEMENT', 'FALLBACK', 'UNKNOWN')
-USER_STATUS = ('AVAILABLE', 'ACTIVE', 'DISABLED')  # trạng thái người dùng tự đặt trong SKILL_INDEX / statuses set by the user
 
 def L(vi, en): return en if LANG == 'en' else vi
 def P(rel): return os.path.join(ROOT, *rel.split('/'))
@@ -174,8 +179,14 @@ def intake_errors(it, name):
         e.append('%s/pack.json: "intake.root_grant" chỉ dùng với decision ROOT_ELIGIBLE.' % name)
     return e
 
-def _local_locator(v):
-    return '://' not in v and re.search(r'\.(md|json|txt|html|pdf|docx|xlsx)$', v, re.I)
+def _resolve_locator(v, base):
+    """Đường dẫn local tương đối, không thoát thư mục, tới một file có thật. URL, đường dẫn tuyệt đối, '..' hay chuỗi lạ là
+    chưa giải được (không ngầm hợp lệ). / A relative local path that stays inside and points to a real file; anything else
+    (URL, absolute path, '..', an odd string) is unresolved, never silently valid."""
+    v = str(v or '').strip().replace('\\', '/')
+    if not v or '://' in v or v.startswith('/') or re.match(r'^[A-Za-z]:', v) or '..' in v.split('/'):
+        return False
+    return any(os.path.isfile(os.path.join(b, *v.split('/'))) for b in (base, ROOT) if b)
 
 def intake_state(meta, base=None):
     """Trạng thái tiếp nhận của một gói, chỉ từ điều kiện kiểm được bằng máy.
@@ -206,7 +217,7 @@ def intake_state(meta, base=None):
         return out
     for key in ('record', 'comparison'):
         v = str(it.get(key) or '').strip()
-        if v and _local_locator(v) and not any(os.path.exists(os.path.join(b, *v.split('/'))) for b in (base or ROOT, ROOT)):
+        if (v or key == 'record') and not _resolve_locator(v, base):
             out.update(reason='record_not_found', missing=v)
             return out
     out.update(state='accepted', reason=d.lower(), root_update=d == 'ROOT_ELIGIBLE' and bool(it.get('root_grant')))
@@ -215,7 +226,7 @@ def intake_state(meta, base=None):
 def intake_label(st):
     r = st['reason']
     if st['state'] == 'accepted':
-        return L('đã tiếp nhận (%s)', 'accepted (%s)') % st['decision'] + (L(', được cập nhật gốc', ', root update granted') if st['root_update'] else '')
+        return L('lời khai đã nhận (%s), chưa xác nhận ở project', 'claims accepted (%s), not confirmed in a project') % st['decision'] + (L('; khai được cập nhật gốc', '; claims root update') if st['root_update'] else '')
     if st['state'] == 'refused':
         return L('không nhận: dùng khả năng sẵn có', 'not taken: reuse existing capability') if r == 'reuse_no_import' \
             else L('không nhận phiên bản này', 'this version not taken')
@@ -226,8 +237,55 @@ def intake_label(st):
         'deferred': L('ứng viên, tiếp nhận đang hoãn', 'candidate, intake deferred'),
         'native_unknown': L('ứng viên, chưa xác minh khả năng native', 'candidate, native capability not verified'),
         'no_comparison': L('ứng viên, bản thay thế chưa có bằng chứng so sánh', 'candidate, replacement without comparison evidence'),
-        'record_not_found': L('ứng viên, không thấy hồ sơ %s', 'candidate, record %s not found') % st.get('missing'),
+        'record_not_found': L('ứng viên, hồ sơ %s không giải được (cần đường dẫn local có thật)', 'candidate, record %s does not resolve (a real local path is needed)') % st.get('missing'),
     }.get(r, L('ứng viên', 'candidate'))
+
+def content_digest(d):
+    """Dấu vân tay nội dung gói đã cài (không tính .pack-install.json và file .new). Chỉ nhận diện thay đổi, không chứng minh chất lượng.
+    Fingerprint of the installed pack content (not .pack-install.json or .new files). It detects change; it proves no quality."""
+    h = hashlib.sha256()
+    for rel in walk(d):
+        if rel == '.pack-install.json' or rel.endswith('.new'):
+            continue
+        h.update(rel.encode('utf-8') + b'\0' + sha_file(os.path.join(d, rel)).encode('ascii') + b'\n')
+    return h.hexdigest()
+
+def installed_eligibility(name):
+    """None khi gói đã cài có xác nhận còn hiệu lực cho đúng nội dung đang cài; nếu không thì lý do.
+    None when the installed pack has a confirmation that still holds for the exact installed content; else the reason."""
+    ins = installed().get(name)
+    if not ins:
+        return 'not_installed'
+    c = ins.get('confirmed')
+    if not isinstance(c, dict) or not c.get('digest'):
+        return 'not_confirmed'
+    if content_digest(P('%s/%s' % (INSTALL_DIR, name))) != c['digest']:
+        return 'content_changed'
+    src = P('packs/%s/pack.json' % name)
+    if os.path.isfile(src):
+        try:
+            meta = json.load(io.open(src, encoding='utf-8'))
+        except ValueError:
+            meta = None
+        if isinstance(meta, dict) and meta.get('version') == ins.get('version'):  # hồ sơ về bản khác không đụng bản đã cài
+            st = intake_state(meta, P('packs/' + name))
+            if st['state'] == 'refused':
+                return 'refused'
+            if st['state'] != 'accepted':
+                return 'claim_withdrawn'
+    return None
+
+def eligibility_text(name, why):
+    return {
+        'not_confirmed': L('Gói %s chưa được xác nhận tiếp nhận ở project này: chạy "python tools/pack.py confirm %s".',
+                           'Pack %s is not confirmed in this project: run "python tools/pack.py confirm %s".') % (name, name),
+        'content_changed': L('Nội dung gói %s đã cài khác bản đã xác nhận: xét lại phần đổi rồi chạy lại "pack.py confirm %s".',
+                             'The installed content of pack %s differs from what was confirmed: review the change, then run "pack.py confirm %s" again.') % (name, name),
+        'refused': L('Gói %s đã cài nhưng hồ sơ tiếp nhận từ chối đúng bản này; cân nhắc gỡ (pack.py remove %s).',
+                     'Pack %s is installed but its intake record refuses this very version; consider removing it (pack.py remove %s).') % (name, name),
+        'claim_withdrawn': L('Hồ sơ tiếp nhận của gói %s không còn ở mức đã nhận cho bản đã cài; xác nhận cũ không còn đủ căn cứ.',
+                             'The intake record of pack %s no longer claims acceptance for the installed version; the old confirmation has lost its basis.') % name,
+    }.get(why, why)
 
 # ---------------------------------------------------------------- bản ghi cài đặt
 def available():
@@ -255,9 +313,9 @@ def installed():
                     pass
     return out
 
-def index_rows(name, meta, st):
-    """(skill id, trạng thái, mẫu dòng có chỗ %s cho trạng thái). Ứng viên ghi REVIEW, chỉ gói đã tiếp nhận ghi AVAILABLE.
-    (skill id, status, row template with %s for the status). Candidates get REVIEW; only accepted packs get AVAILABLE."""
+def index_rows(name, meta, st, approved=False):
+    """(skill id, trạng thái, mẫu dòng có chỗ %s cho trạng thái). Chỉ gói đã được người dùng xác nhận (approved) mới ghi AVAILABLE.
+    (skill id, status, row template with %s for the status). Only a pack the user confirmed (approved) is recorded AVAILABLE."""
     rows = []
     note = intake_label(st).replace('|', '/')
     for sid in meta['skills']:
@@ -265,9 +323,9 @@ def index_rows(name, meta, st):
         import check_package as cp
         fm = cp.frontmatter(io.open(sp, encoding='utf-8').read()) or {}
         desc = re.sub(r'\s*(Kích hoạt khi|Triggers when).*$', '', fm.get('description', ''), flags=re.S).strip().replace('|', '/')
-        rows.append((sid, 'AVAILABLE' if st['state'] == 'accepted' else 'REVIEW',
+        rows.append((sid, 'AVAILABLE' if approved else 'REVIEW',
                      ('| %s | LOCAL | PACK | %s/%s/skills/%s/SKILL.md | %s | ' % (sid, INSTALL_DIR, name, sid, desc[:220])).replace('%', '%%')
-                     + '%s' + (' | Gói/Pack %s v%s; %s |' % (name, meta['version'], note)).replace('%', '%%')))
+                     + '%s' + (' | Gói/Pack %s v%s; %s%s |' % (name, meta['version'], note, L('; đã xác nhận ở project', '; confirmed in this project') if approved else '')).replace('%', '%%')))
     return rows
 
 def index_status(name):
@@ -280,10 +338,10 @@ def index_status(name):
                 out[cells[0]] = cells[5]
     return out
 
-def edit_index(name, rows, keep_user=False):
-    """Bỏ mọi dòng của gói `name` khỏi SKILL_INDEX rồi chèn `rows` (nếu có) sau dòng bảng cuối.
-    Luôn giữ DISABLED người dùng đã đặt; với keep_user (cùng phiên bản, hồ sơ không bị rút) giữ cả AVAILABLE/ACTIVE người dùng đã đặt.
-    Always keeps a user's DISABLED; with keep_user (same version, record not withdrawn) also keeps a user's AVAILABLE/ACTIVE."""
+def edit_index(name, rows):
+    """Bỏ mọi dòng của gói `name` khỏi SKILL_INDEX rồi chèn `rows` (nếu có) sau dòng bảng cuối. Luôn giữ DISABLED người dùng đã đặt;
+    giữ ACTIVE chỉ khi dòng mới là AVAILABLE (đã xác nhận). Trạng thái do người dùng tự gõ vào index không phải xác nhận.
+    Always keeps a user's DISABLED; keeps ACTIVE only when the new row is AVAILABLE (confirmed). A status typed into the index by hand is not a confirmation."""
     f = '.agent/SKILL_INDEX.md'
     if not os.path.isfile(P(f)):
         return False
@@ -295,7 +353,7 @@ def edit_index(name, rows, keep_user=False):
         out = []
         for sid, status, tmpl in rows:
             prev = old.get(sid)
-            if prev == 'DISABLED' or (keep_user and prev in USER_STATUS):
+            if prev == 'DISABLED' or (prev == 'ACTIVE' and status == 'AVAILABLE'):
                 status = prev
             out.append(tmpl % status)
         rows = out
@@ -343,6 +401,9 @@ def cmd_add(a):
     if clash:
         stop(L('Trùng skill id với gói đã cài: %s', 'Skill id clashes with an installed pack: %s') % ', '.join(clash), pack=a.name)
     st = intake_state(meta, P('packs/' + a.name))
+    if a.confirm and st['state'] != 'accepted':  # dừng trước khi ghi: không âm thầm hạ xuống bản thử / stop before writing, never silently downgrade
+        stop(L('Không cài và nhận gói %s được: %s. Muốn dùng thử thì cài không có --confirm.',
+               'Cannot install and accept pack %s: %s. To try it, install without --confirm.') % (a.name, intake_label(st)), pack=a.name, intake=st)
     if st['state'] == 'refused':
         stop(L('Không cài gói %s: hồ sơ tiếp nhận ghi "%s". Tiếp tục bằng khả năng sẵn có.', 'Pack %s not installed: its intake record says "%s". Carry on with the existing capability.')
              % (a.name, intake_label(st)), pack=a.name, intake=st)
@@ -355,22 +416,32 @@ def cmd_add(a):
         shutil.copyfile(P('packs/%s/%s' % (a.name, rel)), P('%s/%s' % (dst, rel)))
         DONE.append({'path': '%s/%s' % (dst, rel), 'action': 'add'})
         files[rel] = sha_file(P('%s/%s' % (dst, rel)))
+    confirmed = None
+    if a.confirm:
+        it = meta.get('intake', {})
+        confirmed = {'digest': content_digest(P(dst)), 'version': meta['version'], 'decision': it.get('decision'), 'record': it.get('record'),
+                     'date': datetime.date.today().isoformat()}
     wr(dst + '/.pack-install.json', json.dumps({'name': a.name, 'version': meta['version'], 'skills': meta['skills'],
-        'installed': datetime.date.today().isoformat(), 'intake': st['state'], 'files': files}, ensure_ascii=False, indent=2) + '\n')
+        'installed': datetime.date.today().isoformat(), 'claim': st['state'], 'confirmed': confirmed, 'files': files}, ensure_ascii=False, indent=2) + '\n')
     DONE.append({'path': dst + '/.pack-install.json', 'action': 'add'})
-    ok = edit_index(a.name, index_rows(a.name, meta, st))
+    ok = edit_index(a.name, index_rows(a.name, meta, st, bool(confirmed)))
     if ok:
         DONE.append({'path': '.agent/SKILL_INDEX.md', 'action': 'index'})
-    trial = st['state'] != 'accepted'
+    trial = not confirmed  # cài không kèm --confirm không phải xác nhận / installing without --confirm is not confirmation
     nxt = [] if ok else [L('Thêm dòng skill vào .agent/SKILL_INDEX.md (file này chưa có).', 'Add the skill rows to .agent/SKILL_INDEX.md (the file is missing).')]
-    if trial:
-        nxt.append(L('Gói là ứng viên (REVIEW): dùng thử trong project này; không được xuất sang ứng dụng. Muốn nhận thì lập hồ sơ theo skills/README.md.',
-                     'The pack is a candidate (REVIEW): try it in this project; it is not exported to apps. To accept it, record intake as in skills/README.md.'))
+    if confirmed:
+        pass
+    elif st['state'] == 'accepted':
+        nxt.append(L('Hồ sơ tiếp nhận do chính gói khai, chưa phải quyết định của bạn. Gói ở REVIEW (dùng thử, không xuất sang ứng dụng). Đã xét hồ sơ và muốn nhận cho project này: python tools/pack.py confirm %s',
+                     'The intake record is the pack\'s own claim, not your decision. The pack stays REVIEW (trial; not exported to apps). If you reviewed the record and accept it for this project: python tools/pack.py confirm %s') % a.name)
+    else:
+        nxt.append(L('Gói là ứng viên (REVIEW): dùng thử trong project này; không được xuất sang ứng dụng. Muốn nhận thì lập hồ sơ theo skills/README.md rồi chạy pack.py confirm.',
+                     'The pack is a candidate (REVIEW): try it in this project; it is not exported to apps. To accept it, record intake as in skills/README.md, then run pack.py confirm.'))
     set_result('success', 0, (L('Đã cài gói %s v%s để thử (ứng viên).', 'Installed pack %s v%s for trial (candidate).') if trial else
-                              L('Đã cài gói %s v%s.', 'Installed pack %s v%s.')) % (a.name, meta['version']), changes=True,
+                              L('Đã cài và nhận gói %s v%s cho project này.', 'Installed and accepted pack %s v%s for this project.')) % (a.name, meta['version']), changes=True,
                pack=a.name, version=meta['version'], skills=meta['skills'], files=list(DONE), intake=st, next_actions=nxt)
     print(L('Đã cài gói %s v%s: %d skill (%s).', 'Installed pack %s v%s: %d skills (%s).') % (a.name, meta['version'], len(meta['skills']), ', '.join(meta['skills'])))
-    print(L('Tiếp nhận: %s; trạng thái trong chỉ mục: %s.', 'Intake: %s; index status: %s.') % (intake_label(st), 'REVIEW' if trial else 'AVAILABLE'))
+    print(L('Tiếp nhận: %s; trạng thái trong chỉ mục: %s.', 'Intake: %s; index status: %s.') % (intake_label(st), 'AVAILABLE (bạn đã xác nhận)' if confirmed else 'REVIEW'))
     print(L('Đã ghi vào .agent/SKILL_INDEX.md.', 'Recorded in .agent/SKILL_INDEX.md.') if ok else L('Chưa có .agent/SKILL_INDEX.md: hãy tự thêm dòng skill.', 'No .agent/SKILL_INDEX.md: add the skill rows yourself.'))
 
 def cmd_update(a):
@@ -384,10 +455,7 @@ def cmd_update(a):
     if st['state'] == 'refused':
         stop(L('Không cập nhật gói %s: hồ sơ tiếp nhận ghi "%s"; bản đang cài được giữ nguyên.', 'Pack %s not updated: its intake record says "%s"; the installed version is kept.')
              % (a.name, intake_label(st)), pack=a.name, intake=st)
-    same_version = old.get('version') == meta['version']
-    # hồ sơ đã nhận lúc cài nay không còn: AVAILABLE trong chỉ mục là do công cụ ghi, không phải người dùng, nên về REVIEW
-    # the record accepted at install time is gone: AVAILABLE came from the tool, not the user, so it returns to REVIEW
-    withdrawn = old.get('intake') == 'accepted' and st['state'] != 'accepted'
+    conf_old = old.get('confirmed') if isinstance(old.get('confirmed'), dict) and old['confirmed'].get('digest') else None
     dst = '%s/%s' % (INSTALL_DIR, a.name)
     index_file = '.agent/SKILL_INDEX.md'
     upd, conf, add = [], [], []
@@ -409,10 +477,13 @@ def cmd_update(a):
         if it:
             print('%s: %s' % (L(vi, en), ', '.join(it)))
     versions = dict(pack=a.name, from_version=old.get('version'), to_version=meta['version'], intake=st)
-    if (upd or add or conf) and (withdrawn or not same_version) and st['state'] != 'accepted':
-        print(L('Bản này chưa qua tiếp nhận (hoặc hồ sơ đã rút): sau khi cập nhật, skill của gói về REVIEW cho tới khi phần đổi ở trên được xét (%s).',
-                'This version has not been through intake (or its record was withdrawn): after the update the pack skills go back to REVIEW until the change above is reviewed (%s).')
-              % intake_label(st))
+    if a.confirm and st['state'] != 'accepted':
+        stop(L('Không nhận lại gói %s khi cập nhật được: %s. Bỏ --confirm để cập nhật mà không nhận.', 'Cannot re-accept pack %s on update: %s. Drop --confirm to update without accepting.')
+             % (a.name, intake_label(st)), pack=a.name, intake=st)
+    if conf_old and (upd or add or st['state'] != 'accepted') and not a.confirm:  # nội dung đổi hoặc lời khai không còn: xác nhận cũ hết hiệu lực
+        print(L('Xác nhận tiếp nhận cũ sẽ hết hiệu lực: nội dung đổi hoặc hồ sơ không còn ở mức đã nhận (%s). Skill của gói về REVIEW cho tới khi bạn xét phần đổi ở trên rồi chạy "pack.py confirm %s" (hoặc cập nhật lại với --apply --confirm).',
+                'The old confirmation will lapse: the content changes or the record no longer claims acceptance (%s). The pack skills go back to REVIEW until you review the change above and run "pack.py confirm %s" (or update again with --apply --confirm).')
+              % (intake_label(st), a.name))
     if not (upd or add or conf):
         print(L('Không có gì cần cập nhật.', 'Nothing to update.'))
         set_result('success', 0, L('Gói đã đủ bản mới; không có gì cần cập nhật.', 'The pack is up to date; nothing to update.'), changes=False, **versions)
@@ -434,16 +505,74 @@ def cmd_update(a):
     for rel in conf:
         shutil.copyfile(P('packs/%s/%s' % (a.name, rel)), P('%s/%s.new' % (dst, rel)))
         DONE.append({'path': '%s/%s.new' % (dst, rel), 'action': 'merge'})
-    old.update({'version': meta['version'], 'skills': meta['skills'], 'files': newfiles, 'intake': st['state'],
-                'updated': datetime.date.today().isoformat()})
+    new_digest = content_digest(P(dst))
+    it = meta.get('intake', {})
+    if a.confirm and st['state'] == 'accepted':  # người dùng xác nhận nội dung mới ngay lúc cập nhật / the user confirms the new content right on update
+        conf_new = {'digest': new_digest, 'version': meta['version'], 'decision': it.get('decision'), 'record': it.get('record'),
+                    'date': datetime.date.today().isoformat()}
+    else:
+        conf_new = conf_old if (conf_old and st['state'] == 'accepted' and new_digest == conf_old['digest']) else None
+    keep = bool(conf_new)
+    old.pop('intake', None)
+    old.update({'version': meta['version'], 'skills': meta['skills'], 'files': newfiles, 'claim': st['state'],
+                'confirmed': conf_new, 'updated': datetime.date.today().isoformat()})
     wr(dst + '/.pack-install.json', json.dumps(old, ensure_ascii=False, indent=2) + '\n')
     DONE.append({'path': dst + '/.pack-install.json', 'action': 'update'})
-    if edit_index(a.name, index_rows(a.name, meta, st), same_version and not withdrawn):
+    if edit_index(a.name, index_rows(a.name, meta, st, keep)):
         DONE.append({'path': index_file, 'action': 'index'})
     set_result('success', 0, L('Đã cập nhật gói %s lên v%s.', 'Updated pack %s to v%s.') % (a.name, meta['version']), changes=True,
                merge_required=bool(conf), files=list(DONE),
                next_actions=[L('Hợp nhất các file .new rồi xóa chúng.', 'Merge the .new files, then delete them.')] if conf else [], **versions)
     print(L('Đã cập nhật.', 'Updated.'))
+
+def cmd_confirm(a):
+    """Bước xác nhận của người dùng: nhận gói đã cài cho project này, gắn với đúng nội dung đang cài. Chạy luôn; --dry-run chỉ xem.
+    The user's confirmation step: accept the installed pack for this project, bound to the exact installed content. Runs at once; --dry-run only shows."""
+    av, ins = available(), installed()
+    need(a.name, ins); need(a.name, av)
+    old, meta = ins[a.name], av[a.name]
+    if meta.get('version') != old.get('version'):
+        stop(L('Bản trong packs/ (%s) khác bản đã cài (%s): chạy "pack.py update %s --apply" trước rồi xác nhận.',
+               'The version in packs/ (%s) differs from the installed one (%s): run "pack.py update %s --apply" first, then confirm.')
+             % (meta.get('version'), old.get('version'), a.name), pack=a.name)
+    st = intake_state(meta, P('packs/' + a.name))
+    if st['state'] != 'accepted':
+        stop(L('Chưa xác nhận được gói %s: %s. Lời khai phải hợp lệ và hồ sơ giải được tới file local có thật (xem packs/README.md).',
+               'Cannot confirm pack %s: %s. The claim must be valid and its record must resolve to a real local file (see packs/README.md).')
+             % (a.name, intake_label(st)), pack=a.name, intake=st)
+    dst = '%s/%s' % (INSTALL_DIR, a.name)
+    digest = content_digest(P(dst))
+    edited = sorted(r for r in walk(P(dst)) if r != '.pack-install.json' and not r.endswith('.new')
+                    and (r not in old.get('files', {}) or sha_file(P('%s/%s' % (dst, r))) != old['files'][r]))
+    it = meta.get('intake', {})
+    print(L('Nhận gói %s %s cho project này: quyết định %s, hồ sơ %s, dấu vân tay nội dung %s.',
+            'Accepting pack %s %s for this project: decision %s, record %s, content fingerprint %s.')
+          % (a.name, old['version'], it.get('decision'), it.get('record'), digest[:12]))
+    print(L('Xác nhận này gắn với đúng nội dung đang cài; đổi nội dung thì phải xác nhận lại. Bạn nên đã đọc hồ sơ và phần căn cứ trước khi xác nhận.',
+            'This confirmation is bound to the exact installed content; changing it requires confirming again. You should have read the record and its evidence first.'))
+    if edited:
+        print(L('Lưu ý: file đã cài khác bản lúc cài (bạn hoặc công cụ khác đã sửa): %s. Xác nhận áp dụng cho nội dung hiện tại.',
+                'Note: installed files differ from the install-time copy (edited by you or another tool): %s. The confirmation covers the current content.') % ', '.join(edited))
+    plan = [{'path': dst + '/.pack-install.json', 'action': 'update'}]
+    if os.path.isfile(P('.agent/SKILL_INDEX.md')):
+        plan.append({'path': '.agent/SKILL_INDEX.md', 'action': 'index'})
+    info = dict(pack=a.name, version=old['version'], intake=st, fingerprint=digest, edited=edited)
+    if a.dry_run:
+        print(L('[XEM TRƯỚC] Bỏ --dry-run để xác nhận.', '[PREVIEW] Drop --dry-run to confirm.'))
+        set_result('preview', 0, L('Xem trước xác nhận tiếp nhận; chưa ghi file nào.', 'Intake confirmation preview; no file written yet.'),
+                   changes=True, files=plan, next_actions=[L('Bỏ --dry-run để xác nhận.', 'Drop --dry-run to confirm.')], **info)
+        return
+    old['confirmed'] = {'digest': digest, 'version': old['version'], 'decision': it.get('decision'), 'record': it.get('record'),
+                        'date': datetime.date.today().isoformat()}
+    old['claim'] = st['state']
+    old.pop('intake', None)
+    wr(dst + '/.pack-install.json', json.dumps(old, ensure_ascii=False, indent=2) + '\n')
+    DONE.append({'path': dst + '/.pack-install.json', 'action': 'update'})
+    if edit_index(a.name, index_rows(a.name, meta, st, True)):
+        DONE.append({'path': '.agent/SKILL_INDEX.md', 'action': 'index'})
+    set_result('success', 0, L('Đã xác nhận tiếp nhận gói %s cho project này.', 'Confirmed intake of pack %s for this project.') % a.name,
+               changes=True, files=list(DONE), **info)
+    print(L('Đã xác nhận. Skill của gói ghi AVAILABLE trong .agent/SKILL_INDEX.md.', 'Confirmed. The pack skills are recorded AVAILABLE in .agent/SKILL_INDEX.md.'))
 
 def cmd_remove(a):
     ins = installed()
@@ -489,18 +618,12 @@ def cmd_check(a):
             if idx and ('| %s | LOCAL | PACK |' % sid) not in idx:
                 print('  - %s: skill %s chưa có trong SKILL_INDEX / not in SKILL_INDEX' % (n, sid)); bad += 1
                 findings.append({'pack': n, 'message': 'skill %s chưa có trong SKILL_INDEX / not in SKILL_INDEX' % sid})
-        # hồ sơ hiện tại ghi không nhận đúng bản đang cài: update bị chặn, nên phải báo ở đây
-        # the current record refuses the installed version: update is blocked, so report it here
-        src = P('packs/%s/pack.json' % n)
-        if (not a.name or a.name == n) and os.path.isfile(src):
-            try:
-                cur = json.load(io.open(src, encoding='utf-8'))
-            except ValueError:
-                cur = {}
-            ist = intake_state(cur, P('packs/' + n))
-            if cur.get('version') == m.get('version') and ist['state'] == 'refused':
-                msg = L('%s v%s đã cài nhưng hồ sơ tiếp nhận ghi "%s"; cân nhắc gỡ (pack.py remove %s).',
-                        '%s v%s is installed but its intake record says "%s"; consider removing it (pack.py remove %s).') % (n, m.get('version'), intake_label(ist), n)
+        # chỉ mục ghi đã nhận nhưng không có xác nhận còn hiệu lực cho nội dung đang cài (gõ tay, nội dung đổi, hồ sơ từ chối)
+        # the index says accepted but no confirmation holds for the installed content (typed by hand, content changed, record refuses)
+        if not a.name or a.name == n:
+            why = installed_eligibility(n)
+            if why and any(v in ('AVAILABLE', 'ACTIVE') for v in index_status(n).values()):
+                msg = eligibility_text(n, why)
                 print('  - ' + msg); bad += 1
                 findings.append({'pack': n, 'message': msg})
     if a.name and not os.path.isdir(P('packs/' + a.name)):
@@ -538,10 +661,15 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest='cmd', required=True)
     sub.add_parser('list').set_defaults(f=cmd_list)
-    for c, f in (('add', cmd_add), ('update', cmd_update), ('remove', cmd_remove), ('new', cmd_new)):
+    for c, f in (('add', cmd_add), ('update', cmd_update), ('confirm', cmd_confirm), ('remove', cmd_remove), ('new', cmd_new)):
         s = sub.add_parser(c); s.add_argument('name'); s.set_defaults(f=f)
+        if c in ('add', 'update'):
+            s.add_argument('--confirm', action='store_true', help='nhận gói luôn (hồ sơ phải hợp lệ) / accept the pack right away (the record must be valid)')
         if c == 'update':
             s.add_argument('--apply', action='store_true')
+        if c == 'confirm':
+            s.add_argument('--dry-run', action='store_true', help='chỉ xem, không ghi / only show, write nothing')
+            s.add_argument('--apply', action='store_true', help=argparse.SUPPRESS)  # giữ cho lệnh cũ / kept for older commands
     s = sub.add_parser('check'); s.add_argument('name', nargs='?'); s.set_defaults(f=cmd_check)
     a = ap.parse_args([x for x in sys.argv[1:] if x != '--result-json'])
     if hasattr(sys.stdout, 'reconfigure'):

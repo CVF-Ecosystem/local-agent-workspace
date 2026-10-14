@@ -166,8 +166,8 @@ Lõi của package chỉ giữ quy tắc làm việc và mười bốn skill dù
 nhân sự, tài chính...) nên nằm trong **gói lĩnh vực** trong `packs/`, cài vào project nào cần bằng
 `python tools/pack.py add <tên>` (xem `python tools/pack.py list`). Gói cài vào `skills/local/packs/` và được ghi trong
 `.agent/SKILL_INDEX.md` với Scope `PACK`; gỡ bằng `pack.py remove <tên>` (thư mục được chuyển vào `archive/`, không xóa).
-Quy tắc nhận một gói và cách viết gói mới ở `packs/README.md`. Gói chưa qua tiếp nhận vẫn cài được để dùng thử; skill của nó
-được ghi `REVIEW` và không được chép sang ứng dụng. Package kèm năm gói lĩnh vực (thử nghiệm, bản 0.2.0): `phap-ly` (tra cứu, áp dụng văn bản quy phạm pháp luật), `van-thu-luu-tru`
+Quy tắc nhận một gói và cách viết gói mới ở `packs/README.md`. Mọi gói cài vào đều ghi `REVIEW` (dùng thử, không được chép sang ứng dụng); khối `intake` trong gói chỉ là lời khai. Đọc hồ sơ rồi muốn nhận cho project
+này thì cài kèm `python tools/pack.py add <tên> --confirm` (đã cài rồi thì `pack.py confirm <tên>`; trong bảng điều khiển là nút "Cài và nhận gói" / "Xác nhận tiếp nhận", một hộp thoại là xong); sửa nội dung gói sau đó thì phải xác nhận lại. Package kèm năm gói lĩnh vực (thử nghiệm, bản 0.2.0): `phap-ly` (tra cứu, áp dụng văn bản quy phạm pháp luật), `van-thu-luu-tru`
 (văn bản đi, đến, sao văn bản, lập hồ sơ, nộp lưu), `cang-logistics` (báo cáo khai thác tàu, sà lan, sự cố thiết bị),
 `hanh-chinh-nhan-su` (quyết định nhân sự, phép năm, làm thêm giờ, kỷ luật, lương, bảo hiểm) và `ke-toan-noi-bo` (tạm ứng, thanh
 toán, chứng từ, hóa đơn, lưu trữ). Mỗi gói có bảng căn cứ (tệp legal-basis.md trong thư mục references của skill) ghi số hiệu, điều khoản, hiệu lực, nguồn và ngày đối

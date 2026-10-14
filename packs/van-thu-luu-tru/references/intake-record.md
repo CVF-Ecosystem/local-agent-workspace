@@ -34,6 +34,7 @@ Nhận xét riêng của gói: Không có đáp án đã biết. Bản có skill
 1. Người có thẩm quyền đối chiếu bảng căn cứ `packs/van-thu-luu-tru/skills/records-management-vn/references/legal-basis.md` với văn bản chính thức và ghi kết quả (điều kiện 2).
 2. Ít nhất ba việc thật của lĩnh vực này, chạy trên ứng dụng agent thật của người dùng, kèm đánh giá của người dùng; có ca thiếu nguồn và ca lỗi (điều kiện 4 và 6).
 3. Xử lý hiện tượng B vẫn trình bày đoạn "nguyên văn" không có trong gói, hoặc chấp nhận và ghi vào giới hạn (điều kiện 4).
-4. Chỉ khi 1-3 xong mới đổi `intake.decision` và nâng `intake.version` theo bản đã xét.
+4. Chỉ khi 1-3 xong mới đổi `intake.decision` và nâng `intake.version` theo bản đã xét. Đó vẫn chỉ là lời khai của gói: người dùng ở từng project
+   tự đọc hồ sơ rồi chạy một lệnh (`pack.py add <tên> --confirm` hoặc `pack.py confirm <tên>`) thì skill mới thành `AVAILABLE`.
 
 Giới hạn của phép thử này: một model, mỗi ô 2 lần, tiêu chí cơ học nên bỏ sót chất lượng diễn đạt; agent tự chấm không phải nghiệm thu của người dùng. Kết quả không nói gì về model khác.
