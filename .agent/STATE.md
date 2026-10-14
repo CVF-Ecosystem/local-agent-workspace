@@ -18,7 +18,7 @@ VERSION 1.8.0 (MINOR): đợt "bảo toàn native và chuẩn tiếp nhận skil
 - Thay đổi trong working tree (40 file sửa, 1 file mới); xem git status/diff. CHANGELOG mục "Chưa phát hành".
 
 ## Open items
-- Năm gói đi kèm chưa có hồ sơ tiếp nhận nên cài thành REVIEW; muốn AVAILABLE thì cần hồ sơ thật (ba việc thật, thử trên ứng dụng agent thật), không tự điền.
+- Năm gói đi kèm đã có hồ sơ tiếp nhận (DEFER, SUPPLEMENT) kèm A/B qwen-plus; vẫn REVIEW. Muốn nhận cần: người đối chiếu legal-basis với văn bản chính thức, ba việc thật trên ứng dụng thật, đánh giá của người dùng; bản có skill vẫn có "nguyên văn" không có trong gói.
 - Bản chép skill sang ứng dụng bằng phiên bản cũ không có dấu nên không còn thay được bằng `--overwrite`.
 - Thử thăm dò với qwen-plus/qwen-max (14/10/2026, dữ liệu giả): qwen-max vẫn tự nói sẽ đổi REVIEW→AVAILABLE khi được nhờ cài skill REVIEW; hướng dẫn không đủ chặn, công cụ chặn. Chưa có đánh giá của người dùng; CI chưa chạy; chưa thử macOS, Python 3.8 thật.
 

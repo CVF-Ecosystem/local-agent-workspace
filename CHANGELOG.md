@@ -21,6 +21,11 @@
   "Thử nghiệm" / "Đã tiếp nhận"; bảng skill hiện nhãn trạng thái.
 - Hồ sơ đã nhận bị rút trong cùng phiên bản thì `pack.py update` đưa skill về `REVIEW`; `pack.py check` báo gói đã cài mà hồ sơ ghi không
   nhận đúng bản đó. Gói cài trước bản này (đã ghi `AVAILABLE`) không bị tự đổi; người dùng tự đổi sang `REVIEW` nếu muốn.
+- Năm gói đi kèm có hồ sơ tiếp nhận (`references/intake-record.md`, khối `intake` trong `pack.json`), kết luận `DEFER`, quan hệ `SUPPLEMENT`:
+  vẫn là ứng viên (`REVIEW`). Hồ sơ ghi sáu điều kiện, phép thử A/B với qwen-plus và phần còn thiếu: đối chiếu căn cứ với văn bản chính
+  thức (hiện lấy từ trang tin/tư vấn), ba việc thật và đánh giá của người dùng. Kết quả A/B không đồng đều: HR và kế toán cho nội dung tốt
+  hơn bản không có skill (HR: 13 ngày đúng so với 12 sai); pháp lý không thấy cải thiện; bản có skill vẫn có đoạn "nguyên văn" không có
+  trong gói (4/10 câu so với 6/10) và một chi tiết bịa ở HR.
 - `AGENTS.md`: agent không tự đổi `REVIEW` thành `AVAILABLE`/`ACTIVE`.
 - Kiểm thử logic mới `tests/test_skill_intake.py` và một ca trình duyệt cho trang chép skill.
 - Thử hành vi một lần (14/10/2026) với `qwen-plus` và `qwen-max` (Alibaba Model Studio), bốn tình huống bằng dữ liệu giả, không có

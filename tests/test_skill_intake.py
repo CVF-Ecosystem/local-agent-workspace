@@ -58,8 +58,16 @@ class IntakeBase(StructuredBase):
 
 
 class PackIntake(IntakeBase):
+    def test_shipped_packs_are_deferred_candidates_with_a_record_that_exists(self):
+        _, _, data = self.structured('pack.py', 'list')
+        for p in data['packs']:
+            with self.subTest(pack=p['name']):
+                self.assertEqual((p['intake']['state'], p['intake']['reason']), ('candidate', 'deferred'))
+                self.assertTrue((self.base / 'packs' / p['name'] / 'references' / 'intake-record.md').is_file())
+
     def test_candidate_pack_installs_as_review_and_structure_check_is_not_intake(self):
         self.init_project()
+        self.set_intake('cang-logistics')  # bỏ hồ sơ để thử trường hợp chưa có hồ sơ / drop the record: the no-record case
         result, _, data = self.structured('pack.py', 'check', 'cang-logistics')
         self.assertEqual((result.returncode, data['status']), (0, 'success'))
         self.assertEqual(data['intake']['cang-logistics']['state'], 'candidate')

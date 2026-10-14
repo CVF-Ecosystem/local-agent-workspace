@@ -13,5 +13,12 @@
   "domain": "records",
   "skills": [
     "records-management-vn"
-  ]
+  ],
+  "intake": {
+    "decision": "DEFER",
+    "version": "0.2.0",
+    "relation": "SUPPLEMENT",
+    "record": "references/intake-record.md",
+    "note": "Thiếu đối chiếu căn cứ với văn bản chính thức, ba việc thật của người dùng và đánh giá của người dùng; xem hồ sơ."
+  }
 }
