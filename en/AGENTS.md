@@ -50,29 +50,38 @@ verbatim only from a file in the library; without a file, mark "[not checked aga
 
 ## Choose what fits
 
-Select native skills, workspace skills, tools, a combination, or direct work
-according to the task, inputs, intended output, and capabilities available now.
-Origin and an `ACTIVE` label do not confer priority.
-A capability recorded for another provider may not exist in this session.
+Make use of the capabilities, tools and native skills actually available in this session, within the
+scope given; the workspace does not replace them and does not edit native skills. Choose native, a
+workspace skill, a tool, a combination or direct work according to the task, inputs and output. Origin
+and an `ACTIVE` label do not confer priority. A capability recorded for another provider may not exist in
+this session; if native has not been checked, record it as unknown rather than inferring it is missing.
 
-When the request clearly matches the "Use when" column of a workspace skill (`.agent/SKILL_INDEX.md`), read that skill's
-`SKILL.md` before starting. Skills are short, and the accuracy rules for each kind of work live there (use the bundled
-script, do not assign an owner the source did not give, label inferences...); skipping it makes it easy to repeat the very
-mistakes the skill was written to prevent. If no skill fits, do not use one, and say so in the execution declaration.
+A workspace skill is valuable when it adds what this task needs and the existing way lacks: templates,
+sources, business rules, a checking script. When such a skill clearly matches the "Use when" column of
+`.agent/SKILL_INDEX.md`, read its `SKILL.md` before starting: the accuracy rules for each kind of work live
+there (use the bundled script, do not assign an owner the source did not give, label inferences...). Do not
+read one just because a name or keyword matches when existing capability is enough. If no skill fits, do not
+use one, and say so in the execution declaration.
 
-Domain packs (records, ports, HR, accounting, legal...) live in `packs/`; only installed packs have Scope `PACK` rows in
-`.agent/SKILL_INDEX.md`, and only those are skills to use. For work in a domain whose pack is not installed, suggest that the user
-install it (`python tools/pack.py add <name>` or the "Domain packs" page of `APP.bat`); do not read `packs/` in place of an installed skill.
+Status `REVIEW` is a candidate that has not been through intake: use it only as a trial in a project where the
+user placed or installed it, and say it is a trial. The agent never changes `REVIEW` to `AVAILABLE`/`ACTIVE` on its
+own (not even to get the assigned work done): that follows only an intake conclusion the user has confirmed. Domain packs (records, ports, HR, accounting, legal...) live
+in `packs/`; only installed packs have Scope `PACK` rows in `.agent/SKILL_INDEX.md`. For work in a domain whose
+pack is not installed, suggest that the user install it (`python tools/pack.py add <name>` or the "Domain packs"
+page of `APP.bat`); do not read `packs/` in place of an installed skill.
 
 Read the selected skill's guidance and only the references or templates that help.
 Use its approach flexibly; a skill should not expand the user's scope.
-The included office skills offer examples, not mandatory document structures.
+The included office skills offer examples, not mandatory document structures. Reusing a skill accepted for
+its scope needs no new approval.
 
-When adding or materially changing a skill, note its purpose, location, origin,
-and relevant dependencies in the index. This is not repeated on each use.
-The user decides which skills to keep or remove. Choosing among skills already
-available for an ordinary task does not need a separate approval ceremony.
-Do not copy native skills merely to complete a local collection.
+Adding, importing or promoting a skill or pack follows the intake standard in `skills/README.md`, the same for
+skills learned while working and for outside sources. Do not copy native skills merely to complete a set; a
+similar version is accepted only with evidence that it is better within the stated scope; prefer adding narrow
+templates, sources or business rules. A file downloaded or placed in a folder is not thereby activated; do not
+run installers, scripts or hooks of an unreviewed candidate. Update the template root only under the permission
+the user granted; do not edit native skills or global settings to complete an intake. The user decides which
+skills to keep or remove.
 
 ## Work proportionately
 

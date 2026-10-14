@@ -9,7 +9,7 @@ Skill do user hoặc agent trong hệ thống này xây dựng/duy trì.
 
 - **Dùng chung (`shared/`)**: không phụ thuộc đơn vị hay nghiệp vụ cụ thể: kỹ thuật, lỗi đã gặp, quy trình kiểm thử, quy ước file, bố cục mẫu.
 - **Riêng project (`project/`)**: gắn với một đơn vị, người, hệ thống hay quy chế cụ thể: tên, chức danh, căn cứ nội bộ, mốc thời gian, mã, bố cục sổ riêng, thông tin nền công ty.
-- Còn lưỡng lự thì để ở project; khi cùng một bài học lặp lại ở project thứ hai thì nâng phần chung lên `shared/`.
+- Còn lưỡng lự thì để ở project. Bài học lặp lại ở project thứ hai là bằng chứng có nhu cầu, chưa đủ để nâng lên `shared/`: xét theo chuẩn tiếp nhận ở `skills/README.md` (cùng chuẩn với skill nhập ngoài), không viết lại phần native hay skill đang có đã làm được, và đưa vào bộ mẫu gốc chỉ khi người dùng cấp quyền.
 - Skill project nên trỏ tới skill chung thay vì chép lại nội dung (ví dụ trỏ tới `excel-workbooks` hay `office-documents`) và chỉ giữ phần riêng. Tránh hai bản của cùng một hướng dẫn.
 - Skill riêng gắn với một vụ việc, một cá nhân hoặc dữ liệu bảo mật thì không đưa lên `shared/`; bài học lấy từ project thực chỉ đưa lên sau khi bỏ tên, số liệu và chức danh riêng. Một lĩnh vực mới chỉ thành gói khi đủ điều kiện trong `packs/README.md`.
 - Trước khi tạo hoặc sửa skill: xem `.agent/SKILL_INDEX.md` và đọc kỹ skill liên quan (cả phần tham khảo) để dùng lại, không làm lại từ đầu; chỉ mượn kỹ thuật, không mượn nội dung đặc thù của đơn vị khác.

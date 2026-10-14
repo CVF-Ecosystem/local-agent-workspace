@@ -1,7 +1,9 @@
 # Chọn và sử dụng skills
 
-Skill trong package là hướng dẫn và tài nguyên bổ sung. Agent chọn theo độ phù hợp
-với công việc, không theo thứ tự native → local hoặc local → native.
+Bạn chọn agent nào thì agent đó dùng năng lực và native skill sẵn có của nó; package không thay
+hay sửa chúng. Skill trong package là hướng dẫn và tài nguyên **bổ sung**: mẫu, nguồn, quy tắc nghiệp
+vụ mà native chưa có. Agent chọn theo độ phù hợp với công việc, không ép dùng skill của package khi
+cách sẵn có đã đủ.
 
 ## 1. Khi nào một skill có ích?
 
@@ -129,9 +131,10 @@ thẳng. Các skill còn lại không cần xin phép trước khi dùng.
 `.agent/SKILL_INDEX.md` có mô tả khi nào hữu ích và đường dẫn đến từng skill. Agent
 có thể tra khi cần khám phá hoặc mở trực tiếp khi đã biết skill phù hợp.
 
-`AVAILABLE` nghĩa sẵn dùng, `ACTIVE` nghĩa thường dùng trong project. Cả hai đều
-không yêu cầu nạp đầu phiên. Ghi chú native chỉ mô tả khả năng đã biết của một môi
-trường; khi chuyển agent, dùng những khả năng thực có trong phiên mới.
+`AVAILABLE` nghĩa đã được nhận và sẵn dùng, `ACTIVE` nghĩa thường dùng trong project. Cả hai đều
+không yêu cầu nạp đầu phiên. `REVIEW` là **thử nghiệm**: chưa qua tiếp nhận, agent chỉ dùng thử trong
+project và nói rõ là bản thử, công cụ không chép nó sang ứng dụng. Ghi chú native chỉ mô tả khả năng
+đã biết của một môi trường; khi chuyển agent, dùng những khả năng thực có trong phiên mới.
 
 Package không tự cài các skill vào menu native của ứng dụng. Khi cần, chỉ đường dẫn:
 
@@ -146,9 +149,16 @@ Chỉ tham khảo skill có ích cho việc này; native skills hoặc làm tr�
 Skill nhập từ ngoài có thể đặt trong `skills/external/`; `skills/inbox/` chỉ là chỗ
 tạm nếu bạn muốn phân loại sau.
 
+Đặt file vào thư mục chưa có nghĩa skill đã được nhận. Skill tự rút ra khi làm việc và skill
+hay gói tải từ ngoài dùng chung một chuẩn tiếp nhận (`skills/README.md`, mục "Tiếp nhận skill và gói"):
+nó phải bổ sung điều native hoặc cách đang có chưa làm được, rõ nguồn, rõ quyền, có bằng chứng dùng
+được. Nếu agent của bạn đã làm tốt việc đó thì không cần thêm skill trùng; kết luận "không cần" cũng
+là kết quả tốt. Trong lúc xét, skill được ghi `REVIEW` và vẫn có thể dùng thử trong project.
+
 Khi thêm hoặc sửa lớn, nhờ agent đọc đủ để ghi `Use when`, vị trí, nguồn gốc và
-dependency đáng chú ý vào index. Không cần đánh giá lại khi dùng skill quen thuộc.
-Người dùng giữ quyền thêm/bỏ/sửa thư viện; agent chủ động lựa chọn trong tác nghiệp.
+dependency đáng chú ý vào index. Không cần đánh giá lại khi dùng skill đã được nhận.
+Người dùng giữ quyền thêm/bỏ/sửa thư viện và quyền đưa skill vào bộ mẫu gốc; agent chủ động
+lựa chọn trong tác nghiệp. Cập nhật bộ mẫu gốc không tự đổi các project đã tạo trước đó.
 
 ## 9. Gói lĩnh vực và cài skill vào ứng dụng
 
@@ -156,7 +166,8 @@ Lõi của package chỉ giữ quy tắc làm việc và mười bốn skill dù
 nhân sự, tài chính...) nên nằm trong **gói lĩnh vực** trong `packs/`, cài vào project nào cần bằng
 `python tools/pack.py add <tên>` (xem `python tools/pack.py list`). Gói cài vào `skills/local/packs/` và được ghi trong
 `.agent/SKILL_INDEX.md` với Scope `PACK`; gỡ bằng `pack.py remove <tên>` (thư mục được chuyển vào `archive/`, không xóa).
-Quy tắc nhận một gói và cách viết gói mới ở `packs/README.md`. Package kèm năm gói lĩnh vực (thử nghiệm, bản 0.1.0): `phap-ly` (tra cứu, áp dụng văn bản quy phạm pháp luật), `van-thu-luu-tru`
+Quy tắc nhận một gói và cách viết gói mới ở `packs/README.md`. Gói chưa qua tiếp nhận vẫn cài được để dùng thử; skill của nó
+được ghi `REVIEW` và không được chép sang ứng dụng. Package kèm năm gói lĩnh vực (thử nghiệm, bản 0.2.0): `phap-ly` (tra cứu, áp dụng văn bản quy phạm pháp luật), `van-thu-luu-tru`
 (văn bản đi, đến, sao văn bản, lập hồ sơ, nộp lưu), `cang-logistics` (báo cáo khai thác tàu, sà lan, sự cố thiết bị),
 `hanh-chinh-nhan-su` (quyết định nhân sự, phép năm, làm thêm giờ, kỷ luật, lương, bảo hiểm) và `ke-toan-noi-bo` (tạm ứng, thanh
 toán, chứng từ, hóa đơn, lưu trữ). Mỗi gói có bảng căn cứ (tệp legal-basis.md trong thư mục references của skill) ghi số hiệu, điều khoản, hiệu lực, nguồn và ngày đối
@@ -164,10 +175,13 @@ chiếu để người dùng kiểm lại. Cài bằng `python tools/pack.py add
 là khung `_template` để viết gói mới.
 
 Mỗi project giữ bản sao skill của riêng mình, nên project luôn tự đủ và mang đi được; công cụ `tools/upgrade_package.py` giữ
-các bản sao này đồng bộ với package mới. Nếu muốn skill hiện trong menu của ứng dụng (ví dụ Claude), dùng
-`python tools/install_skills.py --dest <thư mục skill của ứng dụng> --yes` (mặc định chỉ xem trước, không ghi đè), hoặc trang "Cài skill
-vào ứng dụng" của bảng điều khiển (`APP.bat`). Skill viết theo định dạng `SKILL.md` chung: Claude đọc `~/.claude/skills`; Codex và Gemini CLI
-cùng đọc `~/.agents/skills`, nên một lần chép dùng được cho cả hai. Việc này là tùy chọn; agent vẫn đọc được skill như file.
+các bản sao này đồng bộ với package mới khi bạn nâng cấp. Nếu muốn một skill hiện trong menu của ứng dụng (ví dụ Claude), dùng
+`python tools/install_skills.py --dest <thư mục skill của ứng dụng> --skills <tên,tên> --yes` (không có `--yes` thì chỉ xem trước), hoặc
+trang "Cài skill vào ứng dụng" của bảng điều khiển (`APP.bat`), nơi bạn đánh dấu skill cần chép. Chỉ chép skill bạn thật sự cần: ứng dụng
+đã có khả năng tương tự thì không cần. Chỉ skill đã được nhận mới chép được; skill cùng tên mà ứng dụng đã có (native hoặc nguồn khác)
+luôn được giữ nguyên, và bản cũ do package chép khi thay sẽ được lưu vào `archive/`. Skill viết theo định dạng `SKILL.md` chung: Claude
+đọc `~/.claude/skills`; Codex và Gemini CLI cùng đọc `~/.agents/skills`, nên một lần chép dùng được cho cả hai. Việc này là tùy chọn;
+agent vẫn đọc được skill như file.
 
 Bảng thuật ngữ Việt–Anh cho văn bản hành chính: `docs/GLOSSARY_VI_EN.md`. Trước khi giao sản phẩm, có thể dùng
 `python tools/check_output.py <file>` và checklist `skills/local/shared/office-documents/references/delivery-checklist.md`.

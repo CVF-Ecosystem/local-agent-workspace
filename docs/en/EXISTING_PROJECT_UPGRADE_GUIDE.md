@@ -32,7 +32,7 @@ The first time you bring the package into an existing project (no `VERSION` or `
 folder run `python tools/adopt_project.py --project "path" --name "Project name"` for a report, add `--apply` to write. It only adds missing files; an old
 `AGENTS.md`, `CLAUDE.md` or `GEMINI.md` is preserved and remains active; the differing package version is saved as `<name>.new` to merge, including when selecting English.
 If a differing `.new` already exists, the tool stops before writing. Unmerged instructions are explicitly reported as “MERGE REQUIRED”;
-any other conflicting file stays yours and the package version is saved as `<name>.new`; existing project skills get a row in `SKILL_INDEX.md`. If this step is interrupted, see section 9.
+any other conflicting file stays yours and the package version is saved as `<name>.new`; existing project skills get a row in `SKILL_INDEX.md` with Status `REVIEW` (the agent can still use them in the project; confirm, then change it to `AVAILABLE`). If this step is interrupted, see section 9.
 Shared skills live in `skills/local/shared/`; skills with an organisation's own details live in `skills/local/project/`; do not copy shared content into a project skill.
 
 ## 3. Upgrade to a newer package version

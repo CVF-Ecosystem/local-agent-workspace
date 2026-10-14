@@ -1,38 +1,37 @@
 # PROJECT STATE
 
 ## Goal
-Hoàn thiện Local Agent Workspace theo roadmap/ROADMAP_HOAN_THIEN.md.
+Hoàn thiện Local Agent Workspace: bảo toàn native của agent người dùng chọn, chuẩn tiếp nhận skill/gói chung (yêu cầu của operator, 14/10/2026).
 
 ## Current phase
-Đã triển khai Giai đoạn 9 (phần còn lại), 10, 11, 12 và phần kỹ thuật của 13 đã gộp vào main (PR #1); đang phát hành v1.7.0.
+VERSION 1.8.0 (MINOR): đợt "bảo toàn native và chuẩn tiếp nhận skill" đã kiểm thử và commit trên nhánh skill-intake-native-first-v1.8.0 (từ main b4453d7); chưa push, chưa merge, chưa tạo release.
 
 ## Completed
-- Giao dịch có nhật ký cho khởi tạo/chuyển đổi/nâng cấp; `tools/transaction.py` status/resume/rollback; đã thử kill giữa chừng rồi tiếp tục và phục hồi.
-- Trang "Tình trạng ứng dụng", lịch sử thao tác, gói chẩn đoán đã che dữ liệu, nút Tiếp tục/Phục hồi, "So sánh" ở trang Chờ hợp nhất.
-- Mọi công cụ bảng điều khiển gọi phát kết quả có cấu trúc.
-- Cổng phát hành bắt buộc, `--rc`, báo cáo cổng, kiểm Python 3.8 (heuristic), CI workflow, `.github/RELEASING.md`.
-- Rà truy cập (bàn phím, focus, tương phản, màn hẹp), kiểm thử giao diện bằng Playwright; kịch bản nghiệm thu người dùng.
-- Tài liệu VI/EN, CHANGELOG, tools/README, HTML hướng dẫn đồng bộ; roadmap mục 13 ghi tiến độ.
-- 87 kiểm thử hành vi đạt; kiểm package 0 lỗi; MANIFEST đã ghi lại.
+- Chuẩn tiếp nhận chung tại `skills/README.md` (VI/EN); AGENTS, SKILL_INDEX, README vùng skill, packs/README, hướng dẫn skill/tạo/chuyển đổi project dẫn chiếu về đó.
+- `pack.py`: khối `intake` trong pack.json; ứng viên cài thành REVIEW; REUSE_NO_IMPORT/REJECT_VERSION không cài; đổi phiên bản về REVIEW; giữ trạng thái người dùng đặt trong cùng phiên bản.
+- `install_skills.py`: chỉ chép AVAILABLE/ACTIVE, phải chọn rõ, không đè thư mục cùng tên không có dấu `.workspace-skill.json`, sao lưu vào archive/.
+- `adopt_project.py`: skill có sẵn ghi REVIEW. Bảng điều khiển: ô chọn skill, nhãn "Thử nghiệm"/"Đã tiếp nhận".
+- `tests/test_skill_intake.py` (12 test logic) + 1 test trình duyệt; toàn bộ 100 test đạt; check_package (thường và --release) 0 lỗi; MANIFEST, HTML hướng dẫn đã dựng lại.
+- Audit lần 2: sửa hồ sơ bị rút trong cùng phiên bản vẫn giữ AVAILABLE; `pack.py check` báo gói đã cài bị hồ sơ ghi không nhận; sửa trợ giúp `--skills`; README và SKILL_INDEX ghi rõ cơ sở AVAILABLE của 14 skill dùng chung.
 
 ## Current artifact
-- roadmap/ROADMAP_HOAN_THIEN.md (mục 13), roadmap/KICH_BAN_NGHIEM_THU_NGUOI_DUNG.md
-- Thay đổi trong working tree; xem git status/diff.
+- Thay đổi trong working tree (40 file sửa, 1 file mới); xem git status/diff. CHANGELOG mục "Chưa phát hành".
 
 ## Open items
-- CI chưa chạy (cần push, chưa được phép); chưa thử macOS, Python 3.8, trình đọc màn hình.
-- Chưa nghiệm thu với người dùng mới theo kịch bản.
-- Hợp nhất `.new` vẫn thủ công; bước init sau chuyển đổi nằm ngoài giao dịch.
-- VERSION 1.7.0 (MINOR: tính năng mới tương thích ngược); CHANGELOG mục v1.7.0.
+- Năm gói đi kèm đã có hồ sơ tiếp nhận (DEFER, SUPPLEMENT) kèm A/B qwen-plus; vẫn REVIEW. Muốn nhận cần: người đối chiếu legal-basis với văn bản chính thức, ba việc thật trên ứng dụng thật, đánh giá của người dùng; bản có skill vẫn có "nguyên văn" không có trong gói.
+- Bản chép skill sang ứng dụng bằng phiên bản cũ không có dấu nên không còn thay được bằng `--overwrite`.
+- Thử thăm dò với qwen-plus/qwen-max (14/10/2026, dữ liệu giả): qwen-max vẫn tự nói sẽ đổi REVIEW→AVAILABLE khi được nhờ cài skill REVIEW; hướng dẫn không đủ chặn, công cụ chặn. Chưa có đánh giá của người dùng; CI chưa chạy; chưa thử macOS, Python 3.8 thật.
 
 ## Waiting on user
-- Xem kết quả CI trên PR và quyết định gộp vào main; tổ chức một phiên nghiệm thu với người dùng mới; xem kết quả CI sau khi phát hành.
+- Nhánh skill-intake-native-first-v1.8.0 đã push (b090a21, 64fd18f); chưa có PR, chưa merge, chưa release.
+- Người review là user/agent khác, không phải người giao việc hay agent đã làm. Họ quyết định merge/release và có tự kiểm căn cứ pháp lý hay không; hồ sơ gói ghi sẵn phần còn thiếu.
+- CI có sẵn và là tùy chọn của người review: chạy khi mở PR vào main, push vào main hoặc kích tay (workflow_dispatch). Push nhánh không tự kích CI; hiện chưa có lượt chạy nào cho nhánh này.
 
 ## Decisions
-- Người dùng giao hoàn thiện roadmap; orchestrator/reviewer điều phối subagent Haiku (xhigh) thi công theo phạm vi file tách biệt.
 - Dữ liệu vận hành cục bộ nằm trong thư mục runtime dưới .agent, không vào MANIFEST, ZIP, git.
 - tests/, roadmap/, .github/ chỉ dành cho kho nguồn, không vào package người dùng.
-- Người dùng đồng ý commit và push để chạy CI: commit trên nhánh roadmap-giai-doan-10-13, mở PR vào main; chưa gộp, chưa phát hành.
+- Không tạo registry/checker/engine mới cho tiếp nhận; công cụ chỉ kiểm phần kiểm được bằng máy, không chấm "tốt hơn native".
+- REVIEW vẫn dùng thử được trong project (nói rõ là bản thử); chỉ chặn xuất sang ứng dụng và đưa vào gốc.
 
 ## Next milestone
-Chạy CI trên ma trận đa nền tảng và một phiên nghiệm thu với người dùng mới; sau đó chọn phiên bản và tạo release candidate.
+Người dùng duyệt diff và commit; sau đó chạy CI và chọn phiên bản phát hành.

@@ -1,4 +1,4 @@
-# Local Agent Workspace v1.7
+# Local Agent Workspace v1.8
 
 Workspace local cho công việc văn phòng với Claude, Codex, Gemini hoặc agent khác.
 
@@ -71,8 +71,9 @@ không cần đọc thêm bản HTML. HTML dành cho người dùng, không ph�
 | `source-library` | Thư viện nguồn trong `references/` (pháp luật, quy chế, mẫu biểu) với chỉ mục Excel; tra trước khi trích dẫn. |
 
 Mười bốn skill nằm trong `skills/local/shared/`, được ghi là `AVAILABLE` trong
-`.agent/SKILL_INDEX.md`. Agent chọn skill theo độ phù hợp, không ưu tiên cố định
-native hay local. Không dùng skill cũng là lựa chọn hợp lệ.
+`.agent/SKILL_INDEX.md`. Agent dùng năng lực và native skill sẵn có; skill của package chỉ
+bổ sung phần còn thiếu (mẫu, nguồn, quy tắc nghiệp vụ). Không dùng skill cũng là lựa chọn hợp lệ.
+Thêm hay nhập skill, gói: theo chuẩn tiếp nhận ở `skills/README.md`.
 
 Các mẫu HTML được viết riêng cho package, với dữ liệu minh họa có nhãn rõ ràng.
 Không có template, script, font hoặc skill upstream nào được sao chép nguyên bộ.

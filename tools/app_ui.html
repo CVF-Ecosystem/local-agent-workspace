@@ -222,6 +222,14 @@ textarea{min-height:68px;resize:vertical}
 .pack-h .ic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);flex:none}
 .pack-h b{display:block;font-size:14px;line-height:1.35}
 .pack p{margin:10px 0 0;color:var(--muted);font-size:13px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.pk-intake{margin-top:10px}
+.skpick{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(250px,100%),1fr));gap:8px}
+.skpick label{display:flex;gap:9px;align-items:flex-start;padding:9px 11px;border:1px solid var(--line);border-radius:var(--r);background:var(--panel);font-size:13px;cursor:pointer;min-width:0}
+.skpick label.na{cursor:not-allowed;background:var(--sunken)}
+.skpick input{margin-top:3px;accent-color:var(--accent);flex:none}
+.skpick .id{font-family:var(--mono);font-size:12.5px;color:var(--ink);overflow-wrap:anywhere}
+.skpick small{display:block;color:var(--muted);font-size:12px;margin-top:3px}
+.skpick .empty{grid-column:1/-1}
 .skchips{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}
 .skchips span{font-family:var(--mono);font-size:11.5px;background:var(--sunken);border-radius:6px;padding:2px 7px;color:var(--ink-2)}
 .pack-f{display:flex;gap:8px;align-items:center;padding:12px 18px;border-top:1px solid var(--line-2)}
@@ -415,7 +423,10 @@ textarea{min-height:68px;resize:vertical}
         <label class="opt"><input type="radio" name="tg" value="custom"><div class="ic" data-ico="folder"></div><div><b data-t="sk_custom"></b><span data-t="sk_custom_d"></span></div></label>
       </div>
       <div class="field" id="sk-dest-f" hidden><label for="sk-dest" data-t="sk_dest"></label><div class="inline"><input type="text" id="sk-dest"><button class="btn" data-pick="sk-dest"><span data-t="choose"></span></button></div></div>
-      <label class="check"><input type="checkbox" id="sk-packs"><span data-t="sk_inc"></span></label>
+      <div class="flabel" id="sk-pick-l" data-t="sk_pick"></div>
+      <div class="note"><span data-ico="shield"></span><span data-t="sk_native"></span></div>
+      <div class="skpick" id="sk-pick" role="group" aria-labelledby="sk-pick-l"></div>
+      <div class="inline" style="gap:8px;flex-wrap:wrap"><button class="btn ghost" id="sk-all"><span data-t="sk_all"></span></button><button class="btn ghost" id="sk-none"><span data-t="sk_none"></span></button></div>
       <label class="check"><input type="checkbox" id="sk-over"><span data-t="sk_over"></span></label>
     </div><div class="formfoot"><div class="steps"><span class="s on"><span class="n">1</span><span data-t="preview"></span></span><span class="ln"></span><span class="s"><span class="n">2</span><span data-t="apply"></span></span></div><div class="r"><button class="btn pri lg" id="sk-run"><span data-ico="eye"></span><span data-t="preview"></span></button></div></div></div>
   </section>
@@ -587,16 +598,20 @@ var D={
  ck_p:['Kiểm tra cơ học: chỗ chưa điền, nhãn mẫu minh họa còn sót, tài nguyên mạng trong HTML, lỗi bảng tính. Không thay việc đọc lại và đối chiếu số liệu với nguồn.','A mechanical check: unfilled placeholders, leftover demo labels, network resources in HTML, spreadsheet issues. It does not replace re-reading and checking figures against sources.'],
  ck_drop:['Chọn file cần kiểm tra','Choose files to check'],ck_types:['.docx · .xlsx · .csv · .html · .md · .txt','.docx · .xlsx · .csv · .html · .md · .txt'],ck_or:['Hoặc dán đường dẫn file','Or paste a file path'],add:['Thêm','Add'],
  ck_decl:['Đây là câu trả lời đã lưu của agent: kiểm khối "Khai báo thực hiện"','This is a saved agent reply: check the "Execution declaration" block'],ck_ro:['Chỉ đọc, không sửa file.','Read only; files are not changed.'],ck_run:['Kiểm tra','Check'],ck_none:['Chưa có file nào để kiểm. Bước tiếp: bấm Chọn file hoặc dán đường dẫn, rồi bấm Thêm.','No file to check yet. Next step: press Choose files or paste a path, then press Add.'],
- pk_p:['Bộ skill theo mảng việc, cài vào project khi cần. Mỗi gói có bảng căn cứ pháp lý ghi số hiệu, điều khoản và ngày đối chiếu để bạn kiểm lại. Gỡ gói chỉ chuyển thư mục vào archive/.','Skill sets by line of work, installed into a project when needed. Each pack has a legal-basis table with numbers, articles and the check date so you can verify. Removing a pack only moves its folder into archive/.'],
+ pk_p:['Bộ skill theo mảng việc, cài vào project khi cần. Gói "thử nghiệm" chưa qua tiếp nhận: cài để dùng thử trong project này, agent nói rõ là bản thử, không chép sang ứng dụng. Mỗi gói có bảng căn cứ pháp lý ghi số hiệu, điều khoản và ngày đối chiếu để bạn kiểm lại. Gỡ gói chỉ chuyển thư mục vào archive/.','Skill sets by line of work, installed into a project when needed. A "trial" pack has not been through intake: install it to try in this project; the agent says it is a trial, and it is not copied into apps. Each pack has a legal-basis table with numbers, articles and the check date so you can verify. Removing a pack only moves its folder into archive/.'],
  pk_need:['Đây là thư mục package gốc, chưa phải project, nên chưa cài gói ở đây. Để dùng gói cho một project (ví dụ TIEN 081): đưa bản package này vào project đó, rồi mở APP.bat trong thư mục project để cài gói.','This is the original package folder, not a project, so packs are not installed here. To use packs in a project: bring this package version into that project, then open APP.bat in the project folder to install packs.'],
  pk_need_a:['Đưa vào project →','Bring into a project →'],pk_to_proj:['Cài vào project','Install in a project'],
  up_self:['Nâng cấp thư mục này','Upgrade this folder'],up_other:['Đưa bản này vào project khác','Bring this version into another project'],
  up_other_p:['Dùng bản package đang mở để nâng cấp một project đã có (thêm file mới, cập nhật file chưa sửa, giữ file bạn đã sửa). Project chưa từng dùng package thì dùng Khởi tạo → Project đã có.','Use the package you have open to upgrade an existing project (adds new files, updates untouched files, keeps the ones you changed). A project that never used the package: use Set up → Existing project.'],
  up_to:['Thư mục project cần nâng cấp','Project folder to upgrade'],
  installed:['Đã cài','Installed'],available:['Có sẵn','Available'],newer:['Có bản mới','Update available'],install:['Cài gói','Install'],update:['Cập nhật','Update'],remove:['Gỡ','Remove'],no_packs:['Chưa có gói nào trong packs/.','No pack in packs/ yet.'],confirm_remove:['Gỡ gói này? Thư mục của gói được chuyển vào archive/, không xóa.','Remove this pack? Its folder is moved into archive/, nothing is deleted.'],
- sk_p:['Chép skill vào thư mục skill của ứng dụng để chúng hiện trong menu. Cùng định dạng SKILL.md dùng được cho cả Claude, Codex và Gemini CLI. Không ghi đè skill đã có, trừ khi bạn chọn.','Copy skills into an app\u2019s skills folder so they show up in its menu. The same SKILL.md format works in Claude, Codex and Gemini CLI. Existing skills are not overwritten unless you choose to.'],
+ sk_p:['Chép skill đã được nhận vào thư mục skill của ứng dụng để chúng hiện trong menu. Cùng định dạng SKILL.md dùng được cho cả Claude, Codex và Gemini CLI. Skill cùng tên mà ứng dụng đã có luôn được giữ nguyên.','Copy accepted skills into an app\u2019s skills folder so they show up in its menu. The same SKILL.md format works in Claude, Codex and Gemini CLI. A same-name skill the app already has is always kept.'],
+ sk_pick:['Chọn skill cần chép','Choose the skills to copy'],sk_all:['Chọn mọi skill đã nhận','Select every accepted skill'],sk_none:['Bỏ chọn','Clear'],
+ sk_native:['Chỉ chép skill bạn thật sự cần. Ứng dụng đã có khả năng tương tự thì không cần chép; agent vẫn đọc được skill của project như file. Skill thử nghiệm không được chép.','Copy only the skills you really need. If the app already has a similar capability there is no need; the agent can still read project skills as files. Trial skills are not copied.'],
+ sk_need:['Chọn ít nhất một skill.','Choose at least one skill.'],sk_cand:['Thử nghiệm, chưa qua tiếp nhận: không chép','Trial, not through intake: not copied'],sk_off:['Đã tắt: không chép','Disabled: not copied'],sk_none_rows:['Chỉ mục chưa có skill nào chép được.','The index has no skill that can be copied.'],
+ st_review:['Thử nghiệm','Trial'],st_off:['Đã tắt','Disabled'],pk_trial:['Thử nghiệm, chưa qua tiếp nhận','Trial, not through intake'],pk_acc:['Đã tiếp nhận','Accepted'],pk_ref:['Không nhận phiên bản này','Not taken'],
  sk_where:['Chép vào đâu?','Copy to where?'],sk_claude:['Claude Desktop, Cowork, Claude Code','Claude Desktop, Cowork, Claude Code'],sk_agents:['Hai ứng dụng cùng đọc thư mục này','Both apps read this folder'],sk_custom:['Thư mục khác','Another folder'],sk_custom_d:['Antigravity hoặc ứng dụng khác','Antigravity or another app'],
- sk_dest:['Thư mục đích','Destination folder'],choose:['Chọn…','Choose…'],sk_inc:['Kèm skill của gói lĩnh vực đã cài','Include skills from installed domain packs'],sk_over:['Ghi đè skill trùng tên đã có ở đích','Overwrite skills with the same name at the destination'],
+ sk_dest:['Thư mục đích','Destination folder'],choose:['Chọn…','Choose…'],sk_over:['Thay bản do bảng điều khiển này đã chép trước đó (bản cũ lưu vào archive/)','Replace copies this panel made earlier (the old copy goes into archive/)'],
  preview:['Xem trước','Preview'],apply:['Thực hiện','Apply'],
  su_p:['Tạo project từ thư mục này, hoặc đưa package vào một project đã có. Mọi thao tác xem trước rồi mới ghi; không xóa file nào.','Create a project from this folder, or bring the package into an existing project. Every action is previewed before writing; no file is deleted.'],
  su_new:['Project mới (thư mục này)','New project (this folder)'],su_adopt:['Project đã có','Existing project'],
@@ -782,7 +797,24 @@ function setUpMode(v){upMode=v;$('up-mode').querySelectorAll('button').forEach(f
 $('u-run').addEventListener('click',function(){if(upMode==='other')run(t('up_other'),'up','upgrade_other',{project:$('u-dir').value},{preview:true,after:refresh,btn:$('u-run')});else run(t('t_up'),'up','upgrade',{source:$('u-dir').value},{preview:true,after:refresh,btn:$('u-run')});});
 function target(){var c=document.querySelector('input[name=tg]:checked');return c?c.value:'claude';}
 document.querySelectorAll('input[name=tg]').forEach(function(r){r.addEventListener('change',function(){$('sk-dest-f').hidden=target()!=='custom';});});
-$('sk-run').addEventListener('click',function(){run(t('t_install'),'monitor','install_skills',{target:target(),dest:$('sk-dest').value,include_packs:$('sk-packs').checked,overwrite:$('sk-over').checked},{preview:true,btn:$('sk-run')});});
+// chỉ skill dùng chung hoặc của gói đã cài mới chép được; chỉ AVAILABLE/ACTIVE mới chọn được / only shared or pack skills, only accepted ones selectable
+var skSel={};
+function pickRows(){return S?S.skills.filter(function(r){return r.origin==='LOCAL'&&(r.scope==='SHARED'||r.scope==='PACK');}):[];}
+function pickOk(r){return r.status==='AVAILABLE'||r.status==='ACTIVE';}
+function drawPick(){var rows=pickRows();
+  $('sk-pick').innerHTML=rows.length?rows.map(function(r){var ok=pickOk(r),on=ok&&!!skSel[r.id];
+    var why=ok?r.use:t(r.status==='DISABLED'?'sk_off':'sk_cand');
+    return'<label class="'+(ok?'':'na')+'"><input type="checkbox" data-sk="'+esc(r.id)+'"'+(on?' checked':'')+(ok?'':' disabled')+'><span style="min-width:0"><span class="id">'+esc(r.id)+'</span> '
+      +(r.scope==='PACK'?'<span class="tag acc">'+esc(t('f_pack'))+'</span>':'')+(ok?'':' <span class="tag warn">'+esc(t(r.status==='DISABLED'?'st_off':'st_review'))+'</span>')
+      +'<small title="'+esc(why)+'">'+esc(why.length>110?why.slice(0,107)+'…':why)+'</small></span></label>';}).join('')
+    :'<div class="empty" style="padding:14px">'+esc(t('sk_none_rows'))+'</div>';
+  $('sk-pick').querySelectorAll('[data-sk]').forEach(function(c){c.addEventListener('change',function(){if(c.checked)skSel[c.dataset.sk]=1;else delete skSel[c.dataset.sk];});});}
+$('sk-all').addEventListener('click',function(){pickRows().filter(pickOk).forEach(function(r){skSel[r.id]=1;});drawPick();});
+$('sk-none').addEventListener('click',function(){skSel={};drawPick();});
+$('sk-run').addEventListener('click',function(){var rows=pickRows().filter(function(r){return pickOk(r)&&skSel[r.id];});
+  if(!rows.length){toast(t('sk_need'));return;}
+  run(t('t_install'),'monitor','install_skills',{target:target(),dest:$('sk-dest').value,skills:rows.map(function(r){return r.id;}),
+    include_packs:rows.some(function(r){return r.scope==='PACK';}),overwrite:$('sk-over').checked},{preview:true,btn:$('sk-run')});});
 function drawFiles(){$('ck-files').innerHTML=files.map(function(f,i){return'<div class="file">'+ico('file')+'<span class="mono" title="'+esc(f)+'">'+esc(f)+'</span><button class="iconbtn" data-rm="'+i+'" aria-label="'+esc(t('remove_file'))+'" title="'+esc(t('remove_file'))+'">'+ico('x')+'</button></div>';}).join('');
   $('ck-files').querySelectorAll('[data-rm]').forEach(function(b){b.addEventListener('click',function(){files.splice(+b.dataset.rm,1);drawFiles();});});}
 $('ck-drop').addEventListener('click',function(){api('/api/pick',{kind:'files'}).then(function(r){(r.paths||[]).forEach(function(p){if(files.indexOf(p)<0)files.push(p);});if(r.error)toast(t('pick_fail'));drawFiles();}).catch(function(){toast(t('pick_fail'));});});
@@ -847,6 +879,7 @@ function render(){
   $('sk-filter').innerHTML=[['all','all'],['SHARED','f_shared'],['PACK','f_pack'],['PROJECT','f_proj']].map(function(f){return'<button data-f="'+f[0]+'" aria-pressed="'+(skFilter===f[0])+'">'+esc(t(f[1]))+'</button>';}).join('');
   $('sk-filter').querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){skFilter=b.dataset.f;render();});});
   drawSkills();
+  drawPick();
   drawMerges();
   drawHealth();
   // packs
@@ -855,9 +888,13 @@ function render(){
   $('pk-list').innerHTML=items.length?items.map(function(p){
     var newer=p.installed&&p.version&&p.version!==p.installed;
     var st=p.installed?'<span class="tag ok">'+ico('check')+esc(t('installed'))+' v'+esc(p.installed)+'</span>'+(newer?' <span class="tag warn">'+esc(t('newer'))+' v'+esc(p.version)+'</span>':''):'<span class="tag">'+esc(t('available'))+' v'+esc(p.version)+'</span>';
-    var b=p.installed?((newer?'<button class="btn" data-pk="update" data-n="'+esc(p.name)+'">'+ico('refresh')+esc(t('update'))+'</button>':'')+'<button class="btn ghost danger" data-pk="remove" data-n="'+esc(p.name)+'">'+ico('trash')+esc(t('remove'))+'</button>')
-      :(s.initialized?'<button class="btn pri" data-pk="add" data-n="'+esc(p.name)+'">'+ico('plus')+esc(t('install'))+'</button>':'<button class="btn" data-goto="upgrade" title="'+esc(t('pk_need'))+'">'+ico('up')+esc(t('pk_to_proj'))+'</button>');
-    return'<div class="card pack"><div class="card-b"><div class="pack-h"><span class="ic">'+ico(PACK_ICON[p.name]||'box')+'</span><div><b>'+esc(p.title)+'</b><span class="mono" style="color:var(--muted)">'+esc(p.name)+'</span></div></div><p title="'+esc(p.description)+'">'+esc(p.description)+'</p><div class="skchips">'+(p.skills||[]).map(function(k){return'<span>'+esc(k)+'</span>';}).join('')+'</div></div><div class="pack-f">'+st+'<div class="r">'+b+'</div></div></div>';}).join('')
+    var refused=p.intake==='refused';
+    var b=p.installed?((newer&&!refused?'<button class="btn" data-pk="update" data-n="'+esc(p.name)+'">'+ico('refresh')+esc(t('update'))+'</button>':'')+'<button class="btn ghost danger" data-pk="remove" data-n="'+esc(p.name)+'">'+ico('trash')+esc(t('remove'))+'</button>')
+      :refused?'':(s.initialized?'<button class="btn pri" data-pk="add" data-n="'+esc(p.name)+'">'+ico('plus')+esc(t('install'))+'</button>':'<button class="btn" data-goto="upgrade" title="'+esc(t('pk_need'))+'">'+ico('up')+esc(t('pk_to_proj'))+'</button>');
+    // cài hay kiểm cấu trúc không phải tiếp nhận; nhãn cho thấy gói đang ở mức nào / installing is not intake
+    var it=p.intake?'<div class="pk-intake"><span class="tag '+(p.intake==='accepted'?'ok':refused?'err':'warn')+'" title="'+esc(p.intake_label||'')+'">'
+      +ico(p.intake==='accepted'?'check':'alert')+esc(t(p.intake==='accepted'?'pk_acc':refused?'pk_ref':'pk_trial'))+'</span></div>':'';
+    return'<div class="card pack"><div class="card-b"><div class="pack-h"><span class="ic">'+ico(PACK_ICON[p.name]||'box')+'</span><div><b>'+esc(p.title)+'</b><span class="mono" style="color:var(--muted)">'+esc(p.name)+'</span></div></div><p title="'+esc(p.description)+'">'+esc(p.description)+'</p>'+it+'<div class="skchips">'+(p.skills||[]).map(function(k){return'<span>'+esc(k)+'</span>';}).join('')+'</div></div><div class="pack-f">'+st+'<div class="r">'+b+'</div></div></div>';}).join('')
     :'<div class="card"><div class="empty"><div class="ic">'+ico('box')+'</div>'+esc(t('no_packs'))+'</div></div>';
   if(s.packs.error)$('pk-list').insertAdjacentHTML('afterbegin','<div class="note warn">'+esc(s.packs.error)+'</div>');
   $('pk-list').querySelectorAll('[data-pk]').forEach(function(b){b.addEventListener('click',function(){var n=b.dataset.n,k=b.dataset.pk;
@@ -933,7 +970,9 @@ function drawHealth(){var s=S,kind=s.workspace_kind||'unknown';
     :'<div class="empty" style="padding:16px">'+esc(t('hist_empty'))+'</div>';}
 function drawSkills(){var q=($('sk-q').value||'').toLowerCase(),rows=S.skills.filter(function(r){return(skFilter==='all'||r.scope===skFilter)&&(!q||(r.id+' '+r.use).toLowerCase().indexOf(q)>=0);});
   $('sk-count').textContent=S.skills.length+' '+t('n_skills');
-  $('sk-rows').innerHTML=rows.length?rows.map(function(r){var c=r.scope==='PACK'?'acc':(r.scope==='PROJECT'?'warn':'');return'<tr><td class="id">'+esc(r.id)+'</td><td><span class="tag '+c+'">'+esc(r.scope==='SHARED'?t('f_shared'):r.scope==='PACK'?t('f_pack'):r.scope==='PROJECT'?t('f_proj'):r.scope)+'</span></td><td>'+esc(r.use)+'</td></tr>';}).join('')
+  $('sk-rows').innerHTML=rows.length?rows.map(function(r){var c=r.scope==='PACK'?'acc':(r.scope==='PROJECT'?'warn':'');
+    var st=r.status==='REVIEW'?' <span class="tag warn">'+esc(t('st_review'))+'</span>':r.status==='DISABLED'?' <span class="tag">'+esc(t('st_off'))+'</span>':'';
+    return'<tr><td class="id">'+esc(r.id)+st+'</td><td><span class="tag '+c+'">'+esc(r.scope==='SHARED'?t('f_shared'):r.scope==='PACK'?t('f_pack'):r.scope==='PROJECT'?t('f_proj'):r.scope)+'</span></td><td>'+esc(r.use)+'</td></tr>';}).join('')
     :'<tr><td colspan="3"><div class="empty" style="padding:14px">'+esc(t('no_match'))+'</div></td></tr>';}
 $('sk-q').addEventListener('input',function(){if(S)drawSkills();});
 function refresh(){return api('/api/status').then(function(s){S=s;paint();}).catch(function(e){if(String(e).indexOf('forbidden')>=0)$('off').classList.add('on');});}

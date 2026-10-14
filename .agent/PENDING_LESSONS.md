@@ -10,7 +10,8 @@ biến mỗi vấn đề thành một rule mới.
 - Potential lesson: [Gợi ý có thể dùng lại]
 - Scope: SHARED / PROJECT
 - Evidence / reuse: [Căn cứ hoặc lần tái sử dụng]
-- Status: observed / verified / ready-to-promote
+- Status: observed / candidate / promoted (kèm chỗ đặt hồ sơ tiếp nhận) / dropped
 
-Khi có kinh nghiệm ổn định và người dùng đồng ý, cân nhắc đưa vào skill dưới dạng
-hướng dẫn hoặc ví dụ. Đánh dấu mục đã xử lý để tránh tích lũy thành lịch sử dài.
+Một bài học lặp lại là bằng chứng có nhu cầu, chưa phải tiếp nhận. Khi người dùng muốn đưa vào skill, xét theo
+chuẩn tiếp nhận ở `skills/README.md` (tính từ project root): phần native hoặc skill đang có đã làm được thì không
+viết lại; đưa vào bộ mẫu gốc còn cần quyền người dùng. Đánh dấu mục đã xử lý để tránh tích lũy thành lịch sử dài.

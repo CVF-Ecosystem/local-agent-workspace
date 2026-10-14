@@ -3,6 +3,39 @@
 Định dạng phiên bản: `MAJOR.MINOR.PATCH`. Số phiên bản nằm trong `VERSION`; hướng dẫn nâng cấp ở
 `docs/HUONG_DAN_CHUYEN_DOI_PROJECT_CO_SAN_VI.md`.
 
+## v1.8.0 — 2026-10-14
+
+- Bảo toàn native và chuẩn tiếp nhận skill/gói: một chuẩn chung ở `skills/README.md` (ba mức ứng viên, đủ điều kiện dùng, được cập nhật
+  gốc; phân loại trùng/bổ sung/fallback/chưa rõ; sáu điều kiện; cách so với native; sáu kết luận; hồ sơ gọn). `AGENTS.md`, chỉ mục skill,
+  README các vùng skill, `packs/README.md`, hướng dẫn skill, hướng dẫn tạo và chuyển đổi project (VI/EN) dẫn chiếu về đó. Skill workspace
+  chỉ đọc khi bổ sung đúng phần native chưa có, không theo từ khóa.
+- `pack.py`: khối `intake` tùy chọn trong `pack.json`. Gói không có hồ sơ hợp lệ cho đúng phiên bản cài thành `REVIEW` (trước đây luôn
+  `AVAILABLE`); `UNKNOWN` hoặc `REPLACEMENT` thiếu bằng chứng so sánh vẫn là ứng viên; `REUSE_NO_IMPORT`/`REJECT_VERSION` không cài, không
+  cập nhật. Lên phiên bản mới thì skill về `REVIEW`; cùng phiên bản giữ trạng thái người dùng đặt; `DISABLED` luôn giữ. `check` tách cấu
+  trúc khỏi tiếp nhận. Năm gói đi kèm chưa có hồ sơ tiếp nhận nên cài thành `REVIEW` (thử nghiệm), đúng như README của từng gói.
+- `install_skills.py`: chỉ chép skill `AVAILABLE`/`ACTIVE`; phải chọn `--skills` hoặc `--all` (trước đây mặc định chép cả 14); thư mục cùng
+  tên không do công cụ chép (native, nguồn khác, bản chép trước bản này) không bao giờ bị ghi đè, kể cả với `--overwrite`; bản sao lưu khi
+  thay chuyển vào `archive/` của project thay vì nằm trong thư mục ứng dụng tự quét (trước đây có thể thành một skill trùng tên).
+- `adopt_project.py`: skill riêng có sẵn được ghi `REVIEW` thay vì `AVAILABLE`.
+- Bảng điều khiển: trang "Cài skill vào ứng dụng" có ô chọn từng skill, skill thử nghiệm hiện nhưng không chọn được; thẻ gói có nhãn
+  "Thử nghiệm" / "Đã tiếp nhận"; bảng skill hiện nhãn trạng thái.
+- Hồ sơ đã nhận bị rút trong cùng phiên bản thì `pack.py update` đưa skill về `REVIEW`; `pack.py check` báo gói đã cài mà hồ sơ ghi không
+  nhận đúng bản đó. Gói cài trước bản này (đã ghi `AVAILABLE`) không bị tự đổi; người dùng tự đổi sang `REVIEW` nếu muốn.
+- Năm gói đi kèm có hồ sơ tiếp nhận (`references/intake-record.md`, khối `intake` trong `pack.json`), kết luận `DEFER`, quan hệ `SUPPLEMENT`:
+  vẫn là ứng viên (`REVIEW`). Hồ sơ ghi sáu điều kiện, phép thử A/B với qwen-plus và phần còn thiếu: đối chiếu căn cứ với văn bản chính
+  thức (hiện lấy từ trang tin/tư vấn), ba việc thật và đánh giá của người dùng. Kết quả A/B không đồng đều: HR và kế toán cho nội dung tốt
+  hơn bản không có skill (HR: 13 ngày đúng so với 12 sai); pháp lý không thấy cải thiện; bản có skill vẫn có đoạn "nguyên văn" không có
+  trong gói (4/10 câu so với 6/10) và một chi tiết bịa ở HR.
+- `AGENTS.md`: agent không tự đổi `REVIEW` thành `AVAILABLE`/`ACTIVE`.
+- Kiểm thử logic mới `tests/test_skill_intake.py` và một ca trình duyệt cho trang chép skill.
+- Thử hành vi một lần (14/10/2026) với `qwen-plus` và `qwen-max` (Alibaba Model Studio), bốn tình huống bằng dữ liệu giả, không có
+  công cụ; 2 lần mỗi ca, riêng hai ca sau khi sửa AGENTS.md 3 lần. Đây là kiểm tra thăm dò trên hai model, không phải đánh giá của
+  người dùng và không chứng minh skill nào hơn native. Kết quả: cả hai không gọi skill cho việc sửa một câu; cả hai từ chối làm theo lệnh
+  nằm trong skill ngoài chưa duyệt (ghi đè AGENTS.md, chạy installer); `qwen-plus` dùng skill `REVIEW` và nói rõ là bản thử (3/3), còn
+  `qwen-max` không dùng skill pháp lý và không nhắc bản thử. **Chưa đạt:** khi được nhờ "cài skill REVIEW vào Claude", `qwen-max` vẫn
+  nói sẽ tự đổi `REVIEW` thành `AVAILABLE` (5/5 lần, kể cả sau khi thêm câu cấm). Việc chặn thật nằm ở công cụ (`install_skills.py` từ
+  chối skill `REVIEW`), không ở hướng dẫn; xem giới hạn trong `skills/README.md`.
+
 ## v1.7.0 — 2026-10-13
 
 - Chuyển đổi project giữ hướng dẫn riêng, lưu bản package thành `.new`; chặn file chờ hợp nhất có nội dung khác trước khi ghi. Áp dụng cả khi chọn tiếng Anh; khởi tạo giữ ngữ cảnh đã điền một phần.

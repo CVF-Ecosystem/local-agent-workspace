@@ -9,7 +9,7 @@ Skills built/maintained by the user or by the agent in this system.
 
 - **Shared (`shared/`)**: independent of any unit or specific business: techniques, pitfalls met, test procedures, file conventions, sample layouts.
 - **Project-only (`project/`)**: tied to one unit, person, system or regulation: names, job titles, internal bases, dates, codes, a specific workbook layout, company background.
-- When unsure, keep it in the project; when the same lesson repeats in a second project, promote the common part to `shared/`.
+- When unsure, keep it in the project. A lesson that repeats in a second project is evidence of a need, not enough to promote it to `shared/`: assess it with the intake standard in `skills/README.md` (the same standard as for imported skills), do not rewrite what native or an existing skill already does, and put it into the template root only when the user grants it.
 - A project skill should point to the shared skill instead of copying its content (for example point to `excel-workbooks` or `office-documents`) and keep only the specific part. Avoid two copies of the same guidance.
 - A skill tied to one case, one person or confidential data is not put in `shared/`; a lesson taken from a real project goes up only after the specific names, figures and titles are removed. A new domain becomes a pack only when it meets the conditions in `packs/README.md`.
 - Before creating or editing a skill: read `.agent/SKILL_INDEX.md` and the related skill closely (including its references) to reuse rather than start over; borrow techniques only, not another unit's specific content.

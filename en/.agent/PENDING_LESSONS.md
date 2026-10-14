@@ -10,7 +10,9 @@ small error or turn every problem into a new rule.
 - Potential lesson: [A reusable suggestion]
 - Scope: SHARED / PROJECT
 - Evidence / reuse: [Basis or occasion of reuse]
-- Status: observed / verified / ready-to-promote
+- Status: observed / candidate / promoted (with where the intake record is) / dropped
 
-When an experience is stable and the user agrees, consider moving it into a skill as guidance
-or an example. Mark handled entries so they do not accumulate into a long history.
+A lesson that repeats is evidence of a need, not intake. When the user wants it in a skill, assess it with the
+intake standard in `skills/README.md` (from the project root): do not rewrite what native or an existing skill
+already does; putting it into the template root also needs the user's permission. Mark handled entries so they do
+not accumulate into a long history.
