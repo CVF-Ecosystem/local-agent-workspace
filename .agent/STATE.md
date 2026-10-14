@@ -23,7 +23,9 @@ VERSION 1.8.0 (MINOR): đợt "bảo toàn native và chuẩn tiếp nhận skil
 - Thử thăm dò với qwen-plus/qwen-max (14/10/2026, dữ liệu giả): qwen-max vẫn tự nói sẽ đổi REVIEW→AVAILABLE khi được nhờ cài skill REVIEW; hướng dẫn không đủ chặn, công cụ chặn. Chưa có đánh giá của người dùng; CI chưa chạy; chưa thử macOS, Python 3.8 thật.
 
 ## Waiting on user
-- Quyết định push/release; có ghi hồ sơ tiếp nhận cho gói đi kèm hay giữ thử nghiệm; đánh giá của người dùng (làm sau).
+- Nhánh skill-intake-native-first-v1.8.0 đã push (b090a21, 64fd18f); chưa có PR, chưa merge, chưa release.
+- Người review là user/agent khác, không phải người giao việc hay agent đã làm. Họ quyết định merge/release và có tự kiểm căn cứ pháp lý hay không; hồ sơ gói ghi sẵn phần còn thiếu.
+- CI có sẵn và là tùy chọn của người review: chạy khi mở PR vào main, push vào main hoặc kích tay (workflow_dispatch). Push nhánh không tự kích CI; hiện chưa có lượt chạy nào cho nhánh này.
 
 ## Decisions
 - Dữ liệu vận hành cục bộ nằm trong thư mục runtime dưới .agent, không vào MANIFEST, ZIP, git.
