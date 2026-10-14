@@ -193,26 +193,29 @@ class InstallSkillsResults(StructuredBase):
     def test_preview_copy_skip_overwrite_unknown_and_partial(self):
         dest = Path(self.tmp.name) / 'dest'
         self.assertNotIn(MARKER, self.run_tool('install_skills.py', '--dest', dest).stdout)
-        result, _, data = self.structured('install_skills.py', '--dest', dest)
+        result, _, data = self.structured('install_skills.py', '--dest', dest)  # chưa chọn: chỉ liệt kê / nothing chosen: list only
+        self.assertEqual((result.returncode, data['status'], data['changes'], data['files']), (0, 'preview', False, []))
+        self.assertIn('meeting-minutes', data['eligible'])
+        result, _, data = self.structured('install_skills.py', '--dest', dest, '--all')
         self.assertEqual((result.returncode, data['status'], data['changes']), (0, 'preview', True))
         self.assertEqual(data['dest'], os.path.abspath(str(dest)))
         self.assertTrue(all(f['action'] == 'copy' for f in data['files']))
         self.assertFalse(dest.exists(), 'preview must not copy')
 
-        result, _, data = self.structured('install_skills.py', '--dest', dest, '--yes')
+        result, _, data = self.structured('install_skills.py', '--dest', dest, '--all', '--yes')
         self.assertEqual((result.returncode, data['status'], data['changes']), (0, 'success', True))
         self.assertTrue((dest / 'meeting-minutes' / 'SKILL.md').is_file())
-        result, _, data = self.structured('install_skills.py', '--dest', dest, '--yes')
+        result, _, data = self.structured('install_skills.py', '--dest', dest, '--all', '--yes')
         self.assertEqual((result.returncode, data['status'], data['changes']), (0, 'success', False))
         self.assertTrue(all(f['action'] == 'skip' and f['reason'] == 'exists' for f in data['files']))
-        result, _, data = self.structured('install_skills.py', '--dest', dest, '--overwrite')
+        result, _, data = self.structured('install_skills.py', '--dest', dest, '--all', '--overwrite')
         self.assertEqual((result.returncode, data['status']), (0, 'preview'))
         self.assertTrue({'overwrite', 'backup'} <= {f['action'] for f in data['files']})
 
         result, _, data = self.structured('install_skills.py', '--dest', dest, '--skills', 'nope')
         self.assertEqual((result.returncode, data['status']), (1, 'blocked'))
 
-        result, _, data = self.structured('install_skills.py', '--dest', Path(self.tmp.name) / 'dest2', '--yes', patch=FLAKY_COPY)
+        result, _, data = self.structured('install_skills.py', '--dest', Path(self.tmp.name) / 'dest2', '--all', '--yes', patch=FLAKY_COPY)
         self.assertEqual((result.returncode, data['status']), (1, 'partial'))
         self.assertEqual(len(data['files']), 1)
 

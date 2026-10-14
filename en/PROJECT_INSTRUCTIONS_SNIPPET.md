@@ -29,7 +29,8 @@ Rules:
   Next milestone; overwrite it, 60 lines at most) and update it when something meaningful changes. When
   continuing unfinished work: read STATE, say in two lines where things stand and what comes next, then carry on.
 
-Suggested skills (use when helpful, not mandatory): office-documents, internal-comms,
+Use your own capabilities and native skills first; the suggested skills only add templates, sources and
+business rules. Suggested skills (use when helpful, not mandatory): office-documents, internal-comms,
 document-comparison, meeting-minutes, process-mapping, spreadsheet-check, data-charts,
 html-reports, vietnamese-editing, doc-coauthoring (only when I want to work through it step by step).
 ```

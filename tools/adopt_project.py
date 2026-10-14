@@ -193,7 +193,9 @@ def main():
             desc = (frontmatter(os.path.join(pdir, d, 'SKILL.md')).get('description') or d).replace('|', '/')
             if len(desc) > 220:
                 desc = desc[:217] + '...'
-            rows += '| %s | LOCAL | PROJECT | skills/local/project/%s/SKILL.md | %s | AVAILABLE | Có sẵn trước khi đưa package vào (%s); rà lại mô tả và phần trùng với skill dùng chung. |\n' % (
+            # công cụ chỉ ghi nhận skill có sẵn, không tự tiếp nhận: REVIEW cho tới khi người dùng xác nhận (skills/README.md)
+            # the tool only records an existing skill, never accepts it: REVIEW until the user confirms (skills/README.md)
+            rows += '| %s | LOCAL | PROJECT | skills/local/project/%s/SKILL.md | %s | REVIEW | Có sẵn trước khi đưa package vào (%s); rà mô tả, phần trùng với skill dùng chung hoặc native, rồi đổi sang AVAILABLE khi người dùng xác nhận. |\n' % (
                 d, d, desc, datetime.date.today().isoformat())
         if rows:
             m = re.search(r'\n\n## ', new_idx)

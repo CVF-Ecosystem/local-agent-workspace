@@ -1,7 +1,9 @@
 # Choosing and using skills
 
-Skills in the package are extra guidance and resources. The agent chooses by fit with the work,
-not in a native → local or local → native order.
+Whichever agent you choose uses its own capabilities and native skills; the package neither replaces
+nor edits them. Skills in the package are **extra** guidance and resources: templates, sources and
+business rules that native skills lack. The agent chooses by fit with the work and is not pushed to use
+a package skill when the existing way is enough.
 
 ## 1. When is a skill useful?
 
@@ -132,9 +134,11 @@ simply drafts directly. The other skills do not need permission before use.
 `.agent/SKILL_INDEX.md` describes when each skill is useful and gives its path. The agent can
 look there to discover skills, or open one directly when it already knows which fits.
 
-`AVAILABLE` means ready to use, `ACTIVE` means commonly used in the project. Neither requires
-loading at the start of a session. Native notes only describe the known capabilities of one
-environment; when you switch agents, use what is really available in the new session.
+`AVAILABLE` means accepted and ready to use, `ACTIVE` means commonly used in the project. Neither
+requires loading at the start of a session. `REVIEW` means **trial**: not through intake yet; the agent
+only tries it in the project and says it is a trial, and the tools do not copy it into apps. Native notes
+only describe the known capabilities of one environment; when you switch agents, use what is really
+available in the new session.
 
 The package does not install the skills into the application's native menu. When needed, point to the path:
 
@@ -149,10 +153,18 @@ Put skills you write yourself in `skills/local/shared/` or `skills/local/project
 from outside can go in `skills/external/`; `skills/inbox/` is only a temporary place if you want to
 classify later.
 
+Putting a file in a folder does not mean the skill is accepted. Skills learned while working and
+skills or packs downloaded from outside share one intake standard (`skills/README.md`, section "Intake
+of skills and packs"): it must add something native or the current way cannot do, with a clear origin,
+clear permissions and evidence that it works. If your agent already does the job well, no duplicate
+skill is needed; concluding "not needed" is also a good result. While it is being assessed, the skill is
+recorded as `REVIEW` and can still be tried in the project.
+
 When adding or heavily changing one, ask the agent to read enough to record `Use when`, location,
-origin and notable dependencies in the index. There is no need to re-evaluate a familiar skill
-when using it. The user keeps the right to add, remove or edit the library; the agent chooses
-actively within the work.
+origin and notable dependencies in the index. There is no need to re-evaluate an accepted skill
+when using it. The user keeps the right to add, remove or edit the library and to put skills into the
+template root; the agent chooses actively within the work. Updating the template root does not change
+projects created earlier.
 
 ## 9. Domain packs and installing skills into an app
 
@@ -160,8 +172,9 @@ The package core only holds the working rules and the fourteen shared skills. Kn
 HR, finance...) belongs in a **domain pack** in `packs/`, installed into the projects that need it with
 `python tools/pack.py add <name>` (see `python tools/pack.py list`). A pack installs into `skills/local/packs/` and is recorded in
 `.agent/SKILL_INDEX.md` with Scope `PACK`; remove it with `pack.py remove <name>` (the folder is moved into `archive/`, not deleted).
-The rule for accepting a pack and how to write a new one are in `packs/README.md`. The package ships five domain packs (trial,
-version 0.1.0): `phap-ly` (researching and applying legal documents), `van-thu-luu-tru` (outgoing and incoming documents, copies,
+The rule for accepting a pack and how to write a new one are in `packs/README.md`. A pack not through intake can still be installed
+for trial; its skills are recorded as `REVIEW` and are not copied into apps. The package ships five domain packs (trial,
+version 0.2.0): `phap-ly` (researching and applying legal documents), `van-thu-luu-tru` (outgoing and incoming documents, copies,
 filing, archiving), `cang-logistics` (ship, barge and equipment-incident reports), `hanh-chinh-nhan-su` (personnel decisions,
 leave, overtime, discipline, pay, insurance) and `ke-toan-noi-bo` (advances, payments, vouchers, invoices, retention). Each pack
 has a legal-basis table (the legal-basis.md file in the skill’s references folder) with numbers, articles, effective dates, sources and a check date so users can verify them.
@@ -169,10 +182,13 @@ Install with `python tools/pack.py add <name>` or the "Domain packs" page of the
 skeleton for writing new packs.
 
 Each project keeps its own copy of the skills, so a project is always self-contained and portable; `tools/upgrade_package.py` keeps
-these copies in sync with a new package. If you want the skills to show up in an app's menu (for example Claude), use
-`python tools/install_skills.py --dest <the app's skills folder> --yes` (preview only by default, never overwrites), or the "Install skills
-into apps" page of the control panel (`APP.bat`). The skills use the common `SKILL.md` format: Claude reads `~/.claude/skills`; Codex and
-Gemini CLI both read `~/.agents/skills`, so one copy serves both. This is optional; the agent can still read the skills as files.
+these copies in sync with a new package when you upgrade. If you want a skill to show up in an app's menu (for example Claude), use
+`python tools/install_skills.py --dest <the app's skills folder> --skills <name,name> --yes` (without `--yes` it only previews), or the
+"Install skills into apps" page of the control panel (`APP.bat`), where you tick the skills to copy. Copy only the skills you really need:
+if the app already has a similar capability there is no need. Only accepted skills can be copied; a same-name skill the app already has
+(native or from another source) is always kept, and an older package copy being replaced is saved into `archive/`. The skills use the
+common `SKILL.md` format: Claude reads `~/.claude/skills`; Codex and Gemini CLI both read `~/.agents/skills`, so one copy serves both.
+This is optional; the agent can still read the skills as files.
 
 Vietnamese–English glossary for administrative documents: `docs/GLOSSARY_VI_EN.md`. Before handing over a deliverable you can use
 `python tools/check_output.py <file>` and the checklist `skills/local/shared/office-documents/references/delivery-checklist.md`.

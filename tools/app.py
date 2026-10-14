@@ -110,9 +110,10 @@ def pack_info(lang):
         return {'error': str(e), 'items': []}
     items = []
     for n, m in av.items():
+        st = pack.intake_state(m, os.path.join(ROOT, 'packs', n))
         items.append({'name': n, 'version': m.get('version'), 'title': pack.loc(m.get('title')),
                       'description': pack.loc(m.get('description')), 'skills': m.get('skills', []),
-                      'installed': ins.get(n, {}).get('version')})
+                      'installed': ins.get(n, {}).get('version'), 'intake': st['state'], 'intake_label': pack.intake_label(st)})
     for n, m in ins.items():
         if n not in av:
             items.append({'name': n, 'version': None, 'title': n, 'description': '', 'skills': m.get('skills', []),

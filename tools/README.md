@@ -92,7 +92,7 @@ python tools/adopt_project.py --project "đường dẫn project cũ" --name "T�
 Chỉ thêm file còn thiếu; không xóa, không ghi đè file của bạn. `AGENTS.md`/`CLAUDE.md`/`GEMINI.md` cũ vẫn giữ nguyên và có hiệu lực;
 bản package khác nội dung được lưu `<tên>.new` để hợp nhất. Áp dụng cả khi chọn tiếng Anh. File `.new` đã có nội dung khác sẽ chặn thao tác trước khi ghi.
 File khác trùng tên và khác cũng giữ của bạn, bản package lưu `<tên>.new`. Skill riêng sẵn có trong
-`skills/local/project/` được thêm dòng vào `.agent/SKILL_INDEX.md`. Cuối cùng chạy `init_project.py`. Từ chối chạy nếu project đã có package (dùng `upgrade_package.py`). Việc ghi chạy qua một giao dịch có nhật ký; sau đó công cụ
+`skills/local/project/` được thêm dòng vào `.agent/SKILL_INDEX.md` với Status `REVIEW` (công cụ ghi nhận, không tự tiếp nhận; người dùng xác nhận rồi đổi sang `AVAILABLE`). Cuối cùng chạy `init_project.py`. Từ chối chạy nếu project đã có package (dùng `upgrade_package.py`). Việc ghi chạy qua một giao dịch có nhật ký; sau đó công cụ
 chạy `init_project.py` (nằm ngoài giao dịch). Nếu `init_project.py` lỗi, kết quả là `partial`: chạy lại
 `python tools/init_project.py --name "Tên project" --lang vi --force`.
 
@@ -128,6 +128,10 @@ Module không có lệnh riêng. Ghi lịch sử thao tác của bảng điều 
 
 Quản lý gói lĩnh vực (`packs/`): `list`, `add <tên>`, `update <tên> [--apply]`, `remove <tên>` (chuyển vào `archive/`), `check [<tên>]`,
 `new <tên>` (tạo gói từ `packs/_template`). Gói cài vào `skills/local/packs/` và ghi trong `.agent/SKILL_INDEX.md` (Scope `PACK`). Xem `packs/README.md`.
+Cài hay `check` không phải tiếp nhận: gói không có khối `intake` hợp lệ cho đúng phiên bản được ghi `REVIEW` (ứng viên, dùng thử); chỉ gói
+đã tiếp nhận mới ghi `AVAILABLE`; `REUSE_NO_IMPORT`/`REJECT_VERSION` thì không cài, không cập nhật. Lên phiên bản mới mà hồ sơ chưa xét lại thì
+skill về `REVIEW`; cùng phiên bản thì giữ trạng thái người dùng đã đặt, `DISABLED` luôn được giữ. `list`, `check` và kết quả có cấu trúc có
+trường `intake` (`accepted`/`candidate`/`refused` kèm lý do). Không chạy script nào của gói. Chuẩn chung: `skills/README.md`.
 
 ## check_output.py
 
@@ -142,8 +146,13 @@ The same exit codes apply in English: 0 passed within scope, 1 findings/review, 
 
 ## install_skills.py
 
-Tùy chọn: sao chép skill của package vào thư mục skill của ứng dụng để hiện trong menu native, ví dụ
-`python tools/install_skills.py --dest ~/.claude/skills --yes`. Mặc định chỉ xem trước; không ghi đè nếu không có `--overwrite`.
+Tùy chọn: sao chép skill đã được nhận vào thư mục skill của ứng dụng để hiện trong menu native, ví dụ
+`python tools/install_skills.py --dest ~/.claude/skills --skills meeting-minutes --yes`. Không có `--yes` thì chỉ xem trước; không chọn
+`--skills` hay `--all` thì chỉ liệt kê skill chép được (thêm `--yes` lúc đó bị chặn). Chỉ chép skill dùng chung hoặc của gói đã cài có Status
+`AVAILABLE`/`ACTIVE`; ứng viên `REVIEW`, skill `DISABLED`, `skills/external/`, `skills/inbox/`, `skills/local/project/` không bao giờ được chép.
+Mỗi bản chép có file dấu `.workspace-skill.json`. `--overwrite` chỉ thay bản có dấu đó (bản cũ lưu vào `archive/app-skills-backup-<ngày>/`,
+không để trong thư mục ứng dụng tự quét); thư mục cùng tên không có dấu (native hoặc nguồn khác, kể cả bản chép bằng phiên bản package cũ
+chưa có dấu) không bao giờ bị ghi đè: muốn thay thì tự xử lý thư mục đó. Kết quả có cấu trúc có `eligible` và `excluded` (kèm lý do).
 
 ## check_package.py
 

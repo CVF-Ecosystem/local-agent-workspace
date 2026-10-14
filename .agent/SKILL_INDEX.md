@@ -1,7 +1,7 @@
 # SKILL INDEX
 
-Danh mục để tìm skill theo công việc. Không phải thứ tự ưu tiên. Khi yêu cầu khớp cột "Use when" của một skill,
-đọc `SKILL.md` của skill đó trước khi làm (xem `AGENTS.md`). Có thể dùng native skill, local skill, kết hợp hoặc xử lý trực tiếp.
+Danh mục để tìm skill theo công việc. Không phải thứ tự ưu tiên. Khi một skill bổ sung đúng phần việc cần và khớp cột
+"Use when", đọc `SKILL.md` của skill đó trước khi làm (xem `AGENTS.md`). Có thể dùng native skill, local skill, kết hợp hoặc xử lý trực tiếp.
 
 | Skill ID | Origin | Scope | Location / Provider | Use when | Status | Provenance / Notes |
 |---|---|---|---|---|---|---|
@@ -28,15 +28,18 @@ Khi biết rõ skill cần dùng, có thể mở trực tiếp. Chỉ đọc tà
 
 Origin: `LOCAL` (tự biên soạn), `EXTERNAL` (nhập ngoài), `PROVIDER` (native).
 Scope: `SHARED` (dùng chung), `PROJECT` (riêng dự án), `GLOBAL` (theo provider), `PACK` (gói lĩnh vực cài bằng `tools/pack.py`).
-Status: `AVAILABLE` (sẵn dùng), `ACTIVE` (thường dùng), `REVIEW` (đang xem xét),
-`DISABLED` (người dùng đã chọn không dùng).
+Status: `AVAILABLE` (đã nhận cho phạm vi ghi ở dòng, sẵn dùng), `ACTIVE` (đã nhận, thường dùng), `REVIEW` (ứng viên
+chưa qua tiếp nhận: chỉ dùng thử trong project khi người dùng đã đặt/cài, nói rõ là bản thử; không chép sang ứng dụng),
+`DISABLED` (người dùng đã chọn không dùng). Cài gói, chép file hay kiểm cấu trúc không tự đổi `REVIEW` thành `AVAILABLE`.
+`AVAILABLE` của mười bốn skill dùng chung nghĩa là người duy trì đã đưa chúng vào bộ mẫu gốc trước khi có chuẩn tiếp nhận này;
+chúng chưa được so lại với native theo chuẩn mới và chưa chạy thử trên mọi ứng dụng (giới hạn kiểm thử: `docs/NGUON_THAM_KHAO_VI.md`).
 
 ## Khi thay đổi thư viện
 
-Ghi nhận mục đích, vị trí, nguồn gốc và dependency đáng chú ý khi thêm hoặc sửa lớn.
-Không đánh giá/đăng ký lại cùng một skill mỗi lần dùng. Người dùng quyết định việc
-thêm, bỏ hoặc sửa skill; lựa chọn tác nghiệp giữa những skill sẵn có không cần một
-lượt xin duyệt riêng. Không tự chuyển/xóa skill của người dùng.
+Thêm, nhập hoặc nâng một skill theo chuẩn tiếp nhận ở `skills/README.md` (tính từ project root); ghi kết luận
+vào Status và chỗ đặt hồ sơ vào Notes. Không đánh giá/đăng ký lại cùng một skill mỗi lần dùng. Người dùng quyết
+định việc thêm, bỏ hoặc sửa skill; lựa chọn tác nghiệp giữa những skill đã nhận không cần một lượt xin duyệt
+riêng. Không tự chuyển/xóa skill của người dùng.
 
 Có thể thêm capability native đã xác nhận hữu ích ở phiên/provider cụ thể. Không
 điền tên skill giả định; mục native không bảo đảm provider khác có khả năng đó.

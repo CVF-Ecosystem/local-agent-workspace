@@ -67,8 +67,8 @@ files are written in Vietnamese; agents read them without problems.
 
 For specialised work, also install a **domain pack**: `phap-ly`, `van-thu-luu-tru`, `cang-logistics`, `hanh-chinh-nhan-su`,
 `ke-toan-noi-bo`. The easiest way: double-click `APP.bat` (Windows) or `APP.command` (macOS), open "Domain packs" and press
-"Install". An installed pack is recorded in `.agent/SKILL_INDEX.md`, so the agent finds and uses it like any built-in skill;
-you do not need to name the pack when giving work.
+"Install". An installed pack is recorded in `.agent/SKILL_INDEX.md`, so the agent finds it when the work needs it; you do
+not need to name the pack when giving work. A pack labelled "Trial" has not been through intake: the agent tries it and says so.
 
 Let the agent choose a native skill, a local skill or direct work according to the task. A
 skill written for one project is only worth adding when there is a real template or lesson
@@ -123,8 +123,9 @@ Rules:
   Next milestone; overwrite it, 60 lines at most) and update it when something meaningful changes. When
   continuing unfinished work: read STATE, say in two lines where things stand and what comes next, then carry on.
 
-Skills: when a request matches a skill below and its SKILL.md is in the Project, read the SKILL.md before
-starting; if the file is not there, say you are working without the skill. List: office-documents, internal-comms,
+Skills: use your own capabilities and native skills; the skills below only add templates, sources and business
+rules. When one adds what the task needs and its SKILL.md is in the Project, read the SKILL.md before starting;
+if the file is not there, say you are working without the skill. List: office-documents, internal-comms,
 document-comparison, meeting-minutes, process-mapping, spreadsheet-check, data-charts,
 html-reports, vietnamese-editing, vn-admin-documents, doc-coauthoring (only when I want to work through it step by step).
 

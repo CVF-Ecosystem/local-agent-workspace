@@ -1,4 +1,4 @@
-# Local Agent Workspace v1.7
+# Local Agent Workspace v1.8
 
 A local workspace for office work with Claude, Codex, Gemini or another agent.
 
@@ -72,8 +72,9 @@ does not need the HTML version as well. HTML is for users, not default context.
 | `source-library` | The source library in `references/` (legal documents, company rules, templates) with an Excel index; look up before quoting. |
 
 The fourteen skills are in `skills/local/shared/` and are recorded as `AVAILABLE` in
-`.agent/SKILL_INDEX.md`. The agent chooses a skill by fit, with no fixed preference for
-native or local. Not using a skill is also a valid choice.
+`.agent/SKILL_INDEX.md`. The agent uses its own capabilities and native skills; the package skills
+only add what is missing (templates, sources, business rules). Not using a skill is also a valid choice.
+Adding or importing skills and packs follows the intake standard in `skills/README.md`.
 
 The HTML templates were written specifically for the package, with clearly labeled illustrative data.
 No upstream template, script, font or skill was copied as a whole.

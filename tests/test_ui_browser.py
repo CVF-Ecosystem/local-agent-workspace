@@ -216,6 +216,31 @@ class MainFlows(BrowserCase):
         expect(p.locator('#bn-init')).to_be_hidden()
         self.assertTrue((self.pkg / '.agent' / 'PACKAGE_INFO.json').exists())
 
+    def test_install_skills_copies_only_the_chosen_accepted_skills(self):
+        init_project(self.pkg)
+        r = run_tool(self.pkg, 'pack.py', 'add', 'cang-logistics')  # gói chưa tiếp nhận: REVIEW / not through intake
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        dest = self.base / 'app-skills'
+        p = self.open_panel()
+        self.go('packs')
+        expect(p.locator('.pack .pk-intake').first).to_contain_text('Thử nghiệm')
+        self.go('skills')
+        p.click('label.opt:has(input[value="custom"])')
+        p.fill('#sk-dest', str(dest))
+        expect(p.locator('[data-sk="port-operations-reports"]')).to_be_disabled()
+        p.click('#sk-run')  # chưa chọn gì: không chạy / nothing chosen: nothing runs
+        expect(p.locator('#sheet')).not_to_have_class(re.compile(r'\bon\b'))
+        p.check('[data-sk="meeting-minutes"]')
+        p.click('#sk-run')
+        expect(p.locator('#sh-tag')).to_contain_text('Đã xem trước')
+        self.assertFalse(dest.exists(), 'preview must write nothing')
+        p.click('#sh-apply')
+        deadline = time.time() + 20
+        while time.time() < deadline and not (dest / 'meeting-minutes' / 'SKILL.md').exists():
+            time.sleep(0.2)
+        self.assertEqual(sorted(x.name for x in dest.iterdir()), ['meeting-minutes'])
+        self.close_sheet()
+
     def test_check_flags_placeholder_and_reports_unsupported_as_not_checked(self):
         init_project(self.pkg)
         txt = self.pkg / 'output' / 'thu-dung-thu.txt'

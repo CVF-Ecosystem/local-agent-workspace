@@ -64,8 +64,8 @@ Package đã có mười bốn skill gọn trong `skills/local/shared/` và các
 
 Công việc thuộc một mảng chuyên sâu thì cài thêm **gói lĩnh vực**: `phap-ly`, `van-thu-luu-tru`, `cang-logistics`,
 `hanh-chinh-nhan-su`, `ke-toan-noi-bo`. Cách dễ nhất: bấm đúp `APP.bat` (Windows) hoặc `APP.command` (macOS), vào trang
-"Gói lĩnh vực", bấm "Cài gói". Gói đã cài được ghi vào `.agent/SKILL_INDEX.md`, nên agent tự tìm thấy và dùng như skill
-sẵn có; bạn không cần nhắc tên gói khi giao việc.
+"Gói lĩnh vực", bấm "Cài gói". Gói đã cài được ghi vào `.agent/SKILL_INDEX.md`, nên agent tự tìm thấy khi việc cần; bạn
+không cần nhắc tên gói khi giao việc. Gói có nhãn "Thử nghiệm" chưa qua tiếp nhận: agent dùng thử và nói rõ là bản thử.
 
 Để agent chọn native skill, local skill hoặc làm trực tiếp theo công việc. Một
 skill viết riêng cho dự án chỉ đáng thêm khi có mẫu/kinh nghiệm thực tế cần dùng lại.
@@ -116,8 +116,9 @@ Nguyên tắc:
   Decisions, Next milestone; ghi đè, tối đa 60 dòng) và cập nhật khi có thay đổi có ý nghĩa. Khi tiếp
   tục việc đang dở: đọc STATE, nói hai dòng đang ở đâu và việc tiếp theo, rồi làm.
 
-Skill: khi yêu cầu khớp một skill dưới đây và file SKILL.md có trong Project thì đọc SKILL.md trước khi
-làm; không có file thì nói rõ là làm không dùng skill. Danh sách: office-documents, internal-comms,
+Skill: dùng năng lực và native skill sẵn có; skill dưới đây chỉ bổ sung mẫu, nguồn, quy tắc nghiệp vụ. Khi
+một skill bổ sung đúng việc cần và file SKILL.md có trong Project thì đọc SKILL.md trước khi làm; không có
+file thì nói rõ là làm không dùng skill. Danh sách: office-documents, internal-comms,
 document-comparison, meeting-minutes, process-mapping, spreadsheet-check, data-charts,
 html-reports, vietnamese-editing, vn-admin-documents, doc-coauthoring (chỉ khi tôi muốn trao đổi sâu).
 

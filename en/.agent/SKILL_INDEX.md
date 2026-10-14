@@ -1,7 +1,7 @@
 # SKILL INDEX
 
-A catalog for finding skills by task. It is not a priority order. When a request matches the "Use when" column of a skill,
-read that skill's `SKILL.md` before starting (see `AGENTS.md`). You may use a native skill, a local skill, a combination, or handle the task directly.
+A catalog for finding skills by task. It is not a priority order. When a skill adds what the task needs and matches the
+"Use when" column, read that skill's `SKILL.md` before starting (see `AGENTS.md`). You may use a native skill, a local skill, a combination, or handle the task directly.
 
 | Skill ID | Origin | Scope | Location / Provider | Use when | Status | Provenance / Notes |
 |---|---|---|---|---|---|---|
@@ -28,15 +28,20 @@ When you know which skill to use, you can open it directly. Read only the suppor
 
 Origin: `LOCAL` (self-written), `EXTERNAL` (imported), `PROVIDER` (native).
 Scope: `SHARED` (common), `PROJECT` (project-specific), `GLOBAL` (per provider), `PACK` (domain pack installed with `tools/pack.py`).
-Status: `AVAILABLE` (ready to use), `ACTIVE` (commonly used), `REVIEW` (under review),
-`DISABLED` (the user chose not to use it).
+Status: `AVAILABLE` (accepted for the scope in its row, ready to use), `ACTIVE` (accepted, commonly used), `REVIEW`
+(a candidate not through intake: only a trial in a project where the user placed/installed it, said to be a trial; never
+copied into apps), `DISABLED` (the user chose not to use it). Installing a pack, copying files or checking the structure
+never turns `REVIEW` into `AVAILABLE` by itself.
+For the fourteen shared skills, `AVAILABLE` means the maintainer put them into the template root before this intake standard
+existed; they have not been compared with native under the new standard and have not been tried in every app (test limits:
+`docs/en/SOURCES_AND_REFERENCES.md`).
 
 ## When the library changes
 
-Record the purpose, location, origin and notable dependencies when adding or substantially editing a skill.
-Do not re-evaluate or re-register the same skill each time it is used. The user decides on adding,
-removing or editing skills; an operational choice among the skills already present does not need a
-separate approval round. Do not move or delete the user's skills on your own.
+Adding, importing or promoting a skill follows the intake standard in `skills/README.md` (from the project root); record
+the conclusion in Status and where the record is kept in Notes. Do not re-evaluate or re-register the same skill each time
+it is used. The user decides on adding, removing or editing skills; an operational choice among accepted skills does not
+need a separate approval round. Do not move or delete the user's skills on your own.
 
 You may add native capabilities confirmed useful in a specific session/provider. Do not fill in assumed
 skill names; a native entry does not guarantee that another provider has the same capability.

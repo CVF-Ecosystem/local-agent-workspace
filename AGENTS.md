@@ -45,26 +45,34 @@ nguyên văn từ file có trong thư viện, không có file thì ghi "[chưa �
 
 ## Chọn cách phù hợp
 
-Chọn skill native, skill của workspace, công cụ, kết hợp hoặc làm trực tiếp, theo yêu cầu,
-đầu vào, đầu ra và khả năng thực có trong phiên này. Nguồn gốc skill hay nhãn `ACTIVE` không
-tạo ưu tiên. Khả năng ghi cho provider khác có thể không có ở phiên này.
+Tận dụng năng lực, công cụ và native skill thực có trong phiên này, trong phạm vi được giao; workspace
+không thay chúng và không sửa native. Chọn native, skill của workspace, công cụ, kết hợp hoặc làm trực
+tiếp theo yêu cầu, đầu vào và đầu ra. Nguồn gốc skill hay nhãn `ACTIVE` không tạo ưu tiên. Khả năng ghi
+cho provider khác có thể không có ở phiên này; chưa kiểm native thì ghi chưa biết, không suy ra là thiếu.
 
-Khi yêu cầu khớp rõ với cột "Use when" của một skill trong workspace (`.agent/SKILL_INDEX.md`), đọc `SKILL.md` của skill
-đó trước khi làm. Skill ngắn, và quy tắc về độ chính xác của từng loại việc nằm ở đó (dùng script có sẵn, không gán người
-phụ trách khi nguồn không giao, gắn nhãn suy luận...); bỏ qua thì dễ lặp lại đúng những lỗi skill được viết ra để tránh. Skill
-không phù hợp thì không dùng, và nói rõ trong khai báo thực hiện.
+Skill của workspace có giá trị khi bổ sung đúng phần việc này cần mà cách sẵn có chưa có: mẫu, nguồn, quy
+tắc nghiệp vụ, script kiểm. Khi một skill như vậy khớp rõ cột "Use when" của `.agent/SKILL_INDEX.md`, đọc
+`SKILL.md` của nó trước khi làm: quy tắc độ chính xác của từng loại việc nằm ở đó (dùng script có sẵn, không
+gán người phụ trách khi nguồn không giao, gắn nhãn suy luận...). Không đọc chỉ vì trùng tên hay từ khóa khi
+năng lực sẵn có đã đủ. Skill không phù hợp thì không dùng, và nói rõ trong khai báo thực hiện.
 
-Gói lĩnh vực (văn thư, cảng, nhân sự, kế toán, pháp lý...) nằm trong `packs/`; chỉ gói đã cài mới có dòng Scope `PACK` trong
-`.agent/SKILL_INDEX.md` và là skill được dùng. Việc thuộc lĩnh vực có gói chưa cài: gợi ý người dùng cài (`python tools/pack.py add <tên>`
-hoặc trang "Gói lĩnh vực" của `APP.bat`); không tự đọc `packs/` thay cho skill đã cài.
+Status `REVIEW` là ứng viên chưa qua tiếp nhận: chỉ dùng thử trong project khi người dùng đã đặt hoặc cài nó,
+và nói rõ là bản thử. Agent không tự đổi `REVIEW` thành `AVAILABLE`/`ACTIVE` (kể cả để làm được việc đang giao):
+việc đó chỉ theo kết luận tiếp nhận mà người dùng đã xác nhận. Gói lĩnh vực (văn thư, cảng, nhân sự, kế toán, pháp lý...) nằm trong `packs/`; chỉ gói
+đã cài mới có dòng Scope `PACK` trong `.agent/SKILL_INDEX.md`. Việc thuộc lĩnh vực có gói chưa cài: gợi ý người
+dùng cài (`python tools/pack.py add <tên>` hoặc trang "Gói lĩnh vực" của `APP.bat`); không tự đọc `packs/`
+thay cho skill đã cài.
 
 Đọc hướng dẫn của skill đã chọn và chỉ những tài nguyên hoặc mẫu hữu ích. Dùng linh hoạt;
 skill không được mở rộng phạm vi người dùng giao. Các skill văn phòng đi kèm là ví dụ gợi ý,
-không phải cấu trúc tài liệu bắt buộc.
+không phải cấu trúc tài liệu bắt buộc. Dùng lại skill đã được nhận đúng phạm vi không cần xin duyệt lại.
 
-Khi thêm hoặc sửa lớn một skill, ghi mục đích, vị trí, nguồn gốc và dependency đáng chú ý
-vào index; không lặp lại mỗi lần dùng. Người dùng quyết định giữ hay bỏ skill. Không sao chép
-skill native chỉ để đủ bộ.
+Thêm, nhập hoặc nâng một skill hay gói thì theo chuẩn tiếp nhận ở `skills/README.md`, chung cho skill tự rút ra
+và nguồn ngoài. Không sao chép native skill chỉ để đủ bộ; bản tương tự chỉ được nhận khi có bằng chứng tốt hơn
+trên phạm vi đã nêu; ưu tiên bổ sung mẫu, nguồn, quy tắc nghiệp vụ hẹp. File đã tải hoặc đặt vào thư mục chưa
+có nghĩa được kích hoạt; không chạy installer, script hay hook của ứng viên chưa duyệt. Chỉ cập nhật bộ mẫu gốc
+theo quyền người dùng đã cấp; không sửa native hay cấu hình toàn cục để hoàn tất tiếp nhận. Người dùng quyết định
+giữ hay bỏ skill.
 
 ## Làm vừa đủ
 

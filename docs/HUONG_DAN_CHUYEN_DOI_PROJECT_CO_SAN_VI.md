@@ -29,7 +29,7 @@ Lần đầu đưa package vào project đã có (chưa có `VERSION` hay `.agen
 `python tools/adopt_project.py --project "đường dẫn" --name "Tên project"` để xem báo cáo, thêm `--apply` để ghi. Công cụ chỉ thêm file
 còn thiếu; `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` cũ giữ nguyên và vẫn có hiệu lực; bản package khác nội dung được lưu thành `<tên>.new` để hợp nhất, kể cả khi chọn tiếng Anh.
 Nếu bản `.new` đã tồn tại và khác nội dung, công cụ dừng trước khi ghi. Kết quả có hướng dẫn chưa hợp nhất sẽ báo rõ “CẦN HỢP NHẤT”;
-file khác bị trùng giữ nguyên của bạn và bản package lưu thành `<tên>.new`; skill riêng sẵn có được thêm dòng vào `SKILL_INDEX.md`. Nếu việc này bị gián đoạn, xem mục 9.
+file khác bị trùng giữ nguyên của bạn và bản package lưu thành `<tên>.new`; skill riêng sẵn có được thêm dòng vào `SKILL_INDEX.md` với Status `REVIEW` (agent vẫn dùng được trong project; bạn xác nhận rồi đổi sang `AVAILABLE`). Nếu việc này bị gián đoạn, xem mục 9.
 Skill dùng chung ở `skills/local/shared/`, skill chứa thông tin riêng của đơn vị ở `skills/local/project/`; không chép nội dung chung vào skill riêng.
 
 Nếu đổi vị trí thư mục package hoặc tài liệu hướng dẫn, nhờ agent cập nhật những
