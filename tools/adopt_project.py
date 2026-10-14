@@ -59,7 +59,8 @@ def same(a, b):
 
 def frontmatter(path):
     try:
-        t = open(path, encoding='utf-8').read()
+        with open(path, encoding='utf-8') as f:
+            t = f.read()
     except OSError:
         return {}
     m = re.match(r'---\r?\n(.*?)\r?\n---', t, re.S)
@@ -182,7 +183,8 @@ def main():
     idx = os.path.join(proj, '.agent', 'SKILL_INDEX.md')
     own_rows, shared_rows, new_idx = [], [], None
     if os.path.isfile(idx):
-        text = open(idx, encoding='utf-8').read()
+        with open(idx, encoding='utf-8') as f:
+            text = f.read()
         new_idx = text
         rows = ''
         for d in own:

@@ -37,7 +37,9 @@ GENERATED = {'.agent/PACKAGE_INFO.json', '.agent/MERGE_STATUS.json', 'MANIFEST.s
 # Mỗi file trong en/ (trừ OVERLAY_SKIP) thay cho file cùng đường dẫn không có tiền tố en/
 
 def P(rel): return os.path.join(ROOT, *rel.split('/'))
-def rd(rel): return io.open(P(rel), encoding='utf-8', newline='').read()
+def rd(rel):
+    with io.open(P(rel), encoding='utf-8', newline='') as f:
+        return f.read()
 
 def all_files():
     out = []
@@ -59,7 +61,8 @@ def in_manifest(rel):
     return True
 
 def sha(rel):
-    data = open(P(rel), 'rb').read()
+    with open(P(rel), 'rb') as f:
+        data = f.read()
     if os.path.splitext(rel)[1] in TEXT_EXT:
         data = data.replace(b'\r\n', b'\n')
     return hashlib.sha256(data).hexdigest()
@@ -67,7 +70,8 @@ def sha(rel):
 # ---------------------------------------------------------------- manifest
 def write_manifest():
     lines = ['%s  %s' % (sha(r), r) for r in all_files() if in_manifest(r)]
-    io.open(P('MANIFEST.sha256'), 'w', encoding='utf-8', newline='').write('\n'.join(lines) + '\n')
+    with io.open(P('MANIFEST.sha256'), 'w', encoding='utf-8', newline='') as f:
+        f.write('\n'.join(lines) + '\n')
     print('Đã ghi MANIFEST.sha256 (%d file).' % len(lines))
     return len(lines)
 

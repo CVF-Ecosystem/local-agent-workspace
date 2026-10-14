@@ -55,7 +55,9 @@ TX = {'id': None}  # mã giao dịch đang ghi / transaction id of the current w
 def L(vi, en): return en if LANG == 'en' else vi
 
 def P(rel): return os.path.join(ROOT, *rel.split('/'))
-def rd(rel): return io.open(P(rel), encoding='utf-8', newline='').read()
+def rd(rel):
+    with io.open(P(rel), encoding='utf-8', newline='') as f:
+        return f.read()
 
 def is_original(rel):
     """True nếu file còn đúng như trong package (theo MANIFEST), nên không cần sao lưu khi thay."""
@@ -171,7 +173,10 @@ def main():
     writes = []
     for rel, text in virt.items():
         data = text.encode('utf-8')
-        old = open(P(rel), 'rb').read() if os.path.isfile(P(rel)) else None
+        old = None
+        if os.path.isfile(P(rel)):
+            with open(P(rel), 'rb') as f:
+                old = f.read()
         if old != data:
             writes.append((rel, data))
     files = ([{'path': rel, 'action': 'write'} for rel, _ in writes] +
@@ -195,11 +200,18 @@ def main():
                                          'python tools/transaction.py rollback %s' % open_tx])
         sys.exit(blocker)
     for bak, data in baks:
-        if os.path.exists(P(bak)) and open(P(bak), 'rb').read() != data:
-            msg = L('Đã có %s khác nội dung; không ghi đè bản sao lưu cũ. Chưa ghi gì.',
-                    '%s already exists with other content; will not overwrite an old backup. Nothing written.') % bak
-            LAST_RESULT = make('blocked', code=1, message=msg, changes=False, next_actions=['Move or rename the existing .bak file, then retry.'])
-            sys.exit(msg)
+        if os.path.exists(P(bak)):
+            bak_differs = False
+            try:
+                with open(P(bak), 'rb') as f:
+                    bak_differs = (f.read() != data)
+            except OSError:
+                bak_differs = True
+            if bak_differs:
+                msg = L('Đã có %s khác nội dung; không ghi đè bản sao lưu cũ. Chưa ghi gì.',
+                        '%s already exists with other content; will not overwrite an old backup. Nothing written.') % bak
+                LAST_RESULT = make('blocked', code=1, message=msg, changes=False, next_actions=['Move or rename the existing .bak file, then retry.'])
+                sys.exit(msg)
     t = tx.Transaction(ROOT, 'init')
     for bak, data in baks:
         t.add(bak, data, 'create_exclusive')

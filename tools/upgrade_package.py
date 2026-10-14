@@ -34,7 +34,8 @@ LAST_RESULT = None
 def L(vi, en): return en if LANG == 'en' else vi
 
 def sha(base, rel):
-    data = open(os.path.join(base, *rel.split('/')), 'rb').read()
+    with open(os.path.join(base, *rel.split('/')), 'rb') as f:
+        data = f.read()
     if os.path.splitext(rel)[1] in TEXT_EXT:
         data = data.replace(b'\r\n', b'\n')
     return hashlib.sha256(data).hexdigest()
@@ -44,15 +45,17 @@ def read_manifest(base):
     if not os.path.isfile(p):
         return None
     m = {}
-    for l in io.open(p, encoding='utf-8').read().splitlines():
-        if l.strip():
-            h, r = l.split('  ', 1)
-            m[r] = h
+    with io.open(p, encoding='utf-8') as f:
+        for l in f.read().splitlines():
+            if l.strip():
+                h, r = l.split('  ', 1)
+                m[r] = h
     return m
 
 def read_version(base):
     try:
-        return io.open(os.path.join(base, 'VERSION'), encoding='utf-8').read().strip()
+        with io.open(os.path.join(base, 'VERSION'), encoding='utf-8') as f:
+            return f.read().strip()
     except OSError:
         return '0.0.0'
 
@@ -111,15 +114,17 @@ def index_rows(project, source, lang, plan_):
     dst_i = os.path.join(project, '.agent', 'SKILL_INDEX.md')
     if not (os.path.isfile(src_i) and os.path.isfile(dst_i)):
         return []
-    have = {m.group(1) for m in ROW_RE.finditer(io.open(dst_i, encoding='utf-8').read())}
+    with io.open(dst_i, encoding='utf-8') as f:
+        have = {m.group(1) for m in ROW_RE.finditer(f.read())}
     adding = {rel for rel, _ in plan_['add']}
     out = []
-    for m in ROW_RE.finditer(io.open(src_i, encoding='utf-8').read()):
-        if m.group(1) in have:
-            continue
-        loc = m.group(2)
-        if os.path.isfile(os.path.join(project, *loc.split('/'))) or loc in adding:
-            out.append(m.group(0))
+    with io.open(src_i, encoding='utf-8') as f:
+        for m in ROW_RE.finditer(f.read()):
+            if m.group(1) in have:
+                continue
+            loc = m.group(2)
+            if os.path.isfile(os.path.join(project, *loc.split('/'))) or loc in adding:
+                out.append(m.group(0))
     return out
 
 def render_index_rows(txt, rows):
@@ -169,7 +174,8 @@ def main():
     info = {}
     if os.path.isfile(info_p):
         try:
-            info = json.load(io.open(info_p, encoding='utf-8'))
+            with io.open(info_p, encoding='utf-8') as f:
+                info = json.load(f)
         except ValueError:
             info = {}
     LANG = info.get('language', 'vi')
@@ -239,13 +245,17 @@ def main():
             sys.exit('CHƯA GHI GÌ / NOTHING WRITTEN: thiếu file trong package / package files missing: %s' % ', '.join(missing_src[:5]))
         for rel, src in p['conflict']:
             pending = os.path.join(project, rel + '.new')
-            if os.path.exists(pending) and (not os.path.isfile(pending) or
-                    open(pending, 'rb').read() != open(os.path.join(source, src), 'rb').read()):
-                LAST_RESULT = make('blocked', code=1, message='Pending merge conflict', changes=False,
-                                   merge_required=True, files=[{'path': rel + '.new', 'action': 'blocked'}],
-                                   next_actions=['Resolve or remove the existing .new file, then retry.'],
-                                   from_version=ov, to_version=nv)
-                sys.exit('XUNG ĐỘT / CONFLICT: %s đã có nội dung khác; chưa ghi gì / pending merge differs; nothing written.' % pending)
+            if os.path.exists(pending):
+                conflict_differs = not os.path.isfile(pending)
+                if not conflict_differs:
+                    with open(pending, 'rb') as f1, open(os.path.join(source, src), 'rb') as f2:
+                        conflict_differs = (f1.read() != f2.read())
+                if conflict_differs:
+                    LAST_RESULT = make('blocked', code=1, message='Pending merge conflict', changes=False,
+                                       merge_required=True, files=[{'path': rel + '.new', 'action': 'blocked'}],
+                                       next_actions=['Resolve or remove the existing .new file, then retry.'],
+                                       from_version=ov, to_version=nv)
+                    sys.exit('XUNG ĐỘT / CONFLICT: %s đã có nội dung khác; chưa ghi gì / pending merge differs; nothing written.' % pending)
         t = tx.Transaction(project, 'upgrade')
         for rel, src in p['update'] + p['add'] + p['user_missing']:
             t.add(rel, read_bytes(source, src), 'create' if not os.path.exists(os.path.join(project, *rel.split('/'))) else 'write')
@@ -255,7 +265,8 @@ def main():
                 t.add(pending, read_bytes(source, src), 'create_exclusive')
         if idx_rows:
             dst_i = os.path.join(project, '.agent', 'SKILL_INDEX.md')
-            new_i = render_index_rows(io.open(dst_i, encoding='utf-8').read(), idx_rows)
+            with io.open(dst_i, encoding='utf-8') as f:
+                new_i = render_index_rows(f.read(), idx_rows)
             t.add('.agent/SKILL_INDEX.md', new_i.encode('utf-8'), 'write')
         t.add('MANIFEST.sha256', read_bytes(source, 'MANIFEST.sha256'), 'write')
         if info:
