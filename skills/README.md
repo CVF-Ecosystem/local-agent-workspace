@@ -38,7 +38,7 @@ từ chối.
 | Mức | Ý nghĩa | Ghi nhận |
 |---|---|---|
 | Ứng viên | Đang xem xét. Dùng thử trong project khi người dùng đã đặt hoặc cài nó, nói rõ là bản thử. Không xuất sang ứng dụng, không đưa vào gốc. | Status `REVIEW` |
-| Đủ điều kiện dùng | Đạt các điều kiện dưới đây cho phạm vi đã nêu (project hoặc dùng chung). | `AVAILABLE` / `ACTIVE`; gói: khối `intake` có quyết định dùng được |
+| Đủ điều kiện dùng | Đạt các điều kiện dưới đây cho phạm vi đã nêu (project hoặc dùng chung). | `AVAILABLE` / `ACTIVE`; gói: khối `intake` hợp lệ **và** người dùng chạy `pack.py confirm` |
 | Được cập nhật gốc | Đủ điều kiện dùng chung **và** người dùng đã cấp quyền ghi vào bộ mẫu gốc. | Gói: `ROOT_ELIGIBLE` kèm `root_grant` |
 
 Bộ mẫu gốc chỉ nhận phần đã chọn lọc theo quyền tương ứng. Cập nhật gốc không tự đổi project đã tạo: project
@@ -134,12 +134,20 @@ hay rủi ro cần quyết định.
 
 ### Công cụ kiểm gì và giới hạn
 
-- `tools/pack.py`: kiểm mẫu khối `intake`, phiên bản khớp, `UNKNOWN` hay `REPLACEMENT` thiếu `comparison` thì
-  vẫn là ứng viên, hồ sơ là đường dẫn local thì phải có thật; gói không có hồ sơ hợp lệ cài thành `REVIEW`;
-  `REUSE_NO_IMPORT`/`REJECT_VERSION` thì không cài. Đổi phiên bản đưa skill của gói về `REVIEW`; cùng phiên bản
-  thì giữ trạng thái người dùng đã đặt. Không chạy script nào của gói.
-- `tools/install_skills.py`: chỉ chép skill `AVAILABLE`/`ACTIVE`, phải chọn rõ, không bao giờ ghi đè skill cùng
-  tên mà ứng dụng đã có nếu bản đó không do công cụ này chép.
+- `tools/pack.py`: khối `intake` trong `pack.json` chỉ là **lời khai của gói**, không phải quyết định của người
+  dùng; cài, cập nhật hay kiểm cấu trúc không bao giờ nhận gói. Công cụ kiểm lời khai: mẫu, phiên bản khớp,
+  `UNKNOWN` hay `REPLACEMENT` thiếu `comparison` thì vẫn là ứng viên, hồ sơ (và `comparison` nếu có) phải là đường
+  dẫn local tương đối, không thoát thư mục, tới một file có thật (`x`, URL, đường dẫn tuyệt đối, `..` đều chưa
+  giải được). Mọi gói cài vào project đều ghi `REVIEW`. Chỉ `pack.py confirm <tên> --apply` (người dùng xác nhận,
+  mặc định chỉ xem trước) mới ghi `AVAILABLE`, và chỉ khi lời khai hợp lệ; xác nhận gắn với dấu vân tay nội dung
+  đang cài. Nội dung đổi (kể cả cùng số phiên bản, kể cả sửa tay bản đã cài), phiên bản mới, hay hồ sơ không còn ở
+  mức đã nhận thì xác nhận hết hiệu lực. `REUSE_NO_IMPORT`/`REJECT_VERSION` thì không cài; nếu từ chối đúng bản
+  đã cài thì bản đó không còn xuất được. `DISABLED` của người dùng luôn được giữ. Dấu vân tay chỉ nhận ra thay đổi,
+  không chứng minh chất lượng. Không chạy script nào của gói.
+- `tools/install_skills.py`: chỉ chép skill `AVAILABLE`/`ACTIVE`; với skill của gói còn phải có xác nhận còn hiệu
+  lực cho đúng nội dung đã cài và hồ sơ không từ chối bản đó (nhãn gõ tay vào chỉ mục không đủ). Phải chọn rõ, không
+  bao giờ ghi đè skill cùng tên mà ứng dụng đã có nếu bản đó không do công cụ này chép. Bảng điều khiển dùng cùng
+  hàm này nên không lệch với dòng lệnh.
 - `tools/adopt_project.py`: skill riêng có sẵn được ghi `REVIEW`, chờ người dùng xác nhận.
 
 Công cụ không đánh giá chất lượng bằng chứng và không cưỡng chế được mọi agent: ứng dụng vẫn có thể tự đọc file,

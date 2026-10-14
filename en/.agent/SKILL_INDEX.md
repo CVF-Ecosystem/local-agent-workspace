@@ -31,7 +31,7 @@ Scope: `SHARED` (common), `PROJECT` (project-specific), `GLOBAL` (per provider),
 Status: `AVAILABLE` (accepted for the scope in its row, ready to use), `ACTIVE` (accepted, commonly used), `REVIEW`
 (a candidate not through intake: only a trial in a project where the user placed/installed it, said to be a trial; never
 copied into apps), `DISABLED` (the user chose not to use it). Installing a pack, copying files or checking the structure
-never turns `REVIEW` into `AVAILABLE` by itself.
+never turns `REVIEW` into `AVAILABLE` by itself; for a pack that step is the user's `pack.py confirm` (typing `AVAILABLE` here does not make a pack skill exportable).
 For the fourteen shared skills, `AVAILABLE` means the maintainer put them into the template root before this intake standard
 existed; they have not been compared with native under the new standard and have not been tried in every app (test limits:
 `docs/en/SOURCES_AND_REFERENCES.md`).

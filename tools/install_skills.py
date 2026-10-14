@@ -24,7 +24,7 @@ Không có --dest thì dùng ~/.claude/skills (Claude). Codex và Gemini CLI cù
 kiểm tháng 10/2026). Ứng dụng khác: chỉ --dest tới thư mục skill theo tài liệu của nó. Package không tự đổi cấu hình toàn cục,
 không sửa skill native, không chạy script của skill. Cần Python 3.8+, không dùng mạng.
 """
-import argparse, datetime, io, json, os, shutil, sys, traceback
+import argparse, datetime, io, json, os, re, shutil, sys, traceback
 from result_schema import emit, make
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -82,7 +82,20 @@ def eligibility(sid, rel, idx):
     """None khi chép được; còn lại là lý do / None when the skill may be copied; otherwise the reason."""
     if sid not in idx or idx[sid][0] != rel:
         return 'not_in_index'
-    return None if idx[sid][1] in ACCEPTED else 'status_' + idx[sid][1].lower()
+    if idx[sid][1] not in ACCEPTED:
+        return 'status_' + idx[sid][1].lower()
+    # skill của gói: nhãn trong chỉ mục chưa đủ; cần xác nhận còn hiệu lực cho đúng nội dung đã cài và hồ sơ không từ chối bản này
+    # a pack skill: the index label is not enough; a confirmation must hold for the exact installed content, and no record may refuse it
+    m = re.match(r'skills/local/packs/([^/]+)/', rel)
+    if m:
+        try:
+            import pack
+            why = pack.installed_eligibility(m.group(1))
+        except Exception:  # không kiểm được thì không chép / cannot verify: do not copy
+            why = 'unverifiable'
+        if why:
+            return 'pack_' + why
+    return None
 
 def reason_text(r):
     if r == 'not_in_index':
@@ -91,6 +104,16 @@ def reason_text(r):
         return L('ứng viên (REVIEW), chưa qua tiếp nhận', 'candidate (REVIEW), not through intake')
     if r == 'status_disabled':
         return L('người dùng đã tắt (DISABLED)', 'disabled by the user (DISABLED)')
+    if r == 'pack_not_confirmed':
+        return L('gói chưa được xác nhận tiếp nhận ở project này (python tools/pack.py confirm <tên> --apply)', 'the pack is not confirmed in this project (python tools/pack.py confirm <name> --apply)')
+    if r == 'pack_content_changed':
+        return L('nội dung gói đã cài khác bản đã xác nhận: xét lại rồi xác nhận lại', 'the installed pack content differs from what was confirmed: review, then confirm again')
+    if r == 'pack_refused':
+        return L('hồ sơ tiếp nhận từ chối đúng bản đã cài', 'its intake record refuses the installed version')
+    if r == 'pack_claim_withdrawn':
+        return L('hồ sơ tiếp nhận của gói không còn ở mức đã nhận', 'the pack intake record no longer claims acceptance')
+    if r.startswith('pack_'):
+        return L('không kiểm được xác nhận của gói (%s)', 'cannot verify the pack confirmation (%s)') % r[5:]
     return L('trạng thái không cho chép (%s)', 'status does not allow copying (%s)') % r[7:].upper()
 
 def copy_tree(src, dst):

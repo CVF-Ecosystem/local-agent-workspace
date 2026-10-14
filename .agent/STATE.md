@@ -4,7 +4,7 @@
 Hoàn thiện Local Agent Workspace: bảo toàn native của agent người dùng chọn, chuẩn tiếp nhận skill/gói chung (yêu cầu của operator, 14/10/2026).
 
 ## Current phase
-VERSION 1.8.0 (MINOR): đợt "bảo toàn native và chuẩn tiếp nhận skill" đã kiểm thử và commit trên nhánh skill-intake-native-first-v1.8.0 (từ main b4453d7); chưa push, chưa merge, chưa tạo release.
+PR #2 (v1.8.0) đã merge vào main (35994e6); chưa tag, chưa release. Nhánh skill-intake-claim-vs-approval (từ main) sửa 3 phát hiện của review độc lập; commit cục bộ, chưa push.
 
 ## Completed
 - Chuẩn tiếp nhận chung tại `skills/README.md` (VI/EN); AGENTS, SKILL_INDEX, README vùng skill, packs/README, hướng dẫn skill/tạo/chuyển đổi project dẫn chiếu về đó.
@@ -18,6 +18,8 @@ VERSION 1.8.0 (MINOR): đợt "bảo toàn native và chuẩn tiếp nhận skil
 - Thay đổi trong working tree (40 file sửa, 1 file mới); xem git status/diff. CHANGELOG mục "Chưa phát hành".
 
 ## Open items
+- Review độc lập (agent khác, 14/10/2026) có SI-01/02/03: đã tái hiện và sửa (lời khai gói ≠ xác nhận; xác nhận gắn dấu vân tay nội dung; xuất dùng chung hàm điều kiện). Chưa chạy lại browser test với Playwright ngoài máy này; CI macOS-13/Python 3.8 lúc review còn queued.
+- File LAW_V180_NATIVE_INTAKE_FOLLOWUP_20261014.zip (báo cáo reviewer) nằm ở thư mục gốc, không thuộc repo: không commit; coi chừng `check_package --write-manifest` ghi nhầm nó vào MANIFEST.
 - Năm gói đi kèm đã có hồ sơ tiếp nhận (DEFER, SUPPLEMENT) kèm A/B qwen-plus; vẫn REVIEW. Muốn nhận cần: người đối chiếu legal-basis với văn bản chính thức, ba việc thật trên ứng dụng thật, đánh giá của người dùng; bản có skill vẫn có "nguyên văn" không có trong gói.
 - Bản chép skill sang ứng dụng bằng phiên bản cũ không có dấu nên không còn thay được bằng `--overwrite`.
 - Thử thăm dò với qwen-plus/qwen-max (14/10/2026, dữ liệu giả): qwen-max vẫn tự nói sẽ đổi REVIEW→AVAILABLE khi được nhờ cài skill REVIEW; hướng dẫn không đủ chặn, công cụ chặn. Chưa có đánh giá của người dùng; CI chưa chạy; chưa thử macOS, Python 3.8 thật.

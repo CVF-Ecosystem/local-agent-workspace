@@ -40,10 +40,14 @@ packs/<ten-goi>/
 
 ## Tiếp nhận gói / Pack intake
 
-Gói không có khối `intake` hợp lệ cho đúng phiên bản là **ứng viên**: `pack.py add` vẫn cài để dùng thử nhưng ghi Status `REVIEW`, và
-`tools/install_skills.py` không chép skill của nó sang ứng dụng. Khi đã có hồ sơ tiếp nhận, thêm vào `pack.json`:
-A pack without a valid `intake` block for its exact version is a **candidate**: `pack.py add` still installs it for trial but records
-Status `REVIEW`, and `tools/install_skills.py` does not copy its skills into apps. Once an intake record exists, add to `pack.json`:
+Khối `intake` trong `pack.json` là **lời khai của gói** (người viết gói nói gì về hồ sơ của nó), không phải quyết định của người dùng.
+Mọi gói cài bằng `pack.py add` đều ghi Status `REVIEW` (dùng thử); `tools/install_skills.py` không chép skill của nó sang ứng dụng.
+Muốn nhận gói cho project này, người dùng xem hồ sơ rồi chạy `python tools/pack.py confirm <tên> --apply` (không có `--apply` thì chỉ
+xem trước). Lệnh chỉ chạy khi lời khai hợp lệ; nó ghi `AVAILABLE` và gắn xác nhận với dấu vân tay nội dung đang cài.
+The `intake` block in `pack.json` is **the pack's own claim** (what the pack author says about its record), not the user's decision.
+Every pack installed with `pack.py add` is recorded `REVIEW` (trial); `tools/install_skills.py` does not copy its skills into apps. To
+accept a pack for this project, the user reads the record and runs `python tools/pack.py confirm <name> --apply` (without `--apply` it
+only previews). It runs only for a valid claim; it records `AVAILABLE` and binds the confirmation to a fingerprint of the installed content.
 
 ```json
 "intake": {
@@ -56,26 +60,30 @@ Status `REVIEW`, and `tools/install_skills.py` does not copy its skills into app
 }
 ```
 
-- `decision`: `ADD_MISSING_PART`, `PROJECT_ONLY`, `ROOT_ELIGIBLE` (dùng được / usable), `DEFER` (vẫn là ứng viên / stays a candidate),
+- `decision`: `ADD_MISSING_PART`, `PROJECT_ONLY`, `ROOT_ELIGIBLE` (có thể xác nhận / can be confirmed), `DEFER` (vẫn là ứng viên / stays a candidate),
   `REUSE_NO_IMPORT`, `REJECT_VERSION` (không cài / not installed). Ý nghĩa ở / meaning in `skills/README.md`.
-- `version`: bản mà quyết định áp dụng; đổi `version` của gói mà chưa xét lại thì skill về `REVIEW`. / the version the decision covers;
-  a new pack version that has not been reviewed puts the skills back to `REVIEW`.
-- `relation`: `SUPPLEMENT`, `REPLACEMENT`, `FALLBACK`, `UNKNOWN`. `UNKNOWN` không bao giờ được nhận; `REPLACEMENT` cần `comparison` (bằng
-  chứng so với native hoặc cách đang dùng). / `UNKNOWN` is never accepted; `REPLACEMENT` needs `comparison` (evidence against native or
-  the way currently used).
-- `record`, `comparison`: chỗ đặt hồ sơ; là đường dẫn trong gói hoặc project thì phải có thật. / where the record is; a path inside the
-  pack or project must exist.
-- `root_grant`: chỉ với `ROOT_ELIGIBLE`, ghi ai cấp quyền đưa vào bộ mẫu gốc và khi nào; bỏ trống là chưa được cập nhật gốc. / only with
-  `ROOT_ELIGIBLE`: who granted putting it into the template root and when; empty means no root update.
+- `version`: bản mà quyết định áp dụng; đổi `version` của gói mà chưa xét lại thì lời khai không còn hợp lệ cho bản mới. / the version the
+  decision covers; a new pack version that has not been reviewed makes the claim invalid for it.
+- `relation`: `SUPPLEMENT`, `REPLACEMENT`, `FALLBACK`, `UNKNOWN`. `UNKNOWN` không thể xác nhận; `REPLACEMENT` cần `comparison` (bằng
+  chứng so với native hoặc cách đang dùng). / `UNKNOWN` cannot be confirmed; `REPLACEMENT` needs `comparison` (evidence against native
+  or the way currently used).
+- `record`, `comparison`: đường dẫn local tương đối (trong gói hoặc project), không thoát thư mục, tới một file có thật. Chuỗi khác
+  (`x`, URL, đường dẫn tuyệt đối, `..`) chưa giải được nên gói vẫn là ứng viên. / a relative local path (inside the pack or project) that
+  stays inside and points to a real file. Anything else (`x`, a URL, an absolute path, `..`) does not resolve, so the pack stays a candidate.
+- `root_grant`: chỉ với `ROOT_ELIGIBLE`, ghi ai cấp quyền đưa vào bộ mẫu gốc và khi nào; chỉ là khai báo, không chứng minh đã có hành động
+  ghi gốc. / only with `ROOT_ELIGIBLE`: who granted putting it into the template root and when; it is metadata and does not prove a root write.
 
-Công cụ chỉ kiểm các điểm trên, không đánh giá chất lượng bằng chứng. Trong một project, người dùng cũng có thể nhận một gói chỉ cho
-project đó bằng cách đổi Status từ `REVIEW` sang `AVAILABLE` trong `.agent/SKILL_INDEX.md` (ghi chỗ đặt hồ sơ ở cột Notes); trạng thái
-này được giữ khi cập nhật trong cùng phiên bản, và trở về `REVIEW` khi gói lên phiên bản mới hoặc khi hồ sơ đã nhận bị rút. Gói cài
-trước khi có chuẩn này (đã ghi `AVAILABLE`) không bị công cụ tự đổi, vì cập nhật gốc không tự sửa project cũ; muốn coi là thử nghiệm thì
-tự đổi Status sang `REVIEW`. `pack.py check` báo khi bản đang cài bị hồ sơ ghi không nhận.
-The tool checks only these points, not the quality of the evidence. In a project, the user may also accept a pack for that project only by
-changing its Status from `REVIEW` to `AVAILABLE` in `.agent/SKILL_INDEX.md` (noting where the record is in the Notes column); that status
-survives updates within the same version and returns to `REVIEW` when the pack moves to a new version or an accepted record is
-withdrawn. Packs installed before this standard (recorded as `AVAILABLE`) are not changed by the tool, because updating the root does
-not edit earlier projects; to treat one as a trial, change its Status to `REVIEW` yourself. `pack.py check` reports an installed
-version that its intake record refuses.
+Công cụ chỉ kiểm các điểm trên và gắn xác nhận với nội dung; nó không đánh giá chất lượng bằng chứng (dấu vân tay chỉ nhận ra thay đổi).
+Xác nhận hết hiệu lực khi: nội dung gói đã cài đổi (kể cả cùng số phiên bản, kể cả sửa tay bản đã cài hay thêm script), gói lên phiên bản
+mới, hoặc hồ sơ không còn ở mức đã nhận. Khi đó skill về `REVIEW` (cập nhật) hoặc bị chặn xuất (sửa tay) cho tới khi người dùng xét phần đổi
+rồi xác nhận lại. Hồ sơ từ chối đúng bản đã cài thì bản đó không còn xuất được và `pack.py check` báo; từ chối một bản khác chưa cài không
+ảnh hưởng bản đã xác nhận. Gõ tay `AVAILABLE` vào `.agent/SKILL_INDEX.md` không thay cho xác nhận: skill của gói vẫn không xuất được. Gói cài
+bằng bản cũ của công cụ (đã ghi `AVAILABLE`, chưa có xác nhận) cũng vậy: chạy `pack.py confirm` hoặc để nguyên là bản thử.
+The tool checks only these points and binds the confirmation to content; it does not judge the quality of the evidence (the fingerprint only
+detects change). The confirmation lapses when: the installed pack content changes (even under the same version number, even a hand edit of the
+installed copy or an added script), the pack moves to a new version, or the record no longer claims acceptance. The skills then return to
+`REVIEW` (update) or are blocked from export (hand edit) until the user reviews the change and confirms again. A record that refuses the
+installed version stops that version from being exported and `pack.py check` reports it; refusing a different, not-installed version does not
+affect the confirmed one. Typing `AVAILABLE` into `.agent/SKILL_INDEX.md` is no substitute for confirming: the pack skills still cannot be
+exported. The same goes for a pack installed by an older tool version (recorded `AVAILABLE`, never confirmed): run `pack.py confirm`, or leave
+it as a trial.

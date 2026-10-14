@@ -41,7 +41,7 @@ not exempt, outside sources are not rejected by default.
 | Level | Meaning | Recorded as |
 |---|---|---|
 | Candidate | Under review. Tried in a project when the user placed or installed it, saying it is a trial. Not exported to apps, not put into the root. | Status `REVIEW` |
-| Usable | Meets the conditions below for the stated scope (project or shared). | `AVAILABLE` / `ACTIVE`; packs: an `intake` block with a usable decision |
+| Usable | Meets the conditions below for the stated scope (project or shared). | `AVAILABLE` / `ACTIVE`; packs: a valid `intake` block **and** the user running `pack.py confirm` |
 | Root update allowed | Usable as shared **and** the user granted writing into the template root. | Packs: `ROOT_ELIGIBLE` with `root_grant` |
 
 The template root takes only the selected parts, under the matching permission. Updating the root does not change
@@ -141,12 +141,21 @@ needs to see the benefit, what will change, and the permission or risk to decide
 
 ### What the tools check, and their limits
 
-- `tools/pack.py`: checks the `intake` block format and the matching version; `UNKNOWN`, or `REPLACEMENT` without
-  `comparison`, stays a candidate; a record given as a local path must exist; a pack without a valid record
-  installs as `REVIEW`; `REUSE_NO_IMPORT`/`REJECT_VERSION` are not installed. A version change puts the pack skills
-  back to `REVIEW`; within the same version the status the user set is kept. No pack script is ever run.
-- `tools/install_skills.py`: copies only `AVAILABLE`/`ACTIVE` skills, needs an explicit choice, and never
-  overwrites a same-name skill the app already has unless this tool copied it.
+- `tools/pack.py`: the `intake` block in `pack.json` is only **the pack's own claim**, not the user's decision;
+  installing, updating or checking the structure never accepts a pack. The tool checks the claim: format, matching
+  version, `UNKNOWN`, or `REPLACEMENT` without `comparison`, stays a candidate, and the record (and `comparison`
+  if given) must be a relative local path that stays inside the folder and points to a real file (`x`, a URL, an
+  absolute path or `..` do not resolve). Every pack installed into a project is recorded `REVIEW`. Only
+  `pack.py confirm <name> --apply` (the user's confirmation; a preview by default) records `AVAILABLE`, and only
+  for a valid claim; the confirmation is bound to a fingerprint of the installed content. Changed content (even
+  under the same version number, even a hand edit of the installed copy), a new version, or a record that no longer
+  claims acceptance voids it. `REUSE_NO_IMPORT`/`REJECT_VERSION` are not installed; if the installed version itself
+  is refused it can no longer be exported. A user's `DISABLED` is always kept. The fingerprint detects change; it
+  proves no quality. No pack script is ever run.
+- `tools/install_skills.py`: copies only `AVAILABLE`/`ACTIVE` skills; for a pack skill a confirmation must also
+  hold for the exact installed content and no record may refuse that version (a label typed into the index is not
+  enough). It needs an explicit choice and never overwrites a same-name skill the app already has unless this tool
+  copied it. The control panel uses the same function, so it cannot drift from the command line.
 - `tools/adopt_project.py`: an existing project skill is recorded as `REVIEW`, waiting for the user to confirm.
 
 The tools do not judge the quality of evidence and cannot enforce every agent: an app can still read files on its

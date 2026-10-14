@@ -35,7 +35,7 @@ STATE = {'last_ping': None, 'started': time.time(), 'server': None, 'port': 0}
 STRUCTURED_TOOLS = {'init_project.py', 'adopt_project.py', 'upgrade_package.py', 'check_output.py', 'build_release.py',
                     'check_package.py', 'pack.py', 'install_skills.py', 'library.py', 'build_guides_html.py', 'transaction.py'}
 # tên thao tác được phép ghi vào lịch sử; còn lại ghi là 'unknown' / action names allowed in the history
-ACTION_NAMES = {'init', 'upgrade', 'upgrade_other', 'adopt', 'pack_list', 'pack_add', 'pack_remove', 'pack_update',
+ACTION_NAMES = {'init', 'upgrade', 'upgrade_other', 'adopt', 'pack_list', 'pack_add', 'pack_remove', 'pack_update', 'pack_confirm',
                 'check_output', 'install_skills', 'library_init', 'library_check', 'library_stats', 'library_find',
                 'check_package', 'build_guides', 'build_release', 'merge_state', 'merge_diff', 'diagnostics',
                 'tx_resume', 'tx_rollback', 'history_clear'}
@@ -98,6 +98,19 @@ def skill_rows():
         if len(cells) >= 6:
             rows.append({'id': cells[0], 'origin': cells[1], 'scope': cells[2], 'location': cells[3],
                          'use': cells[4], 'status': cells[5]})
+    # xuất được hay không do cùng một hàm với install_skills (nhãn chỉ mục + xác nhận gói), để giao diện và CLI không lệch nhau
+    # whether a skill can be exported comes from the same function install_skills uses, so the panel and the CLI cannot drift apart
+    idx = {r['id']: (r['location'], r['status']) for r in rows}
+    try:
+        import install_skills
+    except Exception:
+        install_skills = None
+    for r in rows:
+        if install_skills is None or r['origin'] != 'LOCAL' or r['scope'] not in ('SHARED', 'PACK'):
+            why = 'not_exportable'
+        else:
+            why = install_skills.eligibility(r['id'], r['location'], idx)
+        r['eligible'], r['reason'] = why is None, why
     return rows
 
 
@@ -113,7 +126,8 @@ def pack_info(lang):
         st = pack.intake_state(m, os.path.join(ROOT, 'packs', n))
         items.append({'name': n, 'version': m.get('version'), 'title': pack.loc(m.get('title')),
                       'description': pack.loc(m.get('description')), 'skills': m.get('skills', []),
-                      'installed': ins.get(n, {}).get('version'), 'intake': st['state'], 'intake_label': pack.intake_label(st)})
+                      'installed': ins.get(n, {}).get('version'), 'intake': st['state'], 'intake_label': pack.intake_label(st),
+                      'eligibility': pack.installed_eligibility(n) if n in ins else None})
     for n, m in ins.items():
         if n not in av:
             items.append({'name': n, 'version': None, 'title': n, 'description': '', 'skills': m.get('skills', []),
@@ -273,7 +287,7 @@ def need_project():
 
 def action(name, p):
     apply = bool(p.get('apply'))
-    if name in ('upgrade', 'pack_add', 'pack_remove', 'pack_update'):
+    if name in ('upgrade', 'pack_add', 'pack_remove', 'pack_update', 'pack_confirm'):
         need_project()
     if name == 'init':
         args = ['--name', need_text(p, 'name', 'Cần nhập tên project / A project name is required.'),
@@ -303,6 +317,8 @@ def action(name, p):
         return run_tool('pack.py', [name.split('_')[1], need_name(p.get('pack'))])
     if name == 'pack_update':
         return run_tool('pack.py', ['update', need_name(p.get('pack'))] + (['--apply'] if apply else []))
+    if name == 'pack_confirm':
+        return run_tool('pack.py', ['confirm', need_name(p.get('pack'))] + (['--apply'] if apply else []))
     if name == 'check_output':
         files = [f.strip().strip('"') for f in (p.get('files') or []) if f and f.strip()]
         if not files:

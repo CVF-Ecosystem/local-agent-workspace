@@ -58,7 +58,7 @@ năng lực sẵn có đã đủ. Skill không phù hợp thì không dùng, và
 
 Status `REVIEW` là ứng viên chưa qua tiếp nhận: chỉ dùng thử trong project khi người dùng đã đặt hoặc cài nó,
 và nói rõ là bản thử. Agent không tự đổi `REVIEW` thành `AVAILABLE`/`ACTIVE` (kể cả để làm được việc đang giao):
-việc đó chỉ theo kết luận tiếp nhận mà người dùng đã xác nhận. Gói lĩnh vực (văn thư, cảng, nhân sự, kế toán, pháp lý...) nằm trong `packs/`; chỉ gói
+việc đó chỉ theo kết luận tiếp nhận mà người dùng đã xác nhận (với gói: người dùng tự chạy `pack.py confirm`; agent chỉ chạy khi người dùng bảo, sau khi đã đọc hồ sơ cùng họ). Gói lĩnh vực (văn thư, cảng, nhân sự, kế toán, pháp lý...) nằm trong `packs/`; chỉ gói
 đã cài mới có dòng Scope `PACK` trong `.agent/SKILL_INDEX.md`. Việc thuộc lĩnh vực có gói chưa cài: gợi ý người
 dùng cài (`python tools/pack.py add <tên>` hoặc trang "Gói lĩnh vực" của `APP.bat`); không tự đọc `packs/`
 thay cho skill đã cài.

@@ -35,6 +35,7 @@ Nhận xét riêng của gói: Có đáp án đã biết; cả hai bản đều 
 1. Người duy trì xác nhận điều khoản sử dụng của nguồn ý tưởng và người có thẩm quyền đọc phương pháp xử lý xung đột, điều kiện dừng có phù hợp thực hành pháp lý không (điều kiện 2).
 2. Ít nhất ba việc thật của lĩnh vực này, chạy trên ứng dụng agent thật của người dùng, kèm đánh giá của người dùng; có ca thiếu nguồn và ca lỗi (điều kiện 4 và 6).
 3. Xử lý hiện tượng B vẫn trình bày đoạn "nguyên văn" không có trong gói, hoặc chấp nhận và ghi vào giới hạn (điều kiện 4).
-4. Chỉ khi 1-3 xong mới đổi `intake.decision` và nâng `intake.version` theo bản đã xét.
+4. Chỉ khi 1-3 xong mới đổi `intake.decision` và nâng `intake.version` theo bản đã xét. Đó vẫn chỉ là lời khai của gói: người dùng ở từng project
+   tự đọc hồ sơ rồi chạy `pack.py confirm` thì skill mới thành `AVAILABLE`.
 
 Giới hạn của phép thử này: một model, mỗi ô 2 lần, tiêu chí cơ học nên bỏ sót chất lượng diễn đạt; agent tự chấm không phải nghiệm thu của người dùng. Kết quả không nói gì về model khác.

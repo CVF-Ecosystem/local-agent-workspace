@@ -9,11 +9,11 @@
   gốc; phân loại trùng/bổ sung/fallback/chưa rõ; sáu điều kiện; cách so với native; sáu kết luận; hồ sơ gọn). `AGENTS.md`, chỉ mục skill,
   README các vùng skill, `packs/README.md`, hướng dẫn skill, hướng dẫn tạo và chuyển đổi project (VI/EN) dẫn chiếu về đó. Skill workspace
   chỉ đọc khi bổ sung đúng phần native chưa có, không theo từ khóa.
-- `pack.py`: khối `intake` tùy chọn trong `pack.json`. Gói không có hồ sơ hợp lệ cho đúng phiên bản cài thành `REVIEW` (trước đây luôn
-  `AVAILABLE`); `UNKNOWN` hoặc `REPLACEMENT` thiếu bằng chứng so sánh vẫn là ứng viên; `REUSE_NO_IMPORT`/`REJECT_VERSION` không cài, không
-  cập nhật. Lên phiên bản mới thì skill về `REVIEW`; cùng phiên bản giữ trạng thái người dùng đặt; `DISABLED` luôn giữ. `check` tách cấu
-  trúc khỏi tiếp nhận. Năm gói đi kèm chưa có hồ sơ tiếp nhận nên cài thành `REVIEW` (thử nghiệm), đúng như README của từng gói.
-- `install_skills.py`: chỉ chép skill `AVAILABLE`/`ACTIVE`; phải chọn `--skills` hoặc `--all` (trước đây mặc định chép cả 14); thư mục cùng
+- `pack.py`: khối `intake` tùy chọn trong `pack.json`, là lời khai của gói. Mọi gói cài vào project đều ghi `REVIEW` (trước đây luôn
+  `AVAILABLE`); chỉ `pack.py confirm` của người dùng mới ghi `AVAILABLE` (xem mục sửa theo review bên dưới). `UNKNOWN` hoặc `REPLACEMENT`
+  thiếu bằng chứng so sánh vẫn là ứng viên; `REUSE_NO_IMPORT`/`REJECT_VERSION` không cài, không cập nhật; `DISABLED` luôn giữ. `check`
+  tách cấu trúc khỏi tiếp nhận.
+- `install_skills.py`: chỉ chép skill `AVAILABLE`/`ACTIVE` (skill của gói còn cần xác nhận còn hiệu lực, xem dưới); phải chọn `--skills` hoặc `--all` (trước đây mặc định chép cả 14); thư mục cùng
   tên không do công cụ chép (native, nguồn khác, bản chép trước bản này) không bao giờ bị ghi đè, kể cả với `--overwrite`; bản sao lưu khi
   thay chuyển vào `archive/` của project thay vì nằm trong thư mục ứng dụng tự quét (trước đây có thể thành một skill trùng tên).
 - `adopt_project.py`: skill riêng có sẵn được ghi `REVIEW` thay vì `AVAILABLE`.
@@ -26,8 +26,15 @@
   thức (hiện lấy từ trang tin/tư vấn), ba việc thật và đánh giá của người dùng. Kết quả A/B không đồng đều: HR và kế toán cho nội dung tốt
   hơn bản không có skill (HR: 13 ngày đúng so với 12 sai); pháp lý không thấy cải thiện; bản có skill vẫn có đoạn "nguyên văn" không có
   trong gói (4/10 câu so với 6/10) và một chi tiết bịa ở HR.
+- Sửa theo review độc lập của agent khác (SI-01/02/03, đã tái hiện trên source trước khi sửa): (1) khối `intake` do gói tự đính kèm không còn
+  tự thành `AVAILABLE`: cài luôn là `REVIEW`, xác nhận là hành động riêng của người dùng (`pack.py confirm`, xem trước rồi `--apply`);
+  hồ sơ phải giải được tới file local có thật (`x`, URL, đường dẫn tuyệt đối, `..` bị loại). (2) Xác nhận gắn với dấu vân tay nội dung đã cài:
+  đổi nội dung cùng số phiên bản, thêm script hay sửa tay bản đã cài thì hết hiệu lực (trước đây giữ `AVAILABLE`; test cũ còn khẳng định
+  điều đó, đã bỏ). (3) `install_skills.py` và bảng điều khiển dùng chung một hàm điều kiện xuất: hồ sơ từ chối đúng bản đã cài, chưa xác nhận
+  hay nội dung đã đổi thì không xuất; từ chối một bản khác chưa cài không ảnh hưởng. Bảng điều khiển có nút "Xác nhận tiếp nhận".
+  Gói cài bằng bản 1.7 hay trước khi có xác nhận (đã ghi `AVAILABLE`) không còn xuất được cho tới khi chạy `pack.py confirm`.
 - `AGENTS.md`: agent không tự đổi `REVIEW` thành `AVAILABLE`/`ACTIVE`.
-- Kiểm thử logic mới `tests/test_skill_intake.py` và một ca trình duyệt cho trang chép skill.
+- Kiểm thử logic mới `tests/test_skill_intake.py` (18 ca, gồm ba phản ví dụ SI-01/02/03 và các ca giữ nguyên trạng/`DISABLED`/từ chối bản khác) và một ca trình duyệt cho trang chép skill.
 - Thử hành vi một lần (14/10/2026) với `qwen-plus` và `qwen-max` (Alibaba Model Studio), bốn tình huống bằng dữ liệu giả, không có
   công cụ; 2 lần mỗi ca, riêng hai ca sau khi sửa AGENTS.md 3 lần. Đây là kiểm tra thăm dò trên hai model, không phải đánh giá của
   người dùng và không chứng minh skill nào hơn native. Kết quả: cả hai không gọi skill cho việc sửa một câu; cả hai từ chối làm theo lệnh

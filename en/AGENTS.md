@@ -65,7 +65,7 @@ use one, and say so in the execution declaration.
 
 Status `REVIEW` is a candidate that has not been through intake: use it only as a trial in a project where the
 user placed or installed it, and say it is a trial. The agent never changes `REVIEW` to `AVAILABLE`/`ACTIVE` on its
-own (not even to get the assigned work done): that follows only an intake conclusion the user has confirmed. Domain packs (records, ports, HR, accounting, legal...) live
+own (not even to get the assigned work done): that follows only an intake conclusion the user has confirmed (for a pack: the user runs `pack.py confirm` themselves; the agent runs it only when told to, after reading the record with them). Domain packs (records, ports, HR, accounting, legal...) live
 in `packs/`; only installed packs have Scope `PACK` rows in `.agent/SKILL_INDEX.md`. For work in a domain whose
 pack is not installed, suggest that the user install it (`python tools/pack.py add <name>` or the "Domain packs"
 page of `APP.bat`); do not read `packs/` in place of an installed skill.

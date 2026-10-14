@@ -1,6 +1,7 @@
 """Tiếp nhận skill/gói: kiểm thử logic trên bản sao tạm của package, không dùng agent thật hay người đánh giá.
 Skill/pack intake: logic tests on a disposable copy of the package. No real agent run and no human evaluation here:
-these tests only show that the tools keep candidates, accepted skills and root updates apart (see skills/README.md).
+these tests only show that the tools keep a pack's CLAIM, the user's CONFIRMATION and the root update apart, that a
+confirmation is bound to the installed content, and that nothing is exported on a label alone (see skills/README.md).
 """
 import json
 import os
@@ -14,6 +15,8 @@ from test_structured_tools import MARKER, StructuredBase, read, write
 import result_schema
 
 SKILL = 'port-operations-reports'  # skill của gói cang-logistics / the cang-logistics pack's skill
+CANG = 'cang-logistics'
+ACCEPT = {'decision': 'ADD_MISSING_PART', 'relation': 'SUPPLEMENT'}
 
 
 def snapshot(root):
@@ -38,6 +41,10 @@ class IntakeBase(StructuredBase):
         write(self.base / 'packs' / name / rel, '# Intake record (synthetic test fixture)\n')
         return rel
 
+    def claim(self, name, **extra):
+        """Lời khai hợp lệ, hồ sơ có thật / a valid claim whose record exists."""
+        self.set_intake(name, dict(ACCEPT, record=self.record(name), **extra))
+
     def statuses(self):
         out = {}
         for line in read(self.base / '.agent' / 'SKILL_INDEX.md').splitlines():
@@ -56,6 +63,19 @@ class IntakeBase(StructuredBase):
                 lines[i] = '|'.join(cells)
         write(f, '\n'.join(lines))
 
+    def confirm(self, name, apply=True):
+        return self.structured('pack.py', 'confirm', name, *(['--apply'] if apply else []))
+
+    def export(self, skill, dest=None):
+        dest = dest or Path(self.tmp.name) / 'export'
+        result, _, data = self.structured('install_skills.py', '--dest', dest, '--skills', skill, '--yes')
+        return result.returncode, data, (dest / skill).exists()
+
+    def bump(self, name, version):
+        meta = json.loads(read(self.pack_json(name)))
+        meta['version'] = version
+        write(self.pack_json(name), json.dumps(meta, ensure_ascii=False, indent=2) + '\n')
+
 
 class PackIntake(IntakeBase):
     def test_shipped_packs_are_deferred_candidates_with_a_record_that_exists(self):
@@ -67,28 +87,27 @@ class PackIntake(IntakeBase):
 
     def test_candidate_pack_installs_as_review_and_structure_check_is_not_intake(self):
         self.init_project()
-        self.set_intake('cang-logistics')  # bỏ hồ sơ để thử trường hợp chưa có hồ sơ / drop the record: the no-record case
-        result, _, data = self.structured('pack.py', 'check', 'cang-logistics')
+        self.set_intake(CANG)  # bỏ hồ sơ để thử trường hợp chưa có hồ sơ / drop the record: the no-record case
+        result, _, data = self.structured('pack.py', 'check', CANG)
         self.assertEqual((result.returncode, data['status']), (0, 'success'))
-        self.assertEqual(data['intake']['cang-logistics']['state'], 'candidate')
-        result, _, data = self.structured('pack.py', 'add', 'cang-logistics')
+        self.assertEqual(data['intake'][CANG]['state'], 'candidate')
+        result, _, data = self.structured('pack.py', 'add', CANG)
         self.assertEqual((result.returncode, data['status']), (0, 'success'))
         self.assertEqual((data['intake']['state'], data['intake']['reason']), ('candidate', 'no_record'))
         self.assertEqual(self.statuses()[SKILL], 'REVIEW')
         self.assertTrue(data['next_actions'])
 
-    def test_supplement_accepted_but_unproven_duplicate_deferred(self):
+    def test_a_claim_never_approves_only_confirm_does(self):
+        """SI-01: lời khai tự đính kèm của gói không tự thành AVAILABLE; chỉ xác nhận của người dùng mới nhận."""
         self.init_project()
-        cases = {  # gói: (khối intake, trạng thái chỉ mục, lý do) / pack: (intake, index status, reason)
-            'cang-logistics': ({'decision': 'ADD_MISSING_PART', 'relation': 'SUPPLEMENT'}, 'AVAILABLE', 'add_missing_part'),
-            'hanh-chinh-nhan-su': ({'decision': 'PROJECT_ONLY', 'relation': 'REPLACEMENT'}, 'REVIEW', 'no_comparison'),
-            'ke-toan-noi-bo': ({'decision': 'PROJECT_ONLY', 'relation': 'UNKNOWN'}, 'REVIEW', 'native_unknown'),
-            'van-thu-luu-tru': ({'decision': 'ROOT_ELIGIBLE', 'relation': 'REPLACEMENT', 'comparison': 'references/ab.md'},
-                                'AVAILABLE', 'root_eligible'),
-            'phap-ly': ({'decision': 'ADD_MISSING_PART', 'relation': 'SUPPLEMENT', 'record': 'references/missing.md'},
-                        'REVIEW', 'record_not_found'),
+        cases = {  # gói: (khối intake, lý do của lời khai, xác nhận được không) / pack: (intake, claim reason, confirmable)
+            CANG: (dict(ACCEPT), 'add_missing_part', True),
+            'hanh-chinh-nhan-su': ({'decision': 'PROJECT_ONLY', 'relation': 'REPLACEMENT'}, 'no_comparison', False),
+            'ke-toan-noi-bo': ({'decision': 'PROJECT_ONLY', 'relation': 'UNKNOWN'}, 'native_unknown', False),
+            'van-thu-luu-tru': ({'decision': 'ROOT_ELIGIBLE', 'relation': 'REPLACEMENT', 'comparison': 'references/ab.md'}, 'root_eligible', True),
+            'phap-ly': (dict(ACCEPT, record='references/missing.md'), 'record_not_found', False),
         }
-        for name, (intake, status, reason) in cases.items():
+        for name, (intake, reason, confirmable) in cases.items():
             with self.subTest(pack=name):
                 intake = dict(intake)
                 intake.setdefault('record', self.record(name))
@@ -99,10 +118,34 @@ class PackIntake(IntakeBase):
                 self.assertEqual((result.returncode, data['status']), (0, 'success'), data['message'])
                 self.assertEqual(data['intake']['reason'], reason)
                 skills = json.loads(read(self.pack_json(name)))['skills']
-                self.assertEqual({self.statuses()[s] for s in skills}, {status})
+                self.assertEqual({self.statuses()[s] for s in skills}, {'REVIEW'}, 'install is never approval')
+                result, _, data = self.confirm(name, apply=False)  # xem trước không ghi gì / a preview writes nothing
+                self.assertEqual({self.statuses()[s] for s in skills}, {'REVIEW'})
+                result, _, data = self.confirm(name)
+                if confirmable:
+                    self.assertEqual((result.returncode, data['status']), (0, 'success'))
+                    self.assertEqual({self.statuses()[s] for s in skills}, {'AVAILABLE'})
+                else:
+                    self.assertEqual((result.returncode, data['status']), (1, 'blocked'))
+                    self.assertEqual({self.statuses()[s] for s in skills}, {'REVIEW'})
         # ROOT_ELIGIBLE không kèm quyền ghi gốc thì chưa được cập nhật gốc / no root grant: no root update
         _, _, data = self.structured('pack.py', 'list')
         self.assertFalse({p['name']: p for p in data['packs']}['van-thu-luu-tru']['intake']['root_update'])
+
+    def test_unresolvable_locators_are_not_accepted(self):
+        """SI-01: 'x', URL, đường dẫn tuyệt đối, '..' hay thư mục không phải hồ sơ giải được / unresolved locators never pass."""
+        for bad in ('x', 'https://example.com/record.md', '/etc/passwd', 'C:/Windows/win.ini', '../README.md', 'references', 'references/nope.md'):
+            for field in ('record', 'comparison'):
+                with self.subTest(locator=bad, field=field):
+                    intake = dict(ACCEPT, relation='REPLACEMENT', record=self.record(CANG), comparison=self.record(CANG, 'references/ab.md'))
+                    intake[field] = bad
+                    self.set_intake(CANG, intake)
+                    _, _, data = self.structured('pack.py', 'list')
+                    state = {p['name']: p for p in data['packs']}[CANG]['intake']
+                    self.assertEqual((state['state'], state['reason']), ('candidate', 'record_not_found'))
+        self.set_intake(CANG, dict(ACCEPT, record=self.record(CANG)))  # đối chứng: hồ sơ có thật thì hợp lệ / control: a real record is valid
+        _, _, data = self.structured('pack.py', 'list')
+        self.assertEqual({p['name']: p for p in data['packs']}[CANG]['intake']['state'], 'accepted')
 
     def test_refused_decisions_block_install_and_write_nothing(self):
         self.init_project()
@@ -115,56 +158,122 @@ class PackIntake(IntakeBase):
                 self.assertFalse((self.base / 'skills' / 'local' / 'packs' / 'phap-ly').exists())
                 self.assertEqual(read(self.base / '.agent' / 'SKILL_INDEX.md'), before)
 
-    def test_version_change_reopens_review_while_user_choices_survive_same_version(self):
+    def test_content_change_in_the_same_version_voids_the_confirmation(self):
+        """SI-02: cùng nhãn phiên bản không đồng nghĩa cùng nội dung đã nhận."""
         self.init_project()
-        self.set_intake('cang-logistics', {'decision': 'ADD_MISSING_PART', 'relation': 'SUPPLEMENT', 'record': self.record('cang-logistics')})
-        self.structured('pack.py', 'add', 'cang-logistics')
-        self.structured('pack.py', 'add', 'hanh-chinh-nhan-su')  # ứng viên / candidate
-        self.assertEqual(self.statuses()[SKILL], 'AVAILABLE')
-        self.assertEqual(self.statuses()['hr-admin-vn'], 'REVIEW')
-        self.set_status('hr-admin-vn', 'AVAILABLE')  # người dùng nhận cho project này / the user accepts it for this project
+        self.claim(CANG)
+        self.structured('pack.py', 'add', CANG)
+        self.confirm(CANG)
+        self.assertEqual((self.export(SKILL)[0], self.export(SKILL)[2]), (0, True), 'confirmed content is exportable')
 
-        for name in ('cang-logistics', 'hanh-chinh-nhan-su'):  # cùng phiên bản, đổi nội dung / same version, changed text
-            readme = self.base / 'packs' / name / 'README.md'
-            write(readme, read(readme) + '\nSửa nhỏ cùng phiên bản.\n')
-            result, _, data = self.structured('pack.py', 'update', name, '--apply')
-            self.assertEqual((result.returncode, data['status']), (0, 'success'))
-        self.assertEqual(self.statuses()[SKILL], 'AVAILABLE')
-        self.assertEqual(self.statuses()['hr-admin-vn'], 'AVAILABLE', 'reuse within the same version needs no new approval')
-
-        self.set_status('hr-admin-vn', 'DISABLED')
-        for name in ('cang-logistics', 'hanh-chinh-nhan-su'):  # bản mới, hồ sơ cũ / new version, old record
-            meta = json.loads(read(self.pack_json(name)))
-            meta['version'] = '0.9.0'
-            write(self.pack_json(name), json.dumps(meta, ensure_ascii=False, indent=2) + '\n')
-        result, human, data = self.structured('pack.py', 'update', 'cang-logistics')
-        self.assertEqual((result.returncode, data['status'], data['intake']['reason']), (0, 'preview', 'version_changed'))
-        self.assertIn({'path': 'skills/local/packs/cang-logistics/pack.json', 'action': 'update'}, data['files'])
-        self.assertIn('REVIEW', human)
+        src = self.base / 'packs' / CANG / 'skills' / SKILL / 'SKILL.md'
+        write(src, read(src) + '\nChỉ dẫn mới chưa xét.\n')  # cùng phiên bản, nội dung đổi / same version, changed content
+        result, human, data = self.structured('pack.py', 'update', CANG)
+        self.assertEqual((result.returncode, data['status']), (0, 'preview'))
+        self.assertIn('hết hiệu lực', human)
         self.assertEqual(self.statuses()[SKILL], 'AVAILABLE', 'preview must not change the index')
-        self.structured('pack.py', 'update', 'cang-logistics', '--apply')
-        self.structured('pack.py', 'update', 'hanh-chinh-nhan-su', '--apply')
-        self.assertEqual(self.statuses()[SKILL], 'REVIEW', 'an approved old version does not approve the new one')
-        self.assertEqual(self.statuses()['hr-admin-vn'], 'DISABLED', 'the user choice to disable is kept')
-
-    def test_withdrawn_record_in_same_version_returns_to_review_and_refusal_is_reported(self):
-        self.init_project()
-        rec = self.record('cang-logistics')
-        self.set_intake('cang-logistics', {'decision': 'ADD_MISSING_PART', 'relation': 'SUPPLEMENT', 'record': rec})
-        self.structured('pack.py', 'add', 'cang-logistics')
-        self.assertEqual(self.statuses()[SKILL], 'AVAILABLE')
-        # cùng phiên bản, hồ sơ chuyển sang hoãn: AVAILABLE do công cụ ghi không được giữ / same version, record deferred
-        self.set_intake('cang-logistics', {'decision': 'DEFER', 'relation': 'SUPPLEMENT', 'record': rec})
-        result, _, data = self.structured('pack.py', 'update', 'cang-logistics', '--apply')
-        self.assertEqual((result.returncode, data['status']), (0, 'success'))
+        self.structured('pack.py', 'update', CANG, '--apply')
         self.assertEqual(self.statuses()[SKILL], 'REVIEW')
-        # hồ sơ ghi không nhận đúng bản đang cài: update bị chặn, check phải báo / refusal of the installed version
-        self.set_intake('cang-logistics', {'decision': 'REJECT_VERSION', 'relation': 'SUPPLEMENT', 'record': rec})
-        result, _, data = self.structured('pack.py', 'update', 'cang-logistics', '--apply')
+        self.assertFalse(self.export(SKILL, Path(self.tmp.name) / 'e2')[2])
+        self.confirm(CANG)  # xét xong, xác nhận lại bản mới / reviewed, confirm the new content
+        self.assertTrue(self.export(SKILL, Path(self.tmp.name) / 'e3')[2])
+
+        result, _, data = self.structured('pack.py', 'update', CANG)  # không đổi gì: xác nhận giữ nguyên / unchanged: it holds
+        self.assertEqual((data['status'], data['changes']), ('success', False))
+        self.assertEqual(self.statuses()[SKILL], 'AVAILABLE')
+
+    def test_editing_the_installed_copy_blocks_export_until_confirmed_again(self):
+        """SI-02: chỉnh trực tiếp bản đã cài (thêm script, sửa SKILL.md) không giữ quyền cũ."""
+        self.init_project()
+        self.claim(CANG)
+        self.structured('pack.py', 'add', CANG)
+        self.confirm(CANG)
+        installed = self.base / 'skills' / 'local' / 'packs' / CANG / 'skills' / SKILL
+        for edit in ('skill', 'script'):
+            with self.subTest(edit=edit):
+                if edit == 'skill':
+                    write(installed / 'SKILL.md', read(installed / 'SKILL.md') + '\nSửa tay.\n')
+                else:
+                    write(installed / 'scripts' / 'extra.py', 'print("not run")\n')
+                self.assertEqual(self.statuses()[SKILL], 'AVAILABLE', 'the index label alone did not change')
+                rc, data, copied = self.export(SKILL, Path(self.tmp.name) / ('x-' + edit))
+                self.assertEqual((rc, copied), (1, False))
+                self.assertEqual(data['excluded'], [{'skill': SKILL, 'reason': 'pack_content_changed'}])
+                result, _, chk = self.structured('pack.py', 'check', CANG)
+                self.assertEqual((result.returncode, chk['status']), (1, 'issues'))
+                self.confirm(CANG)  # người dùng xét rồi xác nhận lại nội dung hiện tại / the user reviews, confirms again
+                self.assertTrue(self.export(SKILL, Path(self.tmp.name) / ('y-' + edit))[2])
+
+    def test_disabled_survives_and_typed_status_is_not_a_confirmation(self):
+        self.init_project()
+        self.claim(CANG)
+        self.structured('pack.py', 'add', CANG)
+        self.set_status(SKILL, 'AVAILABLE')  # gõ tay vào chỉ mục, chưa xác nhận / typed by hand, never confirmed
+        rc, data, copied = self.export(SKILL)
+        self.assertEqual((rc, copied), (1, False))
+        self.assertEqual(data['excluded'], [{'skill': SKILL, 'reason': 'pack_not_confirmed'}])
+        result, _, chk = self.structured('pack.py', 'check', CANG)
+        self.assertEqual((result.returncode, chk['status']), (1, 'issues'))
+        self.confirm(CANG)
+        self.set_status(SKILL, 'DISABLED')
+        src = self.base / 'packs' / CANG / 'README.md'
+        write(src, read(src) + '\nđổi.\n')
+        self.structured('pack.py', 'update', CANG, '--apply')
+        self.assertEqual(self.statuses()[SKILL], 'DISABLED', 'the user choice to disable is kept')
+
+    def test_refusing_the_installed_version_stops_export_but_another_version_does_not(self):
+        """SI-03: accepted -> REJECT_VERSION trực tiếp; từ chối bản khác chưa cài không vô hiệu bản đã nhận."""
+        self.init_project()
+        rec = self.record(CANG)
+        self.claim(CANG)
+        self.structured('pack.py', 'add', CANG)
+        self.confirm(CANG)
+        self.assertTrue(self.export(SKILL)[2])
+
+        installed_version = json.loads(read(self.pack_json(CANG)))['version']
+        self.set_intake(CANG, {'decision': 'REJECT_VERSION', 'relation': 'SUPPLEMENT', 'record': rec})  # đúng bản đã cài / the installed version
+        result, _, data = self.structured('pack.py', 'update', CANG, '--apply')
         self.assertEqual((result.returncode, data['status']), (1, 'blocked'))
-        result, _, data = self.structured('pack.py', 'check', 'cang-logistics')
-        self.assertEqual((result.returncode, data['status']), (1, 'issues'))
-        self.assertTrue(any('pack.py remove cang-logistics' in f['message'] for f in data['findings']))
+        self.assertEqual(self.statuses()[SKILL], 'AVAILABLE', 'a blocked update leaves the index alone')
+        result, _, chk = self.structured('pack.py', 'check', CANG)
+        self.assertEqual((result.returncode, chk['status']), (1, 'issues'))
+        self.assertTrue(any('pack.py remove %s' % CANG in f['message'] for f in chk['findings']))
+        rc, data, copied = self.export(SKILL, Path(self.tmp.name) / 'refused')
+        self.assertEqual((rc, copied), (1, False))
+        self.assertEqual(data['excluded'], [{'skill': SKILL, 'reason': 'pack_refused'}])
+
+        # bản 0.9.0 (chưa cài) bị từ chối: bản đã cài đã xác nhận vẫn dùng được / refusing a not-installed version
+        self.bump(CANG, '0.9.0')
+        self.set_intake(CANG, {'decision': 'REJECT_VERSION', 'relation': 'SUPPLEMENT', 'record': rec, 'version': '0.9.0'})
+        self.assertNotEqual(installed_version, '0.9.0')
+        self.assertTrue(self.export(SKILL, Path(self.tmp.name) / 'other')[2])
+
+    def test_a_withdrawn_claim_in_the_same_version_voids_the_confirmation(self):
+        self.init_project()
+        self.claim(CANG)
+        self.structured('pack.py', 'add', CANG)
+        self.confirm(CANG)
+        rec = self.record(CANG)
+        self.set_intake(CANG, {'decision': 'DEFER', 'relation': 'SUPPLEMENT', 'record': rec})
+        rc, data, copied = self.export(SKILL)
+        self.assertEqual((rc, copied, data['excluded']), (1, False, [{'skill': SKILL, 'reason': 'pack_claim_withdrawn'}]))
+        self.structured('pack.py', 'update', CANG, '--apply')
+        self.assertEqual(self.statuses()[SKILL], 'REVIEW')
+
+    def test_version_change_reopens_review(self):
+        self.init_project()
+        self.claim(CANG)
+        self.structured('pack.py', 'add', CANG)
+        self.confirm(CANG)
+        self.assertEqual(self.statuses()[SKILL], 'AVAILABLE')
+        self.bump(CANG, '0.9.0')  # bản mới, hồ sơ cũ / new version, old record
+        result, human, data = self.structured('pack.py', 'update', CANG)
+        self.assertEqual((result.returncode, data['status'], data['intake']['reason']), (0, 'preview', 'version_changed'))
+        self.assertIn('hết hiệu lực', human)
+        self.structured('pack.py', 'update', CANG, '--apply')
+        self.assertEqual(self.statuses()[SKILL], 'REVIEW', 'an approved old version does not approve the new one')
+        result, _, data = self.confirm(CANG)
+        self.assertEqual((result.returncode, data['status']), (1, 'blocked'))
 
     def test_malformed_intake_is_a_structure_error(self):
         self.set_intake('phap-ly', {'decision': 'PASS', 'relation': 'SUPPLEMENT', 'record': 'x', 'scroe': 9})
@@ -178,10 +287,12 @@ class PackIntake(IntakeBase):
         self.init_project()
         sentinel = Path(self.tmp.name) / 'SCRIPT_RAN'
         probe = 'open(%r, "w").write("ran")\n' % str(sentinel)
-        write(self.base / 'packs' / 'cang-logistics' / 'skills' / SKILL / 'scripts' / 'probe.py', probe)
-        write(self.base / 'packs' / 'cang-logistics' / 'skills' / SKILL / 'scripts' / '__init__.py', probe)
-        self.structured('pack.py', 'check', 'cang-logistics')
-        self.structured('pack.py', 'add', 'cang-logistics')
+        write(self.base / 'packs' / CANG / 'skills' / SKILL / 'scripts' / 'probe.py', probe)
+        write(self.base / 'packs' / CANG / 'skills' / SKILL / 'scripts' / '__init__.py', probe)
+        self.claim(CANG)
+        self.structured('pack.py', 'check', CANG)
+        self.structured('pack.py', 'add', CANG)
+        self.confirm(CANG)
         self.structured('pack.py', 'list')
         self.structured('install_skills.py', '--dest', Path(self.tmp.name) / 'dest', '--all', '--include-packs')
         self.assertFalse(sentinel.exists())
@@ -190,7 +301,7 @@ class PackIntake(IntakeBase):
 class InstallIntake(IntakeBase):
     def test_only_accepted_local_skills_are_exported(self):
         self.init_project()
-        self.structured('pack.py', 'add', 'cang-logistics')  # ứng viên / candidate
+        self.structured('pack.py', 'add', CANG)  # ứng viên / candidate
         dest = Path(self.tmp.name) / 'dest'
         result, _, data = self.structured('install_skills.py', '--dest', dest, '--skills', SKILL, '--yes')
         self.assertEqual((result.returncode, data['status']), (1, 'blocked'))
@@ -252,14 +363,18 @@ class RootIsolation(IntakeBase):
         proj = Path(self.tmp.name) / 'project'
         shutil.copytree(self.base, proj)
         self.assertEqual(self.run_in(proj, 'init_project.py', '--name', 'Demo').returncode, 0)
-        self.assertEqual(self.run_in(proj, 'pack.py', 'add', 'cang-logistics').returncode, 0)
+        self.assertEqual(self.run_in(proj, 'pack.py', 'add', CANG).returncode, 0)
         idx = proj / '.agent' / 'SKILL_INDEX.md'
         write(idx, read(idx).replace('| REVIEW | Gói/Pack cang-logistics', '| AVAILABLE | Gói/Pack cang-logistics'))
-        installed = proj / 'skills' / 'local' / 'packs' / 'cang-logistics' / 'skills' / SKILL / 'SKILL.md'
+        installed = proj / 'skills' / 'local' / 'packs' / CANG / 'skills' / SKILL / 'SKILL.md'
         installed_before, index_before = installed.read_bytes(), read(idx)
+        # nhãn gõ tay không đủ để xuất / a hand-typed label is not enough to export
+        out = self.run_in(proj, 'install_skills.py', '--dest', Path(self.tmp.name) / 'pe', '--skills', SKILL, '--yes')
+        self.assertNotEqual(out.returncode, 0)
+        self.assertFalse((Path(self.tmp.name) / 'pe' / SKILL).exists())
 
         root = self.base  # bộ mẫu gốc đổi skill dùng chung và gói / the template root changes a shared skill and a pack
-        for rel in ('skills/local/shared/meeting-minutes/SKILL.md', 'packs/cang-logistics/skills/%s/SKILL.md' % SKILL):
+        for rel in ('skills/local/shared/meeting-minutes/SKILL.md', 'packs/%s/skills/%s/SKILL.md' % (CANG, SKILL)):
             write(root / rel, read(root / rel) + '\nThay đổi ở gốc.\n')
         self.assertEqual(self.run_in(root, 'check_package.py', '--write-manifest').returncode, 0)
 
