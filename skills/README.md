@@ -138,8 +138,7 @@ hay rủi ro cần quyết định.
   dùng; cài, cập nhật hay kiểm cấu trúc không bao giờ nhận gói. Công cụ kiểm lời khai: mẫu, phiên bản khớp,
   `UNKNOWN` hay `REPLACEMENT` thiếu `comparison` thì vẫn là ứng viên, hồ sơ (và `comparison` nếu có) phải là đường
   dẫn local tương đối, không thoát thư mục, tới một file có thật (`x`, URL, đường dẫn tuyệt đối, `..` đều chưa
-  giải được). Mọi gói cài vào project đều ghi `REVIEW`. Chỉ `pack.py confirm <tên> --apply` (người dùng xác nhận,
-  mặc định chỉ xem trước) mới ghi `AVAILABLE`, và chỉ khi lời khai hợp lệ; xác nhận gắn với dấu vân tay nội dung
+  giải được). Mọi gói cài vào project đều ghi `REVIEW`. Chỉ xác nhận rõ ràng của người dùng (`pack.py add <tên> --confirm`, hoặc `pack.py confirm <tên>` với gói đã cài; mỗi cách một bước, `--dry-run` chỉ xem) mới ghi `AVAILABLE`, và chỉ khi lời khai hợp lệ; xác nhận gắn với dấu vân tay nội dung
   đang cài. Nội dung đổi (kể cả cùng số phiên bản, kể cả sửa tay bản đã cài), phiên bản mới, hay hồ sơ không còn ở
   mức đã nhận thì xác nhận hết hiệu lực. `REUSE_NO_IMPORT`/`REJECT_VERSION` thì không cài; nếu từ chối đúng bản
   đã cài thì bản đó không còn xuất được. `DISABLED` của người dùng luôn được giữ. Dấu vân tay chỉ nhận ra thay đổi,

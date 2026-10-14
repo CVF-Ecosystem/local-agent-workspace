@@ -314,11 +314,12 @@ def action(name, p):
     if name == 'pack_list':
         return run_tool('pack.py', ['list'])
     if name in ('pack_add', 'pack_remove'):
-        return run_tool('pack.py', [name.split('_')[1], need_name(p.get('pack'))])
+        # --confirm chỉ khi người dùng đã bấm xác nhận trên giao diện; không bao giờ mặc định / only after an explicit click, never a default
+        return run_tool('pack.py', [name.split('_')[1], need_name(p.get('pack'))] + (['--confirm'] if name == 'pack_add' and p.get('confirm') else []))
     if name == 'pack_update':
-        return run_tool('pack.py', ['update', need_name(p.get('pack'))] + (['--apply'] if apply else []))
+        return run_tool('pack.py', ['update', need_name(p.get('pack'))] + (['--apply'] if apply else []) + (['--confirm'] if apply and p.get('confirm') else []))
     if name == 'pack_confirm':
-        return run_tool('pack.py', ['confirm', need_name(p.get('pack'))] + (['--apply'] if apply else []))
+        return run_tool('pack.py', ['confirm', need_name(p.get('pack'))])
     if name == 'check_output':
         files = [f.strip().strip('"') for f in (p.get('files') or []) if f and f.strip()]
         if not files:

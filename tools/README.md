@@ -129,7 +129,7 @@ Module không có lệnh riêng. Ghi lịch sử thao tác của bảng điều 
 Quản lý gói lĩnh vực (`packs/`): `list`, `add <tên>`, `update <tên> [--apply]`, `remove <tên>` (chuyển vào `archive/`), `check [<tên>]`,
 `new <tên>` (tạo gói từ `packs/_template`). Gói cài vào `skills/local/packs/` và ghi trong `.agent/SKILL_INDEX.md` (Scope `PACK`). Xem `packs/README.md`.
 Khối `intake` trong `pack.json` chỉ là lời khai của gói. Cài, cập nhật hay `check` không bao giờ nhận gói: mọi gói cài vào project đều ghi
-`REVIEW`. `confirm <tên> [--apply]` là bước xác nhận của người dùng (mặc định chỉ xem trước): chỉ chạy khi lời khai hợp lệ (hồ sơ giải được
+`REVIEW`. `add <tên> --confirm` (cài và nhận một lệnh), `update <tên> --apply --confirm` (cập nhật và nhận lại nội dung mới) và `confirm <tên> [--dry-run]` (gói đã cài; chạy luôn, `--dry-run` chỉ xem) là hành động xác nhận của người dùng, không có mặc định âm thầm; chỉ chạy khi lời khai hợp lệ (hồ sơ giải được
 tới file local có thật, `UNKNOWN`/`REPLACEMENT` thiếu `comparison`/`DEFER`/bản không khớp đều bị chặn), ghi `AVAILABLE` và gắn xác nhận với
 dấu vân tay nội dung đã cài. Nội dung đổi (kể cả cùng số phiên bản hay sửa tay bản đã cài), phiên bản mới hay hồ sơ không còn ở mức đã nhận
 thì xác nhận hết hiệu lực. `REUSE_NO_IMPORT`/`REJECT_VERSION` thì không cài, không cập nhật; từ chối đúng bản đã cài thì `check` báo và

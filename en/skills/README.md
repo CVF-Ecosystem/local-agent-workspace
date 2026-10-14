@@ -146,7 +146,7 @@ needs to see the benefit, what will change, and the permission or risk to decide
   version, `UNKNOWN`, or `REPLACEMENT` without `comparison`, stays a candidate, and the record (and `comparison`
   if given) must be a relative local path that stays inside the folder and points to a real file (`x`, a URL, an
   absolute path or `..` do not resolve). Every pack installed into a project is recorded `REVIEW`. Only
-  `pack.py confirm <name> --apply` (the user's confirmation; a preview by default) records `AVAILABLE`, and only
+  the user's explicit confirmation (`pack.py add <name> --confirm`, or `pack.py confirm <name>` for an installed pack; one step each, `--dry-run` only shows) records `AVAILABLE`, and only
   for a valid claim; the confirmation is bound to a fingerprint of the installed content. Changed content (even
   under the same version number, even a hand edit of the installed copy), a new version, or a record that no longer
   claims acceptance voids it. `REUSE_NO_IMPORT`/`REJECT_VERSION` are not installed; if the installed version itself

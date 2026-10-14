@@ -41,13 +41,18 @@ packs/<ten-goi>/
 ## Tiếp nhận gói / Pack intake
 
 Khối `intake` trong `pack.json` là **lời khai của gói** (người viết gói nói gì về hồ sơ của nó), không phải quyết định của người dùng.
-Mọi gói cài bằng `pack.py add` đều ghi Status `REVIEW` (dùng thử); `tools/install_skills.py` không chép skill của nó sang ứng dụng.
-Muốn nhận gói cho project này, người dùng xem hồ sơ rồi chạy `python tools/pack.py confirm <tên> --apply` (không có `--apply` thì chỉ
-xem trước). Lệnh chỉ chạy khi lời khai hợp lệ; nó ghi `AVAILABLE` và gắn xác nhận với dấu vân tay nội dung đang cài.
+`pack.py add` mặc định ghi Status `REVIEW` (dùng thử); `tools/install_skills.py` không chép skill của nó sang ứng dụng.
+Muốn nhận gói cho project này, người dùng xem hồ sơ rồi chỉ cần **một lệnh**: `python tools/pack.py add <tên> --confirm` (cài và nhận), hoặc
+`python tools/pack.py confirm <tên>` với gói đã cài (`--dry-run` chỉ xem). Chỉ chạy khi lời khai hợp lệ (nếu không thì dừng trước khi ghi gì);
+nó ghi `AVAILABLE` và gắn xác nhận với dấu vân tay nội dung đang cài. Gói đổi nội dung: `pack.py update <tên> --apply --confirm` xét xong là
+nhận lại luôn. Trong bảng điều khiển là nút "Cài và nhận gói" với một hộp thoại.
 The `intake` block in `pack.json` is **the pack's own claim** (what the pack author says about its record), not the user's decision.
-Every pack installed with `pack.py add` is recorded `REVIEW` (trial); `tools/install_skills.py` does not copy its skills into apps. To
-accept a pack for this project, the user reads the record and runs `python tools/pack.py confirm <name> --apply` (without `--apply` it
-only previews). It runs only for a valid claim; it records `AVAILABLE` and binds the confirmation to a fingerprint of the installed content.
+`pack.py add` records `REVIEW` by default (trial); `tools/install_skills.py` does not copy its skills into apps. To accept a pack for this
+project, the user reads the record and needs just **one command**: `python tools/pack.py add <name> --confirm` (install and accept), or
+`python tools/pack.py confirm <name>` for an installed pack (`--dry-run` only shows). It runs only for a valid claim (otherwise it stops
+before writing anything); it records `AVAILABLE` and binds the confirmation to a fingerprint of the installed content. A pack whose content
+changed: `pack.py update <name> --apply --confirm` accepts it again right after you reviewed. In the control panel it is the "Install and
+accept" button with one dialog.
 
 ```json
 "intake": {
@@ -78,7 +83,7 @@ Xác nhận hết hiệu lực khi: nội dung gói đã cài đổi (kể cả 
 mới, hoặc hồ sơ không còn ở mức đã nhận. Khi đó skill về `REVIEW` (cập nhật) hoặc bị chặn xuất (sửa tay) cho tới khi người dùng xét phần đổi
 rồi xác nhận lại. Hồ sơ từ chối đúng bản đã cài thì bản đó không còn xuất được và `pack.py check` báo; từ chối một bản khác chưa cài không
 ảnh hưởng bản đã xác nhận. Gõ tay `AVAILABLE` vào `.agent/SKILL_INDEX.md` không thay cho xác nhận: skill của gói vẫn không xuất được. Gói cài
-bằng bản cũ của công cụ (đã ghi `AVAILABLE`, chưa có xác nhận) cũng vậy: chạy `pack.py confirm` hoặc để nguyên là bản thử.
+bằng bản cũ của công cụ (đã ghi `AVAILABLE`, chưa có xác nhận) cũng vậy: chạy `pack.py confirm <tên>` hoặc để nguyên là bản thử.
 The tool checks only these points and binds the confirmation to content; it does not judge the quality of the evidence (the fingerprint only
 detects change). The confirmation lapses when: the installed pack content changes (even under the same version number, even a hand edit of the
 installed copy or an added script), the pack moves to a new version, or the record no longer claims acceptance. The skills then return to

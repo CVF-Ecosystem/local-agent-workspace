@@ -27,14 +27,14 @@
   hơn bản không có skill (HR: 13 ngày đúng so với 12 sai); pháp lý không thấy cải thiện; bản có skill vẫn có đoạn "nguyên văn" không có
   trong gói (4/10 câu so với 6/10) và một chi tiết bịa ở HR.
 - Sửa theo review độc lập của agent khác (SI-01/02/03, đã tái hiện trên source trước khi sửa): (1) khối `intake` do gói tự đính kèm không còn
-  tự thành `AVAILABLE`: cài luôn là `REVIEW`, xác nhận là hành động riêng của người dùng (`pack.py confirm`, xem trước rồi `--apply`);
+  tự thành `AVAILABLE`: cài luôn là `REVIEW`, xác nhận là hành động rõ ràng của người dùng nhưng chỉ một bước: `pack.py add <tên> --confirm` (cài và nhận), `pack.py confirm <tên>` (gói đã cài, `--dry-run` chỉ xem) hoặc `pack.py update <tên> --apply --confirm`;
   hồ sơ phải giải được tới file local có thật (`x`, URL, đường dẫn tuyệt đối, `..` bị loại). (2) Xác nhận gắn với dấu vân tay nội dung đã cài:
   đổi nội dung cùng số phiên bản, thêm script hay sửa tay bản đã cài thì hết hiệu lực (trước đây giữ `AVAILABLE`; test cũ còn khẳng định
   điều đó, đã bỏ). (3) `install_skills.py` và bảng điều khiển dùng chung một hàm điều kiện xuất: hồ sơ từ chối đúng bản đã cài, chưa xác nhận
-  hay nội dung đã đổi thì không xuất; từ chối một bản khác chưa cài không ảnh hưởng. Bảng điều khiển có nút "Xác nhận tiếp nhận".
+  hay nội dung đã đổi thì không xuất; từ chối một bản khác chưa cài không ảnh hưởng. Cờ `--confirm` bị chặn trước khi ghi gì nếu hồ sơ không hợp lệ (không âm thầm hạ xuống bản thử). Bảng điều khiển có nút "Cài và nhận gói" / "Xác nhận tiếp nhận" với một hộp thoại.
   Gói cài bằng bản 1.7 hay trước khi có xác nhận (đã ghi `AVAILABLE`) không còn xuất được cho tới khi chạy `pack.py confirm`.
 - `AGENTS.md`: agent không tự đổi `REVIEW` thành `AVAILABLE`/`ACTIVE`.
-- Kiểm thử logic mới `tests/test_skill_intake.py` (18 ca, gồm ba phản ví dụ SI-01/02/03 và các ca giữ nguyên trạng/`DISABLED`/từ chối bản khác) và một ca trình duyệt cho trang chép skill.
+- Kiểm thử logic mới `tests/test_skill_intake.py` (20 ca, gồm ba phản ví dụ SI-01/02/03 và các ca giữ nguyên trạng/`DISABLED`/từ chối bản khác) và một ca trình duyệt cho trang chép skill.
 - Thử hành vi một lần (14/10/2026) với `qwen-plus` và `qwen-max` (Alibaba Model Studio), bốn tình huống bằng dữ liệu giả, không có
   công cụ; 2 lần mỗi ca, riêng hai ca sau khi sửa AGENTS.md 3 lần. Đây là kiểm tra thăm dò trên hai model, không phải đánh giá của
   người dùng và không chứng minh skill nào hơn native. Kết quả: cả hai không gọi skill cho việc sửa một câu; cả hai từ chối làm theo lệnh

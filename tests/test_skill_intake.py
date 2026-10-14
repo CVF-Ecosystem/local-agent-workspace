@@ -64,7 +64,7 @@ class IntakeBase(StructuredBase):
         write(f, '\n'.join(lines))
 
     def confirm(self, name, apply=True):
-        return self.structured('pack.py', 'confirm', name, *(['--apply'] if apply else []))
+        return self.structured('pack.py', 'confirm', name, *([] if apply else ['--dry-run']))
 
     def export(self, skill, dest=None):
         dest = dest or Path(self.tmp.name) / 'export'
@@ -131,6 +131,43 @@ class PackIntake(IntakeBase):
         # ROOT_ELIGIBLE không kèm quyền ghi gốc thì chưa được cập nhật gốc / no root grant: no root update
         _, _, data = self.structured('pack.py', 'list')
         self.assertFalse({p['name']: p for p in data['packs']}['van-thu-luu-tru']['intake']['root_update'])
+
+    def test_one_explicit_step_installs_and_accepts(self):
+        """Người dùng không phải làm nhiều bước: add --confirm, confirm và update --apply --confirm đều là một lệnh."""
+        self.init_project()
+        self.claim(CANG)
+        result, human, data = self.structured('pack.py', 'add', CANG, '--confirm')
+        self.assertEqual((result.returncode, data['status']), (0, 'success'))
+        self.assertEqual(self.statuses()[SKILL], 'AVAILABLE')
+        self.assertIn('bạn đã xác nhận', human)
+        self.assertTrue(self.export(SKILL)[2], 'one command is enough to export')
+        # cập nhật kèm xác nhận lại: một lệnh / update with re-confirmation: one command
+        src = self.base / 'packs' / CANG / 'skills' / SKILL / 'SKILL.md'
+        write(src, read(src) + '\nĐổi sau khi xét.\n')
+        self.structured('pack.py', 'update', CANG, '--apply')
+        self.assertEqual(self.statuses()[SKILL], 'REVIEW', 'without --confirm the change is not silently accepted')
+        write(src, read(src) + '\nĐổi thêm.\n')
+        result, _, data = self.structured('pack.py', 'update', CANG, '--apply', '--confirm')
+        self.assertEqual((result.returncode, data['status']), (0, 'success'))
+        self.assertEqual(self.statuses()[SKILL], 'AVAILABLE')
+
+    def test_confirm_flag_never_installs_or_accepts_an_invalid_claim(self):
+        self.init_project()
+        for intake in (None, {'decision': 'DEFER', 'relation': 'SUPPLEMENT', 'record': 'references/intake-record.md'},
+                       dict(ACCEPT, record='x'), {'decision': 'REUSE_NO_IMPORT', 'relation': 'SUPPLEMENT', 'record': 'references/intake-record.md'}):
+            with self.subTest(intake=intake):
+                self.set_intake(CANG, intake)
+                before = read(self.base / '.agent' / 'SKILL_INDEX.md')
+                result, _, data = self.structured('pack.py', 'add', CANG, '--confirm')
+                self.assertEqual((result.returncode, data['status'], data['changes']), (1, 'blocked', False))
+                self.assertFalse((self.base / 'skills' / 'local' / 'packs' / CANG).exists(), 'nothing is installed')
+                self.assertEqual(read(self.base / '.agent' / 'SKILL_INDEX.md'), before)
+        self.claim(CANG)  # không có --confirm thì vẫn cài thử được / without --confirm the trial install still works
+        self.structured('pack.py', 'add', CANG)
+        self.assertEqual(self.statuses()[SKILL], 'REVIEW')
+        self.set_intake(CANG, {'decision': 'DEFER', 'relation': 'SUPPLEMENT', 'record': 'references/intake-record.md'})
+        result, _, data = self.structured('pack.py', 'update', CANG, '--apply', '--confirm')
+        self.assertEqual((result.returncode, data['status']), (1, 'blocked'))
 
     def test_unresolvable_locators_are_not_accepted(self):
         """SI-01: 'x', URL, đường dẫn tuyệt đối, '..' hay thư mục không phải hồ sơ giải được / unresolved locators never pass."""

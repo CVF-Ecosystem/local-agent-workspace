@@ -8,10 +8,10 @@ PR #2 (v1.8.0) đã merge vào main (35994e6); chưa tag, chưa release. Nhánh 
 
 ## Completed
 - Chuẩn tiếp nhận chung tại `skills/README.md` (VI/EN); AGENTS, SKILL_INDEX, README vùng skill, packs/README, hướng dẫn skill/tạo/chuyển đổi project dẫn chiếu về đó.
-- `pack.py`: khối `intake` trong pack.json là lời khai của gói; mọi gói cài là REVIEW; chỉ `pack.py confirm` của người dùng (gắn dấu vân tay nội dung) ghi AVAILABLE; hồ sơ phải giải được tới file local có thật; REUSE_NO_IMPORT/REJECT_VERSION không cài; DISABLED luôn giữ.
+- `pack.py`: khối `intake` trong pack.json là lời khai của gói; mọi gói cài là REVIEW; chỉ xác nhận rõ ràng của người dùng, một bước (`add --confirm`, `confirm`, `update --apply --confirm`; gắn dấu vân tay nội dung) ghi AVAILABLE; hồ sơ phải giải được tới file local có thật; REUSE_NO_IMPORT/REJECT_VERSION không cài; DISABLED luôn giữ.
 - `install_skills.py`: chỉ chép AVAILABLE/ACTIVE (skill của gói còn cần xác nhận còn hiệu lực), phải chọn rõ, không đè thư mục cùng tên không có dấu `.workspace-skill.json`, sao lưu vào archive/; bảng điều khiển dùng chung hàm điều kiện.
 - `adopt_project.py`: skill có sẵn ghi REVIEW. Bảng điều khiển: ô chọn skill, nhãn "Thử nghiệm"/"Đã tiếp nhận".
-- `tests/test_skill_intake.py` (18 test logic, gồm 3 phản ví dụ SI-01/02/03) + 1 test trình duyệt; 106 test đạt trên máy này; check_package (thường và --release) 0 lỗi.
+- `tests/test_skill_intake.py` (20 test logic, gồm 3 phản ví dụ SI-01/02/03) + 1 test trình duyệt; 109 test đạt trên máy này; check_package (thường và --release) 0 lỗi.
 
 ## Current artifact
 - Commit 4ce5c6d trên nhánh skill-intake-claim-vs-approval (từ main 35994e6); chưa push. CHANGELOG mục v1.8.0.

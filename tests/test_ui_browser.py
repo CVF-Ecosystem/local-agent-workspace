@@ -241,6 +241,30 @@ class MainFlows(BrowserCase):
         self.assertEqual(sorted(x.name for x in dest.iterdir()), ['meeting-minutes'])
         self.close_sheet()
 
+    def test_install_and_accept_a_pack_takes_one_click_and_one_dialog(self):
+        import json
+        init_project(self.pkg)
+        pj = self.pkg / 'packs' / 'cang-logistics' / 'pack.json'
+        meta = json.loads(pj.read_text(encoding='utf-8'))
+        meta['intake'] = {'decision': 'ADD_MISSING_PART', 'version': meta['version'], 'relation': 'SUPPLEMENT',
+                          'record': 'references/intake-record.md'}
+        pj.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding='utf-8')
+        p = self.open_panel()
+        dialogs = []
+        p.on('dialog', lambda d: (dialogs.append(d.message), d.accept()))
+        self.go('packs')
+        card = p.locator('.pack', has_text='port-operations-reports')
+        expect(card.locator('[data-pk="addconfirm"]')).to_be_visible()
+        expect(card.locator('[data-pk="add"]')).to_be_visible()  # cài để thử vẫn còn / trial install stays
+        card.locator('[data-pk="addconfirm"]').click()
+        expect(p.locator('#sh-tag')).to_contain_text('Thành công')
+        self.assertEqual(len(dialogs), 1, 'exactly one dialog')
+        index = (self.pkg / '.agent' / 'SKILL_INDEX.md').read_text(encoding='utf-8')
+        self.assertIn('| port-operations-reports | LOCAL | PACK |', index)
+        row = [l for l in index.splitlines() if l.startswith('| port-operations-reports |')][0]
+        self.assertEqual(row.split('|')[6].strip(), 'AVAILABLE')
+        self.close_sheet()
+
     def test_check_flags_placeholder_and_reports_unsupported_as_not_checked(self):
         init_project(self.pkg)
         txt = self.pkg / 'output' / 'thu-dung-thu.txt'

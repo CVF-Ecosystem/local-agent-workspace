@@ -105,7 +105,7 @@ def reason_text(r):
     if r == 'status_disabled':
         return L('người dùng đã tắt (DISABLED)', 'disabled by the user (DISABLED)')
     if r == 'pack_not_confirmed':
-        return L('gói chưa được xác nhận tiếp nhận ở project này (python tools/pack.py confirm <tên> --apply)', 'the pack is not confirmed in this project (python tools/pack.py confirm <name> --apply)')
+        return L('gói chưa được xác nhận tiếp nhận ở project này (python tools/pack.py confirm <tên>)', 'the pack is not confirmed in this project (python tools/pack.py confirm <name>)')
     if r == 'pack_content_changed':
         return L('nội dung gói đã cài khác bản đã xác nhận: xét lại rồi xác nhận lại', 'the installed pack content differs from what was confirmed: review, then confirm again')
     if r == 'pack_refused':
