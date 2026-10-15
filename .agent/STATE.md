@@ -15,7 +15,7 @@ PR #2 (v1.8.0) và PR #3 (SI-01/02/03) đã merge vào main (75b4863); chưa tag
 - `tests/test_skill_intake.py` (20 test logic, gồm 3 phản ví dụ SI-01/02/03) + 1 test trình duyệt; 109 test đạt trên máy này; check_package (thường và --release) 0 lỗi.
 
 ## Current artifact
-- Nhánh fix-law01-checker-ui-crlf; CHANGELOG mục v1.8.0 (mục "Sửa theo review ngày 15/10/2026"). Test mới: 4 ca LAW-01 (tests/test_transactions.py), ca `.new` của pack update, lớp ProjectJourney (E1/E2/B3) trong tests/test_structured_tools.py, kiểm thông báo D1 trong tests/test_ui_browser.py; mỗi ca hỏng ở 75b4863 và đạt sau khi sửa.
+- Nhánh fix-law01-checker-ui-crlf; CHANGELOG mục v1.8.0 (mục "Sửa theo review ngày 15/10/2026"). Test mới: 4 ca LAW-01 (tests/test_transactions.py), ca `.new` của pack update, lớp ProjectJourney (E1/E2/B3) trong tests/test_structured_tools.py, kiểm thông báo D1 trong tests/test_ui_browser.py; mỗi ca hỏng ở 75b4863 và đạt sau khi sửa. Review 3efecab (15/10): đóng LAW-01/02, E2, B3; D1 đúng ở logic, chưa nghiệm thu browser; E1 còn README người dùng tạo trong thư mục riêng → đã sửa ở commit tiếp theo (README chỉ là của package khi có trong MANIFEST), có ca đối chứng README khung.
 
 ## Open items
 - Review 15/10/2026 (reviewer ngoài + gói Fable 75b4863): đợt này chỉ sửa LAW-01, `.new` của pack update, E1, D1, E2, B3. Chưa làm: các mục LAW còn mở khác (ngoài LAW-01 và phần `.new` của pack update) và các mục Fable khác; không nhận nguyên roadmap Fable (không bỏ dashboard, không đổi DEFER để có nút bấm, không thêm cổng người thật). CI: job macos-13/Python 3.8 cần đổi image (GitHub đã ngừng macos-13); chưa đổi vì chưa kiểm được image thay thế.

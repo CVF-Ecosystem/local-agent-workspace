@@ -53,20 +53,39 @@ def all_files():
             out.append(rel)
     return out
 
+_SCAFFOLD = {}
+
+def package_readme(rel):
+    """README.md trong thư mục người dùng có phải của package không: dựa vào đường dẫn thực, không chỉ tên file.
+    - Kho nguồn/gói chưa khởi tạo (chưa có .agent/PACKAGE_INFO.json): mọi README ở đó là khung của package.
+    - Project: chỉ README có trong MANIFEST.sha256 của package; không có MANIFEST thì README có bản en/ tương ứng.
+    README do người dùng tự tạo trong thư mục riêng (vd. references/khach-hang-a/README.md) thuộc project.
+    Whether a README.md in a user folder belongs to the package, by its real path, not just its name: in the source or an
+    uninitialised package every such README is scaffold; in a project only those listed in the package MANIFEST (or, with
+    no MANIFEST, those with an en/ mirror). A README the user creates in their own folder belongs to the project."""
+    if os.path.basename(rel) != 'README.md':
+        return False
+    if not os.path.exists(P('.agent/PACKAGE_INFO.json')):
+        return True
+    if 'm' not in _SCAFFOLD:
+        _SCAFFOLD['m'] = read_manifest()
+    m = _SCAFFOLD['m']
+    return (rel in m) if m is not None else os.path.isfile(P('en/' + rel))
+
 def user_owned(rel):
     """File do người dùng/project sở hữu (không phải của package): không áp quy tắc phát hành như số phiên bản,
-    bản tiếng Anh hay đường dẫn trong tài liệu. README.md trong các thư mục người dùng vẫn là của package.
+    bản tiếng Anh hay đường dẫn trong tài liệu. Cùng một quy tắc với in_manifest.
     User/project-owned file (not the package's): release rules such as version strings, the English mirror and doc paths
-    do not apply. A README.md in the user folders still belongs to the package."""
+    do not apply. Same ownership rule as in_manifest."""
     if rel in USER_FILES:
         return True
-    return rel.startswith(USER_DIRS) and os.path.basename(rel) != 'README.md'
+    return rel.startswith(USER_DIRS) and not package_readme(rel)
 
 def in_manifest(rel):
     if rel in GENERATED:
         return False
     if rel.startswith(USER_DIRS):
-        return os.path.basename(rel) == 'README.md'
+        return package_readme(rel)
     return True
 
 def sha(rel):
@@ -363,7 +382,7 @@ def check_all(release=False):
         if any(not os.path.isfile(P(f)) or not rd(f).lstrip().startswith('# HANDOFF\n\nNone') for f in handoffs):
             errs.append('Mẫu HANDOFF phát hành thiếu hoặc không ở dạng "None".')
         for f in files:
-            if f.startswith(USER_DIRS) and os.path.basename(f) != 'README.md':
+            if f.startswith(USER_DIRS) and not package_readme(f):
                 errs.append('Có file người dùng trong bản phát hành: %s.' % f)
     return errs, warns
 

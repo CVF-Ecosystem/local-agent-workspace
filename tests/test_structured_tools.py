@@ -229,6 +229,24 @@ class ProjectJourney(StructuredBase):
         self.assertEqual((code, status), (1, 'issues'))
         self.assertIn('docs/README.md', human)
 
+    def test_a_readme_the_user_creates_in_a_new_folder_belongs_to_the_project(self):
+        """README do người dùng tạo trong thư mục riêng là của project; README khung của package vẫn bị kiểm.
+        A README the user makes in their own folder belongs to the project; the package's scaffold README is still checked."""
+        self.init_project()
+        self.assertFalse((self.base / 'references' / 'customer-a').exists())
+        for rel in (('references', 'customer-a', 'README.md'), ('working', 'khach-a', 'README.md'), ('output', 'README-khac', 'README.md')):
+            write(self.base.joinpath(*rel), '# Project notes v2.1\n\nXem `output/future-report.md`.\n')
+        code, status, human = self.check()
+        self.assertEqual((code, status), (0, 'success'), human)
+        # đối chứng: README khung có trong package vẫn bị kiểm / control: the package's scaffold README is still checked
+        scaffold = self.base / 'references' / 'policies' / 'README.md'
+        self.assertTrue(scaffold.is_file())
+        write(scaffold, read(scaffold) + '\nGhi chú v9.9 kiểm thử\n')
+        code, status, human = self.check()
+        self.assertEqual((code, status), (1, 'issues'))
+        self.assertIn('references/policies/README.md', human)
+        self.assertNotIn('customer-a', human)
+
     def test_crlf_project_template_still_takes_the_answers(self):
         f = self.base / 'PROJECT.md'
         f.write_bytes(f.read_bytes().replace(b'\r\n', b'\n').replace(b'\n', b'\r\n'))

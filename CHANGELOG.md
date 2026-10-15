@@ -48,7 +48,7 @@
   giao dịch tạo), còn nếu file đã bị sửa tiếp thì báo `partial` và giữ bản sao lưu. (2) `pack.py update` không ghi đè `<tên>.new` đang chờ
   hợp nhất: khác nội dung thì dừng trước mọi lần ghi (cả xem trước), giống `upgrade_package.py`. (3) `check_package.py` không áp quy tắc phát
   hành (số phiên bản, bản tiếng Anh, đường dẫn trong tài liệu) vào file của project: dòng gói trong `.agent/SKILL_INDEX.md`, tài liệu trong
-  `references/`, `working/`, `output/`...; file của package vẫn kiểm như cũ. (4) Bảng điều khiển: kết quả "Cần xem xét" (công cụ chạy xong, có
+  `references/`, `working/`, `output/`..., kể cả `README.md` người dùng tự tạo trong thư mục riêng (README chỉ là của package khi có trong MANIFEST của package; `in_manifest` dùng cùng quy tắc); file của package, kể cả README khung như `references/policies/README.md`, vẫn kiểm như cũ. (4) Bảng điều khiển: kết quả "Cần xem xét" (công cụ chạy xong, có
   phát hiện) không còn kèm thông báo "Công cụ không hoàn tất"; chỉ đọc thì ghi rõ không file nào bị sửa. Mã thoát 1 của công cụ kiểm giữ nguyên.
   (5) `init_project.py`: `PROJECT.md` dùng CRLF vẫn nhận câu trả lời (`--purpose`...) và giữ CRLF. (6) `.agent/STATE.md` của kho nguồn mang dấu
   `<!-- local-agent-workspace: maintainer-state -->`; khởi tạo project từ bản chép kho nguồn (vd. Code → Download ZIP) thay STATE đó bằng mẫu
