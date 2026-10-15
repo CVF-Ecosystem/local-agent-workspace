@@ -16,6 +16,7 @@ Shuts down about 3 minutes after the page is closed, or with "Quit". Python 3.8+
 import datetime, getpass, http.server, importlib.util, io, json, os, platform, re, secrets, socketserver, subprocess, sys, threading, time, webbrowser, zipfile
 import urllib.parse
 import hashlib
+sys.dont_write_bytecode = True  # không để lại __pycache__ trong bộ mẫu / leave no __pycache__ in the template
 import merge_center, ops_log, transaction
 from result_schema import make, split_output
 
@@ -32,10 +33,10 @@ DIAG_REL = '.agent/runtime/diagnostics'
 HISTORY_REL = '.agent/runtime/operations.jsonl'
 STATE = {'last_ping': None, 'started': time.time(), 'server': None, 'port': 0}
 # mọi công cụ có envelope có cấu trúc / every tool that returns a native result envelope
-STRUCTURED_TOOLS = {'init_project.py', 'adopt_project.py', 'upgrade_package.py', 'check_output.py', 'build_release.py',
+STRUCTURED_TOOLS = {'init_project.py', 'new_project.py', 'adopt_project.py', 'upgrade_package.py', 'check_output.py', 'build_release.py',
                     'check_package.py', 'pack.py', 'install_skills.py', 'library.py', 'build_guides_html.py', 'transaction.py'}
 # tên thao tác được phép ghi vào lịch sử; còn lại ghi là 'unknown' / action names allowed in the history
-ACTION_NAMES = {'init', 'upgrade', 'upgrade_other', 'adopt', 'pack_list', 'pack_add', 'pack_remove', 'pack_update', 'pack_confirm',
+ACTION_NAMES = {'init', 'new_project', 'project_open', 'upgrade', 'upgrade_other', 'adopt', 'pack_list', 'pack_add', 'pack_remove', 'pack_update', 'pack_confirm',
                 'check_output', 'install_skills', 'library_init', 'library_check', 'library_stats', 'library_find',
                 'check_package', 'build_guides', 'build_release', 'merge_state', 'merge_diff', 'diagnostics',
                 'tx_resume', 'tx_rollback', 'history_clear'}
@@ -135,6 +136,34 @@ def pack_info(lang):
     return {'items': items}
 
 
+def recent_files(rel, limit=8):
+    """File người dùng trong một thư mục (mới nhất trước), bỏ README/file ẩn/chỉ mục. / User files, newest first."""
+    out, base = [], os.path.join(ROOT, rel)
+    for d, dirs, files in os.walk(base):
+        dirs[:] = [x for x in dirs if not x.startswith('.')]
+        for f in files:
+            if f == 'README.md' or f.startswith(('.', '~$')) or f == '_INDEX.xlsx':
+                continue
+            full = os.path.join(d, f)
+            try:
+                st = os.stat(full)
+            except OSError:
+                continue
+            out.append({'path': os.path.relpath(full, ROOT).replace(os.sep, '/'), 'name': f,
+                        'mtime': st.st_mtime if st.st_mtime > 946684800 else None, 'size': st.st_size})
+    out.sort(key=lambda x: x['mtime'] or 0, reverse=True)
+    return {'total': len(out), 'items': out[:limit]}
+
+
+def project_field(*labels):
+    """Một dòng đã điền trong PROJECT.md (None nếu còn [chỗ trống]). / A filled-in PROJECT.md line, or None."""
+    for label in labels:
+        m = re.search(r'^- %s:\s*(.+?)\s*$' % re.escape(label), rd('PROJECT.md'), re.M)
+        if m and not m.group(1).startswith('['):
+            return m.group(1)
+    return None
+
+
 def count_files(rel):
     n = 0
     for d, dirs, files in os.walk(os.path.join(ROOT, rel)):
@@ -202,6 +231,12 @@ def status():
         'skills': skill_rows(),
         'packs': pack_info(lang),
         'counts': {k: count_files(k) for k in ('output', 'references', 'working', 'archive')},
+        'sources': recent_files('references'),
+        'outputs': recent_files('output'),
+        'drafts': recent_files('working', 4),
+        'purpose': project_field('Mục đích và người đọc', 'Purpose and audience'),
+        'expected': project_field('Đầu ra mong đợi', 'Expected outputs'),
+        'parent': os.path.dirname(ROOT),
         'is_source': kind == 'template',
         'release_source': os.path.isdir(os.path.join(ROOT, 'release_templates')),
         'template_folder': kind == 'template',
@@ -299,6 +334,14 @@ def action(name, p):
         if os.path.isfile(os.path.join(ROOT, '.agent', 'PACKAGE_INFO.json')):
             args.append('--force')  # chạy lại: chỉ cập nhật PROJECT.md / re-run: only updates PROJECT.md
         return run_tool('init_project.py', args + ([] if apply else ['--dry-run']))
+    if name == 'new_project':
+        args = ['--name', need_text(p, 'name', 'Cần nhập tên công việc / A task name is required.'),
+                '--lang', 'en' if p.get('lang') == 'en' else 'vi']
+        if (p.get('dest') or '').strip():
+            args += ['--dest', need_dir(p.get('dest'))]
+        return run_tool('new_project.py', args + (['--apply'] if apply else []))
+    if name == 'project_open':
+        return open_project(p.get('target'), p.get('what'))
     if name == 'upgrade':
         return run_tool('upgrade_package.py', ['--from', need_dir(p.get('source'))] + (['--apply'] if apply else []))
     if name == 'upgrade_other':
@@ -496,6 +539,34 @@ def pick(kind):
         return {'paths': [os.path.normpath(x) for x in paths]}
     except Exception as e:
         return {'paths': [], 'error': str(e)}
+
+
+def open_project(target, what):
+    """Mở thư mục hoặc bảng điều khiển của một project khác (vd. project vừa tạo). Chỉ nhận thư mục đã khởi tạo
+    thành project của package này. / Open another project's folder or panel; only an initialised project folder."""
+    t = os.path.abspath(os.path.expanduser((target or '').strip().strip('"')))
+    info = os.path.join(t, '.agent', 'PACKAGE_INFO.json')
+    try:
+        ok = json.load(io.open(info, encoding='utf-8')).get('package') == 'local-agent-workspace'
+    except (OSError, ValueError, AttributeError):
+        ok = False
+    if not ok or not os.path.isfile(os.path.join(t, 'tools', 'app.py')) or os.path.normcase(t) == os.path.normcase(ROOT):
+        raise BadInput('Không phải thư mục project / Not a project folder: %s' % (target or ''))
+    if what == 'panel':
+        kw = {'cwd': t, 'stdin': subprocess.DEVNULL, 'stdout': subprocess.DEVNULL, 'stderr': subprocess.DEVNULL}
+        if sys.platform.startswith('win'):
+            kw['creationflags'] = getattr(subprocess, 'CREATE_NEW_CONSOLE', 0)
+        subprocess.Popen([sys.executable, os.path.join(t, 'tools', 'app.py')], **kw)
+        msg = 'Đang mở bảng điều khiển của project trong tab mới. / Opening the project panel in a new tab.'
+    else:
+        if sys.platform.startswith('win'):
+            os.startfile(t)  # noqa
+        elif sys.platform == 'darwin':
+            subprocess.Popen(['open', t])
+        else:
+            subprocess.Popen(['xdg-open', t], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        msg = 'Đã mở thư mục project. / Opened the project folder.'
+    return {'code': 0, 'out': msg, 'cmd': '', 'result': make('success', code=0, message=msg, changes=False)}
 
 
 def open_path(rel):

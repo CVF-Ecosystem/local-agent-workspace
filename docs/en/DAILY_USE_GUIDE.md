@@ -176,10 +176,14 @@ whether the HTML still matches.
 
 ## 12. The control panel (APP.bat)
 
-Double-click `APP.bat` (Windows) or `APP.command` (macOS) to open the control panel in the browser. The Overview page shows
-the work status (read from `.agent/STATE.md`), the skills in the index and the number of files in `output/` and
-`references/`. The other pages call the tools in `tools/`: set up or bring into an existing project, upgrade, domain packs,
-check before delivery (`check_output.py`), copy skills into apps (`install_skills.py`), the source library, pending merges and package maintenance. The **App status** page shows the version, Python, optional features still missing (with how to fix each), unfinished transactions and recent operations.
+Double-click `APP.bat` (Windows) or `APP.command` (macOS) to open the control panel in the browser. Opened in the template,
+its main page is "New project": type a task name and a copy is created next to the template (`tools/new_project.py`); the
+template does not change. Opened in a project, **The work** page holds: "Continue the work" (read from `.agent/STATE.md`:
+where things stand, what waits for you, the next step), "Give the agent a task" (steps and an opening message to copy, with how
+to check the agent reads the right project), "Source documents" (files in `references/`) and "Results" (files in `output/`).
+Check before delivery (`check_output.py`) and the source library come right below. The collapsed "Manage and maintain" group
+holds the rest: managing skills and domain packs, copying skills into apps (`install_skills.py`), pending merges, updating the
+package, setting up or bringing into an existing project, package maintenance. The **App status** page shows the version, Python, optional features still missing (with how to fix each), unfinished transactions and recent operations.
 
 Actions that write files always run a preview first; read the result, then press "Apply". The panel runs on this computer
 (address 127.0.0.1, with a new access code each time), uses no network, and stops about 3 minutes after the

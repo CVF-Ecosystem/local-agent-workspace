@@ -55,6 +55,21 @@
   sạch trong `release_templates/` (bản cũ lưu `.bak-<ngày>`); STATE của project có công việc thật không có dấu nên giữ nguyên.
   `check_package.py` báo lỗi nếu STATE kho nguồn mất dấu này. Chưa làm trong lượt này: các mục LAW khác, chạy browser trên Windows/macOS thật,
   thay image `macos-13` trong CI.
+- Hành trình người mới (16/10/2026, theo brief redesign UX): **giữ một bộ mẫu, mỗi công việc một bản sao**. Công cụ mới
+  `tools/new_project.py` tạo project là bản sao của bộ mẫu (xem trước rồi `--apply`; đặt cạnh bộ mẫu hoặc `--dest`; không ghi
+  đè thư mục đã có; chép vào thư mục tạm rồi đổi tên một lần; chỉ chép file của package; ở kho nguồn dùng mẫu sạch; khởi tạo trong
+  bản sao; từ chối khi chạy trong project hay thư mục không còn là bộ mẫu nguyên vẹn). Bảng điều khiển: ở bộ mẫu, trang chính là
+  "Tạo project mới" (tên công việc, ngôn ngữ, nơi tạo, kết quả có nút mở thư mục/bảng điều khiển của project mới); khởi tạo tại chỗ
+  chuyển xuống nhóm quản lý kèm cảnh báo. Ở project, trang "Công việc" gồm Tiếp tục công việc (từ STATE; mới khởi tạo thì nói rõ
+  chưa có công việc), Giao việc cho agent (ba bước, câu mở đầu "Việc mới"/"Tiếp tục phiên trước" để chép, cách kiểm agent đọc
+  đúng project), Tài liệu nguồn và Kết quả (file mới nhất, mở được). Thanh bên: việc hằng ngày ở trên, "Quản lý và bảo trì" thu gọn
+  (quản lý kỹ năng gồm bảng skill và gói lĩnh vực, cài skill vào ứng dụng, chờ hợp nhất, cập nhật package, khởi tạo, bảo trì, tình
+  trạng); thư mục chưa rõ vai trò thì hỏi trước. `SETUP` ở bộ mẫu hỏi tạo bản sao (mặc định) hay khởi tạo tại chỗ. README, hướng
+  dẫn tạo project, hướng dẫn dùng hằng ngày, `examples/demo-project`, START_HERE (VI/EN) thống nhất một đường chính; demo giao việc
+  theo nguồn và kết quả, không theo tên skill. Bỏ tên một project thật khỏi chuỗi giao diện. Bảng điều khiển và trình hướng dẫn
+  không để lại `__pycache__` trong bộ mẫu; `check_package.py` bỏ qua file `.git` của git worktree. Đã chạy trọn hành trình bằng
+  giao diện thật và ba phiên agent mới (Claude trong Cowork) trên bản sao, dữ liệu giả; chưa kiểm Codex, Gemini, Claude Desktop trên
+  máy người dùng và chưa có lượt người mới độc lập.
 
 ## v1.7.0 — 2026-10-13
 

@@ -294,6 +294,38 @@ textarea{min-height:68px;resize:vertical}
 .dfx .dr.hunk{grid-template-columns:minmax(0,1fr);background:var(--info-soft);color:var(--info);font-weight:600}
 .dfx .dr.hunk>span{padding:2px 8px}
 
+/* journey: steps, prompt, file lists, collapsible management group */
+.navmore{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:8px;width:100%;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:14px 10px 6px;border-radius:var(--r-sm)}
+.navmore:hover{color:var(--ink)}
+.navmore:focus-visible{outline:2px solid var(--accent)}
+.navmore .chev{margin-left:auto;transition:transform .15s}
+.navmore[aria-expanded="true"] .chev{transform:rotate(90deg)}
+.navmore .badge{font-size:11px;font-weight:600;background:var(--warn-soft);color:var(--warn);border-radius:999px;padding:1px 7px;letter-spacing:0;text-transform:none}
+.purpose{margin:4px 0 0;color:var(--ink-2);font-size:13.5px;max-width:80ch}
+.purpose.muted{color:var(--muted)}
+.flow{list-style:none;margin:0 0 14px;padding:0;display:grid;gap:12px;counter-reset:f}
+.flow li{counter-increment:f;display:grid;grid-template-columns:26px minmax(0,1fr);gap:10px;font-size:13.5px;color:var(--ink-2)}
+.flow li::before{content:counter(f);width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);font-weight:700;font-size:12px}
+.flow li b{color:var(--ink);font-weight:600}
+.flow li .sub{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
+.flow li .hact{margin-top:6px}
+.prompt{margin:10px 0;background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;font-size:13px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--ink)}
+.hint{font-size:12.5px;color:var(--muted);margin:8px 0 0}
+.flist{display:grid}
+.flist .fr{display:flex;gap:10px;align-items:center;padding:10px 18px;border-top:1px solid var(--line-2);min-width:0}
+.flist .fr:first-child{border-top:0}
+.flist .fr .ic{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:var(--sunken);color:var(--ink-2);flex:none}
+.flist .fr .nm{flex:1;min-width:0}
+.flist .fr .nm b{display:block;font-size:13.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.flist .fr .nm span{display:block;font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.flist .more{padding:10px 18px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line-2)}
+.where{border:1px dashed var(--accent-line);background:var(--accent-soft);border-radius:var(--r);padding:10px 12px;font-size:13px;color:var(--ink-2);overflow-wrap:anywhere}
+.where .mono{color:var(--ink)}
+.done-h{display:flex;gap:12px;align-items:flex-start}
+.done-h .ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--ok-soft);color:var(--ok);flex:none}
+.choice{display:grid;gap:12px}
+.sticky{position:sticky;top:78px}
+@media (max-width:1100px){.sticky{position:static}}
 @media (max-width:1100px){.c4{grid-template-columns:repeat(2,minmax(0,1fr))}.c-main{grid-template-columns:1fr}}
 @media (max-width:860px){
   .app{grid-template-columns:1fr}
@@ -311,7 +343,7 @@ textarea{min-height:68px;resize:vertical}
   .card-h{flex-wrap:wrap}
   .summary{flex-wrap:wrap}
 }
-@media (max-width:480px){.c4{grid-template-columns:1fr 1fr}.top .acts .btn span{display:none}
+@media (max-width:480px){.c4{grid-template-columns:1fr 1fr}.top .acts .btn>span:not([data-ico]){display:none}
   .dfx .dr{grid-template-columns:30px 30px 14px minmax(0,1fr)}.dfx .dr>span{padding:0 4px}.hrow{padding:12px 14px}}
 </style>
 </head>
@@ -323,8 +355,8 @@ textarea{min-height:68px;resize:vertical}
   <div class="projcard"><div class="avatar" id="sb-av">·</div><div style="min-width:0"><div class="nm" id="sb-name">…</div><div class="st"><span class="dot" id="sb-dot"></span><span id="sb-st"></span></div></div></div>
   <div class="navgroup" data-t="g_work"></div>
   <div class="nav" id="nav1"></div>
-  <div class="navgroup" data-t="g_setup"></div>
-  <div class="nav" id="nav2"></div>
+  <button class="navmore" id="nav-more" aria-expanded="false" aria-controls="nav2"><span data-t="g_manage"></span><span class="badge" id="nav-more-b" hidden></span><span class="chev" data-ico="chev"></span></button>
+  <div class="nav" id="nav2" hidden></div>
   <div class="side-foot">
     <div class="lang" role="group" data-tt="lang_group"><button data-lang="vi" aria-pressed="true">VI</button><button data-lang="en" aria-pressed="false">EN</button></div>
     <button class="iconbtn" id="b-theme" data-tt="theme"></button>
@@ -343,25 +375,53 @@ textarea{min-height:68px;resize:vertical}
   </header>
   <div class="wrap" id="content" tabindex="-1">
 
-  <!-- OVERVIEW -->
+  <!-- HOME: template = create a project; project = the work; unknown = ask the role first -->
   <section class="page on" id="pg-home">
-    <div class="banner warn" id="bn-init" hidden><div class="ic" data-ico="alert"></div><div><b data-t="bn_init_t"></b><p data-t="bn_init_p"></p></div><div class="r"><button class="btn pri" data-goto="setup" data-t="bn_init_b"></button></div></div>
     <div class="banner warn" id="bn-tx" hidden><div class="ic" data-ico="alert"></div><div><b data-t="tx_banner_t"></b><p data-t="tx_banner_p"></p></div><div class="r"><button class="btn pri" data-goto="health" data-t="tx_banner_b"></button></div></div>
-    <div class="card mb"><div class="summary"><div class="avatar" id="ov-av">·</div><div style="min-width:0;flex:1"><h1 id="ov-name">…</h1><div class="meta"><button type="button" class="path" id="ov-path"></button></div><div class="meta" id="ov-tags"></div></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-open="output"><span data-ico="inbox"></span><span data-t="open_output"></span></button><button class="btn" data-open=".agent/STATE.md"><span data-ico="file"></span>STATE.md</button></div></div></div>
-    <div class="grid c4 mb">
-      <div class="card kpi"><div class="ic" data-ico="spark"></div><div><div class="v" id="k-skills">0</div><div class="k" data-t="k_skills"></div></div></div>
-      <div class="card kpi"><div class="ic b" data-ico="box"></div><div><div class="v" id="k-packs">0</div><div class="k" data-t="k_packs"></div></div></div>
-      <div class="card kpi"><div class="ic g" data-ico="inbox"></div><div><div class="v" id="k-out">0</div><div class="k" data-t="k_out"></div></div></div>
-      <div class="card kpi"><div class="ic w" data-ico="library"></div><div><div class="v" id="k-ref">0</div><div class="k" data-t="k_ref"></div></div></div>
+    <div class="banner warn" id="bn-merge" hidden><div class="ic" data-ico="merge"></div><div><b data-t="bn_merge_t"></b><p data-t="bn_merge_p"></p></div><div class="r"><button class="btn" data-goto="merges" data-t="bn_merge_b"></button></div></div>
+
+    <div id="home-tpl" hidden>
+      <div class="ph"><h1 data-t="np_h"></h1><p data-t="np_p"></p></div>
+      <div class="card mb" id="np-done" hidden></div>
+      <div class="grid c-main mb">
+        <div class="card"><div class="card-b form">
+          <div class="field"><label for="np-name"><span data-t="np_name"></span><span class="req">*</span></label><input type="text" id="np-name" autocomplete="off"><span class="hint" style="margin:0" data-t="np_name_h"></span></div>
+          <div class="field"><span class="flabel" data-t="f_lang"></span><div class="seg" role="group" id="np-lang" data-tt="f_lang"><button aria-pressed="true" data-v="vi">Tiếng Việt</button><button aria-pressed="false" data-v="en">English</button></div></div>
+          <div class="field"><label for="np-dest" data-t="np_dest"></label><div class="inline"><input type="text" id="np-dest"><button class="btn" data-pick="np-dest"><span data-t="choose"></span></button></div><span class="hint" style="margin:0" data-t="np_dest_h"></span></div>
+          <div class="where" id="np-where" aria-live="polite"></div>
+        </div><div class="formfoot"><div class="steps"><span class="s on"><span class="n">1</span><span data-t="preview"></span></span><span class="ln"></span><span class="s"><span class="n">2</span><span data-t="apply"></span></span></div><div class="r"><button class="btn pri lg" id="np-run"><span data-ico="plus"></span><span data-t="np_run"></span></button></div></div></div>
+        <div class="card"><div class="card-h"><span data-ico="list"></span><h2 data-t="np_after"></h2></div><div class="card-b"><ol class="flow" id="np-flow"></ol></div></div>
+      </div>
+      <div class="note"><span data-ico="shield"></span><span data-t="np_keep"></span></div>
     </div>
-    <div class="grid c-main mb">
-      <div class="card"><div class="card-h"><span data-ico="activity"></span><h2 data-t="state_t"></h2><div class="r"><span class="tag" id="st-time" hidden></span></div></div><div class="card-b" id="st-box"></div></div>
-      <div class="card"><div class="card-h"><span data-ico="zap"></span><h2 data-t="quick_t"></h2></div><div class="card-b actions" id="quick"></div></div>
+
+    <div id="home-unk" hidden>
+      <div class="ph"><h1 data-t="unk_h"></h1><p data-t="unk_p"></p></div>
+      <div class="grid c2 choice">
+        <button class="act" data-goto="setup"><span class="ic" data-ico="file"></span><span><b data-t="unk_proj"></b><span data-t="unk_proj_d"></span></span><span class="chev" data-ico="chev"></span></button>
+        <button class="act" id="unk-tpl"><span class="ic" data-ico="book"></span><span><b data-t="unk_tpl"></b><span data-t="unk_tpl_d"></span></span><span class="chev" data-ico="chev"></span></button>
+      </div>
     </div>
-    <div class="card"><div class="card-h"><span data-ico="spark"></span><h2 data-t="skills_t"></h2><span class="sub" id="sk-count"></span>
-      <div class="r"><div class="chips" id="sk-filter" data-tt="sk_filter"></div><div class="search"><span data-ico="search"></span><label class="sr" for="sk-q" data-t="sk_search"></label><input type="text" id="sk-q"></div></div></div>
-      <div class="tw"><table><thead><tr><th style="width:230px">Skill</th><th style="width:110px" data-t="col_scope"></th><th data-t="col_use"></th></tr></thead><tbody id="sk-rows"></tbody></table></div></div>
+
+    <div id="home-prj" hidden>
+      <div class="card mb"><div class="summary"><div class="avatar" id="ov-av">·</div><div style="min-width:0;flex:1"><h1 id="ov-name">…</h1><p class="purpose" id="ov-purpose"></p><div class="meta"><button type="button" class="path" id="ov-path"></button><span id="ov-tags"></span></div></div></div></div>
+      <div class="grid c-main">
+        <div>
+        <div class="card mb"><div class="card-h"><span data-ico="activity"></span><h2 data-t="cont_t"></h2><div class="r"><span class="tag" id="st-time" hidden></span></div></div><div class="card-b" id="st-box"></div>
+          <div class="formfoot"><button class="btn ghost" data-open=".agent/STATE.md"><span data-ico="file"></span><span data-t="st_full"></span></button></div></div>
+        <div class="card mb"><div class="card-h"><span data-ico="library"></span><h2 data-t="src_t"></h2><span class="sub" id="src-n"></span><div class="r"><button class="btn" data-open="references" data-tt="src_open"><span data-ico="folder"></span><span data-t="open_dir"></span></button></div></div><div class="flist" id="src-list"></div></div>
+        <div class="card mb"><div class="card-h"><span data-ico="inbox"></span><h2 data-t="out_t"></h2><span class="sub" id="out-n"></span><div class="r"><button class="btn" data-open="output" data-tt="out_open"><span data-ico="folder"></span><span data-t="open_dir"></span></button></div></div><div class="flist" id="out-list"></div></div>
+        </div>
+        <div>
+        <div class="card mb sticky"><div class="card-h"><span data-ico="spark"></span><h2 data-t="ag_t"></h2></div><div class="card-b">
+          <ol class="flow" id="ag-steps"></ol>
+          <div class="seg" role="group" id="ag-mode" data-tt="ag_mode"><button aria-pressed="true" data-v="start" data-t="ag_start"></button><button aria-pressed="false" data-v="cont" data-t="ag_cont"></button></div>
+          <div class="prompt" id="ag-prompt"></div>
+          <div class="hact"><button class="btn pri" id="ag-copy"><span data-ico="copy"></span><span data-t="ag_copy"></span></button></div>
+          <p class="hint" id="ag-verify"></p></div></div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- LIBRARY -->
@@ -407,7 +467,11 @@ textarea{min-height:68px;resize:vertical}
 
   <!-- PACKS -->
   <section class="page" id="pg-packs">
-    <div class="ph"><h1 data-t="nav_packs"></h1><p data-t="pk_p"></p></div>
+    <div class="ph"><h1 data-t="nav_packs"></h1><p data-t="mk_p"></p></div>
+    <div class="card mb"><div class="card-h"><span data-ico="spark"></span><h2 data-t="skills_t"></h2><span class="sub" id="sk-count"></span>
+      <div class="r"><div class="chips" id="sk-filter" data-tt="sk_filter"></div><div class="search"><span data-ico="search"></span><label class="sr" for="sk-q" data-t="sk_search"></label><input type="text" id="sk-q"></div></div></div>
+      <div class="tw"><table><thead><tr><th style="width:230px">Skill</th><th style="width:110px" data-t="col_scope"></th><th data-t="col_use"></th></tr></thead><tbody id="sk-rows"></tbody></table></div></div>
+    <div class="ph" style="margin-top:28px"><h2 style="font-size:17px" data-t="pk_h"></h2><p data-t="pk_p"></p></div>
     <div class="note warn mb" id="pk-need" hidden><span data-ico="alert"></span><span style="flex:1"><span data-t="pk_need"></span> <a href="#" data-goto="upgrade" id="pk-need-a" data-t="pk_need_a"></a></span></div>
     <div class="grid c2" id="pk-list"></div>
   </section>
@@ -566,19 +630,53 @@ var ICONS={
 };
 function ico(n,c){return'<svg class="i'+(c?' '+c:'')+'" viewBox="0 0 24 24" aria-hidden="true">'+(ICONS[n]||'')+'</svg>';}
 var D={
+ g_manage:['Quản lý và bảo trì','Manage and maintain'],nav_new:['Tạo project mới','New project'],nav_start:['Bắt đầu','Start'],
+ mk_p:['Agent tự chọn khả năng sẵn có của ứng dụng (native) hoặc một skill dưới đây khi việc cần; bạn không phải nêu tên skill khi giao việc. Trang này để xem skill và quản lý gói lĩnh vực.','The agent uses the app\u2019s own (native) abilities or a skill below when the task needs it; you never have to name a skill. This page is for reviewing skills and managing domain packs.'],
+ pk_h:['Gói lĩnh vực','Domain packs'],
+ bn_merge_t:['Có bản cập nhật chờ bạn xem','Updates are waiting for you'],bn_merge_p:['Một số file có bản mới của package nằm cạnh bản bạn đã sửa (đuôi .new). Bản đang dùng vẫn giữ nguyên cho tới khi bạn hợp nhất.','Some files have a new package version next to your edited copy (ending in .new). The copy in use stays unchanged until you merge.'],bn_merge_b:['Xem các file','Review the files'],
+ np_h:['Tạo project mới','Create a new project'],np_p:['Thư mục này là bộ mẫu: giữ nguyên để tạo các project sau. Mỗi công việc làm trong một bản sao riêng, được tạo cạnh bộ mẫu và khởi tạo sẵn.','This folder is the template: keep it as is for future projects. Each piece of work happens in its own copy, created next to the template and already set up.'],
+ np_name:['Tên công việc','Task name'],np_name_h:['Dùng làm tên thư mục project. Ví dụ: Biên bản họp Tổ Tiếp nhận.','Becomes the project folder name. Example: Intake team meeting minutes.'],
+ np_dest:['Nơi tạo','Location'],np_dest_h:['Mặc định là thư mục đang chứa bộ mẫu.','Defaults to the folder that holds the template.'],
+ np_where_empty:['Nhập tên công việc để xem thư mục sẽ được tạo.','Type a task name to see the folder that will be created.'],np_where:['Project sẽ được tạo tại','The project will be created at'],
+ np_run:['Tạo project','Create project'],np_after:['Sau khi tạo','After creating it'],
+ np_f1:['Đặt tài liệu nguồn','Add source documents'],np_f1d:['Chép file cần dùng vào thư mục references/ của project mới; bản gốc để nguyên chỗ cũ.','Copy the files you need into the new project\u2019s references/ folder; leave the originals where they are.'],
+ np_f2:['Mở project bằng ứng dụng AI','Open the project in your AI app'],np_f2d:['Trong Claude, Codex hoặc Gemini, mở (hoặc thêm) thư mục project làm thư mục làm việc.','In Claude, Codex or Gemini, open (or add) the project folder as the working folder.'],
+ np_f3:['Giao việc bằng lời thường','Describe the task in plain words'],np_f3d:['Nêu tài liệu nguồn và kết quả cần nhận. Bảng điều khiển của project có sẵn câu mở đầu để chép.','Name the source documents and the result you need. The project panel has an opening message ready to copy.'],
+ np_f4:['Phiên sau: tiếp tục','Next session: continue'],np_f4d:['Mở APP trong thư mục project; phần "Tiếp tục công việc" cho biết việc đang ở đâu.','Open APP in the project folder; "Continue the work" shows where things stand.'],
+ np_keep:['Không làm việc trong bộ mẫu. Không có Python: sao chép cả thư mục bộ mẫu (kể cả thư mục ẩn .agent), đổi tên rồi mở bằng ứng dụng AI; xem Hướng dẫn.','Do not work inside the template. Without Python: copy the whole template folder (including the hidden .agent folder), rename it and open it in your AI app; see the Guide.'],
+ np_need:['Nhập tên công việc trước.','Type a task name first.'],
+ np_done_t:['Đã tạo project','Project created'],np_done_p:['Bộ mẫu không thay đổi. Từ giờ làm việc trong thư mục mới này.','The template is unchanged. From now on, work in this new folder.'],
+ np_open_panel:['Mở bảng điều khiển của project','Open the project panel'],np_open_dir:['Mở thư mục project','Open the project folder'],np_copy_path:['Chép đường dẫn','Copy path'],np_opening:['Đang mở bảng điều khiển của project trong tab mới…','Opening the project panel in a new tab…'],
+ unk_h:['Thư mục này dùng để làm gì?','What is this folder for?'],unk_p:['Chưa xác định được thư mục này là bộ mẫu hay project: PROJECT.md đã được sửa nhưng chưa có thông tin khởi tạo. Chọn vai trò trước khi ghi gì.','It is not clear whether this folder is the template or a project: PROJECT.md was edited but there is no setup record. Choose its role before anything is written.'],
+ unk_proj:['Đây là project của tôi','This is my project'],unk_proj_d:['Khởi tạo thư mục này (xem trước rồi mới ghi; giữ nội dung bạn đã viết).','Set up this folder (previewed first; keeps what you wrote).'],
+ unk_tpl:['Tôi cần bộ mẫu sạch','I need a clean template'],unk_tpl_d:['Giải nén lại ZIP làm bộ mẫu rồi tạo project từ đó. Mở hướng dẫn.','Unzip the ZIP again as the template and create projects from it. Opens the guide.'],
+ cont_t:['Tiếp tục công việc','Continue the work'],st_full:['Xem đầy đủ (STATE.md)','Full status (STATE.md)'],
+ cont_empty_t:['Chưa có công việc nào được ghi lại','No work recorded yet'],cont_empty_p:['Sau phiên làm việc đầu tiên, agent ghi ở đây mục tiêu, việc đang dở và bước tiếp theo. Bắt đầu bằng các bước bên cạnh.','After the first session the agent records the goal, unfinished work and next step here. Start with the steps alongside.'],
+ ag_t:['Giao việc cho agent','Give the agent a task'],ag_mode:['Loại câu mở đầu','Opening message type'],ag_start:['Việc mới','New task'],ag_cont:['Tiếp tục phiên trước','Continue last session'],ag_copy:['Chép câu mở đầu','Copy the message'],
+ ag_s1:['Đặt tài liệu nguồn vào references/','Put source documents in references/'],ag_s1_n:['Đang có %d tài liệu.','%d documents there now.'],ag_s1_0:['Chưa có tài liệu nào.','None yet.'],
+ ag_s2:['Mở thư mục này bằng ứng dụng AI','Open this folder in your AI app'],ag_s2d:['Claude, Codex, Gemini…: mở hoặc thêm thư mục này làm thư mục làm việc.','Claude, Codex, Gemini…: open or add this folder as the working folder.'],
+ ag_s3:['Gửi câu mở đầu, sửa phần trong [ ]','Send the opening message; edit the part in [ ]'],ag_s3d:['Kết quả được lưu trong output/ và hiện ở bảng Kết quả.','Results are saved in output/ and listed under Results.'],
+ ag_verify:['Agent nhắc đúng tên «%s» và đúng các tài liệu nguồn ở bảng bên dưới là đang đọc đúng project. Nếu không, kiểm lại thư mục đã mở trong ứng dụng.','If the agent repeats the name \u201c%s\u201d and the source documents listed below, it is reading the right project. If not, check which folder the app opened.'],
+ pr_start:['Đây là thư mục project «%s». Trước khi làm:\n1. Đọc AGENTS.md, PROJECT.md và .agent/STATE.md.\n2. Nhắc lại tên project và liệt kê tài liệu nguồn bạn thấy trong references/.\n\nViệc cần làm: [mô tả việc và kết quả cần nhận, ví dụ: lập biên bản họp từ ghi chú trong references/]\n\nLưu kết quả vào output/. Chỗ nguồn không có thông tin thì ghi "cần xác nhận", không đoán. Không sửa file nguồn. Cuối phiên cập nhật .agent/STATE.md.','This is the project folder \u201c%s\u201d. Before you start:\n1. Read AGENTS.md, PROJECT.md and .agent/STATE.md.\n2. Repeat the project name and list the source documents you find in references/.\n\nTask: [describe the task and the result you need, e.g. write meeting minutes from the notes in references/]\n\nSave the result in output/. Where the sources lack information, write \u201cto be confirmed\u201d instead of guessing. Do not edit the source files. At the end, update .agent/STATE.md.'],
+ pr_cont:['Tiếp tục công việc trong project «%s». Đọc .agent/STATE.md và PROJECT.md, rồi cho tôi biết: mục tiêu, bản kết quả hiện hành trong output/, việc đang dở và bước tiếp theo. Chưa sửa file nào cho tới khi tôi xác nhận.','Continue the work in project \u201c%s\u201d. Read .agent/STATE.md and PROJECT.md, then tell me: the goal, the current result in output/, what is unfinished and the next step. Do not change any file until I confirm.'],
+ src_t:['Tài liệu nguồn','Source documents'],out_t:['Kết quả','Results'],open_dir:['Mở thư mục','Open folder'],src_open:['Mở thư mục references','Open the references folder'],out_open:['Mở thư mục output','Open the output folder'],
+ src_empty:['Chưa có tài liệu nguồn. Chép file cần dùng vào thư mục references/ (bản gốc để nguyên chỗ cũ).','No source documents yet. Copy the files you need into the references/ folder (leave the originals where they are).'],
+ out_empty:['Chưa có kết quả. File agent làm ra nằm trong output/ và sẽ hiện ở đây.','No results yet. Files the agent produces go to output/ and show up here.'],
+ f_more:['và %d file khác trong thư mục','and %d more files in the folder'],drafts_n:['Bản nháp trong working/: %d file','Drafts in working/: %d files'],n_files:['%d file','%d files'],open_file:['Mở file','Open file'],
+ purpose_none:['Chưa ghi mục đích trong PROJECT.md (không bắt buộc để bắt đầu).','No purpose in PROJECT.md yet (not needed to start).'],
  panel:['Bảng điều khiển','Control panel'],g_work:['Làm việc','Work'],g_setup:['Thiết lập','Setup'],
- nav_home:['Tổng quan','Overview'],nav_check:['Kiểm tra trước khi giao','Check before delivery'],nav_merges:['Chờ hợp nhất','Pending merges'],nav_packs:['Gói lĩnh vực','Domain packs'],nav_skills:['Cài skill vào ứng dụng','Install skills into apps'],
- nav_setup:['Khởi tạo','Set up'],nav_library:['Thư viện nguồn','Source library'],
+ nav_home:['Công việc','The work'],nav_check:['Kiểm tra trước khi giao','Check before delivery'],nav_merges:['Chờ hợp nhất','Pending merges'],nav_packs:['Quản lý kỹ năng','Manage skills'],nav_skills:['Cài skill vào ứng dụng','Install skills into apps'],
+ nav_setup:['Khởi tạo thư mục này','Set up this folder'],nav_library:['Thư viện nguồn','Source library'],
  lb_p:['Văn bản pháp luật, quy chế nội bộ, mẫu biểu của project trong references/, ghi trong một chỉ mục references/_INDEX.xlsx. Agent tra ở đây trước khi trích dẫn; không có toàn văn thì không trích nguyên văn.','The project\u2019s legal documents, internal rules and templates in references/, recorded in one index references/_INDEX.xlsx. The agent looks here before quoting; without full text there are no verbatim quotes.'],
  lb_none_t:['Chưa có chỉ mục thư viện','No library index yet'],lb_none_p:['Tạo khung thư mục (legal, policies, templates, source-documents) và file chỉ mục mẫu. Không ghi đè gì đã có.','Create the folders (legal, policies, templates, source-documents) and the index template. Nothing existing is overwritten.'],lb_init:['Tạo khung thư viện','Create the library'],
  lb_k1:['Văn bản trong chỉ mục','Documents in the index'],lb_k2:['File trong references/','Files in references/'],lb_k3:['Chưa có toàn văn','Without full text'],lb_k4:['Cần đối chiếu','Need checking'],
  lb_find:['Tra cứu','Search'],lb_open_idx:['Mở chỉ mục','Open index'],lb_check:['Kiểm tra','Check'],lb_go:['Tìm','Search'],lb_ph:['Số hiệu hoặc từ khóa, ví dụ 30/2020 hoặc noi quy lao dong','Number or keyword, e.g. 30/2020 or noi quy lao dong'],
  lb_c1:['Số, ký hiệu','Number'],lb_c2:['Trích yếu','Title'],lb_c3:['Tình trạng','Status'],lb_c4:['Xác minh','Verification'],lb_c5:['Toàn văn','Full text'],
  lb_empty:['Nhập từ khóa để tìm trong chỉ mục.','Type a keyword to search the index.'],lb_nohit:['Không thấy văn bản khớp. Chưa có trong thư viện thì không trích nguyên văn.','No matching document. Not in the library means no verbatim quotes.'],
- lb_open:['Mở','Open'],lb_noft:['Không có','None'],lb_t_check:['Kiểm tra thư viện nguồn','Check the source library'],lb_t_init:['Tạo khung thư viện','Create the library'],nav_upgrade:['Nâng cấp package','Upgrade package'],nav_maintain:['Bảo trì','Maintenance'],
+ lb_open:['Mở','Open'],lb_noft:['Không có','None'],lb_t_check:['Kiểm tra thư viện nguồn','Check the source library'],lb_t_init:['Tạo khung thư viện','Create the library'],nav_upgrade:['Cập nhật package','Update package'],nav_maintain:['Bảo trì','Maintenance'],
  theme:['Đổi nền sáng/tối','Toggle light/dark'],quit:['Tắt bảng điều khiển','Stop the panel'],open_folder:['Mở thư mục','Open folder'],guide:['Hướng dẫn','Guide'],open_output:['Mở output','Open output'],copy_path:['Bấm để chép đường dẫn','Click to copy the path'],
  st_ready:['Đã khởi tạo','Set up'],st_notinit:['Chưa khởi tạo','Not set up'],
- st_template:['Bộ mẫu chưa khởi tạo','Uninitialized template'],st_unknown:['Chưa xác định trạng thái','Status unknown'],
+ st_template:['Bộ mẫu (giữ nguyên)','Template (keep as is)'],st_unknown:['Chưa xác định trạng thái','Status unknown'],
  evidence_project:['Có thông tin khởi tạo hợp lệ','Valid initialization record'],evidence_template:['PROJECT còn nguyên mẫu theo manifest; chưa có thông tin khởi tạo','PROJECT matches a manifest template; no initialization record'],evidence_unknown:['Chưa đủ thông tin để xác định; kiểm tra ngữ cảnh project trước khi khởi tạo','Insufficient evidence; check project context before setup'],
  check_pass:['Đã kiểm — đạt trong phạm vi hỗ trợ','Checked — passed within supported scope'],check_issues:['Đã kiểm — cần xem xét','Checked — needs review'],check_not_checked:['Chưa kiểm được đầy đủ','Not fully checked'],merge_required:['Cần hợp nhất','Merge needed'],merge_msg:['Còn file cần hợp nhất: bản hiện có được giữ nguyên, bản mới nằm cạnh với đuôi .new. Bước tiếp: mở Chờ hợp nhất để so sánh và xử lý từng file.','Some files need merging: the current versions are kept and the new ones sit beside them with a .new ending. Next step: open Pending merges to compare and handle each file.'],
  result_success:['Thành công','Succeeded'],result_preview:['Đã xem trước','Preview ready'],result_issues:['Cần xem xét','Needs review'],result_not_checked:['Chưa kiểm được','Not checked'],result_blocked:['Đang bị chặn','Blocked'],result_partial:['Chưa hoàn tất','Incomplete'],result_error:['Lỗi công cụ','Tool error'],
@@ -599,7 +697,7 @@ var D={
  ck_drop:['Chọn file cần kiểm tra','Choose files to check'],ck_types:['.docx · .xlsx · .csv · .html · .md · .txt','.docx · .xlsx · .csv · .html · .md · .txt'],ck_or:['Hoặc dán đường dẫn file','Or paste a file path'],add:['Thêm','Add'],
  ck_decl:['Đây là câu trả lời đã lưu của agent: kiểm khối "Khai báo thực hiện"','This is a saved agent reply: check the "Execution declaration" block'],ck_ro:['Chỉ đọc, không sửa file.','Read only; files are not changed.'],ck_run:['Kiểm tra','Check'],ck_none:['Chưa có file nào để kiểm. Bước tiếp: bấm Chọn file hoặc dán đường dẫn, rồi bấm Thêm.','No file to check yet. Next step: press Choose files or paste a path, then press Add.'],
  pk_p:['Bộ skill theo mảng việc, cài vào project khi cần. Gói "thử nghiệm" chưa qua tiếp nhận: cài để dùng thử trong project này, agent nói rõ là bản thử, không chép sang ứng dụng. Mỗi gói có bảng căn cứ pháp lý ghi số hiệu, điều khoản và ngày đối chiếu để bạn kiểm lại. Gỡ gói chỉ chuyển thư mục vào archive/.','Skill sets by line of work, installed into a project when needed. A "trial" pack has not been through intake: install it to try in this project; the agent says it is a trial, and it is not copied into apps. Each pack has a legal-basis table with numbers, articles and the check date so you can verify. Removing a pack only moves its folder into archive/.'],
- pk_need:['Đây là thư mục package gốc, chưa phải project, nên chưa cài gói ở đây. Để dùng gói cho một project (ví dụ TIEN 081): đưa bản package này vào project đó, rồi mở APP.bat trong thư mục project để cài gói.','This is the original package folder, not a project, so packs are not installed here. To use packs in a project: bring this package version into that project, then open APP.bat in the project folder to install packs.'],
+ pk_need:['Thư mục này là bộ mẫu, chưa phải project, nên không cài gói ở đây. Tạo project mới từ bộ mẫu rồi cài gói trong bảng điều khiển của project đó; với project có sẵn, cập nhật package cho project đó trước.','This folder is the template, not a project, so packs are not installed here. Create a new project from the template, then install packs from that project\u2019s panel; for an existing project, update its package first.'],
  pk_need_a:['Đưa vào project →','Bring into a project →'],pk_to_proj:['Cài vào project','Install in a project'],
  up_self:['Nâng cấp thư mục này','Upgrade this folder'],up_other:['Đưa bản này vào project khác','Bring this version into another project'],
  up_other_p:['Dùng bản package đang mở để nâng cấp một project đã có (thêm file mới, cập nhật file chưa sửa, giữ file bạn đã sửa). Project chưa từng dùng package thì dùng Khởi tạo → Project đã có.','Use the package you have open to upgrade an existing project (adds new files, updates untouched files, keeps the ones you changed). A project that never used the package: use Set up → Existing project.'],
@@ -616,7 +714,7 @@ var D={
  preview:['Xem trước','Preview'],apply:['Thực hiện','Apply'],
  su_p:['Tạo project từ thư mục này, hoặc đưa package vào một project đã có. Mọi thao tác xem trước rồi mới ghi; không xóa file nào.','Create a project from this folder, or bring the package into an existing project. Every action is previewed before writing; no file is deleted.'],
  su_new:['Project mới (thư mục này)','New project (this folder)'],su_adopt:['Project đã có','Existing project'],
- su_tpl:['PROJECT còn nguyên mẫu và chưa có thông tin khởi tạo. Nên sao chép bộ mẫu ra thư mục project riêng rồi khởi tạo ở đó.','PROJECT is an unchanged template with no initialization record. Copy the template into a separate project folder before setup.'],
+ su_tpl:['Đây là bộ mẫu. Khởi tạo tại chỗ sẽ biến chính bộ mẫu thành project. Muốn giữ bộ mẫu để dùng lại, dùng "Tạo project mới" (tạo bản sao).','This is the template. Setting it up here turns the template itself into a project. To keep the template for reuse, use "New project" (makes a copy).'],
  su_inited:['Thư mục này đã khởi tạo. Chạy lại chỉ điền các dòng còn trống trong PROJECT.md; dòng đã có nội dung và STATE được giữ nguyên.','This folder is already set up. Running again only fills empty lines in PROJECT.md; lines with content and STATE are kept.'],
  f_name:['Tên project','Project name'],f_lang:['Ngôn ngữ của project','Project language'],f_purpose:['Mục đích và người đọc','Purpose and readers'],f_outputs:['Đầu ra mong đợi','Expected outputs'],f_style:['Ngôn ngữ và văn phong','Language and style'],f_sources:['Nguồn, mẫu chính đã duyệt','Main approved sources and templates'],f_constraints:['Ràng buộc quan trọng','Important constraints'],f_sensitivity:['Mức nhạy cảm dữ liệu','Data sensitivity'],
  f_hint:['Ô nào chưa biết thì để trống, điền sau trong PROJECT.md.','Leave unknown fields empty and fill them in PROJECT.md later.'],
@@ -682,7 +780,14 @@ var D={
  copy_fail:['Không chép được. Hãy chọn đường dẫn bằng chuột rồi chép thủ công.','Could not copy. Select the path with the mouse and copy it by hand.']
 };
 var PACK_ICON={'phap-ly':'scale','van-thu-luu-tru':'archive','cang-logistics':'anchor','hanh-chinh-nhan-su':'users','ke-toan-noi-bo':'calc'};
-var NAV=[['nav1',[['home','home','nav_home'],['library','library','nav_library'],['check','check','nav_check'],['merges','merge','nav_merges'],['packs','box','nav_packs'],['skills','monitor','nav_skills']]],['nav2',[['setup','plus','nav_setup'],['upgrade','up','nav_upgrade'],['maintain','gear','nav_maintain'],['health','activity','nav_health']]]];
+// Thanh bên theo vai trò thư mục: việc hằng ngày ở trên, quản lý/bảo trì gom vào nhóm thu gọn / Sidebar by folder role
+var NAV_ALL={home:['home','nav_home'],check:['check','nav_check'],library:['library','nav_library'],merges:['merge','nav_merges'],packs:['box','nav_packs'],skills:['monitor','nav_skills'],upgrade:['up','nav_upgrade'],setup:['plus','nav_setup'],maintain:['gear','nav_maintain'],health:['activity','nav_health']};
+function navLists(){var kind=S?(S.workspace_kind||'unknown'):'project',m=S?(S.merges||[]).length:0;
+  if(kind==='template')return[['home'],['skills','upgrade','setup','maintain','health']];
+  if(kind==='unknown')return[['home'],['setup','upgrade','maintain','health']];
+  return[['home','check','library'].concat(m?['merges']:[]),['packs','skills'].concat(m?[]:['merges']).concat(['upgrade','setup','maintain','health'])];}
+function navLabel(id){var kind=S?(S.workspace_kind||'unknown'):'project';if(id==='home')return t(kind==='template'?'nav_new':kind==='unknown'?'nav_start':'nav_home');return t(NAV_ALL[id][1]);}
+var navOpen=null;
 var lang='vi',S=null,files=[],pending=null,page='home',skFilter='all';
 function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);}catch(e){return null;}}
 function $(id){return document.getElementById(id);}
@@ -698,9 +803,14 @@ function paint(){
   document.querySelectorAll('[data-tt]').forEach(function(el){el.title=t(el.dataset.tt);el.setAttribute('aria-label',t(el.dataset.tt));});
   document.querySelectorAll('.lang button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.lang===lang?'true':'false');});
   $('sk-q').placeholder=lang==='en'?'Search skills':'Tìm skill';
-  NAV.forEach(function(g){$(g[0]).innerHTML=g[1].map(function(n){var badge=n[0]==='packs'&&S?(S.packs.items||[]).length:n[0]==='merges'&&S?(S.merges||[]).length:n[0]==='health'&&S&&(S.transactions||[]).length?S.transactions.length:null;return'<button data-page="'+n[0]+'"'+(n[0]===page?' aria-current="page"':'')+'>'+ico(n[1])+'<span>'+esc(t(n[2]))+'</span>'+(badge!==null?'<span class="badge">'+badge+'</span>':'')+'</button>';}).join('');});
+  var lists=navLists();
+  ['nav1','nav2'].forEach(function(id,gi){$(id).innerHTML=lists[gi].map(function(n){var badge=n==='merges'&&S?(S.merges||[]).length:n==='health'&&S&&(S.transactions||[]).length?S.transactions.length:null;return'<button data-page="'+n+'"'+(n===page?' aria-current="page"':'')+'>'+ico(NAV_ALL[n][0])+'<span>'+esc(navLabel(n))+'</span>'+(badge?'<span class="badge">'+badge+'</span>':'')+'</button>';}).join('');});
   document.querySelectorAll('.nav button').forEach(function(b){b.addEventListener('click',function(){go(b.dataset.page);});});
-  $('cr-page').textContent=t(NAV[0][1].concat(NAV[1][1]).filter(function(n){return n[0]===page;})[0][2]);
+  // nhóm quản lý thu gọn, tự mở khi đang ở một trang của nhóm / the management group stays collapsed unless one of its pages is open
+  var inMore=lists[1].indexOf(page)>=0,open=navOpen===null?(inMore||store('panel.more')==='1'):(navOpen||inMore);
+  $('nav2').hidden=!open;$('nav-more').setAttribute('aria-expanded',open?'true':'false');
+  var att=S?((S.transactions||[]).length+(lists[1].indexOf('merges')>=0?(S.merges||[]).length:0)):0;$('nav-more-b').hidden=!att||open;$('nav-more-b').textContent=att;
+  $('cr-page').textContent=NAV_ALL[page]?navLabel(page):'';
   if(S)render();
 }
 document.querySelectorAll('[data-ico]').forEach(function(el){el.insertAdjacentHTML('afterbegin',ico(el.dataset.ico));});
@@ -710,10 +820,27 @@ function go(p){if(p==='library'){setTimeout(function(){lbStats();lbChips();if(!$
 document.addEventListener('click',function(e){var g=e.target.closest('[data-goto]');if(g){e.preventDefault();go(g.dataset.goto);}var o=e.target.closest('[data-open]');if(o)openPath(o.dataset.open);});
 function openPath(p){api('/api/open',{path:p}).then(function(r){if(r.input_error)toast(r.out);});}
 $('b-guide').addEventListener('click',function(){openPath(lang==='en'?'START_HERE.en.html':'START_HERE.html');});
-$('ov-path').addEventListener('click',function(){if(!S)return;(navigator.clipboard?navigator.clipboard.writeText(S.root):Promise.reject()).then(function(){toast(t('copied'));},function(){toast(t('copy_fail'));});});
+$('nav-more').addEventListener('click',function(){var o=$('nav-more').getAttribute('aria-expanded')!=='true';navOpen=o;store('panel.more',o?'1':'0');paint();});
+$('unk-tpl').addEventListener('click',function(){openPath(lang==='en'?'docs/en/NEW_PROJECT_GUIDE.html':'docs/HUONG_DAN_TAO_PROJECT_MOI_VI.html');});
+function copyText(x){(navigator.clipboard?navigator.clipboard.writeText(x):Promise.reject()).then(function(){toast(t('copied'));},function(){toast(t('copy_fail'));});}
+$('ov-path').addEventListener('click',function(){if(S)copyText(S.root);});
 function seg(id,cb){var g=$(id);g.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){g.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});if(cb)cb(b.dataset.v);});});}
 function segVal(id){var b=$(id).querySelector('[aria-pressed="true"]');return b?b.dataset.v:'vi';}
-seg('f-lang');seg('a-lang');seg('su-mode',function(v){$('su-new').hidden=v!=='new';$('su-adopt').hidden=v!=='adopt';});
+seg('f-lang');seg('a-lang');seg('np-lang');seg('ag-mode',function(){if(S)drawAgent();});
+// tạo project mới từ bộ mẫu: xem trước rồi thực hiện; bộ mẫu chỉ được đọc / new project from the template: preview then apply
+function npWhere(){if(!S)return;var n=$('np-name').value.trim().replace(/[<>:"\/\\|?*]/g,' ').replace(/\s+/g,' ').trim(),d=$('np-dest').value.trim()||S.parent,sep=d.indexOf('\\')>=0?'\\':'/';
+  $('np-where').innerHTML=n?esc(t('np_where'))+':<br><span class="mono">'+esc(d.replace(/[\\/]+$/,'')+sep+n)+'</span>':esc(t('np_where_empty'));}
+$('np-name').addEventListener('input',npWhere);$('np-dest').addEventListener('input',npWhere);
+$('np-run').addEventListener('click',function(){var n=$('np-name').value.trim();if(!n){toast(t('np_need'));$('np-name').focus();return;}
+  run(t('np_h'),'plus','new_project',{name:n,lang:segVal('np-lang'),dest:$('np-dest').value.trim()},{preview:true,btn:$('np-run'),after:npDone});});
+function npDone(res){if(!res||!res.target||res.status!=='success')return;var tg=res.target;
+  $('np-done').hidden=false;
+  $('np-done').innerHTML='<div class="card-b"><div class="done-h"><span class="ic">'+ico('check')+'</span><div style="min-width:0"><b style="font-size:15px">'+esc(t('np_done_t'))+': '+esc(res.name||'')+'</b><div class="mono" style="color:var(--ink-2);overflow-wrap:anywhere;margin-top:2px">'+esc(tg)+'</div><p class="hint" style="margin-top:6px">'+esc(t('np_done_p'))+'</p>'
+    +'<div class="hact" style="margin-top:10px"><button class="btn pri" data-po="panel">'+ico('monitor')+esc(t('np_open_panel'))+'</button><button class="btn" data-po="folder">'+ico('folder')+esc(t('np_open_dir'))+'</button><button class="btn ghost" data-pc="1">'+ico('copy')+esc(t('np_copy_path'))+'</button></div></div></div></div>';
+  $('np-done').querySelectorAll('[data-po]').forEach(function(b){b.addEventListener('click',function(){api('/api/run',{action:'project_open',params:{target:tg,what:b.dataset.po}}).then(function(r){toast(r.code===0?(b.dataset.po==='panel'?t('np_opening'):r.out):r.out);});});});
+  $('np-done').querySelector('[data-pc]').addEventListener('click',function(){copyText(tg);});
+  $('np-name').value='';npWhere();}
+$('ag-copy').addEventListener('click',function(){copyText($('ag-prompt').textContent);});seg('su-mode',function(v){$('su-new').hidden=v!=='new';$('su-adopt').hidden=v!=='adopt';});
 document.querySelectorAll('[data-pick]').forEach(function(b){b.addEventListener('click',function(){b.disabled=true;
   api('/api/pick',{kind:'dir'}).then(function(r){b.disabled=false;if(r.paths&&r.paths.length){$(b.dataset.pick).value=r.paths[0];if(b.dataset.pick==='a-dir')autoName();}else if(r.error)toast(t('pick_fail'));}).catch(function(){b.disabled=false;toast(t('pick_fail'));});});});
 // result sheet
@@ -770,7 +897,7 @@ function run(title,icon,act,params,opts){opts=opts||{};if(busy){toast(t('busy_wa
     if(ok&&opts.done)msg=t(opts.done);
     $('sh-msg').textContent=msg;
     sheetExtra(res,opts,ok,act);
-    if(ok&&opts.after)opts.after();
+    if(ok&&opts.after)opts.after(res);
     if(opts.always)opts.always();
   }).catch(function(e){setBusy(false,btn);$('sh-tag').innerHTML='<span class="tag err">'+ico('alert')+esc(t('fail'))+'</span>';$('sh-msg').textContent=t('err_conn');$('sh-out').textContent=String(e);});}
 // next steps, recovery buttons for an interrupted transaction, and the folder button after a bundle is made
@@ -861,23 +988,29 @@ function render(){
   document.title=name+' · Workspace';
   $('sb-av').textContent=$('ov-av').textContent=initials(name);$('sb-name').textContent=name;$('sb-name').title=name;
   var kind=s.workspace_kind||'unknown',statusLabel=t(kind==='project'?'st_ready':kind==='template'?'st_template':'st_unknown');
-  $('sb-dot').className='dot'+(s.initialized?'':' warn');$('sb-st').textContent=statusLabel;$('sb-st').title=t('evidence_'+kind);
+  $('sb-dot').className='dot'+(kind==='unknown'?' warn':'');$('sb-st').textContent=statusLabel;$('sb-st').title=t('evidence_'+kind);
   $('sb-ver').textContent='v'+s.version;$('cr-proj').textContent=name;
-  $('ov-name').textContent=name;$('ov-path').innerHTML=ico('folder')+esc(s.root);$('ov-path').title=t('copy_path');
-  var tags=['<span class="tag acc">package v'+esc(s.version)+'</span>','<span class="tag '+(s.initialized?'ok':'warn')+'">'+esc(statusLabel)+'</span>','<span class="tag">'+esc(t('evidence_'+kind))+'</span>'];
-  if(s.initialized)tags.push('<span class="tag">'+(s.lang==='en'?'English':'Tiếng Việt')+'</span>');
-  if(s.info&&s.info.initialized)tags.push('<span class="tag">'+esc(s.info.initialized)+'</span>');
-  $('ov-tags').innerHTML=tags.join('');
-  $('bn-init').hidden=kind!=='template';
-  $('bn-tx').hidden=!(s.transactions||[]).length;
+  $('home-tpl').hidden=kind!=='template';$('home-unk').hidden=kind!=='unknown';$('home-prj').hidden=kind!=='project';
+  $('bn-tx').hidden=!(s.transactions||[]).length;$('bn-merge').hidden=kind!=='project'||!(s.merges||[]).length;
   $('m-release').closest('.rw').hidden=!s.release_source;
-  $('k-skills').textContent=s.skills.length;$('k-packs').textContent=inst;$('k-out').textContent=s.counts.output;$('k-ref').textContent=s.counts.references;
-  var secs=(s.state.sections||[]).filter(function(x){return!x.empty&&x.lines.length;});
-  $('st-box').innerHTML=secs.length?'<dl class="dl">'+secs.map(function(x){var k='SEC_'+x.title;return'<div class="it"><dt>'+esc(D[k]?t(k):x.title)+'</dt><dd>'+mdl(x.lines)+'</dd></div>';}).join('')+'</dl>'
-    :'<div class="empty"><div class="ic">'+ico('activity')+'</div><b style="color:var(--ink)">'+esc(t('state_empty'))+'</b><span>'+esc(t('state_empty_p'))+'</span></div>';
-  if(s.state.mtime){$('st-time').hidden=false;$('st-time').textContent=t('upd')+' '+fmtDate(s.state.mtime);}else $('st-time').hidden=true;
-  $('quick').innerHTML=[['check','check','q1','q1d'],['packs','box','q2','q2d'],['skills','monitor','q3','q3d'],['upgrade','up','q4','q4d']].map(function(q){
-    return'<button class="act" data-goto="'+q[0]+'"><span class="ic">'+ico(q[1])+'</span><span><b>'+esc(t(q[2]))+'</b><span>'+esc(t(q[3]))+'</span></span><span class="chev">'+ico('chev')+'</span></button>';}).join('');
+  if(kind==='template'){
+    if(!$('np-dest').value)$('np-dest').placeholder=s.parent;npWhere();
+    $('np-flow').innerHTML=[1,2,3,4].map(function(i){return'<li><span><b>'+esc(t('np_f'+i))+'</b><span class="sub">'+esc(t('np_f'+i+'d'))+'</span></span></li>';}).join('');}
+  if(kind==='project'){
+    $('ov-name').textContent=name;$('ov-path').innerHTML=ico('folder')+esc(s.folder);$('ov-path').title=t('copy_path')+': '+s.root;
+    $('ov-purpose').textContent=s.purpose||t('purpose_none');$('ov-purpose').className='purpose'+(s.purpose?'':' muted');
+    $('ov-tags').innerHTML=(s.lang==='en'?'<span class="tag">English</span>':'');
+    var secs=(s.state.sections||[]).filter(function(x){return!x.empty&&x.lines.length;});
+    var fresh=secs.length===1&&/Current phase|Giai đoạn/i.test(secs[0].title)&&/Mới khởi tạo|Just initialised/i.test(secs[0].lines.join(' '));
+    // thứ tự ưu tiên khi tiếp tục: đang ở đâu, việc chờ bạn, bước tiếp, sản phẩm hiện hành / priority order for continuing
+    var ORDER=['Current phase','Waiting on user','Next milestone','Current artifact','Open items','Goal'];
+    secs=secs.filter(function(x){return ORDER.indexOf(x.title)>=0;}).sort(function(a,b){return ORDER.indexOf(a.title)-ORDER.indexOf(b.title);}).concat(secs.filter(function(x){return ORDER.indexOf(x.title)<0;})).slice(0,5);
+    $('st-box').innerHTML=(secs.length&&!fresh)?'<dl class="dl">'+secs.map(function(x){var k='SEC_'+x.title;return'<div class="it"><dt>'+esc(D[k]?t(k):x.title)+'</dt><dd>'+mdl(x.lines.slice(0,6))+'</dd></div>';}).join('')+'</dl>'
+      :'<div class="empty"><div class="ic">'+ico('activity')+'</div><b style="color:var(--ink)">'+esc(t('cont_empty_t'))+'</b><span>'+esc(t('cont_empty_p'))+'</span></div>';
+    if(s.state.mtime&&!fresh){$('st-time').hidden=false;$('st-time').textContent=t('upd')+' '+fmtDate(s.state.mtime);}else $('st-time').hidden=true;
+    drawAgent();
+    drawList('src',s.sources,'src_empty','file');
+    drawList('out',s.outputs,'out_empty','inbox',s.drafts);}
   $('sk-filter').innerHTML=[['all','all'],['SHARED','f_shared'],['PACK','f_pack'],['PROJECT','f_proj']].map(function(f){return'<button data-f="'+f[0]+'" aria-pressed="'+(skFilter===f[0])+'">'+esc(t(f[1]))+'</button>';}).join('');
   $('sk-filter').querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){skFilter=b.dataset.f;render();});});
   drawSkills();
@@ -916,6 +1049,20 @@ function render(){
   document.querySelectorAll('[data-pick]').forEach(function(b){b.hidden=!s.picker;});$('ck-drop').hidden=!s.picker;
   drawFiles();
 }
+function drawList(k,data,emptyKey,icon,drafts){data=data||{items:[],total:0};
+  $(k+'-n').textContent=data.total?t('n_files').replace('%d',data.total):'';
+  var rows=data.items.map(function(f){var dir=f.path.split('/').slice(0,-1).join('/');
+    return'<div class="fr"><span class="ic">'+ico(icon)+'</span><div class="nm"><b title="'+esc(f.path)+'">'+esc(f.name)+'</b><span>'+esc(dir+'/')+(f.mtime?' · '+esc(fmtDate(f.mtime)):'')+'</span></div><button class="btn ghost" data-open="'+esc(f.path)+'" aria-label="'+esc(t('open_file')+': '+f.name)+'">'+ico('eye')+'<span>'+esc(t('lb_open'))+'</span></button></div>';}).join('');
+  var more=data.total>data.items.length?'<div class="more">'+esc(t('f_more').replace('%d',data.total-data.items.length))+'</div>':'';
+  var dr=drafts&&drafts.total?'<div class="more">'+esc(t('drafts_n').replace('%d',drafts.total))+'</div>':'';
+  $(k+'-list').innerHTML=rows?rows+more+dr:'<div class="empty"><div class="ic">'+ico(icon)+'</div><span>'+esc(t(emptyKey))+'</span></div>'+dr;}
+function drawAgent(){var s=S,name=s.project_name||s.folder,n=(s.sources||{}).total||0,mode=segVal('ag-mode');
+  $('ag-steps').innerHTML='<li><span><b>'+esc(t('ag_s1'))+'</b><span class="sub">'+esc(n?t('ag_s1_n').replace('%d',n):t('ag_s1_0'))+'</span></span></li>'
+    +'<li><span><b>'+esc(t('ag_s2'))+'</b><span class="sub">'+esc(t('ag_s2d'))+'</span><span class="hact"><button class="btn" id="ag-path">'+ico('copy')+esc(t('np_copy_path'))+'</button></span></span></li>'
+    +'<li><span><b>'+esc(t('ag_s3'))+'</b><span class="sub">'+esc(t('ag_s3d'))+'</span></span></li>';
+  $('ag-path').addEventListener('click',function(){copyText(s.root);});
+  $('ag-prompt').textContent=t(mode==='cont'?'pr_cont':'pr_start').replace('%s',name);
+  $('ag-verify').textContent=t('ag_verify').replace('%s',name);}
 function drawMerges(){var rows=S.merges||[];$('mg-count').textContent=rows.length;
   $('mg-rows').innerHTML=rows.length?rows.map(function(m,i){var state='mg_'+m.state,btn=m.state==='unseen'?'<button class="btn pri" data-ms="reviewing" data-mp="'+esc(m.pending)+'">'+esc(t('mg_start'))+'</button>':m.state==='reviewing'?'<button class="btn pri" data-ms="ready" data-mp="'+esc(m.pending)+'">'+esc(t('mg_ready_b'))+'</button>':'<button class="btn" data-ms="reviewing" data-mp="'+esc(m.pending)+'">'+esc(t('mg_reopen'))+'</button>';
     return'<tr><td class="id">'+esc(m.path)+'<div style="color:var(--muted);font-size:11.5px">'+esc(m.pending)+'</div></td><td><span class="tag">'+esc(t(m.origin==='domain_pack'?'mg_domain_pack':'mg_package'))+'</span></td><td><span class="tag '+(m.state==='ready'?'ok':m.state==='reviewing'?'info':'warn')+'">'+esc(t(state))+'</span></td><td><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn" data-md="'+i+'">'+esc(t('mg_compare'))+'</button>'+(m.current_exists?'<button class="btn" data-open="'+esc(m.path)+'">'+esc(t('mg_open_current'))+'</button>':'')+'<button class="btn" data-open="'+esc(m.pending)+'">'+esc(t('mg_open_new'))+'</button>'+btn+'</div></td></tr>';}).join('')

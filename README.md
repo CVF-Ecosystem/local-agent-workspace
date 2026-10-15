@@ -7,11 +7,12 @@ trong trình duyệt, không cần cài đặt, máy chủ, font trực tuyến 
 
 ## Cách bắt đầu
 
-1. **Tạo project:** tải ZIP từ [Releases](https://github.com/CVF-Ecosystem/local-agent-workspace/releases/latest), giải nén ra thư mục riêng, rồi chạy `SETUP.bat` (Windows) hoặc `SETUP.command` (macOS). Đã có thư mục này thì không cần tải lại. Không làm việc bên trong ZIP.
-2. **Thêm nguồn:** đặt tài liệu cần dùng vào `references/` hoặc chỉ rõ đường dẫn nguồn đang có. Giữ nguyên file gốc.
-3. **Giao việc đầu tiên:** mở thư mục bằng ứng dụng AI, nêu file nguồn và kết quả cần nhận. Có thể thử bằng dữ liệu giả trong `examples/demo-project/README.md` trước.
+1. **Giữ một bộ mẫu:** tải ZIP từ [Releases](https://github.com/CVF-Ecosystem/local-agent-workspace/releases/latest), giải nén một lần ra thư mục riêng. Thư mục này là bộ mẫu: giữ nguyên, không làm việc trong đó (và không làm việc bên trong ZIP).
+2. **Tạo project cho từng công việc:** bấm đúp `APP.bat` (Windows) hoặc `APP.command` (macOS) trong bộ mẫu, nhập tên công việc ở trang "Tạo project mới". Bản sao được tạo cạnh bộ mẫu và khởi tạo sẵn; bộ mẫu không đổi.
+3. **Đặt nguồn và giao việc:** chép tài liệu vào `references/` của project, mở thư mục project bằng ứng dụng AI (Claude, Codex, Gemini), gửi câu mở đầu chép từ bảng điều khiển của project. Kết quả nằm trong `output/`.
+4. **Tiếp tục phiên sau:** mở `APP` trong thư mục project; ô "Tiếp tục công việc" cho biết việc đang ở đâu, kèm câu nhờ agent làm tiếp.
 
-Bộ mẫu dùng để tạo project; project làm việc giữ ngữ cảnh riêng trong `PROJECT.md` và tiến độ trong STATE. Khởi tạo cơ bản chỉ cần Python 3.8+. Kiểm tra Excel và thư viện nguồn cần `openpyxl` (`python -m pip install openpyxl`); công cụ không tự cài thêm. Không có Python thì xem hướng dẫn tạo project để làm tay.
+Bảng điều khiển cần Python 3.8+. Không có Python: sao chép cả thư mục bộ mẫu (kể cả thư mục ẩn `.agent/`), đổi tên, mở bằng ứng dụng AI; xem `docs/HUONG_DAN_TAO_PROJECT_MOI_VI.md`. Kiểm tra Excel và thư viện nguồn cần thêm `openpyxl` (`python -m pip install openpyxl`); công cụ không tự cài. Muốn thử trước bằng dữ liệu giả: `examples/demo-project/README.md`, làm trong một project thử.
 
 ## Dùng để làm gì?
 
@@ -29,19 +30,15 @@ Việc nhỏ có thể làm trực tiếp; việc cần nguồn hoặc mẫu th�
 
 ## Thiết lập tùy chọn và hướng dẫn tra cứu
 
-Giải nén toàn bộ ZIP, đổi tên thư mục thành tên project rồi mở `START_HERE.html`. Không làm việc
-trực tiếp bên trong ZIP. Cách dễ nhất: bấm đúp `SETUP.bat` (Windows) hoặc `SETUP.command` (macOS); trình hướng dẫn hỏi vài câu rồi tự khởi tạo và điền `PROJECT.md`. Hoặc dùng lệnh (một lần, cần Python 3.8+; không cài thêm gì):
+Ngoài bảng điều khiển còn hai đường cho cùng kết quả. `SETUP.bat` / `SETUP.command` hỏi đáp trong cửa sổ lệnh; chạy ở bộ mẫu thì nó hỏi tạo bản sao (khuyên dùng) hay khởi tạo chính thư mục này. Hoặc dùng lệnh trong bộ mẫu (cần Python 3.8+, không cài thêm gì):
 
 ```text
-python tools/init_project.py --name "Tên project" --lang vi
+python tools/new_project.py --name "Tên công việc" --apply
 ```
 
-`--lang en` chuyển toàn bộ file hướng dẫn agent, skill và README sang tiếng Anh. Không có Python thì làm tay theo
-`docs/HUONG_DAN_TAO_PROJECT_MOI_VI.md`. Phiên bản package nằm trong `VERSION`.
+Thêm `--dest` để chọn nơi tạo, `--lang en` để dùng bản tiếng Anh của hướng dẫn agent, skill và README; bỏ `--apply` để chỉ xem trước. Đã tự sao chép thư mục thì khởi tạo trong bản sao bằng `python tools/init_project.py --name "Tên project"`. Phiên bản package nằm trong `VERSION`.
 
-Sau khi khởi tạo, bấm đúp `APP.bat` (Windows) hoặc `APP.command` (macOS) để mở **bảng điều khiển** trong trình duyệt: xem trạng
-thái công việc, cài gói lĩnh vực, kiểm tra file trước khi giao, nâng cấp package, chép skill vào Claude, Codex, Gemini. Bảng điều
-khiển chỉ là giao diện cho các công cụ trong `tools/`, chạy trên máy (không dùng mạng), tự tắt khi đóng trang. Nếu một lần ghi bị gián đoạn, trang **Tình trạng ứng dụng** cho phép tiếp tục hoặc phục hồi (xem `docs/HUONG_DAN_CHUYEN_DOI_PROJECT_CO_SAN_VI.md`, mục 9).
+Bảng điều khiển (`APP`) ở bộ mẫu chỉ làm một việc chính: tạo project mới. Ở project, trang **Công việc** gồm: tiếp tục công việc (đọc từ `.agent/STATE.md`), giao việc cho agent (câu mở đầu để chép), tài liệu nguồn và kết quả. Quản lý kỹ năng và gói lĩnh vực, chép skill vào ứng dụng, cập nhật package, chờ hợp nhất, bảo trì và tình trạng ứng dụng nằm trong nhóm "Quản lý và bảo trì". Bảng điều khiển chỉ là giao diện cho các công cụ trong `tools/`, chạy trên máy (không dùng mạng), tự tắt khi đóng trang. Nếu một lần ghi bị gián đoạn, trang **Tình trạng ứng dụng** cho phép tiếp tục hoặc phục hồi (xem `docs/HUONG_DAN_CHUYEN_DOI_PROJECT_CO_SAN_VI.md`, mục 9).
 
 - Dự án mới: `docs/HUONG_DAN_TAO_PROJECT_MOI_VI.md` hoặc bản `.html` cùng tên.
 - Dự án có sẵn và nâng cấp package: `docs/HUONG_DAN_CHUYEN_DOI_PROJECT_CO_SAN_VI.md` hoặc `.html`.

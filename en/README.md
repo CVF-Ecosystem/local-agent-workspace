@@ -7,11 +7,12 @@ in a browser, with no installation, server, online font or network connection.
 
 ## Getting started
 
-1. **Create a project:** download the ZIP from [Releases](https://github.com/CVF-Ecosystem/local-agent-workspace/releases/latest), unzip into a separate folder, then run `SETUP.bat` (Windows) or `SETUP.command` (macOS). Already have this folder? No download is needed. Do not work inside the ZIP.
-2. **Add sources:** put documents in `references/` or point to existing source paths. Keep originals intact.
-3. **Give the first task:** open the folder in your AI app, name the source and the result you need. Try the synthetic examples in `examples/demo-project/README.md` first if useful.
+1. **Keep one template:** download the ZIP from [Releases](https://github.com/CVF-Ecosystem/local-agent-workspace/releases/latest) and unzip it once into its own folder. That folder is the template: keep it as is and do not work in it (nor inside the ZIP).
+2. **Make a project for each piece of work:** double-click `APP.bat` (Windows) or `APP.command` (macOS) in the template and type a task name on the "New project" page. A copy is created next to the template, already set up; the template does not change.
+3. **Add sources and give the task:** copy documents into the project's `references/`, open the project folder in your AI app (Claude, Codex, Gemini) and send the opening message copied from the project's control panel. Results go to `output/`.
+4. **Continue next time:** open `APP` in the project folder; the "Continue the work" box shows where things stand, with a message asking the agent to carry on.
 
-A template creates projects; a working project keeps its own context in `PROJECT.md` and progress in STATE. Basic setup needs Python 3.8+. Excel checking and the source library also need `openpyxl` (`python -m pip install openpyxl`); tools never install it automatically. Without Python, follow the new-project guide manually.
+The control panel needs Python 3.8+. Without Python: copy the whole template folder (including the hidden `.agent/` folder), rename it and open it in your AI app; see `docs/en/NEW_PROJECT_GUIDE.md`. Excel checking and the source library also need `openpyxl` (`python -m pip install openpyxl`); tools never install it. To try it first with synthetic data: `examples/demo-project/README.md`, in a trial project.
 
 ## What is it for?
 
@@ -30,19 +31,15 @@ framework or a software development kit.
 
 ## Optional setup and reference guides
 
-Unzip the whole ZIP, rename the folder to the project name, then open `START_HERE.en.html`. Do not work
-directly inside the ZIP. The easiest way: double-click `SETUP.bat` (Windows) or `SETUP.command` (macOS); the wizard asks a few questions, then initializes the project and fills in `PROJECT.md`. Or use the command (once, needs Python 3.8+; nothing else to install):
+Besides the control panel there are two other ways to the same result. `SETUP.bat` / `SETUP.command` asks questions in a command window; run in the template, it asks whether to make a copy (recommended) or set up this folder itself. Or use the command in the template (needs Python 3.8+; nothing else to install):
 
 ```text
-python tools/init_project.py --name "Project name" --lang en
+python tools/new_project.py --name "Task name" --apply
 ```
 
-`--lang vi` keeps the Vietnamese version of the files. Without Python, follow
-`docs/en/NEW_PROJECT_GUIDE.md` by hand. The package version is in `VERSION`.
+Add `--dest` to choose the location and `--lang en` for the English agent instructions, skills and READMEs; leave out `--apply` to only preview. If you copied the folder yourself, set it up inside the copy with `python tools/init_project.py --name "Project name" --lang en`. The package version is in `VERSION`.
 
-After setup, double-click `APP.bat` (Windows) or `APP.command` (macOS) to open the **control panel** in the browser: see the
-work status, install domain packs, check files before delivery, upgrade the package, copy skills into Claude, Codex, Gemini. The
-panel is only an interface for the tools in `tools/`; it runs on your computer (no network) and stops when the page is closed. If a write was interrupted, the **App status** page lets you resume or roll it back (see `docs/en/EXISTING_PROJECT_UPGRADE_GUIDE.md`, section 9).
+The control panel (`APP`) has one main job in the template: create a new project. In a project, **The work** page holds: continue the work (read from `.agent/STATE.md`), give the agent a task (opening message to copy), source documents and results. Managing skills and domain packs, copying skills into apps, updating the package, pending merges, maintenance and app status sit in the "Manage and maintain" group. The panel is only an interface for the tools in `tools/`; it runs on your computer (no network) and stops when the page is closed. If a write was interrupted, the **App status** page lets you resume or roll it back (see `docs/en/EXISTING_PROJECT_UPGRADE_GUIDE.md`, section 9).
 
 - New project: `docs/en/NEW_PROJECT_GUIDE.md` or the `.html` file of the same name.
 - Existing project and package upgrade: `docs/en/EXISTING_PROJECT_UPGRADE_GUIDE.md` or `.html`.

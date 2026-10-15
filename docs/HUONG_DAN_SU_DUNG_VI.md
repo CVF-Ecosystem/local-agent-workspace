@@ -167,10 +167,13 @@ có còn khớp không.
 
 ## 12. Bảng điều khiển (APP.bat)
 
-Bấm đúp `APP.bat` (Windows) hoặc `APP.command` (macOS) để mở bảng điều khiển trong trình duyệt. Trang Tổng quan cho thấy
-trạng thái công việc (đọc từ `.agent/STATE.md`), các skill trong chỉ mục, số file trong `output/` và `references/`. Các trang
-còn lại gọi đúng các công cụ trong `tools/`: khởi tạo hoặc đưa vào project đã có, nâng cấp, gói lĩnh vực, kiểm tra trước khi
-giao (`check_output.py`), chép skill vào ứng dụng (`install_skills.py`), thư viện nguồn, chờ hợp nhất và bảo trì package. Trang **Tình trạng ứng dụng** cho biết phiên bản, Python, chức năng tùy chọn còn thiếu (kèm cách khắc phục), giao dịch chưa hoàn tất và lịch sử thao tác gần đây.
+Bấm đúp `APP.bat` (Windows) hoặc `APP.command` (macOS) để mở bảng điều khiển trong trình duyệt. Mở trong bộ mẫu, trang chính
+là "Tạo project mới": nhập tên công việc, bản sao được tạo cạnh bộ mẫu (`tools/new_project.py`), bộ mẫu không đổi. Mở trong
+project, trang **Công việc** gồm: "Tiếp tục công việc" (đọc từ `.agent/STATE.md`: đang ở đâu, việc chờ bạn, bước tiếp), "Giao
+việc cho agent" (các bước và câu mở đầu để chép, kèm cách kiểm agent đọc đúng project), "Tài liệu nguồn" (file trong
+`references/`) và "Kết quả" (file trong `output/`). Kiểm tra trước khi giao (`check_output.py`) và thư viện nguồn nằm ngay
+dưới. Nhóm "Quản lý và bảo trì" (thu gọn) gom phần còn lại: quản lý kỹ năng và gói lĩnh vực, chép skill vào ứng dụng
+(`install_skills.py`), chờ hợp nhất, cập nhật package, khởi tạo hoặc đưa vào project đã có, bảo trì package. Trang **Tình trạng ứng dụng** cho biết phiên bản, Python, chức năng tùy chọn còn thiếu (kèm cách khắc phục), giao dịch chưa hoàn tất và lịch sử thao tác gần đây.
 
 Thao tác có ghi file luôn chạy xem trước; đọc kết quả rồi mới bấm "Thực hiện". Bảng điều khiển chạy trên máy này (địa chỉ
 127.0.0.1, có mã truy cập riêng mỗi lần mở), không dùng mạng, tự tắt khoảng 3 phút sau khi đóng trang. Nút

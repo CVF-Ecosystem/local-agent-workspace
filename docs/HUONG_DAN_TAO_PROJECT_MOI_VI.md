@@ -3,37 +3,43 @@
 Bắt đầu bằng một thư mục và công việc thực tế, không cần cài thêm ứng dụng hay một
 bộ quản trị agent.
 
-## 1. Giải nén và đặt tên
+## 1. Giữ bộ mẫu, tạo bản sao cho từng công việc
 
-Giải nén toàn bộ `local-agent-workspace-vX.Y.Z.zip` (tên file ZIP đã tải), đổi tên thư mục ngoài thành tên
-project của bạn và đặt ở vị trí thuận tiện. Mở `START_HERE.html` bằng trình duyệt.
-Không làm việc ngay trong cửa sổ xem nội dung ZIP.
+Giải nén toàn bộ `local-agent-workspace-vX.Y.Z.zip` (tên file ZIP đã tải) **một lần** ra một thư mục
+riêng, ví dụ `D:\Workspace\bo-mau`. Thư mục này là **bộ mẫu**: giữ nguyên để tạo các project sau,
+không làm việc trong đó. Không làm việc ngay trong cửa sổ xem nội dung ZIP.
 
-`.agent/` bắt đầu bằng dấu chấm nên có thể bị ẩn trong một số trình quản lý file.
-Giữ nguyên thư mục này khi sao chép; không chỉ copy những file đang nhìn thấy.
+Mỗi công việc làm trong **một bản sao** của bộ mẫu. Cách chính:
+
+- Bấm đúp `APP.bat` (Windows) hoặc `APP.command` (macOS) trong bộ mẫu. Bảng điều khiển mở ở trang
+  "Tạo project mới".
+- Nhập tên công việc, ví dụ "Biên bản họp Tổ Tiếp nhận", bấm "Tạo project", đọc phần xem trước rồi bấm "Thực hiện".
+- Bản sao được tạo cạnh bộ mẫu (đổi được "Nơi tạo"), đã khởi tạo sẵn. Thư mục trùng tên đã có thì
+  không ghi đè. Bộ mẫu không bị sửa.
+- Bấm "Mở bảng điều khiển của project" để sang project mới; từ đây làm việc trong thư mục đó.
+
+Cần Python 3.8+; nếu máy chưa có, `APP.bat` chỉ cách cài. Không có Python thì làm tay: sao chép cả
+thư mục bộ mẫu (kể cả thư mục ẩn `.agent/`; nó có thể bị ẩn trong trình quản lý file), đổi tên bản sao
+thành tên công việc, điền tên ở dòng đầu `PROJECT.md`, rồi mở bản sao bằng ứng dụng AI.
+
+Các đường khác cho cùng kết quả, dùng khi cần:
+
+- `SETUP.bat` / `SETUP.command`: hỏi đáp trong cửa sổ lệnh. Chạy ở bộ mẫu thì nó hỏi tạo bản sao (khuyên dùng)
+  hay khởi tạo chính thư mục này; chạy trong bản sao tự chép thì khởi tạo bản sao đó.
+- Lệnh, chạy trong bộ mẫu: `python tools/new_project.py --name "Tên công việc" --apply` (thêm `--dest`
+  để chọn nơi tạo, `--lang en` cho bản tiếng Anh). Bỏ `--apply` để chỉ xem trước.
+- Đã tự sao chép thư mục thì khởi tạo trong bản sao: `python tools/init_project.py --name "Tên project" --lang vi`.
+  Script điền tên vào `PROJECT.md`, ghi `.agent/PACKAGE_INFO.json`, đặt `.agent/STATE.md` sạch; với `--lang en`
+  chép đè cây `en/` lên thư mục gốc. Nó không xóa file nào và từ chối chạy lần hai nếu chưa có `--force`.
+- Form "Khởi tạo nhanh" trong `START_HERE.html` tạo `setup_answers.json` để `SETUP` đọc, không phải hỏi lại.
 
 Cẩm nang cũng có bản tiếng Anh: mở `START_HERE.en.html`.
 
-Cách nhanh nhất: bấm đúp `SETUP.bat` (Windows) hoặc `SETUP.command` (macOS) trong thư mục project. Trình hướng
-dẫn hỏi ngôn ngữ, tên project và vài thông tin ngắn (mục đích, đầu ra, văn phong, nguồn, ràng buộc; câu chưa biết thì
-nhấn Enter), tự khởi tạo và điền `PROJECT.md`, rồi sao chép sẵn đoạn hướng dẫn dán vào Project/cloud. Muốn điền trước, dùng form "Khởi tạo nhanh" ở đầu `START_HERE.html`: bấm tải `setup_answers.json`, bỏ file vào thư mục project
-rồi bấm đúp SETUP; trình hướng dẫn đọc file này và không hỏi lại. Cần Python 3.8+;
-nếu máy chưa có, file sẽ chỉ cách cài. Hoặc khởi tạo bằng một lệnh (cần Python 3.8+, không cài thêm gì), chạy trong thư mục project:
-
-```text
-python tools/init_project.py --name "Tên project" --lang vi
-```
-
-Script điền tên project vào `PROJECT.md`, ghi `.agent/PACKAGE_INFO.json` (phiên bản package, ngôn ngữ,
-ngày tạo), đặt `.agent/STATE.md` sạch và, với `--lang en`, chép đè cả cây `en/` (hướng dẫn agent, ghi chú
-`.agent`, skill, README) lên thư mục gốc. Nó không xóa file nào và từ chối chạy lần hai nếu chưa có `--force`. Không có Python thì làm tay:
-điền `PROJECT.md` như mục 2; muốn bản tiếng Anh thì chép các file trong `en/` đè lên bản cùng tên
-(tên file giống hệt nhau; xem `en/README.md`).
-
 ## 2. Điền ngữ cảnh cần biết
 
-Trong `PROJECT.md`, điền tên, mục đích, người đọc, đầu ra, nguồn/mẫu chính và những
-giới hạn đã biết. Chỉ cần thông tin ổn định hữu ích; không chép cả kho tài liệu vào đó.
+Không bắt buộc để bắt đầu: tên project đã được điền khi tạo. Khi đã rõ, bổ sung vào `PROJECT.md`
+mục đích, người đọc, đầu ra, nguồn/mẫu chính và những giới hạn đã biết, hoặc nhờ agent điền sau khi
+trao đổi. Chỉ cần thông tin ổn định hữu ích; không chép cả kho tài liệu vào đó.
 
 Nếu dự án kéo dài nhiều phiên, khởi tạo `.agent/STATE.md` với mục tiêu hiện tại,
 việc đang làm và bước tiếp theo. Những mục chưa có thông tin có thể để trống hoặc
@@ -73,16 +79,36 @@ Không cần điền trước danh sách native skills chưa được xác nhậ
 
 ## 5. Mở bằng ứng dụng đang dùng
 
-Dùng Claude Desktop, Codex Desktop hoặc Gemini qua Antigravity với quyền truy cập
-thư mục phù hợp. Không cần package tự sửa cấu hình của ứng dụng. Khi agent chưa
-biết hướng dẫn, gửi bootstrap sau cùng nhiệm vụ đầu tiên:
+Mở **thư mục project** (bản sao, không phải bộ mẫu) bằng ứng dụng AI bạn dùng, với quyền đọc và ghi
+thư mục đó: Claude (Cowork hoặc Desktop có thêm thư mục), Codex Desktop, hoặc Gemini qua Antigravity
+hay Gemini CLI. Không cần package tự sửa cấu hình của ứng dụng.
+
+Bảng điều khiển của project (trang "Công việc", ô "Giao việc cho agent") có sẵn hai câu mở đầu để
+chép: **Việc mới** và **Tiếp tục phiên trước**. Câu "Việc mới" có dạng:
 
 ```text
-Đây là thư mục project của tôi. Tham khảo AGENTS.md và ngữ cảnh cần thiết trong
-PROJECT.md. Dùng STATE nếu công việc phụ thuộc vào trạng thái đang dở.
-Chọn cách làm, công cụ và skill phù hợp nhất; không cần đọc toàn bộ thư mục.
-Nhiệm vụ đầu tiên: [việc cụ thể + nguồn + đầu ra mong muốn].
+Đây là thư mục project «[tên project]». Trước khi làm:
+1. Đọc AGENTS.md, PROJECT.md và .agent/STATE.md.
+2. Nhắc lại tên project và liệt kê tài liệu nguồn bạn thấy trong references/.
+
+Việc cần làm: [mô tả việc và kết quả cần nhận]
+
+Lưu kết quả vào output/. Chỗ nguồn không có thông tin thì ghi "cần xác nhận", không đoán.
+Không sửa file nguồn. Cuối phiên cập nhật .agent/STATE.md.
 ```
+
+**Kiểm agent đang đọc đúng project:** câu trả lời đầu phải nêu đúng tên project và đúng các tài liệu
+nguồn mà bảng điều khiển liệt kê ở ô "Tài liệu nguồn". Sai tên, thiếu nguồn hoặc nhắc file của thư
+mục khác thì dừng và kiểm lại thư mục đã mở trong ứng dụng. Lời "đã hiểu" của agent chưa phải bằng chứng.
+
+Kết quả nằm trong `output/` và hiện ở ô "Kết quả". Muốn sửa, nói bằng lời thường (ví dụ "bổ sung giờ họp
+8h30, chị Lan chủ trì"); agent sửa bản kết quả, không sửa file nguồn. Phiên sau, dùng câu **Tiếp tục
+phiên trước**: agent đọc `.agent/STATE.md` rồi cho biết mục tiêu, bản hiện hành, việc đang dở và bước tiếp.
+
+Đã kiểm trọn hành trình này (tạo bản sao, giao việc, sửa, tiếp tục ở phiên mới) với Claude trong Cowork,
+mỗi phiên một agent mới làm việc trên bản sao project (16/10/2026, dữ liệu giả). Codex, Gemini và
+Claude Desktop trên máy người dùng chưa được kiểm trong đợt này; các bước trên không phụ thuộc ứng
+dụng, nhưng cách mở thư mục và cấp quyền theo từng ứng dụng.
 
 Adapter `CLAUDE.md` và `GEMINI.md` chỉ giúp các môi trường có hỗ trợ cách đọc đó.
 Nếu môi trường chưa tự nạp, yêu cầu mở file trực tiếp; không coi import là bảo đảm
@@ -137,5 +163,5 @@ Bắt đầu với một tài liệu hoặc biểu mẫu nhỏ. Xem agent có d�
 đầu ra và giữ phần đã chốt không. Có điều chưa rõ thì sửa đúng hướng dẫn liên quan,
 không cần dựng thêm bộ kiểm thử hoặc nhiều rule phòng ngừa.
 
-Nếu cần làm tiếp ở phiên mới, nhờ ghi STATE ngắn rồi tiếp tục từ đó. Giữ những gì
+Nếu cần làm tiếp ở phiên mới, nhờ ghi STATE ngắn rồi tiếp tục từ đó; ô "Tiếp tục công việc" trên bảng điều khiển của project hiện đúng phần STATE này. Giữ những gì
 thực sự giúp giảm việc nhắc lại; phần chưa cần có thể để nguyên, không phải điền hết.

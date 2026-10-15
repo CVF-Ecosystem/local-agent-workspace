@@ -4,10 +4,19 @@ Công cụ của package, chạy từ thư mục gốc project. Khởi tạo, ch
 Kiểm tra Excel và thư viện nguồn cần `openpyxl`: `python -m pip install openpyxl`. Công cụ không tự cài thêm;
 cài thư viện có thể cần mạng, còn các thao tác trên file chạy cục bộ. Bảng điều khiển hỗ trợ cả người dùng hằng ngày và người bảo trì.
 
+## new_project.py
+
+Tạo project mới là **bản sao** của bộ mẫu; bộ mẫu chỉ được đọc. Chạy trong bộ mẫu:
+`python tools/new_project.py --name "Tên công việc" [--dest THƯ_MỤC_CHA] [--lang vi|en] --apply` (bỏ `--apply` để xem trước).
+Project nằm ở `<dest>/<tên>` (mặc định cạnh bộ mẫu). Chỉ chép file của package (cùng quy tắc với `check_package.py`/`build_release.py`;
+ở kho nguồn dùng mẫu sạch của thư mục release_templates), không chép file người dùng của bộ mẫu. Chép vào thư mục tạm cạnh đích rồi đổi
+tên một lần, sau đó chạy `init_project.py` trong bản sao. Thư mục đích đã có thì dừng, không ghi đè; thư mục đã là project hoặc
+không còn là bộ mẫu nguyên vẹn thì từ chối. Bảng điều khiển dùng công cụ này ở trang "Tạo project mới".
+
 ## setup_wizard.py
 
 Trình hướng dẫn cho người dùng không quen dòng lệnh. Bấm đúp `SETUP.bat` (Windows) hoặc `SETUP.command` (macOS) ở thư mục gốc,
-hoặc chạy `python tools/setup_wizard.py`. Nó hỏi ngôn ngữ, tên project và năm thông tin ngắn (mục đích, đầu ra, văn phong,
+hoặc chạy `python tools/setup_wizard.py`. Ở bộ mẫu, nó hỏi trước: tạo bản sao (mặc định, gọi `new_project.py`) hay dùng chính thư mục này. Khi khởi tạo tại chỗ, nó hỏi ngôn ngữ, tên project và năm thông tin ngắn (mục đích, đầu ra, văn phong,
 nguồn, ràng buộc; Enter để bỏ qua), gọi `init_project.py` với các giá trị đó (điền `PROJECT.md`), rồi sao chép đoạn hướng dẫn
 dán vào Project/cloud vào clipboard. Nếu có `setup_answers.json` ở thư mục gốc (tải từ form "Khởi tạo nhanh" trong `START_HERE.html`), nó dùng file này và không hỏi lại. Không làm gì nếu thư mục đã khởi tạo. Các giá trị cũng dùng được trực tiếp qua
 `init_project.py --purpose --outputs --style --sources --constraints`.
@@ -16,7 +25,7 @@ dán vào Project/cloud vào clipboard. Nếu có `setup_answers.json` ở thư 
 
 Bảng điều khiển trong trình duyệt. Bấm đúp `APP.bat` (Windows) hoặc `APP.command` (macOS), hoặc chạy `python tools/app.py`
 (`--no-browser` để tự mở địa chỉ được in ra, `--port N` để chọn cổng). Máy chủ nhỏ chỉ nghe trên 127.0.0.1, mỗi lần mở có mã truy
-cập riêng, không dùng mạng. Mỗi nút gọi một công cụ có sẵn trong thư mục này với tham số cố định (`init_project`, `adopt_project`,
+cập riêng, không dùng mạng. Mỗi nút gọi một công cụ có sẵn trong thư mục này với tham số cố định (`new_project`, `init_project`, `adopt_project`,
 `upgrade_package`, `pack`, `check_output`, `install_skills`, `check_package`, `build_guides_html`, `build_release`, `library`, `transaction`); thao tác có ghi
 luôn xem trước rồi mới thực hiện. Nút "Chọn…" dùng hộp chọn thư mục của `tkinter` nếu Python có. Tự tắt khoảng 3 phút sau khi
 đóng trang. Giao diện nằm trong `app_ui.html` (một file, không tài nguyên ngoài, tiếng Việt và tiếng Anh, sáng và tối).

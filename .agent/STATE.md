@@ -5,7 +5,7 @@
 Hoàn thiện Local Agent Workspace: bảo toàn native của agent người dùng chọn, chuẩn tiếp nhận skill/gói chung (yêu cầu của operator, 14/10/2026).
 
 ## Current phase
-PR #2 (v1.8.0) và PR #3 (SI-01/02/03) đã merge vào main (75b4863); chưa tag, chưa release. Nhánh fix-law01-checker-ui-crlf (từ 75b4863) sửa đợt nhỏ theo review 15/10/2026: LAW-01 rollback, `.new` của pack update, checker theo ownership (E1), thông báo "Cần xem xét" (D1), CRLF (E2), STATE kho nguồn (B3). Commit cục bộ, chưa push.
+Nhánh ux-new-user-journey (từ fix-law01-checker-ui-crlf a94c807): redesign hành trình người mới theo brief 16/10/2026 (bộ mẫu → bản sao → giao việc → sửa → tiếp tục). Commit cục bộ, chưa push. Hai nhánh sửa trước (LAW-01/E1/D1/E2/B3) cũng chưa push.
 
 ## Completed
 - Chuẩn tiếp nhận chung tại `skills/README.md` (VI/EN); AGENTS, SKILL_INDEX, README vùng skill, packs/README, hướng dẫn skill/tạo/chuyển đổi project dẫn chiếu về đó.
@@ -18,6 +18,7 @@ PR #2 (v1.8.0) và PR #3 (SI-01/02/03) đã merge vào main (75b4863); chưa tag
 - Nhánh fix-law01-checker-ui-crlf; CHANGELOG mục v1.8.0 (mục "Sửa theo review ngày 15/10/2026"). Test mới: 4 ca LAW-01 (tests/test_transactions.py), ca `.new` của pack update, lớp ProjectJourney (E1/E2/B3) trong tests/test_structured_tools.py, kiểm thông báo D1 trong tests/test_ui_browser.py; mỗi ca hỏng ở 75b4863 và đạt sau khi sửa. Review 3efecab (15/10): đóng LAW-01/02, E2, B3; D1 đúng ở logic, chưa nghiệm thu browser; E1 còn README người dùng tạo trong thư mục riêng → đã sửa ở commit tiếp theo (README chỉ là của package khi có trong MANIFEST), có ca đối chứng README khung.
 
 ## Open items
+- UX 16/10: đã kiểm bằng giao diện thật (Playwright) và ba phiên agent Claude mới trong Cowork trên bản sao, dữ liệu giả. Chưa kiểm Codex/Gemini/Claude Desktop trên máy người dùng, chưa có người mới độc lập, chưa nghiệm thu thẩm mỹ của operator.
 - Review 15/10/2026 (reviewer ngoài + gói Fable 75b4863): đợt này chỉ sửa LAW-01, `.new` của pack update, E1, D1, E2, B3. Chưa làm: các mục LAW còn mở khác (ngoài LAW-01 và phần `.new` của pack update) và các mục Fable khác; không nhận nguyên roadmap Fable (không bỏ dashboard, không đổi DEFER để có nút bấm, không thêm cổng người thật). CI: job macos-13/Python 3.8 cần đổi image (GitHub đã ngừng macos-13); chưa đổi vì chưa kiểm được image thay thế.
 - Tách điều kiện PROJECT_ONLY khỏi điều kiện vào kho dùng chung trong hồ sơ gói HR (review 5.1): chưa làm.
 - Review độc lập (agent khác, 14/10/2026) có SI-01/02/03: đã tái hiện và sửa (lời khai gói ≠ xác nhận; xác nhận gắn dấu vân tay nội dung; xuất dùng chung hàm điều kiện). Chưa chạy lại browser test với Playwright ngoài máy này; CI macOS-13/Python 3.8 lúc review còn queued.

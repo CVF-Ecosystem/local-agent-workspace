@@ -3,38 +3,45 @@
 Start with a folder and a real piece of work. You do not need to install another application
 or an agent management system.
 
-## 1. Unzip and name it
+## 1. Keep the template, make a copy for each piece of work
 
-Unzip the whole `local-agent-workspace-vX.Y.Z.zip` (the name of the ZIP you downloaded), rename the outer folder to your project
-name and put it somewhere convenient. Open `START_HERE.en.html` in a browser. Do not work
-directly inside the ZIP viewer.
+Unzip the whole `local-agent-workspace-vX.Y.Z.zip` (the ZIP you downloaded) **once** into its own
+folder, for example `D:\Workspace\template`. This folder is the **template**: keep it as is for
+future projects and do not work in it. Do not work inside the ZIP viewer either.
 
-`.agent/` starts with a dot, so some file managers hide it. Keep this folder when you copy the
-project; do not copy only the files you can see.
+Each piece of work happens in **a copy** of the template. The main way:
 
-The handbook also exists in Vietnamese: open `START_HERE.html`.
+- Double-click `APP.bat` (Windows) or `APP.command` (macOS) in the template. The control panel opens
+  on "New project".
+- Type a task name, for example "Intake team meeting minutes", press "Create project", read the preview, then press "Apply".
+- The copy is created next to the template (you can change "Location") and is already set up. An
+  existing folder with the same name is never overwritten. The template is not changed.
+- Press "Open the project panel" to switch to the new project; from now on, work in that folder.
 
-The quickest way: double-click `SETUP.bat` (Windows) or `SETUP.command` (macOS) in the project folder. The wizard asks for the
-language, the project name and a few short details (purpose, outputs, style, sources, constraints; press Enter for any you
-do not know), initialises the project, fills in `PROJECT.md`, and copies the Project/cloud instructions to the clipboard.
-To fill things in beforehand, use the "Quick setup" form at the top of `START_HERE.en.html`: download `setup_answers.json`, put it in
-the project folder and double-click SETUP; the wizard reads it and does not ask again. It needs Python 3.8+; if the machine has none, the file explains how to install it. Or initialise with one command (Python 3.8+, nothing to install), run inside the project folder:
+Python 3.8+ is needed; if it is missing, `APP.bat` explains how to install it. Without Python, do it
+by hand: copy the whole template folder (including the hidden `.agent/` folder; file managers may hide
+it), rename the copy after the task, fill in the name on the first line of `PROJECT.md`, then open the
+copy in your AI app.
 
-```text
-python tools/init_project.py --name "Project name" --lang en
-```
+Other ways give the same result, when you need them:
 
-The script fills the project name into `PROJECT.md`, writes `.agent/PACKAGE_INFO.json` (package
-version, language, creation date), sets a clean `.agent/STATE.md` and, with `--lang en`, copies the
-whole `en/` tree (agent instructions, `.agent` notes, skills, READMEs) over the project root. It deletes nothing and refuses to run a
-second time without `--force`. Without Python, do it by hand: fill in `PROJECT.md` as in section 2;
-for the English files copy those in `en/` over the same-named ones (the file names are identical; see `en/README.md`).
+- `SETUP.bat` / `SETUP.command`: questions in a command window. Run in the template, it asks whether to
+  make a copy (recommended) or set up this folder itself; run in a copy you made, it sets up that copy.
+- Command, run in the template: `python tools/new_project.py --name "Task name" --apply` (add `--dest`
+  to choose the location, `--lang en` for English). Leave out `--apply` to only preview.
+- If you copied the folder yourself, set it up inside the copy: `python tools/init_project.py --name "Project name" --lang en`.
+  The script fills the name into `PROJECT.md`, writes `.agent/PACKAGE_INFO.json`, starts a clean `.agent/STATE.md`;
+  with `--lang en` it copies the `en/` tree over the root. It deletes nothing and refuses a second run without `--force`.
+- The "Quick setup" form in `START_HERE.en.html` makes a `setup_answers.json` that `SETUP` reads without asking again.
+
+The handbook also has a Vietnamese version: open `START_HERE.html`.
 
 ## 2. Fill in the context you need
 
-In `PROJECT.md`, fill in the name, purpose, readers, outputs, main sources/templates and the
-limits you already know. Only stable, useful information is needed; do not paste a whole
-document library into it.
+Not needed to start: the project name is filled in when the copy is made. When it is clear, add the
+purpose, readers, outputs, main sources/templates and known limits to `PROJECT.md`, or ask the agent
+to fill them in after you talk it through. Only stable, useful information is needed; do not paste a
+whole document library into it.
 
 If the project will run across several sessions, start `.agent/STATE.md` with the current
 goal, what you are working on and the next step. Items you have no information for can stay
@@ -77,16 +84,38 @@ available in the session.
 
 ## 5. Open it in the app you use
 
-Use Claude Desktop, Codex Desktop or Gemini through Antigravity with access to the right
-folder. The package does not modify the application's configuration. When the agent does not
-know the instructions yet, send this bootstrap after the first task:
+Open the **project folder** (the copy, not the template) in the AI app you use, with read and write
+access to that folder: Claude (Cowork, or Desktop with the folder added), Codex Desktop, or Gemini
+through Antigravity or Gemini CLI. The package does not modify the application's configuration.
+
+The project control panel ("The work" page, "Give the agent a task" box) has two opening messages
+ready to copy: **New task** and **Continue last session**. The "New task" message reads:
 
 ```text
-This is my project folder. Refer to AGENTS.md and the needed context in PROJECT.md.
-Use STATE if the work depends on what is in progress.
-Choose the approach, tools and skills that fit best; there is no need to read the whole folder.
-First task: [specific work + source + expected output].
+This is the project folder "[project name]". Before you start:
+1. Read AGENTS.md, PROJECT.md and .agent/STATE.md.
+2. Repeat the project name and list the source documents you find in references/.
+
+Task: [describe the task and the result you need]
+
+Save the result in output/. Where the sources lack information, write "to be confirmed" instead of
+guessing. Do not edit the source files. At the end, update .agent/STATE.md.
 ```
+
+**Check that the agent reads the right project:** its first answer must give the right project name
+and the same source documents the panel lists under "Source documents". A wrong name, missing sources
+or files from another folder mean you should stop and check which folder the app opened. The agent
+saying it "understands" is not proof.
+
+Results go to `output/` and show up under "Results". To change something, say it in plain words (for
+example "the meeting started at 8:30, Lan chaired"); the agent edits the result, never the source files.
+Next session, use **Continue last session**: the agent reads `.agent/STATE.md`, then reports the goal,
+the current result, what is unfinished and the next step.
+
+This whole journey (make a copy, give a task, ask for a change, continue in a new session) was checked
+with Claude in Cowork, a fresh agent per session working on a project copy (16 October 2026, synthetic
+data). Codex, Gemini and Claude Desktop on a user's computer were not checked in this round; the steps
+do not depend on the app, but how to open a folder and grant access differs per app.
 
 The `CLAUDE.md` and `GEMINI.md` adapters only help environments that support that way of reading.
 If the environment does not load them by itself, ask the agent to open the file directly; do not
@@ -145,5 +174,5 @@ the output and keeps what has been decided. If something is unclear, fix the rel
 you do not need to build a test suite or many preventive rules.
 
 If you need to continue in a new session, ask the agent to write a short STATE and carry on
-from there. Keep only what really reduces repeating yourself; the rest can stay as it is, and
+from there; the "Continue the work" box on the project panel shows that STATE. Keep only what really reduces repeating yourself; the rest can stay as it is, and
 you do not have to fill in everything.

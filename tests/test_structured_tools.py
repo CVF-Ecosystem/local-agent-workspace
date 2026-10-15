@@ -287,6 +287,81 @@ class ProjectJourney(StructuredBase):
         self.assertEqual(list((self.base / '.agent').glob('STATE.md.bak-*')), [])
 
 
+def tree(root, skip=('__pycache__',)):
+    """Bytes của mọi file, trừ cache Python và dữ liệu vận hành / every file's bytes, minus Python caches and runtime data."""
+    return {q.relative_to(root).as_posix(): q.read_bytes() for q in root.rglob('*')
+            if q.is_file() and not set(q.relative_to(root).parts) & set(skip) and '.agent/runtime' not in q.relative_to(root).as_posix()}
+
+
+class NewProject(StructuredBase):
+    """Tạo project mới là bản sao của bộ mẫu: bộ mẫu không đổi, không ghi đè, không mang trạng thái hay file người dùng.
+    A new project is a copy of the template: the template is unchanged, nothing is overwritten, no state or user files carried."""
+
+    def release_template(self):
+        """Bộ mẫu như sau khi giải nén ZIP phát hành: mẫu sạch, không có release_templates/ / as unzipped from a release ZIP."""
+        for rel in ('PROJECT.md', '.agent/STATE.md', '.agent/HANDOFF.md', 'en/PROJECT.md', 'en/.agent/STATE.md', 'en/.agent/HANDOFF.md'):
+            shutil.copyfile(str(self.base / 'release_templates' / rel), str(self.base / rel))
+        shutil.rmtree(str(self.base / 'release_templates'))
+        r = self.run_tool('check_package.py', '--write-manifest')
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+
+    def test_preview_then_create_next_to_the_template_and_never_overwrite(self):
+        self.release_template()
+        write(self.base / 'references' / 'policies' / 'rieng-cua-bo-mau.md', '# file người dùng đặt nhầm vào bộ mẫu\n')
+        dest = Path(self.tmp.name)
+        before = tree(self.base)
+        result, _, data = self.structured('new_project.py', '--name', 'Biên bản họp: tổ A/B')
+        self.assertEqual((result.returncode, data['status']), (0, 'preview'))
+        target = dest / 'Biên bản họp tổ A B'
+        self.assertEqual(Path(data['target']), target)
+        self.assertFalse(target.exists(), 'preview must write nothing')
+        result, _, data = self.structured('new_project.py', '--name', 'Biên bản họp: tổ A/B', '--apply')
+        self.assertEqual((result.returncode, data['status'], data['changes']), (0, 'success', True), data)
+        self.assertEqual(tree(self.base), before, 'the template must not change')
+        info = json.loads(read(target / '.agent' / 'PACKAGE_INFO.json'))
+        self.assertEqual((info['project_name'], info['language']), ('Biên bản họp: tổ A/B', 'vi'))
+        self.assertIn('- Tên dự án: Biên bản họp: tổ A/B', read(target / 'PROJECT.md'))
+        self.assertFalse((target / 'references' / 'policies' / 'rieng-cua-bo-mau.md').exists(), 'user files of the template are not copied')
+        self.assertTrue((target / 'references' / 'policies' / 'README.md').is_file())
+        self.assertEqual(list(dest.glob('.*.creating-*')), [], 'no temp folder is left behind')
+        chk = subprocess.run([sys.executable, str(target / 'tools' / 'check_package.py'), '--verify'], cwd=str(target), capture_output=True)
+        self.assertEqual(chk.returncode, 0, chk.stdout.decode('utf-8', 'replace'))
+        # chạy lại cùng tên: chặn, không ghi đè project đã có / same name again: blocked, the existing project is kept
+        write(target / 'output' / 'ket-qua.md', 'công việc thật\n')
+        result, _, data = self.structured('new_project.py', '--name', 'Biên bản họp: tổ A/B', '--apply')
+        self.assertEqual((result.returncode, data['status'], data['changes']), (1, 'blocked', False))
+        self.assertEqual(read(target / 'output' / 'ket-qua.md'), 'công việc thật\n')
+        # từ project (không phải bộ mẫu): từ chối / from a project (not the template): refused
+        r = subprocess.run([sys.executable, str(target / 'tools' / 'new_project.py'), '--name', 'X', '--apply', '--result-json'],
+                           cwd=str(target), capture_output=True, encoding='utf-8')
+        self.assertEqual(r.returncode, 1)
+        self.assertEqual(result_schema.split_output(r.stdout)[1]['role'], 'project')
+
+    def test_source_repository_copy_uses_clean_templates(self):
+        dest = Path(self.tmp.name) / 'noi-tao'
+        dest.mkdir()
+        result, _, data = self.structured('new_project.py', '--name', 'Từ kho nguồn', '--dest', dest, '--lang', 'en', '--apply')
+        self.assertEqual((result.returncode, data['status']), (0, 'success'), data)
+        state = read(dest / 'Từ kho nguồn' / '.agent' / 'STATE.md')
+        self.assertNotIn('maintainer-state', state)
+        self.assertIn('Just initialised', state)
+        self.assertFalse((dest / 'Từ kho nguồn' / 'release_templates').exists())
+        self.assertFalse((dest / 'Từ kho nguồn' / 'tests').exists())
+
+    def test_unknown_role_and_bad_places_are_refused_without_writing(self):
+        self.release_template()
+        before = set(os.listdir(self.tmp.name))
+        result, _, data = self.structured('new_project.py', '--name', 'Trong mẫu', '--dest', self.base / 'working', '--apply')
+        self.assertEqual((result.returncode, data['status']), (1, 'blocked'))
+        self.assertFalse((self.base / 'working' / 'Trong mẫu').exists())
+        result, _, data = self.structured('new_project.py', '--name', 'X', '--dest', Path(self.tmp.name) / 'khong-co', '--apply')
+        self.assertEqual((result.returncode, data['status']), (1, 'blocked'))
+        write(self.base / 'PROJECT.md', read(self.base / 'PROJECT.md').replace('[Tên]', 'Ai đó đã sửa tay'))
+        result, _, data = self.structured('new_project.py', '--name', 'Y', '--apply')
+        self.assertEqual((result.returncode, data['status'], data['role']), (1, 'blocked', 'unknown'))
+        self.assertEqual(set(os.listdir(self.tmp.name)), before)
+
+
 class InstallSkillsResults(StructuredBase):
     def test_preview_copy_skip_overwrite_unknown_and_partial(self):
         dest = Path(self.tmp.name) / 'dest'

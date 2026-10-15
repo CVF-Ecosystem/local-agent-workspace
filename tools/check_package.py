@@ -48,7 +48,7 @@ def all_files():
                          and os.path.relpath(os.path.join(d, x), ROOT).replace(os.sep, '/') != RUNTIME_DIR)
         for f in sorted(files):
             rel = os.path.relpath(os.path.join(d, f), ROOT).replace(os.sep, '/')
-            if f.endswith(('.pyc', '.bak')) or '.bak-' in f:
+            if f.endswith(('.pyc', '.bak')) or '.bak-' in f or f == '.git':  # '.git' là file khi dùng git worktree / a file in a git worktree
                 continue
             out.append(rel)
     return out
