@@ -168,6 +168,20 @@ class PackResults(StructuredBase):
         self.assertEqual((result.returncode, data['status'], data['merge_required']), (0, 'success', True))
         self.assertTrue((installed.parent / 'README.md.new').is_file())
 
+        # bản .new đang được hợp nhất dở không bị ghi đè khi gói đổi tiếp / a .new being merged is not overwritten by a later change
+        pending = installed.parent / 'README.md.new'
+        write(pending, read(pending) + '\nĐang hợp nhất dở.\n')
+        merging = pending.read_bytes()
+        write(source, read(source) + '\nBản đổi thứ ba.\n')
+        tree = {p: p.read_bytes() for p in installed.parent.rglob('*') if p.is_file()}
+        for extra in ((), ('--apply',)):
+            result, _, data = self.structured('pack.py', 'update', 'cang-logistics', *extra)
+            self.assertEqual((result.returncode, data['status'], data['changes'], data['merge_required']), (1, 'blocked', False, True))
+            self.assertIn({'path': 'skills/local/packs/cang-logistics/README.md.new', 'action': 'blocked'}, data['files'])
+            self.assertEqual(pending.read_bytes(), merging)
+            self.assertEqual({p: p.read_bytes() for p in installed.parent.rglob('*') if p.is_file()}, tree, 'nothing written')
+        pending.unlink()
+
         result, _, data = self.structured('pack.py', 'remove', 'cang-logistics')
         self.assertEqual((result.returncode, data['status']), (0, 'success'))
         self.assertFalse((self.base / 'skills' / 'local' / 'packs' / 'cang-logistics').exists())
@@ -187,6 +201,72 @@ class PackResults(StructuredBase):
         self.assertEqual((result.returncode, data['status']), (1, 'partial'))
         self.assertEqual(len(data['files']), 1)
         self.assertTrue(data['next_actions'])
+
+
+class ProjectJourney(StructuredBase):
+    """Hành trình của project: tạo bản sao -> thêm nguồn -> cài thử gói -> kiểm package. Luật phát hành không áp vào file của project.
+    Project journey: copy -> add sources -> trial-install a pack -> check. Release rules do not apply to project files."""
+
+    def check(self):
+        result, human, data = self.structured('check_package.py')
+        return result.returncode, data['status'], human
+
+    def test_project_files_do_not_trigger_release_rules_but_package_files_still_do(self):
+        self.init_project()
+        self.assertEqual(self.check()[:2], (0, 'success'))
+        result, _, data = self.structured('pack.py', 'add', 'hanh-chinh-nhan-su')
+        self.assertEqual(result.returncode, 0, data)
+        self.assertIn('v0.', read(self.base / '.agent' / 'SKILL_INDEX.md'))  # dòng gói có phiên bản riêng / the pack row has its own version
+        write(self.base / 'references' / 'policies' / 'quy-che.md',
+              '# Quy chế thanh toán v2.1\n\nMẫu đề nghị ở `output/mau_de_nghi.md`.\n')
+        write(self.base / 'working' / 'nhap.md', '# Bản nháp\n')
+        write(self.base / 'output' / 'bao-cao' / 'ket-qua.md', '# Kết quả v3.0\n')
+        code, status, human = self.check()
+        self.assertEqual((code, status), (0, 'success'), human)
+        # đối chứng: file của package vẫn bị kiểm như cũ / control: package files are still checked
+        write(self.base / 'docs' / 'README.md', read(self.base / 'docs' / 'README.md') + '\nGhi chú v9.9 kiểm thử\n')
+        code, status, human = self.check()
+        self.assertEqual((code, status), (1, 'issues'))
+        self.assertIn('docs/README.md', human)
+
+    def test_crlf_project_template_still_takes_the_answers(self):
+        f = self.base / 'PROJECT.md'
+        f.write_bytes(f.read_bytes().replace(b'\r\n', b'\n').replace(b'\n', b'\r\n'))
+        result = self.run_tool('init_project.py', '--name', 'CRLF', '--purpose', 'Soạn quy trình')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertNotIn('đã có nội dung', result.stdout)
+        data = f.read_bytes()
+        self.assertIn('- Mục đích và người đọc: Soạn quy trình\r\n'.encode('utf-8'), data)
+        self.assertNotIn(b'\n', data.replace(b'\r\n', b''), 'every line ending stays CRLF')
+
+    def test_init_on_a_source_copy_does_not_carry_the_maintainer_state(self):
+        state = self.base / '.agent' / 'STATE.md'
+        maintainer = read(state)
+        self.assertIn('<!-- local-agent-workspace: maintainer-state -->', maintainer)
+        for lang, tpl in (('vi', 'release_templates/.agent/STATE.md'), ('en', 'release_templates/en/.agent/STATE.md')):
+            if lang == 'en':
+                state.write_bytes(maintainer.encode('utf-8'))
+                (self.base / '.agent' / 'PACKAGE_INFO.json').unlink()
+                for b in (self.base / '.agent').glob('STATE.md.bak-*'):
+                    b.unlink()
+            result = self.run_tool('init_project.py', '--name', 'Copy', '--lang', lang)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            now = read(state)
+            self.assertNotIn('maintainer-state', now)
+            clean = read(self.base / tpl)
+            self.assertEqual(now.split('\n')[0], clean.split('\n')[0])
+            self.assertNotIn('[Phase/', now)  # trạng thái khởi đầu đã điền / the starting phase is filled in
+            baks = list((self.base / '.agent').glob('STATE.md.bak-*'))
+            self.assertEqual(len(baks), 1)
+            self.assertEqual(read(baks[0]), maintainer)
+
+    def test_init_keeps_a_project_state_that_has_real_work(self):
+        state = self.base / '.agent' / 'STATE.md'
+        write(state, '# PROJECT STATE\n\n## Current phase\nĐang soạn quy trình mua sắm.\n')
+        result = self.run_tool('init_project.py', '--name', 'Real')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('Đang soạn quy trình mua sắm.', read(state))
+        self.assertEqual(list((self.base / '.agent').glob('STATE.md.bak-*')), [])
 
 
 class InstallSkillsResults(StructuredBase):

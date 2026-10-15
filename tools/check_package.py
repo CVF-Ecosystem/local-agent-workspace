@@ -53,6 +53,15 @@ def all_files():
             out.append(rel)
     return out
 
+def user_owned(rel):
+    """File do người dùng/project sở hữu (không phải của package): không áp quy tắc phát hành như số phiên bản,
+    bản tiếng Anh hay đường dẫn trong tài liệu. README.md trong các thư mục người dùng vẫn là của package.
+    User/project-owned file (not the package's): release rules such as version strings, the English mirror and doc paths
+    do not apply. A README.md in the user folders still belongs to the package."""
+    if rel in USER_FILES:
+        return True
+    return rel.startswith(USER_DIRS) and os.path.basename(rel) != 'README.md'
+
 def in_manifest(rel):
     if rel in GENERATED:
         return False
@@ -216,8 +225,8 @@ def check_all(release=False):
     # 2. chuỗi phiên bản nhất quán
     vre = re.compile(r'(?<![\w.])v(\d+)\.(\d+)(?:\.(\d+))?(?![\w.])')
     for f in files:
-        if f in ('CHANGELOG.md', 'MANIFEST.sha256') or not f.endswith(('.md', '.html', '.py', '.json')):
-            continue
+        if f in ('CHANGELOG.md', 'MANIFEST.sha256') or not f.endswith(('.md', '.html', '.py', '.json')) or user_owned(f):
+            continue  # file của project (SKILL_INDEX có dòng gói, tài liệu trong references/...) có số phiên bản riêng / project files carry their own versions
         for m in vre.finditer(rd(f)):
             got = '%s.%s' % (m.group(1), m.group(2))
             if got != maj_min or (m.group(3) is not None and m.group(0)[1:] != ver):
@@ -262,7 +271,7 @@ def check_all(release=False):
     root_lang = [f for f in files if not f.startswith(('en/', 'docs/', 'tools/', 'dist/')) and f.endswith(('.md', '.html', '.csv', '.txt')) and
                  (f in ('AGENTS.md', 'CLAUDE.md', 'GEMINI.md', 'PROJECT.md', 'README.md') or f.startswith(('.agent/', 'archive/', 'output/', 'working/', 'references/', 'skills/', 'examples/')))
                  and '/scripts/' not in f and f not in ('.agent/PACKAGE_INFO.json',)
-                 and not (f.startswith(('archive/', 'output/', 'working/')) and f.count('/') > 1)  # nội dung của người dùng, chỉ README cần bản en/
+                 and not (user_owned(f) and f not in USER_FILES)  # mẫu PROJECT/STATE... vẫn cần bản en/ cho lớp phủ; nội dung của người dùng (kể cả references/, working/...): chỉ README cần bản en/ / user content: only READMEs need en/
                  and not f.startswith(('skills/local/project/', 'skills/local/packs/', 'skills/external/', 'skills/inbox/'))]  # skill của project/pack do người dùng quản lý, không bắt buộc bản en/
     root_lang.append('docs/README.md')
     for f in sorted(root_lang):
@@ -276,7 +285,7 @@ def check_all(release=False):
                 warns.append('%s không nhắc tới skill "%s".' % (doc, d))
     # 4. đường dẫn trong tài liệu
     for f in md:
-        if f == 'CHANGELOG.md': continue
+        if f == 'CHANGELOG.md' or user_owned(f): continue  # tài liệu của project có thể nhắc file của chính project / project docs may name project files
         t = strip_fences(rd(f))
         base = os.path.dirname(f)
         anc = base
@@ -332,6 +341,12 @@ def check_all(release=False):
             if os.path.isdir(P('packs/' + n)):
                 for e in packmod.validate_pack(P('packs/' + n), n):
                     errs.append('Gói: ' + e)
+    # 7c. kho nguồn chưa khởi tạo: STATE phải là mẫu sạch hoặc mang dấu người bảo trì, để init_project.py không mang sang project
+    # source tree not initialised: STATE is the clean template or carries the maintainer marker, so init does not carry it over
+    if os.path.isdir(P('release_templates')) and not os.path.exists(P('.agent/PACKAGE_INFO.json')) and os.path.isfile(P('.agent/STATE.md')):
+        st = rd('.agent/STATE.md')
+        if '[Phase/trạng thái hiện tại]' not in st and '<!-- local-agent-workspace: maintainer-state -->' not in st:
+            errs.append('.agent/STATE.md của kho nguồn thiếu dấu "<!-- local-agent-workspace: maintainer-state -->" (init_project.py dựa vào dấu này để không mang trạng thái người bảo trì sang project).')
     # 8. phát hành
     if release:
         if os.path.exists(P('setup_answers.json')): errs.append('Bản phát hành không được có setup_answers.json.')

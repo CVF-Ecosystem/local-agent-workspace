@@ -42,6 +42,19 @@
   `qwen-max` không dùng skill pháp lý và không nhắc bản thử. **Chưa đạt:** khi được nhờ "cài skill REVIEW vào Claude", `qwen-max` vẫn
   nói sẽ tự đổi `REVIEW` thành `AVAILABLE` (5/5 lần, kể cả sau khi thêm câu cấm). Việc chặn thật nằm ở công cụ (`install_skills.py` từ
   chối skill `REVIEW`), không ở hướng dẫn; xem giới hạn trong `skills/README.md`.
+- Sửa theo review ngày 15/10/2026 (tái hiện từng lỗi trên source `75b4863` trước khi sửa; mỗi lỗi có test hỏng ở bản cũ, đạt ở bản này):
+  (1) LAW-01: `transaction.py rollback` xét cả thao tác còn `pending` theo nội dung file. Trước đây sự cố rơi đúng lúc sau `os.replace`, trước
+  khi nhật ký ghi `done` thì rollback báo thành công, file không được phục hồi và bản sao lưu bị xóa; nay file được phục hồi (hoặc xóa nếu do
+  giao dịch tạo), còn nếu file đã bị sửa tiếp thì báo `partial` và giữ bản sao lưu. (2) `pack.py update` không ghi đè `<tên>.new` đang chờ
+  hợp nhất: khác nội dung thì dừng trước mọi lần ghi (cả xem trước), giống `upgrade_package.py`. (3) `check_package.py` không áp quy tắc phát
+  hành (số phiên bản, bản tiếng Anh, đường dẫn trong tài liệu) vào file của project: dòng gói trong `.agent/SKILL_INDEX.md`, tài liệu trong
+  `references/`, `working/`, `output/`...; file của package vẫn kiểm như cũ. (4) Bảng điều khiển: kết quả "Cần xem xét" (công cụ chạy xong, có
+  phát hiện) không còn kèm thông báo "Công cụ không hoàn tất"; chỉ đọc thì ghi rõ không file nào bị sửa. Mã thoát 1 của công cụ kiểm giữ nguyên.
+  (5) `init_project.py`: `PROJECT.md` dùng CRLF vẫn nhận câu trả lời (`--purpose`...) và giữ CRLF. (6) `.agent/STATE.md` của kho nguồn mang dấu
+  `<!-- local-agent-workspace: maintainer-state -->`; khởi tạo project từ bản chép kho nguồn (vd. Code → Download ZIP) thay STATE đó bằng mẫu
+  sạch trong `release_templates/` (bản cũ lưu `.bak-<ngày>`); STATE của project có công việc thật không có dấu nên giữ nguyên.
+  `check_package.py` báo lỗi nếu STATE kho nguồn mất dấu này. Chưa làm trong lượt này: các mục LAW khác, chạy browser trên Windows/macOS thật,
+  thay image `macos-13` trong CI.
 
 ## v1.7.0 — 2026-10-13
 

@@ -45,6 +45,9 @@ USER_TEMPLATES = {'PROJECT.md', '.agent/STATE.md', '.agent/HANDOFF.md', '.agent/
                   '.agent/SKILL_INDEX.md', '.agent/PENDING_LESSONS.md'}
 NAME_LINE = {'vi': '- Tên dự án: [Tên]', 'en': '- Project name: [Name]'}
 PHASE_PLACEHOLDER = {'vi': '[Phase/trạng thái hiện tại]', 'en': '[Current phase/status]'}
+# Dấu của STATE người bảo trì trong kho nguồn: khởi tạo project thì thay bằng mẫu sạch (có sao lưu), không mang sang project.
+# Marker of the maintainer STATE in the source repository: project init replaces it with the clean template (backed up).
+MAINTAINER_STATE_MARK = '<!-- local-agent-workspace: maintainer-state -->'
 PHASE_TEXT = {'vi': 'Mới khởi tạo từ package v%s ngày %s; chưa có công việc.',
               'en': 'Just initialised from package v%s on %s; no work yet.'}
 
@@ -109,12 +112,29 @@ def main():
             return False
         return True
 
+    if MAINTAINER_STATE_MARK in rd('.agent/STATE.md'):
+        # chạy trên bản chép từ kho nguồn (vd. Code -> Download ZIP): STATE là của người bảo trì, không phải của project này
+        # run on a copy of the source repository (e.g. Code -> Download ZIP): STATE belongs to the maintainers, not this project
+        tpl = 'release_templates/' + ('en/' if a.lang == 'en' else '') + '.agent/STATE.md'
+        if not os.path.isfile(P(tpl)) or MAINTAINER_STATE_MARK in rd(tpl):
+            msg = L('.agent/STATE.md là trạng thái của người bảo trì package nhưng thiếu mẫu sạch %s. Chưa ghi gì; hãy dùng gói phát hành.',
+                    '.agent/STATE.md is the package maintainers\' state but the clean template %s is missing. Nothing written; use a release package.') % tpl
+            LAST_RESULT = make('blocked', code=1, message=msg, changes=False, next_actions=['Use a release ZIP, then retry.'])
+            sys.exit(msg)
+        with open(P('.agent/STATE.md'), 'rb') as f:
+            baks.append(('.agent/STATE.md.bak-' + stamp, f.read()))
+        virt['.agent/STATE.md'] = rd(tpl)
+        log.append(L('Thay .agent/STATE.md của người bảo trì (kho nguồn) bằng mẫu sạch; bản cũ lưu .bak-%s.',
+                     'Replaced the maintainers\' .agent/STATE.md (source repository) with the clean template; old copy saved as .bak-%s.') % stamp)
+
     if a.lang == 'en':
         pairs = overlay_pairs()
         if not pairs:
             sys.exit(L('Thiếu thư mục en/ trong package.', 'The en/ folder is missing from the package.'))
         swapped = 0
         for src, dst in pairs:
+            if dst in virt:  # đã quyết định ở trên (STATE người bảo trì) / already decided above (maintainer STATE)
+                continue
             new = rd(src)
             old = rd(dst) if os.path.isfile(P(dst)) else None
             if old == new:
@@ -148,10 +168,11 @@ def main():
             continue
         label = next((v for v in labels if re.search(r'^- %s:' % re.escape(v), cur('PROJECT.md'), re.M)),
                      labels[0 if a.lang == 'vi' else 1])
-        pat = re.compile(r'^(- %s: )\[[^\n]*\]$' % re.escape(label), re.M)
+        # \r? giữ đúng dòng kết thúc CRLF / \r? keeps CRLF line endings intact
+        pat = re.compile(r'^(- %s: )\[[^\r\n]*\](\r?)$' % re.escape(label), re.M)
         if pat.search(cur('PROJECT.md')):
             log.append(L('Điền "%s" vào PROJECT.md', 'Fill "%s" into PROJECT.md') % label)
-            virt['PROJECT.md'] = pat.sub(lambda m, val=val: m.group(1) + val, cur('PROJECT.md'), count=1)
+            virt['PROJECT.md'] = pat.sub(lambda m, val=val: m.group(1) + val + m.group(2), cur('PROJECT.md'), count=1)
         else:
             log.append(L('Bỏ qua "%s": dòng này trong PROJECT.md đã có nội dung.', 'Skipped "%s": that line in PROJECT.md already has content.') % label)
 

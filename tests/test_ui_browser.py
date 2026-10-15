@@ -278,6 +278,9 @@ class MainFlows(BrowserCase):
         p.click('#ck-run')
         expect(p.locator('#sh-tag')).to_contain_text('Cần xem xét')
         expect(p.locator('#sh-out')).to_contain_text('Tên khách hàng')
+        # có phát hiện là kiểm xong, không phải công cụ lỗi (D1) / findings mean the check finished, not a tool failure (D1)
+        expect(p.locator('#sh-msg')).to_contain_text('Không file nào bị sửa')
+        expect(p.locator('#sh-msg')).not_to_contain_text('Công cụ không hoàn tất')
         self.close_sheet()
         p.reload()  # the file list lives in the page only
         p.fill('#ck-path', str(pdf))
@@ -596,7 +599,7 @@ class ContrastAndWording(unittest.TestCase):
         entries = {}
         for m in re.finditer(r"([A-Za-z_][A-Za-z0-9_]*)\s*:\s*\[\s*'((?:[^'\\]|\\.)*)'\s*,\s*'((?:[^'\\]|\\.)*)'\s*\]", block):
             entries[m.group(1)] = (m.group(2), m.group(3))
-        keys = ['err_conn', 'err_tool', 'err_blocked', 'tx_partial', 'tx_partial_rb', 'merge_msg',
+        keys = ['err_conn', 'err_tool', 'err_blocked', 'm_issues_ro', 'tx_partial', 'tx_partial_rb', 'merge_msg',
                 'ck_not_checked_next', 'merge_state_fail', 'diff_fail', 'pick_fail']
         vi_safe = ('Chưa ghi', 'chưa biết', 'chưa rõ', 'Chưa rõ', 'không bị thay đổi', 'Không có gì bị', 'Không file',
                    'được giữ', 'giữa hai trạng thái', 'không phải kết quả đạt')

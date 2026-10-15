@@ -409,6 +409,73 @@ class Transactions(unittest.TestCase):
         self.assertEqual((r.returncode, envelope(r)['status']), (1, 'partial'))
         self.assertFalse((old / 'added.txt').exists())
 
+    def crash_after_replace(self, project, files):
+        """Ghi từng file rồi chết ngay sau os.replace, trước khi nhật ký ghi 'done' (cửa sổ LAW-01).
+        Writes then dies right after os.replace, before the journal records 'done' (the LAW-01 window)."""
+        driver = ("import json, os, sys\n"
+                  "sys.path.insert(0, sys.argv[1])\n"
+                  "import transaction as tx\n"
+                  "t = tx.Transaction(sys.argv[2], 'crash-window', txid='crash-window')\n"
+                  "for rel, text in json.loads(sys.argv[3]).items():\n"
+                  "    t.add(rel, text.encode('utf-8'))\n"
+                  "real = t._set_state\n"
+                  "def die(op, state):\n"
+                  "    if state == 'done':\n"
+                  "        os._exit(70)\n"
+                  "    real(op, state)\n"
+                  "t._set_state = die\n"
+                  "t.run()\n")
+        e = dict(os.environ, PYTHONUTF8='1', PYTHONDONTWRITEBYTECODE='1')
+        e.pop(FAULT, None)
+        r = subprocess.run([sys.executable, '-c', driver, str(ROOT / 'tools'), str(project), json.dumps(files)],
+                           env=e, capture_output=True, timeout=60)
+        self.assertEqual(r.returncode, 70, r.stderr)
+        return Path(tx.txdir(str(project), 'crash-window'))
+
+    def test_rollback_after_crash_between_replace_and_journal_restores_the_original(self):
+        """LAW-01: nhật ký còn 'pending' nhưng file đã thay; rollback phải phục hồi, không báo thành công rỗng.
+        LAW-01: the journal still says 'pending' but the file was replaced; rollback must restore it, not report an empty success."""
+        project = self.root / 'law01'
+        write(project, 'existing.txt', 'ORIGINAL')
+        tdir = self.crash_after_replace(project, {'existing.txt': 'REPLACED'})
+        journal = json.loads((tdir / 'journal.json').read_text(encoding='utf-8'))
+        self.assertEqual(journal['ops'][0]['state'], 'pending')
+        self.assertEqual((project / 'existing.txt').read_text(encoding='utf-8'), 'REPLACED')
+        res = tx.rollback(str(project), 'crash-window')
+        self.assertEqual((res['status'], res['code'], res['unchecked']), ('success', 0, []))
+        self.assertEqual((project / 'existing.txt').read_text(encoding='utf-8'), 'ORIGINAL')
+        self.assertEqual([f['action'] for f in res['files']], ['restored'])
+        self.assertEqual(tx.incomplete(str(project)), [])
+
+    def test_rollback_after_crash_removes_a_file_it_created(self):
+        project = self.root / 'law01-new'
+        write(project, 'keep.txt', 'x')
+        self.crash_after_replace(project, {'created.txt': 'NEW'})
+        self.assertTrue((project / 'created.txt').exists())
+        res = tx.rollback(str(project), 'crash-window')
+        self.assertEqual((res['status'], res['code']), ('success', 0))
+        self.assertFalse((project / 'created.txt').exists())
+
+    def test_rollback_after_crash_keeps_backup_when_the_file_was_edited_again(self):
+        """Không xác định được thì không báo thành công và không xóa bản sao lưu. / Undecidable: no success, backup kept."""
+        project = self.root / 'law01-edit'
+        write(project, 'existing.txt', 'ORIGINAL')
+        tdir = self.crash_after_replace(project, {'existing.txt': 'REPLACED'})
+        write(project, 'existing.txt', 'USER EDIT')
+        res = tx.rollback(str(project), 'crash-window')
+        self.assertEqual((res['status'], res['code']), ('partial', 1))
+        self.assertEqual((project / 'existing.txt').read_text(encoding='utf-8'), 'USER EDIT')
+        self.assertEqual((tdir / 'backup' / 'existing.txt').read_text(encoding='utf-8'), 'ORIGINAL')
+
+    def test_resume_after_crash_between_replace_and_journal_finishes_cleanly(self):
+        project = self.root / 'law01-resume'
+        write(project, 'existing.txt', 'ORIGINAL')
+        self.crash_after_replace(project, {'existing.txt': 'REPLACED'})
+        res = tx.resume(str(project), 'crash-window')
+        self.assertEqual((res['status'], res['code']), ('success', 0))
+        self.assertEqual((project / 'existing.txt').read_text(encoding='utf-8'), 'REPLACED')
+        self.assertEqual(tx.incomplete(str(project)), [])
+
 
 if __name__ == '__main__':
     unittest.main()

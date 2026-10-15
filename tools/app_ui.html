@@ -629,7 +629,7 @@ var D={
  mt3:['Dựng lại hướng dẫn HTML','Rebuild the HTML guides'],mt3d:['Sau khi sửa Markdown trong docs/','After editing the Markdown in docs/'],
  mt4:['Đóng gói phát hành','Build a release'],mt4d:['Chỉ dùng trong kho nguồn: kiểm tra và đóng ZIP vào dist/ mà không sửa dữ liệu phát triển','Source repository only: validate and build the ZIP in dist/ without changing development data'],run:['Chạy','Run'],
  close:['Đóng','Close'],copy:['Chép','Copy'],copied:['Đã chép','Copied'],running:['Đang chạy…','Running…'],ok:['Thành công','Succeeded'],fail:['Cần xem lại','Needs attention'],bad:['Thiếu thông tin','Missing input'],
- m_preview:['Mới xem trước, chưa ghi gì. Đọc kết quả rồi bấm Thực hiện.','Preview only, nothing written yet. Read it, then press Apply.'],m_nothing:['Không có gì cần thay đổi.','Nothing to change.'],m_done:['Đã ghi thay đổi. Bước tiếp: kiểm lại kết quả ở trang tương ứng.','Changes written. Next step: check the result on the matching page.'],m_ro:['Chỉ đọc, không ghi gì.','Read only, nothing written.'],
+ m_preview:['Mới xem trước, chưa ghi gì. Đọc kết quả rồi bấm Thực hiện.','Preview only, nothing written yet. Read it, then press Apply.'],m_nothing:['Không có gì cần thay đổi.','Nothing to change.'],m_done:['Đã ghi thay đổi. Bước tiếp: kiểm lại kết quả ở trang tương ứng.','Changes written. Next step: check the result on the matching page.'],m_ro:['Chỉ đọc, không ghi gì.','Read only, nothing written.'],m_issues_ro:['Đã kiểm xong và có điểm cần xem ở các dòng phía trên. Chỉ đọc: Không file nào bị sửa. Bước tiếp: xử lý từng điểm rồi kiểm lại.','The check finished and found points to review in the lines above. Read only: Nothing was changed. Next step: deal with each point, then check again.'],m_issues:['Công cụ đã chạy xong và có điểm cần xem ở các dòng phía trên. Bước tiếp: xử lý từng điểm rồi chạy lại.','The tool finished and found points to review in the lines above. Next step: deal with each point, then run it again.'],
  pick_fail:['Không mở được hộp chọn. Không có gì bị thay đổi. Bước tiếp: dán đường dẫn vào ô bên cạnh.','The picker could not open. Nothing was changed. Next step: paste the path into the field beside it.'],
  off_t:['Đã tắt bảng điều khiển','The control panel has stopped'],off_p:['Có thể đóng trang này. Mở lại bằng APP.bat hoặc APP.command.','You can close this page. Open it again with APP.bat or APP.command.'],
  t_init:['Khởi tạo project','Set up project'],t_adopt:['Đưa vào project đã có','Bring into existing project'],t_up:['Nâng cấp package','Upgrade package'],t_pack:['Gói','Pack'],t_check:['Kiểm tra trước khi giao','Check before delivery'],t_install:['Cài skill vào ứng dụng','Install skills'],
@@ -759,7 +759,8 @@ function run(title,icon,act,params,opts){opts=opts||{};if(busy){toast(t('busy_wa
     if(params&&params.apply)$('sh-s2').classList.add('on');
     // every outcome says what happened, whether data is safe, and the next step (see the err_* and *_next strings)
     var msg='';
-    if(!ok)msg=res.status==='blocked'?t('err_blocked'):res.status==='not_checked'?t('ck_not_checked_next'):res.status==='partial'?'':t('err_tool');
+    // 'issues' = công cụ chạy xong và có phát hiện; không phải lỗi công cụ / the tool finished with findings; not a tool failure
+    if(!ok)msg=res.status==='issues'?t(res.changes===false||opts.ro?'m_issues_ro':'m_issues'):res.status==='blocked'?t('err_blocked'):res.status==='not_checked'?t('ck_not_checked_next'):res.status==='partial'?'':t('err_tool');
     else if(params&&params.apply)msg=t(res.merge_required?'merge_msg':'m_done');
     else if(opts.preview){
       if(res.changes===false){msg=t('m_nothing');}
