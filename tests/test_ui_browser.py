@@ -52,7 +52,7 @@ def copy_package(dst, src=ROOT):
     """Temporary copy of a package; runtime data is never copied."""
     shutil.copytree(str(src), str(dst), ignore=PKG_IGNORE)
     shutil.rmtree(str(dst / '.agent' / 'runtime'), ignore_errors=True)
-    [f.unlink() for f in (dst / 'assets').glob('*') if f.is_file() and f.name != 'README.md']  # logo/nhận diện của máy phát triển / dev-machine branding
+    [f.unlink() for f in (dst / 'assets').rglob('*') if f.is_file() and f.name != 'README.md']  # logo, font của máy phát triển / dev-machine branding and fonts
     return dst
 
 

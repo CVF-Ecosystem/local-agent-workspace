@@ -26,6 +26,10 @@ Tạo file `branding.json` trong thư mục này với nội dung:
 
 Trang hướng dẫn mở trực tiếp từ file nên không đọc được `branding.json`. Mỗi lần mở bảng điều khiển, nó ghi lại `assets/branding.js` từ `branding.json` để các trang hướng dẫn dùng. Sau khi sửa `branding.json`, mở APP một lần rồi tải lại trang hướng dẫn.
 
-Dự án mới tạo từ bộ mẫu (nút "Tạo dự án mới") mang theo `branding.json`, `branding.js` và `logo.*` của bộ mẫu; các file khác trong `assets/` không được chép.
+Dự án mới tạo từ bộ mẫu (nút "Tạo dự án mới") mang theo `branding.json`, `branding.js`, `logo.*` và font trong `assets/fonts/` của bộ mẫu; các file khác trong `assets/` không được chép.
+
+## 4. Font chữ riêng
+
+Đặt file font của đơn vị trong thư mục `assets/fonts/`. Xem `assets/fonts/README.md` để biết trợ lý AI dùng các font này ra sao và giới hạn khi dùng với file Word, Excel.
 
 *Thư mục này thuộc về người dùng: nâng cấp bộ công cụ không ghi đè file ở đây.*

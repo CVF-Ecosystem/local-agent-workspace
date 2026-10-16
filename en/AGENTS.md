@@ -178,3 +178,10 @@ from sources distinct from the agent's own proposals. The prohibitions are in "M
 Sensitive data (passwords, access keys, personal data of customers or staff, confidential documents): do not
 copy it into project files or the conversation unless necessary; use a masked version or a description when possible.
 Follow the "Data sensitivity" line in `PROJECT.md`; if it is empty treat the data as internal and ask before handling personal data.
+
+Organization fonts: if `assets/fonts/` holds font files (`.ttf`, `.otf`, `.woff2`) and the user asks for that font,
+or `PROJECT.md` names the organization's standard font, use it for the output. HTML and PDF: embed the font in the file
+(HTML uses `@font-face` with base64 data) so it shows correctly on other computers. Word, Excel: only set the font name;
+when handing over the file, say that the recipient's computer must have the font installed, otherwise a substitute font
+is shown. If no suitable font is there, use the default font and say so; do not download or substitute another font.
+Do not copy font files anywhere other than into the output file.

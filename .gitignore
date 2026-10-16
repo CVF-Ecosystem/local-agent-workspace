@@ -12,3 +12,5 @@ Thumbs.db
 assets/branding.json
 assets/branding.js
 assets/logo.*
+assets/fonts/*
+!assets/fonts/README.md

@@ -26,6 +26,10 @@ Create `branding.json` in this folder with:
 
 Guide pages are opened straight from disk and cannot read `branding.json`. Each time the control panel opens, it rewrites `assets/branding.js` from `branding.json` for the guide pages to use. After editing `branding.json`, open APP once, then reload the guide page.
 
-New projects created from the template ("Create a new project") carry over its `branding.json`, `branding.js` and `logo.*`; other files in `assets/` are not copied.
+New projects created from the template ("Create a new project") carry over its `branding.json`, `branding.js`, `logo.*` and the fonts in `assets/fonts/`; other files in `assets/` are not copied.
+
+## 4. Custom fonts
+
+Put the organization's font files in `assets/fonts/`. See `assets/fonts/README.md` for how the AI agent uses them and the limits for Word and Excel files.
 
 *This folder belongs to you: package upgrades never overwrite files here.*

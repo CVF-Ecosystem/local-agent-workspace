@@ -81,7 +81,7 @@ class StructuredBase(unittest.TestCase):
         self.base = Path(self.tmp.name) / 'package'
         shutil.copytree(ROOT, self.base, ignore=shutil.ignore_patterns('.git', '__pycache__', 'dist', 'roadmap', 'tests', 'feedback'))
         shutil.rmtree(str(self.base / '.agent' / 'runtime'), ignore_errors=True)  # dữ liệu vận hành của máy phát triển không vào bản sao / dev-machine runtime data never enters the copy
-        [f.unlink() for f in (self.base / 'assets').glob('*') if f.is_file() and f.name != 'README.md']  # logo/nhận diện của máy phát triển / dev-machine branding
+        [f.unlink() for f in (self.base / 'assets').rglob('*') if f.is_file() and f.name != 'README.md']  # logo, font của máy phát triển / dev-machine branding and fonts
 
     def run_tool(self, script, *args, patch=''):
         env = dict(os.environ, PYTHONUTF8='1', PYTHONDONTWRITEBYTECODE='1')
@@ -313,6 +313,8 @@ class NewProject(StructuredBase):
         write(self.base / 'assets' / 'branding.json', '{"title": "Đơn vị Mẫu"}\n')  # nhận diện của bộ mẫu đi theo dự án / template branding carries over
         write(self.base / 'assets' / 'logo.svg', '<svg xmlns="http://www.w3.org/2000/svg"/>\n')
         write(self.base / 'assets' / 'ghi-chu.txt', 'không phải nhận diện\n')
+        write(self.base / 'assets' / 'fonts' / 'DonVi-Regular.ttf', 'font giả\n')
+        write(self.base / 'assets' / 'fonts' / 'ghi-chu.txt', 'không phải font\n')
         dest = Path(self.tmp.name)
         before = tree(self.base)
         result, _, data = self.structured('new_project.py', '--name', 'Biên bản họp: tổ A/B')
@@ -331,6 +333,9 @@ class NewProject(StructuredBase):
         self.assertEqual(read(target / 'assets' / 'branding.json'), '{"title": "Đơn vị Mẫu"}\n')
         self.assertTrue((target / 'assets' / 'logo.svg').is_file())
         self.assertFalse((target / 'assets' / 'ghi-chu.txt').exists(), 'only branding files are carried from assets/')
+        self.assertTrue((target / 'assets' / 'fonts' / 'DonVi-Regular.ttf').is_file())
+        self.assertFalse((target / 'assets' / 'fonts' / 'ghi-chu.txt').exists())
+        self.assertTrue((target / 'assets' / 'fonts' / 'README.md').is_file())
         self.assertEqual(list(dest.glob('.*.creating-*')), [], 'no temp folder is left behind')
         chk = subprocess.run([sys.executable, str(target / 'tools' / 'check_package.py'), '--verify'], cwd=str(target), capture_output=True)
         self.assertEqual(chk.returncode, 0, chk.stdout.decode('utf-8', 'replace'))
