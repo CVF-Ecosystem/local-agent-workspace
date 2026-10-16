@@ -133,6 +133,9 @@ def fail(a, code, message, status='blocked', findings=None, unchecked=None):
     sys.exit(code)
 
 def main():
+    if hasattr(sys.stdout, 'reconfigure'):
+        sys.stdout.reconfigure(encoding='utf-8')
+        sys.stderr.reconfigure(encoding='utf-8')
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--out', default='dist')
     ap.add_argument('--rc', type=int, default=None, metavar='N',
@@ -141,8 +144,6 @@ def main():
                     help='bỏ qua các cổng, ghi skipped trong báo cáo; chỉ dùng với --rc (skip gates, --rc only)')
     ap.add_argument('--result-json', action='store_true', help=argparse.SUPPRESS)
     a = ap.parse_args()
-    if hasattr(sys.stdout, 'reconfigure'):
-        sys.stdout.reconfigure(encoding='utf-8')
     if a.rc is not None and a.rc < 0:
         fail(a, 2, 'Không đóng gói: --rc phải là số không âm.', status='error',
              findings=[{'severity': 'error', 'message': '--rc phải là số không âm'}])
