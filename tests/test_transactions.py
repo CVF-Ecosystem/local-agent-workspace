@@ -101,6 +101,7 @@ class Transactions(unittest.TestCase):
     def package(self, name):
         dst = self.root / name
         shutil.copytree(ROOT, dst, ignore=shutil.ignore_patterns('.git', '__pycache__', 'dist', 'roadmap', 'tests', 'feedback'))
+        shutil.rmtree(str(dst / '.agent' / 'runtime'), ignore_errors=True)  # dữ liệu vận hành của máy phát triển không vào bản sao / dev-machine runtime data never enters the copy
         return dst
 
     def test_preview_and_dry_run_write_nothing_and_create_no_runtime(self):

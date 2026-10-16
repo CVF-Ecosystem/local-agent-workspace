@@ -181,6 +181,8 @@ has a legal-basis table (the legal-basis.md file in the skill’s references fol
 Install with `python tools/pack.py add <name>` or on the control panel: "Manage and maintain" group → "Manage skills". There is also the `_template`
 skeleton for writing new packs.
 
+**Note:** the five bundled packs are trial versions that have not been through intake. Their legal basis was compiled from news and advisory sites and has not been checked article by article against official texts (the Official Gazette, government legal portals); in tests the AI assistant still sometimes produced "verbatim quotes" that are not in the pack. Use them for reference and drafting; for documents to be signed or sent outside, check the legal basis against the official texts yourself first.
+
 Each project keeps its own copy of the skills, so a project is always self-contained and portable; `tools/upgrade_package.py` keeps
 these copies in sync with a new package when you upgrade. If you want a skill to show up in an app's menu (for example Claude), use
 `python tools/install_skills.py --dest <the app's skills folder> --skills <name,name> --yes` (without `--yes` it only previews), or the

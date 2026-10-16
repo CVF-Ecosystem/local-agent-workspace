@@ -81,6 +81,12 @@
   Theo quyết định của operator: tiếng Việt dùng "bộ công cụ" thay cho "package" và "kỹ năng" thay cho "skill" trong chữ người
   dùng đọc (giao diện, README, hướng dẫn, demo, START_HERE); bản tiếng Anh giữ "package" và "skill". Tên file, ID kỹ năng, `SKILL.md`,
   `SKILL_INDEX.md` và nội dung trong khối mã giữ nguyên.
+- Sửa theo phản hồi 16/10/2026: (1) Các test chép package từ thư mục nguồn (`test_transactions`, `test_workflows`, `test_structured_tools`,
+  `test_release_gate`, `test_panel`) bỏ `.agent/runtime/` sau khi chép, nên không còn hỏng khi máy phát triển đã từng mở bảng điều khiển
+  (đã tái hiện bằng cách tạo `.agent/runtime/` ở thư mục nguồn: trước sửa 1 ca hỏng, sau sửa 125 ca đạt). (2) Năm gói đi kèm vẫn
+  `DEFER`/thử nghiệm; trang Quản lý kỹ năng hiện cảnh báo khi có gói chưa qua tiếp nhận, `packs/README.md` và các hướng dẫn (VI/EN) nói rõ
+  căn cứ pháp lý chưa đối chiếu với văn bản chính thức, chỉ dùng tham khảo và soạn nháp, tự đối chiếu trước khi dùng cho văn bản trình ký
+  hoặc gửi ra ngoài. (3) CI bỏ job `macos-13`/Python 3.8 (image đã ngừng); Python 3.8 vẫn kiểm trên Ubuntu và Windows.
 
 ## v1.7.0 — 2026-10-13
 

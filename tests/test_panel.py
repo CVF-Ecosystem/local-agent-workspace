@@ -69,6 +69,7 @@ def setUpModule():
     PKG_TMP = tempfile.TemporaryDirectory(prefix='panel-pkg-')
     PKG = Path(PKG_TMP.name) / 'package'
     shutil.copytree(ROOT, PKG, ignore=PKG_IGNORE)
+    shutil.rmtree(str(PKG / '.agent' / 'runtime'), ignore_errors=True)  # dữ liệu vận hành của máy phát triển không vào bản sao / dev-machine runtime data never enters the copy
 
 
 def tearDownModule():

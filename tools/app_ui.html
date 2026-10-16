@@ -473,6 +473,7 @@ textarea{min-height:68px;resize:vertical}
       <div class="r"><div class="chips" id="sk-filter" data-tt="sk_filter"></div><div class="search"><span data-ico="search"></span><label class="sr" for="sk-q" data-t="sk_search"></label><input type="text" id="sk-q"></div></div></div>
       <div class="tw"><table><thead><tr><th style="width:230px" data-t="col_skill"></th><th style="width:110px" data-t="col_scope"></th><th data-t="col_use"></th></tr></thead><tbody id="sk-rows"></tbody></table></div></div>
     <div class="ph" style="margin-top:28px"><h2 style="font-size:17px" data-t="pk_h"></h2><p data-t="pk_p"></p></div>
+    <div class="note warn mb" id="pk-trial-note" hidden><span data-ico="alert"></span><span data-t="pk_trial_note"></span></div>
     <div class="note warn mb" id="pk-need" hidden><span data-ico="alert"></span><span style="flex:1"><span data-t="pk_need"></span> <a href="#" data-goto="upgrade" id="pk-need-a" data-t="pk_need_a"></a></span></div>
     <div class="grid c2" id="pk-list"></div>
   </section>
@@ -782,7 +783,8 @@ var D={
  np_lang_h:['Ngôn ngữ của các file hướng dẫn và mẫu trong dự án. Không đổi ngôn ngữ hay cài đặt của ứng dụng AI.','Language of the guidance files and templates in the project. It does not change your AI app’s language or settings.'],
  ag_start_h:['Dùng khi giao một việc mới. Tên file trong lời nhắc giúp trợ lý tìm đúng thông tin; bạn chỉ cần điền phần trong [ ].','Use it for a new task. The file names in the message help the assistant find the right information; you only fill in the part in [ ].'],
  ag_cont_h:['Dùng khi quay lại sau một thời gian. Trợ lý chỉ tóm tắt việc đang dở và bước tiếp theo, chưa sửa file nào cho tới khi bạn đồng ý.','Use it when you come back later. The assistant only summarises the unfinished work and the next step, and changes no file until you agree.'],
- col_skill:['Kỹ năng','Skill']
+ col_skill:['Kỹ năng','Skill'],
+ pk_trial_note:['Các gói đi kèm hiện là bản thử nghiệm, chưa qua tiếp nhận. Bảng căn cứ pháp lý được tổng hợp từ trang tin và trang tư vấn, chưa đối chiếu từng điều với văn bản chính thức (Công báo, cổng văn bản của Nhà nước); khi thử, trợ lý AI vẫn có lúc đưa ra câu \u201ctrích nguyên văn\u201d không có trong gói. Dùng để tham khảo và soạn nháp. Với văn bản trình ký hoặc gửi ra ngoài, tự đối chiếu căn cứ với văn bản chính thức trước khi dùng.','The bundled packs are trial versions that have not been through intake. Their legal-basis tables were compiled from news and advisory sites and have not been checked article by article against official texts (the Official Gazette, government legal portals); in tests the AI assistant still sometimes produced \u201cverbatim quotes\u201d that are not in the pack. Use them for reference and drafting. For documents to be signed or sent outside, check the legal basis against the official texts yourself first.']
 };
 var PACK_ICON={'phap-ly':'scale','van-thu-luu-tru':'archive','cang-logistics':'anchor','hanh-chinh-nhan-su':'users','ke-toan-noi-bo':'calc'};
 // Thanh bên theo vai trò thư mục: việc hằng ngày ở trên, quản lý/bảo trì gom vào nhóm thu gọn / Sidebar by folder role
@@ -1024,6 +1026,8 @@ function render(){
   drawHealth();
   // packs
   $('pk-need').hidden=s.initialized;
+  // gói chưa qua tiếp nhận: luôn nói rõ giới hạn căn cứ / packs not through intake: always state the limits of their legal basis
+  $('pk-trial-note').hidden=!(s.packs.items||[]).some(function(p){return p.intake!=='accepted';});
   var items=s.packs.items||[];
   $('pk-list').innerHTML=items.length?items.map(function(p){
     var newer=p.installed&&p.version&&p.version!==p.installed;

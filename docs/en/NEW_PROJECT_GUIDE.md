@@ -77,6 +77,8 @@ For specialised work, also install a **domain pack**: `phap-ly`, `van-thu-luu-tr
 "Manage skills", "Domain packs" section, and press "Install to try". An installed pack is recorded in `.agent/SKILL_INDEX.md`, so the assistant finds it when the work needs it; you do
 not need to name the pack when giving work. A pack labelled "Trial" has not been through intake: the assistant tries it and says so. A pack with a valid intake record also has "Install and allow"; allowing it is your decision for this project, not proof that the pack was checked as safe.
 
+**Note:** the five bundled packs are trial versions that have not been through intake. Their legal basis was compiled from news and advisory sites and has not been checked article by article against official texts (the Official Gazette, government legal portals); in tests the AI assistant still sometimes produced "verbatim quotes" that are not in the pack. Use them for reference and drafting; for documents to be signed or sent outside, check the legal basis against the official texts yourself first.
+
 Let the assistant choose a native skill, a local skill or direct work according to the task. A
 skill written for one project is only worth adding when there is a real template or lesson
 to reuse. There is no need to pre-fill a list of native skills that are not confirmed to be

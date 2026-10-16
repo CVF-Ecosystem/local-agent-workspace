@@ -174,6 +174,8 @@ toán, chứng từ, hóa đơn, lưu trữ). Mỗi gói có bảng căn cứ (t
 chiếu để người dùng kiểm lại. Cài bằng `python tools/pack.py add <tên>` hoặc trong bảng điều khiển: nhóm "Quản lý và bảo trì" → "Quản lý kỹ năng". Ngoài ra
 là khung `_template` để viết gói mới.
 
+**Lưu ý:** năm gói đi kèm hiện là bản thử nghiệm, chưa qua tiếp nhận. Căn cứ pháp lý trong gói được tổng hợp từ trang tin và trang tư vấn, chưa đối chiếu từng điều với văn bản chính thức (Công báo, cổng văn bản của Nhà nước); khi thử, trợ lý AI vẫn có lúc đưa ra câu "trích nguyên văn" không có trong gói. Dùng để tham khảo và soạn nháp; với văn bản trình ký hoặc gửi ra ngoài, tự đối chiếu căn cứ với văn bản chính thức trước khi dùng.
+
 Mỗi dự án giữ bản sao kỹ năng của riêng mình, nên dự án luôn tự đủ và mang đi được; công cụ `tools/upgrade_package.py` giữ
 các bản sao này đồng bộ với bộ công cụ mới khi bạn nâng cấp. Nếu muốn một kỹ năng hiện trong menu của ứng dụng (ví dụ Claude), dùng
 `python tools/install_skills.py --dest <thư mục skill của ứng dụng> --skills <tên,tên> --yes` (không có `--yes` thì chỉ xem trước), hoặc

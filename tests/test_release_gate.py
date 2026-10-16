@@ -34,6 +34,7 @@ def make_copy(base, name, with_tests=True):
         ignore.append('tests')
     dst = base / name
     shutil.copytree(ROOT, dst, ignore=shutil.ignore_patterns(*ignore))
+    shutil.rmtree(str(dst / '.agent' / 'runtime'), ignore_errors=True)  # dữ liệu vận hành của máy phát triển không vào bản sao / dev-machine runtime data never enters the copy
     return dst
 
 
