@@ -70,6 +70,7 @@ def setUpModule():
     PKG = Path(PKG_TMP.name) / 'package'
     shutil.copytree(ROOT, PKG, ignore=PKG_IGNORE)
     shutil.rmtree(str(PKG / '.agent' / 'runtime'), ignore_errors=True)  # dữ liệu vận hành của máy phát triển không vào bản sao / dev-machine runtime data never enters the copy
+    [f.unlink() for f in (PKG / 'assets').glob('*') if f.is_file() and f.name != 'README.md']  # logo/nhận diện của máy phát triển / dev-machine branding
 
 
 def tearDownModule():

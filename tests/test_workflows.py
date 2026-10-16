@@ -64,6 +64,7 @@ class Workflows(unittest.TestCase):
         dst = self.root / name
         shutil.copytree(ROOT, dst, ignore=shutil.ignore_patterns('.git', '__pycache__', 'dist', 'roadmap', 'tests', 'feedback'))
         shutil.rmtree(str(dst / '.agent' / 'runtime'), ignore_errors=True)  # dữ liệu vận hành của máy phát triển không vào bản sao / dev-machine runtime data never enters the copy
+        [f.unlink() for f in (dst / 'assets').glob('*') if f.is_file() and f.name != 'README.md']  # logo/nhận diện của máy phát triển / dev-machine branding
         return dst
 
     def test_adopt_preserves_instructions_both_languages_and_rerun(self):

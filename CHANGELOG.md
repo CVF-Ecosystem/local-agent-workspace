@@ -92,6 +92,7 @@
   vị dài được thu chữ cho vừa một dòng (trước đây xuống dòng ở cẩm nang). 10 trang hướng dẫn dùng chung bộ màu, font, bo góc và đổ bóng
   với bảng điều khiển (thanh bên tối giữ nguyên bố cục). Sửa START_HERE bị định dạng lại làm `build_guides_html.py` không dựng được.
   Thanh bên các trang hướng dẫn VI dùng "Tạo dự án mới", "Kỹ năng"; số kỹ năng sửa thành 14.
+  Dự án mới tạo từ bộ mẫu mang theo logo và `branding.json` của bộ mẫu. Các test chép package bỏ file nhận diện của máy phát triển.
 
 ## v1.7.0 — 2026-10-13
 

@@ -10,8 +10,8 @@ Dùng / Usage (chạy từ bộ mẫu / run from the template folder):
 - Bộ mẫu không bị sửa: chỉ đọc file của package, chép sang thư mục tạm cạnh đích rồi đổi tên một lần,
   sau đó chạy tools/init_project.py BÊN TRONG bản sao. / The template is only read; files go to a temp folder next to
   the target, which is renamed in one step; tools/init_project.py then runs INSIDE the copy.
-- Chỉ chép file của package (theo MANIFEST/quy tắc của check_package.py), không chép file người dùng trong
-  references/, working/, output/... của bộ mẫu. / Only package files are copied, never user files in the template.
+- Chỉ chép file của package (theo MANIFEST/quy tắc của check_package.py) và logo/tên đơn vị trong assets/, không chép file
+  người dùng trong references/, working/, output/... của bộ mẫu. / Only package files and the assets/ branding are copied.
 Mã thoát / exit codes: 0 xong hoặc xem trước, 1 bị chặn/lỗi, 2 sai tham số. Chỉ cần Python 3.8+, không dùng mạng.
 """
 import argparse, io, json, os, re, shutil, subprocess, sys, uuid
@@ -65,9 +65,12 @@ def template_role():
     return 'unknown'
 
 
+BRANDING = ('assets/branding.json', 'assets/branding.js', 'assets/logo.png', 'assets/logo.svg', 'assets/logo.jpg', 'assets/logo.jpeg', 'assets/logo.webp')
+
+
 def package_files():
     files = [f for f in cp.all_files() if f not in ('.agent/PACKAGE_INFO.json', '.agent/MERGE_STATUS.json', 'setup_answers.json')
-             and (cp.in_manifest(f) or f in cp.USER_FILES or f == 'MANIFEST.sha256')]
+             and (cp.in_manifest(f) or f in cp.USER_FILES or f == 'MANIFEST.sha256' or f in BRANDING)]  # logo/tên đơn vị của bộ mẫu đi theo dự án mới / template branding carries over
     return sorted(set(files))
 
 

@@ -35,6 +35,7 @@ def make_copy(base, name, with_tests=True):
     dst = base / name
     shutil.copytree(ROOT, dst, ignore=shutil.ignore_patterns(*ignore))
     shutil.rmtree(str(dst / '.agent' / 'runtime'), ignore_errors=True)  # dữ liệu vận hành của máy phát triển không vào bản sao / dev-machine runtime data never enters the copy
+    [f.unlink() for f in (dst / 'assets').glob('*') if f.is_file() and f.name != 'README.md']  # logo/nhận diện của máy phát triển / dev-machine branding
     return dst
 
 

@@ -26,4 +26,6 @@ Create `branding.json` in this folder with:
 
 Guide pages are opened straight from disk and cannot read `branding.json`. Each time the control panel opens, it rewrites `assets/branding.js` from `branding.json` for the guide pages to use. After editing `branding.json`, open APP once, then reload the guide page.
 
+New projects created from the template ("Create a new project") carry over its `branding.json`, `branding.js` and `logo.*`; other files in `assets/` are not copied.
+
 *This folder belongs to you: package upgrades never overwrite files here.*
