@@ -3,38 +3,45 @@
 Start with a folder and a real piece of work. You do not need to install another application
 or an agent management system.
 
-## 1. Unzip and name it
+## 1. Keep the template, make a copy for each piece of work
 
-Unzip the whole `local-agent-workspace-vX.Y.Z.zip` (the name of the ZIP you downloaded), rename the outer folder to your project
-name and put it somewhere convenient. Open `START_HERE.en.html` in a browser. Do not work
-directly inside the ZIP viewer.
+Unzip the whole `local-agent-workspace-vX.Y.Z.zip` (the ZIP you downloaded) **once** into its own
+folder, for example `D:\Workspace\template`. This folder is the **template**: keep it as is for
+future projects and do not work in it. Do not work inside the ZIP viewer either.
 
-`.agent/` starts with a dot, so some file managers hide it. Keep this folder when you copy the
-project; do not copy only the files you can see.
+Each piece of work happens in **a copy** of the template. The main way:
 
-The handbook also exists in Vietnamese: open `START_HERE.html`.
+- Double-click `APP.bat` (Windows) or `APP.command` (macOS) in the template. The control panel opens
+  on "New project".
+- Type a task name, for example "Intake team meeting minutes", press "Preview project creation", read the preview, then press "Apply".
+- The copy is created beside the template (you can change it in "Project location") and is already set up. An
+  existing folder with the same name is never overwritten. The template is not changed.
+- Press "Open project panel" to switch to the new project ("Open project folder" only opens the folder; neither opens your AI app); from now on, work in that folder.
 
-The quickest way: double-click `SETUP.bat` (Windows) or `SETUP.command` (macOS) in the project folder. The wizard asks for the
-language, the project name and a few short details (purpose, outputs, style, sources, constraints; press Enter for any you
-do not know), initialises the project, fills in `PROJECT.md`, and copies the Project/cloud instructions to the clipboard.
-To fill things in beforehand, use the "Quick setup" form at the top of `START_HERE.en.html`: download `setup_answers.json`, put it in
-the project folder and double-click SETUP; the wizard reads it and does not ask again. It needs Python 3.8+; if the machine has none, the file explains how to install it. Or initialise with one command (Python 3.8+, nothing to install), run inside the project folder:
+Python 3.8+ is needed; if it is missing, `APP.bat` explains how to install it. Without Python, do it
+by hand: copy the whole template folder (including the hidden `.agent/` folder; file managers may hide
+it), rename the copy after the task, fill in the name on the first line of `PROJECT.md`, then open the
+copy in your AI app.
 
-```text
-python tools/init_project.py --name "Project name" --lang en
-```
+Other ways give the same result, when you need them:
 
-The script fills the project name into `PROJECT.md`, writes `.agent/PACKAGE_INFO.json` (package
-version, language, creation date), sets a clean `.agent/STATE.md` and, with `--lang en`, copies the
-whole `en/` tree (agent instructions, `.agent` notes, skills, READMEs) over the project root. It deletes nothing and refuses to run a
-second time without `--force`. Without Python, do it by hand: fill in `PROJECT.md` as in section 2;
-for the English files copy those in `en/` over the same-named ones (the file names are identical; see `en/README.md`).
+- `SETUP.bat` / `SETUP.command`: questions in a command window. Run in the template, it asks whether to
+  make a copy (recommended) or set up this folder itself; run in a copy you made, it sets up that copy.
+- Command, run in the template: `python tools/new_project.py --name "Task name" --apply` (add `--dest`
+  to choose the location, `--lang en` for English). Leave out `--apply` to only preview.
+- If you copied the folder yourself, set it up inside the copy: `python tools/init_project.py --name "Project name" --lang en`.
+  The script fills the name into `PROJECT.md`, writes `.agent/PACKAGE_INFO.json`, starts a clean `.agent/STATE.md`;
+  with `--lang en` it copies the `en/` tree over the root. It deletes nothing and refuses a second run without `--force`.
+- The "Quick setup" form in `START_HERE.en.html` makes a `setup_answers.json` that `SETUP` reads without asking again.
+
+The handbook also has a Vietnamese version: open `START_HERE.html`.
 
 ## 2. Fill in the context you need
 
-In `PROJECT.md`, fill in the name, purpose, readers, outputs, main sources/templates and the
-limits you already know. Only stable, useful information is needed; do not paste a whole
-document library into it.
+Not needed to start: the project name is filled in when the copy is made. When it is clear, add the
+purpose, readers, outputs, main sources/templates and known limits to `PROJECT.md`, or ask the assistant
+to fill them in after you talk it through. Only stable, useful information is needed; do not paste a
+whole document library into it.
 
 If the project will run across several sessions, start `.agent/STATE.md` with the current
 goal, what you are working on and the next step. Items you have no information for can stay
@@ -63,33 +70,58 @@ sources. You do not need to move them into the project's regulations area.
 
 The package already includes fourteen compact skills in `skills/local/shared/` and matching entries in
 `.agent/SKILL_INDEX.md`. You do not need to create or install more skills to start. The skill
-files are written in Vietnamese; agents read them without problems.
+files are written in Vietnamese; assistants read them without problems.
 
 For specialised work, also install a **domain pack**: `phap-ly`, `van-thu-luu-tru`, `cang-logistics`, `hanh-chinh-nhan-su`,
-`ke-toan-noi-bo`. The easiest way: double-click `APP.bat` (Windows) or `APP.command` (macOS), open "Domain packs" and press
-"Install". An installed pack is recorded in `.agent/SKILL_INDEX.md`, so the agent finds it when the work needs it; you do
-not need to name the pack when giving work. A pack labelled "Trial" has not been through intake: the agent tries it and says so.
+`ke-toan-noi-bo`. The easiest way: double-click `APP.bat` (Windows) or `APP.command` (macOS), open the "Manage and maintain" group →
+"Manage skills", "Domain packs" section, and press "Install to try". An installed pack is recorded in `.agent/SKILL_INDEX.md`, so the assistant finds it when the work needs it; you do
+not need to name the pack when giving work. A pack labelled "Trial" has not been through intake: the assistant tries it and says so. A pack with a valid intake record also has "Install and allow"; allowing it is your decision for this project, not proof that the pack was checked as safe.
 
-Let the agent choose a native skill, a local skill or direct work according to the task. A
+**Note:** the five bundled packs are trial versions that have not been through intake. Their legal basis was compiled from news and advisory sites and has not been checked article by article against official texts (the Official Gazette, government legal portals); in tests the AI assistant still sometimes produced "verbatim quotes" that are not in the pack. Use them for reference and drafting; for documents to be signed or sent outside, check the legal basis against the official texts yourself first.
+
+Let the assistant choose a native skill, a local skill or direct work according to the task. A
 skill written for one project is only worth adding when there is a real template or lesson
 to reuse. There is no need to pre-fill a list of native skills that are not confirmed to be
 available in the session.
 
 ## 5. Open it in the app you use
 
-Use Claude Desktop, Codex Desktop or Gemini through Antigravity with access to the right
-folder. The package does not modify the application's configuration. When the agent does not
-know the instructions yet, send this bootstrap after the first task:
+Open the **project folder** (the copy, not the template) in the AI app you use, with read and write
+access to that folder: Claude (Cowork, or Desktop with the folder added), Codex Desktop, or Gemini
+through Antigravity or Gemini CLI. The package does not modify the application's configuration.
+
+The project control panel ("The work" page, "Give your AI assistant a task" box) has two messages
+ready to copy: **New task** and **Review unfinished work**. The file names in them help the assistant find
+the right information; you only fill in the part in square brackets, then send it. The "New task" message reads:
 
 ```text
-This is my project folder. Refer to AGENTS.md and the needed context in PROJECT.md.
-Use STATE if the work depends on what is in progress.
-Choose the approach, tools and skills that fit best; there is no need to read the whole folder.
-First task: [specific work + source + expected output].
+This is the project folder "[project name]". Before you start:
+1. Read AGENTS.md, PROJECT.md and .agent/STATE.md.
+2. Repeat the project name and list the source documents you find in references/.
+
+Task: [describe the task and the result you need]
+
+Save the result in output/. Where the sources lack information, write "to be confirmed" instead of
+guessing. Do not edit the source files. At the end, update .agent/STATE.md in plain work language.
 ```
 
+**Check that the assistant reads the right project:** compare the project name and the files the
+assistant lists with the folder you opened and with "Source documents" on the panel. A wrong name,
+missing sources or files from another folder mean you should stop and check which folder the app has
+access to. A correct name does not prove the assistant read everything, and "I understand" is not proof either.
+
+Results go to `output/` and show up under "Results". To change something, say it in plain words (for
+example "the meeting started at 8:30, Lan chaired"); the assistant edits the result, never the source files.
+Next session, use **Review unfinished work**: the assistant reads `.agent/STATE.md`, then summarises the goal,
+the current result, what is unfinished and the next step; the message tells it not to change any file until you agree.
+
+This whole journey (make a copy, give a task, ask for a change, continue in a new session) was checked
+with Claude in Cowork, a fresh assistant per session working on a project copy (16 October 2026, synthetic
+data). Codex, Gemini and Claude Desktop on a user's computer were not checked in this round; the steps
+do not depend on the app, but how to open a folder and grant access differs per app.
+
 The `CLAUDE.md` and `GEMINI.md` adapters only help environments that support that way of reading.
-If the environment does not load them by itself, ask the agent to open the file directly; do not
+If the environment does not load them by itself, ask the assistant to open the file directly; do not
 treat an import as a guarantee of connection. Skill files in the workspace do not appear in the
 provider's native menu by themselves.
 
@@ -140,10 +172,10 @@ stored; check by opening a new session and asking what is in progress.
 
 ## 6. Try it with a real task
 
-Start with a small document or form. See whether the agent uses the right sources, understands
+Start with a small document or form. See whether the assistant uses the right sources, understands
 the output and keeps what has been decided. If something is unclear, fix the relevant guidance;
 you do not need to build a test suite or many preventive rules.
 
-If you need to continue in a new session, ask the agent to write a short STATE and carry on
-from there. Keep only what really reduces repeating yourself; the rest can stay as it is, and
+If you need to continue in a new session, ask the assistant to write a short STATE and carry on
+from there; the "Continue the work" box on the project panel shows that STATE. Keep only what really reduces repeating yourself; the rest can stay as it is, and
 you do not have to fill in everything.

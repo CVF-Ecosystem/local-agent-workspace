@@ -1,22 +1,22 @@
-# Dùng với project có sẵn và nâng cấp package
+# Dùng với dự án có sẵn và nâng cấp bộ công cụ
 
 Giữ cấu trúc đang hoạt động. Thêm phần hữu ích trước; tổ chức lại chỉ khi thực sự
-có lợi. Không cần tạo project mới trong ứng dụng chỉ để sử dụng bộ thư mục này.
+có lợi. Không cần tạo dự án mới trong ứng dụng chỉ để sử dụng bộ thư mục này.
 
 ## 1. Giữ một bản sao trước khi thay đổi
 
 Sao lưu thư mục hoặc các file sẽ sửa. Xác định file hướng dẫn, trạng thái, đầu ra
-và skills đang dùng để không làm mất phần riêng của dự án.
+và kỹ năng đang dùng để không làm mất phần riêng của dự án.
 
 Không cần dùng Git hoặc công cụ coding để làm việc này; một bản sao thư mục là đủ
 cho nhu cầu đối chiếu và quay lại khi cần.
 
 ## 2. Thêm có chọn lọc, không chép đè toàn bộ
 
-Giải nén bản package cần dùng ra thư mục riêng để so sánh. Khi có file trùng tên, hợp nhất phần
+Giải nén bản của bộ công cụ cần dùng ra thư mục riêng để so sánh. Khi có file trùng tên, hợp nhất phần
 hữu ích thay vì chấp nhận ghi đè hàng loạt.
 
-| Đang có trong project | Cách xử lý gợi ý |
+| Đang có trong dự án | Cách xử lý gợi ý |
 |---|---|
 | `AGENTS.md`, `PROJECT.md` | Giữ ngữ cảnh/hướng dẫn riêng; thay đoạn chung cũ chỉ khi phù hợp. |
 | `CLAUDE.md`, `GEMINI.md` | Giữ phần riêng của provider; adapter chỉ nối đến hướng dẫn chung. |
@@ -25,40 +25,40 @@ hữu ích thay vì chấp nhận ghi đè hàng loạt.
 | `skills/`, nguồn, output | Giữ nguyên tài nguyên hiện hành; không di chuyển chỉ để giống cây mẫu. |
 | `README.md`, `docs/`, `START_HERE.html` | Giữ nội dung riêng; thêm bộ hướng dẫn ở vị trí phù hợp, giữ liên kết nội bộ. |
 
-Lần đầu đưa package vào project đã có (chưa có `VERSION` hay `.agent/`), dùng công cụ thay vì chép tay: từ thư mục package chạy
+Lần đầu đưa bộ công cụ vào dự án đã có (chưa có `VERSION` hay `.agent/`), dùng công cụ thay vì chép tay: từ thư mục bộ công cụ chạy
 `python tools/adopt_project.py --project "đường dẫn" --name "Tên project"` để xem báo cáo, thêm `--apply` để ghi. Công cụ chỉ thêm file
-còn thiếu; `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` cũ giữ nguyên và vẫn có hiệu lực; bản package khác nội dung được lưu thành `<tên>.new` để hợp nhất, kể cả khi chọn tiếng Anh.
+còn thiếu; `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` cũ giữ nguyên và vẫn có hiệu lực; bản của bộ công cụ khác nội dung được lưu thành `<tên>.new` để hợp nhất, kể cả khi chọn tiếng Anh.
 Nếu bản `.new` đã tồn tại và khác nội dung, công cụ dừng trước khi ghi. Kết quả có hướng dẫn chưa hợp nhất sẽ báo rõ “CẦN HỢP NHẤT”;
-file khác bị trùng giữ nguyên của bạn và bản package lưu thành `<tên>.new`; skill riêng sẵn có được thêm dòng vào `SKILL_INDEX.md` với Status `REVIEW` (agent vẫn dùng được trong project; bạn xác nhận rồi đổi sang `AVAILABLE`). Nếu việc này bị gián đoạn, xem mục 9.
-Skill dùng chung ở `skills/local/shared/`, skill chứa thông tin riêng của đơn vị ở `skills/local/project/`; không chép nội dung chung vào skill riêng.
+file khác bị trùng giữ nguyên của bạn và bản của bộ công cụ lưu thành `<tên>.new`; kỹ năng riêng sẵn có được thêm dòng vào `SKILL_INDEX.md` với Status `REVIEW` (trợ lý AI vẫn dùng được trong dự án; bạn xác nhận rồi đổi sang `AVAILABLE`). Nếu việc này bị gián đoạn, xem mục 9.
+Kỹ năng dùng chung ở `skills/local/shared/`, kỹ năng chứa thông tin riêng của đơn vị ở `skills/local/project/`; không chép nội dung chung vào kỹ năng riêng.
 
-Nếu đổi vị trí thư mục package hoặc tài liệu hướng dẫn, nhờ agent cập nhật những
-đường dẫn liên quan; không cần ép project cũ vào cây thư mục mới.
+Nếu đổi vị trí thư mục bộ công cụ hoặc tài liệu hướng dẫn, nhờ trợ lý AI cập nhật những
+đường dẫn liên quan; không cần ép dự án cũ vào cây thư mục mới.
 
-## 3. Nâng cấp lên bản package mới
+## 3. Cập nhật lên phiên bản mới của bộ công cụ
 
-Mỗi project ghi phiên bản package đang dùng trong `.agent/PACKAGE_INFO.json` (file này do
-`tools/init_project.py` tạo; project có sẵn chưa có thì tạo tay, ghi `"version"` theo bản đã dùng). Bản package
+Mỗi dự án ghi phiên bản của bộ công cụ đang dùng trong `.agent/PACKAGE_INFO.json` (file này do
+`tools/init_project.py` tạo; dự án có sẵn chưa có thì tạo tay, ghi `"version"` theo bản đã dùng). Bản bộ công cụ
 nằm trong file `VERSION`; `CHANGELOG.md` cho biết điều gì đổi giữa các bản.
 
-Cách nhanh và an toàn: dùng công cụ nâng cấp. Nó so ba bên (bản gốc cũ, bản hiện tại của project, bản mới), chỉ báo cáo
+Cách nhanh và an toàn: dùng công cụ nâng cấp. Nó so ba bên (bản gốc cũ, bản hiện tại của dự án, bản mới), chỉ báo cáo
 trước rồi mới ghi khi bạn thêm `--apply`.
 
 - Bước 1: Giải nén bản mới ra thư mục riêng; đọc `CHANGELOG.md` từ bản đang dùng đến bản mới.
 - Bước 2: Từ thư mục bản mới, chạy `python tools/upgrade_package.py --project "đường dẫn project cũ"` để xem báo cáo.
    File chưa ai sửa sẽ được cập nhật, file mới được thêm, file bạn đã sửa được giữ nguyên.
-- Bước 3: Nếu báo cáo ổn, chạy lại kèm `--apply`. File mà bạn đã sửa và package cũng đổi sẽ không bị ghi đè: bản mới
+- Bước 3: Nếu báo cáo ổn, chạy lại kèm `--apply`. File mà bạn đã sửa và bộ công cụ cũng đổi sẽ không bị ghi đè: bản mới
    được lưu thành `<tên>.new` để bạn hợp nhất, rồi xóa file `.new`. Các file của bạn (`PROJECT.md`, STATE, HANDOFF, INDEX,
-   `SKILL_INDEX.md`, `references/`, `working/`, `output/`, `archive/`, skill riêng) không bao giờ bị đụng tới.
+   `SKILL_INDEX.md`, `references/`, `working/`, `output/`, `archive/`, kỹ năng riêng) không bao giờ bị đụng tới.
 - Bước 4: Chạy `python tools/check_package.py --verify` và mở một phiên thử. Nếu dùng gói lĩnh vực, chạy
    `python tools/pack.py list` để xem gói nào có bản mới (`pack.py update <tên> --apply`).
 
 Nếu lần chạy `--apply` bị gián đoạn (mất điện, máy tắt giữa chừng), công cụ báo CHƯA HOÀN TẤT và không ghi thêm gì; xem mục 9.
 
 Project cũ chưa có `MANIFEST.sha256` (làm từ trước bản này) thì công cụ không so sánh an toàn được: nâng cấp tay, chép có chọn lọc
-những file package bạn chưa sửa. Công cụ nâng cấp không xóa file nào (việc gỡ thay đổi khi phục hồi một giao dịch dở xem ở mục 9); file không còn trong package mới chỉ được liệt kê để bạn tự quyết định.
+những file bộ công cụ bạn chưa sửa. Công cụ nâng cấp không xóa file nào (việc gỡ thay đổi khi phục hồi một giao dịch dở xem ở mục 9); file không còn trong bộ công cụ mới chỉ được liệt kê để bạn tự quyết định.
 
-Không thay STATE, HANDOFF, nguồn và đầu ra thật của project
+Không thay STATE, HANDOFF, nguồn và đầu ra thật của dự án
 bằng các file mẫu của bản mới.
 
 ## 4. Rút gọn ngữ cảnh cũ khi hữu ích
@@ -70,21 +70,21 @@ vị trí cũ. Không cần chia lại tất cả tài liệu ngay trong một l
 Nếu có nhật ký dài, chỉ đưa trạng thái hiện tại và quyết định đã xác nhận vào STATE.
 Giữ lịch sử gốc để tham khảo khi cần, không nạp toàn bộ vào mỗi phiên.
 
-## 5. Giữ nguồn và skills đang hoạt động
+## 5. Giữ nguồn và kỹ năng đang hoạt động
 
 INDEX có thể trỏ đến nguồn ở vị trí hiện tại. Không cần dời cả kho vào `references/`.
 
-Skill native đang có không cần copy vào package. Skill tự xây và external skill
-có thể giữ nguyên vị trí, chỉ ghi nơi tìm và khi nào hữu ích. Với skill thêm mới,
+Kỹ năng native đang có không cần copy vào bộ công cụ. Kỹ năng tự xây và external kỹ năng
+có thể giữ nguyên vị trí, chỉ ghi nơi tìm và khi nào hữu ích. Với kỹ năng thêm mới,
 xem đủ mục đích, nguồn gốc, dependency và điểm đáng chú ý; không làm lại việc nhập
-skill mỗi lần dùng.
+kỹ năng mỗi lần dùng.
 
 Nếu sao chép tài nguyên từ ngoài, giữ nguồn và điều khoản của phần được nhập. Khi
 chỉ biên soạn mới theo ý tưởng tham khảo, ghi rõ thay vì gọi đó là bản sao upstream.
 
 ## 6. Kết nối với phiên làm việc hiện tại
 
-Giữ project hiện có trong ứng dụng. Cấp quyền thư mục bằng khả năng ứng dụng đang
+Giữ dự án hiện có trong ứng dụng. Cấp quyền thư mục bằng khả năng ứng dụng đang
 hỗ trợ; không coi một đoạn instruction là đã tạo quyền truy cập file.
 
 Có thể dùng đoạn mở đầu ngắn:
@@ -97,8 +97,8 @@ Giữ các quyết định đã chốt và chỉ làm phần tôi giao.
 ```
 
 Với Gemini qua Antigravity, không giả định cách nạp `GEMINI.md` giống Gemini CLI.
-Với mọi agent, có thể yêu cầu mở `AGENTS.md` trực tiếp khi hướng dẫn chưa được nạp.
-Không sửa file cấu hình global hay thay toàn bộ thư viện skill của provider.
+Với mọi trợ lý AI, có thể yêu cầu mở `AGENTS.md` trực tiếp khi hướng dẫn chưa được nạp.
+Không sửa file cấu hình global hay thay toàn bộ thư viện kỹ năng của provider.
 
 ## 7. Thử một phiên và điều chỉnh đúng chỗ
 
@@ -111,12 +111,12 @@ Sau đó thực hiện [việc cụ thể]. Chưa cần đọc những nguồn k
 ```
 
 Quan sát việc dùng đúng nguồn, giữ quyết định cũ và hoàn thành đúng phạm vi.
-Agent biết rõ file hoặc skill thì có thể mở trực tiếp, không cần chứng minh đã đi
+Trợ lý AI biết rõ file hoặc kỹ năng thì có thể mở trực tiếp, không cần chứng minh đã đi
 qua mọi index. Nếu hướng dẫn mới làm rườm rà, chỉnh hoặc bỏ đúng đoạn gây nhiễu.
 
 ## 8. Quay lại khi cần
 
-Dùng bản sao đã giữ để phục hồi phần không phù hợp. Có thể chỉ giữ một skill hoặc
+Dùng bản sao đã giữ để phục hồi phần không phù hợp. Có thể chỉ giữ một kỹ năng hoặc
 bộ hướng dẫn HTML hữu ích, không cần nâng mọi phần cùng lúc. Không xóa trạng thái
 hoặc tài liệu mới phát sinh trong quá trình thử khi chưa xem lại.
 
@@ -126,8 +126,8 @@ Công cụ ghi qua một giao dịch có nhật ký: kiểm tra trước, sao l�
 
 Chọn một trong hai cách:
 
-- Dòng lệnh, chạy trong thư mục project: `python tools/transaction.py status` để xem mã giao dịch còn dở. Sau đó chạy `python tools/transaction.py resume <mã>` để hoàn tất, hoặc `python tools/transaction.py rollback <mã>` để phục hồi.
-- Bảng điều khiển: mở trang "Tình trạng ứng dụng", mục "Giao dịch chưa hoàn tất", rồi bấm "Tiếp tục" hoặc "Phục hồi". Trang Tổng quan cũng hiện thông báo khi có giao dịch dở.
+- Dòng lệnh, chạy trong thư mục dự án: `python tools/transaction.py status` để xem mã giao dịch còn dở. Sau đó chạy `python tools/transaction.py resume <mã>` để hoàn tất, hoặc `python tools/transaction.py rollback <mã>` để phục hồi.
+- Bảng điều khiển: mở trang "Tình trạng ứng dụng", mục "Thao tác lưu file bị gián đoạn", rồi bấm "Tiếp tục" hoặc "Phục hồi". Trang Tổng quan cũng hiện thông báo khi có giao dịch dở.
 
 Phục hồi làm như sau:
 
@@ -135,7 +135,7 @@ Phục hồi làm như sau:
 - File bạn đã sửa sau sự cố được giữ nguyên, không bị ghi đè. Bản gốc của các file này nằm trong `.agent/runtime/transactions/<mã>/backup/`. Giao dịch khi đó có trạng thái `rollback_partial`: bạn so sánh và khôi phục tay nếu cần. Trạng thái này không chặn các việc khác.
 - Giao dịch đã hoàn tất thì không phục hồi được, vì không còn bản sao lưu. Muốn có kết quả khác, chạy lại thao tác.
 
-Nếu công cụ báo **CHƯA GHI GÌ**, không file nào trong project đã bị đổi. Nếu còn nghi ngờ trước khi phục hồi, hãy giữ một bản sao của thư mục project (mục 1).
+Nếu công cụ báo **CHƯA GHI GÌ**, không file nào trong dự án đã bị đổi. Nếu còn nghi ngờ trước khi phục hồi, hãy giữ một bản sao của thư mục dự án (mục 1).
 
 ## 10. Nền tảng đã kiểm và chính sách phiên bản
 
@@ -143,8 +143,8 @@ Nếu công cụ báo **CHƯA GHI GÌ**, không file nào trong project đã b�
 
 Số phiên bản có dạng MAJOR.MINOR.PATCH, nằm trong file VERSION:
 
-- MAJOR tăng khi có thay đổi không tương thích ngược: đổi cấu trúc thư mục .agent hoặc của project, đổi định dạng MANIFEST.sha256, đổi định dạng kết quả của công cụ, hoặc bỏ một lệnh hay cờ đã có.
-- MINOR tăng khi thêm tính năng tương thích ngược: công cụ, skill, cờ hoặc mục nội dung mới.
-- PATCH tăng khi sửa lỗi, sửa tài liệu hoặc cập nhật mẫu mà không đổi dữ liệu của project.
+- MAJOR tăng khi có thay đổi không tương thích ngược: đổi cấu trúc thư mục .agent hoặc của dự án, đổi định dạng MANIFEST.sha256, đổi định dạng kết quả của công cụ, hoặc bỏ một lệnh hay cờ đã có.
+- MINOR tăng khi thêm tính năng tương thích ngược: công cụ, kỹ năng, cờ hoặc mục nội dung mới.
+- PATCH tăng khi sửa lỗi, sửa tài liệu hoặc cập nhật mẫu mà không đổi dữ liệu của dự án.
 
 Mỗi bản có mục riêng trong CHANGELOG.md. Hãy đọc mục đó trước khi nâng cấp.

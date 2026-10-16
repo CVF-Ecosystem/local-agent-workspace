@@ -294,6 +294,38 @@ textarea{min-height:68px;resize:vertical}
 .dfx .dr.hunk{grid-template-columns:minmax(0,1fr);background:var(--info-soft);color:var(--info);font-weight:600}
 .dfx .dr.hunk>span{padding:2px 8px}
 
+/* journey: steps, prompt, file lists, collapsible management group */
+.navmore{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:8px;width:100%;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:14px 10px 6px;border-radius:var(--r-sm)}
+.navmore:hover{color:var(--ink)}
+.navmore:focus-visible{outline:2px solid var(--accent)}
+.navmore .chev{margin-left:auto;transition:transform .15s}
+.navmore[aria-expanded="true"] .chev{transform:rotate(90deg)}
+.navmore .badge{font-size:11px;font-weight:600;background:var(--warn-soft);color:var(--warn);border-radius:999px;padding:1px 7px;letter-spacing:0;text-transform:none}
+.purpose{margin:4px 0 0;color:var(--ink-2);font-size:13.5px;max-width:80ch}
+.purpose.muted{color:var(--muted)}
+.flow{list-style:none;margin:0 0 14px;padding:0;display:grid;gap:12px;counter-reset:f}
+.flow li{counter-increment:f;display:grid;grid-template-columns:26px minmax(0,1fr);gap:10px;font-size:13.5px;color:var(--ink-2)}
+.flow li::before{content:counter(f);width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);font-weight:700;font-size:12px}
+.flow li b{color:var(--ink);font-weight:600}
+.flow li .sub{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
+.flow li .hact{margin-top:6px}
+.prompt{margin:10px 0;background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;font-size:13px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--ink)}
+.hint{font-size:12.5px;color:var(--muted);margin:8px 0 0}
+.flist{display:grid}
+.flist .fr{display:flex;gap:10px;align-items:center;padding:10px 18px;border-top:1px solid var(--line-2);min-width:0}
+.flist .fr:first-child{border-top:0}
+.flist .fr .ic{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:var(--sunken);color:var(--ink-2);flex:none}
+.flist .fr .nm{flex:1;min-width:0}
+.flist .fr .nm b{display:block;font-size:13.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.flist .fr .nm span{display:block;font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.flist .more{padding:10px 18px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line-2)}
+.where{border:1px dashed var(--accent-line);background:var(--accent-soft);border-radius:var(--r);padding:10px 12px;font-size:13px;color:var(--ink-2);overflow-wrap:anywhere}
+.where .mono{color:var(--ink)}
+.done-h{display:flex;gap:12px;align-items:flex-start}
+.done-h .ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--ok-soft);color:var(--ok);flex:none}
+.choice{display:grid;gap:12px}
+.sticky{position:sticky;top:78px}
+@media (max-width:1100px){.sticky{position:static}}
 @media (max-width:1100px){.c4{grid-template-columns:repeat(2,minmax(0,1fr))}.c-main{grid-template-columns:1fr}}
 @media (max-width:860px){
   .app{grid-template-columns:1fr}
@@ -311,7 +343,7 @@ textarea{min-height:68px;resize:vertical}
   .card-h{flex-wrap:wrap}
   .summary{flex-wrap:wrap}
 }
-@media (max-width:480px){.c4{grid-template-columns:1fr 1fr}.top .acts .btn span{display:none}
+@media (max-width:480px){.c4{grid-template-columns:1fr 1fr}.top .acts .btn>span:not([data-ico]){display:none}
   .dfx .dr{grid-template-columns:30px 30px 14px minmax(0,1fr)}.dfx .dr>span{padding:0 4px}.hrow{padding:12px 14px}}
 </style>
 </head>
@@ -323,8 +355,8 @@ textarea{min-height:68px;resize:vertical}
   <div class="projcard"><div class="avatar" id="sb-av">·</div><div style="min-width:0"><div class="nm" id="sb-name">…</div><div class="st"><span class="dot" id="sb-dot"></span><span id="sb-st"></span></div></div></div>
   <div class="navgroup" data-t="g_work"></div>
   <div class="nav" id="nav1"></div>
-  <div class="navgroup" data-t="g_setup"></div>
-  <div class="nav" id="nav2"></div>
+  <button class="navmore" id="nav-more" aria-expanded="false" aria-controls="nav2"><span data-t="g_manage"></span><span class="badge" id="nav-more-b" hidden></span><span class="chev" data-ico="chev"></span></button>
+  <div class="nav" id="nav2" hidden></div>
   <div class="side-foot">
     <div class="lang" role="group" data-tt="lang_group"><button data-lang="vi" aria-pressed="true">VI</button><button data-lang="en" aria-pressed="false">EN</button></div>
     <button class="iconbtn" id="b-theme" data-tt="theme"></button>
@@ -343,25 +375,54 @@ textarea{min-height:68px;resize:vertical}
   </header>
   <div class="wrap" id="content" tabindex="-1">
 
-  <!-- OVERVIEW -->
+  <!-- HOME: template = create a project; project = the work; unknown = ask the role first -->
   <section class="page on" id="pg-home">
-    <div class="banner warn" id="bn-init" hidden><div class="ic" data-ico="alert"></div><div><b data-t="bn_init_t"></b><p data-t="bn_init_p"></p></div><div class="r"><button class="btn pri" data-goto="setup" data-t="bn_init_b"></button></div></div>
     <div class="banner warn" id="bn-tx" hidden><div class="ic" data-ico="alert"></div><div><b data-t="tx_banner_t"></b><p data-t="tx_banner_p"></p></div><div class="r"><button class="btn pri" data-goto="health" data-t="tx_banner_b"></button></div></div>
-    <div class="card mb"><div class="summary"><div class="avatar" id="ov-av">·</div><div style="min-width:0;flex:1"><h1 id="ov-name">…</h1><div class="meta"><button type="button" class="path" id="ov-path"></button></div><div class="meta" id="ov-tags"></div></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-open="output"><span data-ico="inbox"></span><span data-t="open_output"></span></button><button class="btn" data-open=".agent/STATE.md"><span data-ico="file"></span>STATE.md</button></div></div></div>
-    <div class="grid c4 mb">
-      <div class="card kpi"><div class="ic" data-ico="spark"></div><div><div class="v" id="k-skills">0</div><div class="k" data-t="k_skills"></div></div></div>
-      <div class="card kpi"><div class="ic b" data-ico="box"></div><div><div class="v" id="k-packs">0</div><div class="k" data-t="k_packs"></div></div></div>
-      <div class="card kpi"><div class="ic g" data-ico="inbox"></div><div><div class="v" id="k-out">0</div><div class="k" data-t="k_out"></div></div></div>
-      <div class="card kpi"><div class="ic w" data-ico="library"></div><div><div class="v" id="k-ref">0</div><div class="k" data-t="k_ref"></div></div></div>
+    <div class="banner warn" id="bn-merge" hidden><div class="ic" data-ico="merge"></div><div><b data-t="bn_merge_t"></b><p data-t="bn_merge_p"></p></div><div class="r"><button class="btn" data-goto="merges" data-t="bn_merge_b"></button></div></div>
+
+    <div id="home-tpl" hidden>
+      <div class="ph"><h1 data-t="np_h"></h1><p data-t="np_p"></p></div>
+      <div class="card mb" id="np-done" hidden></div>
+      <div class="grid c-main mb">
+        <div class="card"><div class="card-b form">
+          <div class="field"><label for="np-name"><span data-t="np_name"></span><span class="req">*</span></label><input type="text" id="np-name" autocomplete="off"><span class="hint" style="margin:0" data-t="np_name_h"></span></div>
+          <div class="field"><span class="flabel" data-t="f_lang"></span><div class="seg" role="group" id="np-lang" data-tt="f_lang"><button aria-pressed="true" data-v="vi">Tiếng Việt</button><button aria-pressed="false" data-v="en">English</button></div><span class="hint" style="margin:0" data-t="np_lang_h"></span></div>
+          <div class="field"><label for="np-dest" data-t="np_dest"></label><div class="inline"><input type="text" id="np-dest"><button class="btn" data-pick="np-dest"><span data-t="choose"></span></button></div><span class="hint" style="margin:0" data-t="np_dest_h"></span></div>
+          <div class="where" id="np-where" aria-live="polite"></div>
+        </div><div class="formfoot"><div class="steps"><span class="s on"><span class="n">1</span><span data-t="preview"></span></span><span class="ln"></span><span class="s"><span class="n">2</span><span data-t="apply"></span></span></div><div class="r"><button class="btn pri lg" id="np-run"><span data-ico="eye"></span><span data-t="np_run"></span></button></div></div></div>
+        <div class="card"><div class="card-h"><span data-ico="list"></span><h2 data-t="np_after"></h2></div><div class="card-b"><ol class="flow" id="np-flow"></ol></div></div>
+      </div>
+      <div class="note"><span data-ico="shield"></span><span data-t="np_keep"></span></div>
     </div>
-    <div class="grid c-main mb">
-      <div class="card"><div class="card-h"><span data-ico="activity"></span><h2 data-t="state_t"></h2><div class="r"><span class="tag" id="st-time" hidden></span></div></div><div class="card-b" id="st-box"></div></div>
-      <div class="card"><div class="card-h"><span data-ico="zap"></span><h2 data-t="quick_t"></h2></div><div class="card-b actions" id="quick"></div></div>
+
+    <div id="home-unk" hidden>
+      <div class="ph"><h1 data-t="unk_h"></h1><p data-t="unk_p"></p></div>
+      <div class="grid c2 choice">
+        <button class="act" data-goto="setup"><span class="ic" data-ico="file"></span><span><b data-t="unk_proj"></b><span data-t="unk_proj_d"></span></span><span class="chev" data-ico="chev"></span></button>
+        <button class="act" id="unk-tpl"><span class="ic" data-ico="book"></span><span><b data-t="unk_tpl"></b><span data-t="unk_tpl_d"></span></span><span class="chev" data-ico="chev"></span></button>
+      </div>
     </div>
-    <div class="card"><div class="card-h"><span data-ico="spark"></span><h2 data-t="skills_t"></h2><span class="sub" id="sk-count"></span>
-      <div class="r"><div class="chips" id="sk-filter" data-tt="sk_filter"></div><div class="search"><span data-ico="search"></span><label class="sr" for="sk-q" data-t="sk_search"></label><input type="text" id="sk-q"></div></div></div>
-      <div class="tw"><table><thead><tr><th style="width:230px">Skill</th><th style="width:110px" data-t="col_scope"></th><th data-t="col_use"></th></tr></thead><tbody id="sk-rows"></tbody></table></div></div>
+
+    <div id="home-prj" hidden>
+      <div class="card mb"><div class="summary"><div class="avatar" id="ov-av">·</div><div style="min-width:0;flex:1"><h1 id="ov-name">…</h1><p class="purpose" id="ov-purpose"></p><div class="meta"><button type="button" class="path" id="ov-path"></button><span id="ov-tags"></span></div></div></div></div>
+      <div class="grid c-main">
+        <div>
+        <div class="card mb"><div class="card-h"><span data-ico="activity"></span><h2 data-t="cont_t"></h2><div class="r"><span class="tag" id="st-time" hidden></span></div></div><div class="card-b" id="st-box"></div>
+          <div class="formfoot"><button class="btn ghost" data-open=".agent/STATE.md"><span data-ico="file"></span><span data-t="st_full"></span></button></div></div>
+        <div class="card mb"><div class="card-h"><span data-ico="library"></span><h2 data-t="src_t"></h2><span class="sub" id="src-n"></span><div class="r"><button class="btn" data-open="references" data-tt="src_open"><span data-ico="folder"></span><span data-t="open_dir"></span></button></div></div><div class="flist" id="src-list"></div></div>
+        <div class="card mb"><div class="card-h"><span data-ico="inbox"></span><h2 data-t="out_t"></h2><span class="sub" id="out-n"></span><div class="r"><button class="btn" data-open="output" data-tt="out_open"><span data-ico="folder"></span><span data-t="open_dir"></span></button></div></div><div class="flist" id="out-list"></div></div>
+        </div>
+        <div>
+        <div class="card mb sticky"><div class="card-h"><span data-ico="spark"></span><h2 data-t="ag_t"></h2></div><div class="card-b">
+          <ol class="flow" id="ag-steps"></ol>
+          <div class="seg" role="group" id="ag-mode" data-tt="ag_mode"><button aria-pressed="true" data-v="start" data-t="ag_start"></button><button aria-pressed="false" data-v="cont" data-t="ag_cont"></button></div>
+          <p class="hint" id="ag-mode-h"></p>
+          <div class="prompt" id="ag-prompt"></div>
+          <div class="hact"><button class="btn pri" id="ag-copy"><span data-ico="copy"></span><span data-t="ag_copy"></span></button></div>
+          <p class="hint" id="ag-verify"></p></div></div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- LIBRARY -->
@@ -407,7 +468,12 @@ textarea{min-height:68px;resize:vertical}
 
   <!-- PACKS -->
   <section class="page" id="pg-packs">
-    <div class="ph"><h1 data-t="nav_packs"></h1><p data-t="pk_p"></p></div>
+    <div class="ph"><h1 data-t="nav_packs"></h1><p data-t="mk_p"></p></div>
+    <div class="card mb"><div class="card-h"><span data-ico="spark"></span><h2 data-t="skills_t"></h2><span class="sub" id="sk-count"></span>
+      <div class="r"><div class="chips" id="sk-filter" data-tt="sk_filter"></div><div class="search"><span data-ico="search"></span><label class="sr" for="sk-q" data-t="sk_search"></label><input type="text" id="sk-q"></div></div></div>
+      <div class="tw"><table><thead><tr><th style="width:230px" data-t="col_skill"></th><th style="width:110px" data-t="col_scope"></th><th data-t="col_use"></th></tr></thead><tbody id="sk-rows"></tbody></table></div></div>
+    <div class="ph" style="margin-top:28px"><h2 style="font-size:17px" data-t="pk_h"></h2><p data-t="pk_p"></p></div>
+    <div class="note warn mb" id="pk-trial-note" hidden><span data-ico="alert"></span><span data-t="pk_trial_note"></span></div>
     <div class="note warn mb" id="pk-need" hidden><span data-ico="alert"></span><span style="flex:1"><span data-t="pk_need"></span> <a href="#" data-goto="upgrade" id="pk-need-a" data-t="pk_need_a"></a></span></div>
     <div class="grid c2" id="pk-list"></div>
   </section>
@@ -566,123 +632,169 @@ var ICONS={
 };
 function ico(n,c){return'<svg class="i'+(c?' '+c:'')+'" viewBox="0 0 24 24" aria-hidden="true">'+(ICONS[n]||'')+'</svg>';}
 var D={
+ g_manage:['Quản lý và bảo trì','Manage and maintain'],nav_new:['Tạo dự án mới','New project'],nav_start:['Bắt đầu','Start'],
+ mk_p:['Trợ lý AI tự dùng khả năng sẵn có của ứng dụng hoặc một kỹ năng bổ sung dưới đây khi việc cần; bạn không phải nêu tên kỹ năng khi giao việc. Trang này để xem các kỹ năng và quản lý gói bổ sung theo lĩnh vực.','The AI assistant uses the app’s own abilities or an add-on skill below when the task needs it; you never have to name a skill. This page is for reviewing skills and managing domain packs.'],
+ pk_h:['Gói bổ sung theo lĩnh vực','Domain packs'],
+ bn_merge_t:['Có bản cập nhật chờ bạn xem','Updates are waiting for you'],bn_merge_p:['Một số file có bản mới của bộ công cụ nằm cạnh bản bạn đã sửa (đuôi .new). Bản đang dùng vẫn giữ nguyên cho tới khi bạn hợp nhất.','Some files have a new package version next to your edited copy (ending in .new). The copy in use stays unchanged until you merge.'],bn_merge_b:['Xem các file','Review the files'],
+ np_h:['Tạo dự án mới','Create a new project'],np_p:['Thư mục này là bộ mẫu gốc: giữ nguyên để tạo các dự án sau. Mỗi dự án là một thư mục riêng, dùng bản sao của bộ mẫu, đặt tại nơi bạn chọn; mặc định cùng cấp với bộ mẫu.','This folder is the original template: keep it as is for future projects. Each project is its own folder, using a copy of the template, in the location you choose; by default, beside the template.'],
+ np_name:['Tên công việc','Task name'],np_name_h:['Dùng làm tên thư mục dự án. Ví dụ: Biên bản họp Tổ Tiếp nhận.','Becomes the project folder name. Example: Intake team meeting minutes.'],
+ np_dest:['Nơi lưu dự án','Project location'],np_dest_h:['Chọn thư mục sẽ chứa dự án; công cụ tạo bên trong một thư mục mang tên công việc. Mặc định là thư mục đang chứa bộ mẫu.','Choose the folder that will hold the project; a folder named after the task is created inside it. Defaults to the folder that holds the template.'],
+ np_where_empty:['Nhập tên công việc để xem thư mục sẽ được tạo ở đâu.','Type a task name to see where the folder will be created.'],np_where:['Thư mục sẽ được tạo tại','Folder to be created at'],
+ np_run:['Xem trước khi tạo','Preview project creation'],np_after:['Sau khi tạo','After creating it'],
+ np_f1:['Đặt tài liệu nguồn','Add source documents'],np_f1d:['Chép file cần dùng vào thư mục references/ của dự án mới; bản gốc để nguyên chỗ cũ.','Copy the files you need into the new project\u2019s references/ folder; leave the originals where they are.'],
+ np_f2:['Mở dự án bằng ứng dụng AI','Open the project in your AI app'],np_f2d:['Trong Claude, Codex hoặc Gemini, mở (hoặc thêm) thư mục dự án và cho phép đọc, ghi file trong đó.','In Claude, Codex or Gemini, open (or add) the project folder and allow reading and writing files in it.'],
+ np_f3:['Giao việc bằng lời thường','Describe the task in plain words'],np_f3d:['Nêu tài liệu nguồn và kết quả cần nhận. Bảng điều khiển dự án có sẵn lời nhắc để sao chép.','Name the source documents and the result you need. The project panel has a message ready to copy.'],
+ np_f4:['Phiên sau: tiếp tục','Next session: continue'],np_f4d:['Mở APP trong thư mục dự án; mục "Tiếp tục công việc" cho biết việc đang đến đâu.','Open APP in the project folder; "Continue the work" shows where things stand.'],
+ np_keep:['Không làm việc trong bộ mẫu. Không có Python: sao chép cả thư mục bộ mẫu (kể cả thư mục ẩn .agent), đổi tên rồi mở bằng ứng dụng AI; xem Hướng dẫn.','Do not work inside the template. Without Python: copy the whole template folder (including the hidden .agent folder), rename it and open it in your AI app; see the Guide.'],
+ np_need:['Nhập tên công việc trước.','Type a task name first.'],
+ np_done_t:['Đã tạo dự án','Project created'],np_done_p:['Bộ mẫu gốc không thay đổi. Từ giờ làm việc trong thư mục dự án mới này. Mở thư mục để chép tài liệu nguồn vào; mở bảng điều khiển dự án để lấy lời nhắc cho trợ lý AI. Hai nút này không mở hay kết nối ứng dụng AI.','The original template is unchanged. From now on, work in this new project folder. Open the folder to copy source documents in; open the project panel to get the message for your AI assistant. Neither button opens or connects your AI app.'],
+ np_open_panel:['Mở bảng điều khiển dự án','Open project panel'],np_open_dir:['Mở thư mục dự án','Open project folder'],np_copy_path:['Sao chép đường dẫn','Copy path'],np_opening:['Đang mở bảng điều khiển dự án trong một tab mới của trình duyệt…','Opening the project panel in a new browser tab…'],
+ unk_h:['Thư mục này dùng để làm gì?','What is this folder for?'],unk_p:['Chưa rõ đây là bộ mẫu hay thư mục dự án của bạn. Chọn cách bạn muốn dùng thư mục này trước khi thay đổi file. (Chi tiết: PROJECT.md đã được sửa nhưng chưa có thông tin khởi tạo.)','It is not clear whether this is a template or your project folder. Choose how you intend to use it before files are changed. (Detail: PROJECT.md was edited but there is no setup record.)'],
+ unk_proj:['Đây là thư mục dự án của tôi','This is my project folder'],unk_proj_d:['Thiết lập thư mục này làm dự án (xem trước rồi mới ghi; giữ nội dung bạn đã viết).','Set this folder up as a project (previewed first; keeps what you wrote).'],
+ unk_tpl:['Tôi cần bộ mẫu sạch','I need a clean template'],unk_tpl_d:['Giải nén lại file ZIP làm bộ mẫu, rồi tạo dự án mới từ đó. Nút này mở hướng dẫn.','Unzip the ZIP file again as the template, then create new projects from it. This button opens the guide.'],
+ cont_t:['Tiếp tục công việc','Continue the work'],st_full:['Xem tiến độ đầy đủ','View full work status'],
+ cont_empty_t:['Chưa có tiến độ được lưu','No work status saved yet'],cont_empty_p:['Tiến độ sẽ hiện ở đây khi trợ lý AI lưu lại thông tin công việc. Bắt đầu ở mục Giao việc cho trợ lý AI.','Work status appears here when the AI assistant saves it. Start under Give your AI assistant a task.'],
+ ag_t:['Giao việc cho trợ lý AI','Give your AI assistant a task'],ag_mode:['Loại lời nhắc','Message type'],ag_start:['Việc mới','New task'],ag_cont:['Xem lại việc đang dở','Review unfinished work'],ag_copy:['Sao chép lời nhắc','Copy message'],
+ ag_s1:['Đặt tài liệu nguồn vào thư mục references/','Put source documents in the references/ folder'],ag_s1_n:['Đang có %d tài liệu.','Documents there now: %d.'],ag_s1_0:['Chưa có tài liệu nào.','None yet.'],
+ ag_s2:['Mở thư mục này bằng ứng dụng AI','Open this folder in your AI app'],ag_s2d:['Trong Claude, Codex, Gemini…: mở hoặc thêm thư mục này và cho phép đọc, ghi file trong đó.','In Claude, Codex, Gemini…: open or add this folder and allow reading and writing files in it.'],
+ ag_s3:['Sao chép nội dung bên dưới, điền phần trong [ ] nếu có, rồi gửi cho trợ lý AI.','Copy the message below, fill in any text in [ ], then send it to your AI assistant.'],ag_s3d:['Khi trợ lý đã lưu file vào output/, bạn sẽ thấy file trong mục Kết quả.','Once the assistant saves a file in output/, it appears under Results.'],
+ ag_verify:['Đối chiếu tên dự án «%s» và các file trợ lý liệt kê với thư mục bạn đã mở và mục Tài liệu nguồn. Nếu sai hoặc thiếu nguồn, kiểm tra lại thư mục đã cấp quyền cho ứng dụng.','Compare the project name “%s” and the files listed by the assistant with the folder you opened and with Source documents. If the name or sources do not match, check which folder the app has access to.'],
+ pr_start:['Đây là thư mục dự án «%s». Trước khi làm:\n1. Đọc AGENTS.md, PROJECT.md và .agent/STATE.md.\n2. Nhắc lại tên dự án và liệt kê tài liệu nguồn bạn thấy trong references/.\n\nViệc cần làm: [mô tả việc và kết quả cần nhận, ví dụ: lập biên bản họp từ ghi chú trong references/]\n\nLưu kết quả vào output/. Chỗ nguồn không có thông tin thì ghi "cần xác nhận", không đoán. Không sửa file nguồn. Cuối phiên cập nhật .agent/STATE.md bằng lời văn công việc dễ hiểu.','This is the project folder “%s”. Before you start:\n1. Read AGENTS.md, PROJECT.md and .agent/STATE.md.\n2. Repeat the project name and list the source documents you find in references/.\n\nTask: [describe the task and the result you need, e.g. write meeting minutes from the notes in references/]\n\nSave the result in output/. Where the sources lack information, write “to be confirmed” instead of guessing. Do not edit the source files. At the end, update .agent/STATE.md in plain work language.'],
+ pr_cont:['Tiếp tục công việc trong dự án «%s». Đọc .agent/STATE.md và PROJECT.md, rồi cho tôi biết: mục tiêu, bản kết quả hiện hành trong output/, việc đang dở và bước tiếp theo. Chưa sửa file nào cho tới khi tôi xác nhận.','Continue the work in project “%s”. Read .agent/STATE.md and PROJECT.md, then tell me: the goal, the current result in output/, what is unfinished and the next step. Do not change any file until I confirm.'],
+ src_t:['Tài liệu nguồn','Source documents'],out_t:['Kết quả','Results'],open_dir:['Mở thư mục','Open folder'],src_open:['Mở thư mục tài liệu nguồn','Open source documents folder'],out_open:['Mở thư mục kết quả','Open results folder'],
+ src_empty:['Chưa có tài liệu nguồn. Chép file cần dùng vào thư mục references/ (bản gốc để nguyên chỗ cũ).','No source documents yet. Copy the files you need into the references/ folder (leave the originals where they are).'],
+ out_empty:['Chưa có kết quả. Khi trợ lý AI lưu file vào output/, file sẽ hiện ở đây.','No results yet. When the AI assistant saves a file in output/, it shows up here.'],
+ f_more:['và %d file khác trong thư mục','and %d more files in the folder'],drafts_n:['Bản nháp trong working/: %d file','Drafts in working/: %d files'],n_files:['%d file','%d file(s)'],open_file:['Mở file','Open file'],
+ purpose_none:['Chưa có mô tả dự án. Bạn có thể bổ sung sau.','No project description yet. You can add one later.'],
  panel:['Bảng điều khiển','Control panel'],g_work:['Làm việc','Work'],g_setup:['Thiết lập','Setup'],
- nav_home:['Tổng quan','Overview'],nav_check:['Kiểm tra trước khi giao','Check before delivery'],nav_merges:['Chờ hợp nhất','Pending merges'],nav_packs:['Gói lĩnh vực','Domain packs'],nav_skills:['Cài skill vào ứng dụng','Install skills into apps'],
- nav_setup:['Khởi tạo','Set up'],nav_library:['Thư viện nguồn','Source library'],
- lb_p:['Văn bản pháp luật, quy chế nội bộ, mẫu biểu của project trong references/, ghi trong một chỉ mục references/_INDEX.xlsx. Agent tra ở đây trước khi trích dẫn; không có toàn văn thì không trích nguyên văn.','The project\u2019s legal documents, internal rules and templates in references/, recorded in one index references/_INDEX.xlsx. The agent looks here before quoting; without full text there are no verbatim quotes.'],
+ nav_home:['Công việc','The work'],nav_check:['Kiểm tra trước khi giao','Check before delivery'],nav_merges:['Chờ hợp nhất','Pending merges'],nav_packs:['Quản lý kỹ năng','Manage skills'],nav_skills:['Cài kỹ năng vào ứng dụng','Install skills into apps'],
+ nav_setup:['Thiết lập thư mục này','Set up this folder'],nav_library:['Thư viện nguồn','Source library'],
+ lb_p:['Văn bản pháp luật, quy chế nội bộ, mẫu biểu của dự án trong references/, ghi trong một chỉ mục references/_INDEX.xlsx. Trợ lý AI tra ở đây trước khi trích dẫn; không có toàn văn thì không trích nguyên văn.','The project\u2019s legal documents, internal rules and templates in references/, recorded in one index references/_INDEX.xlsx. The assistant looks here before quoting; without full text there are no verbatim quotes.'],
  lb_none_t:['Chưa có chỉ mục thư viện','No library index yet'],lb_none_p:['Tạo khung thư mục (legal, policies, templates, source-documents) và file chỉ mục mẫu. Không ghi đè gì đã có.','Create the folders (legal, policies, templates, source-documents) and the index template. Nothing existing is overwritten.'],lb_init:['Tạo khung thư viện','Create the library'],
  lb_k1:['Văn bản trong chỉ mục','Documents in the index'],lb_k2:['File trong references/','Files in references/'],lb_k3:['Chưa có toàn văn','Without full text'],lb_k4:['Cần đối chiếu','Need checking'],
  lb_find:['Tra cứu','Search'],lb_open_idx:['Mở chỉ mục','Open index'],lb_check:['Kiểm tra','Check'],lb_go:['Tìm','Search'],lb_ph:['Số hiệu hoặc từ khóa, ví dụ 30/2020 hoặc noi quy lao dong','Number or keyword, e.g. 30/2020 or noi quy lao dong'],
  lb_c1:['Số, ký hiệu','Number'],lb_c2:['Trích yếu','Title'],lb_c3:['Tình trạng','Status'],lb_c4:['Xác minh','Verification'],lb_c5:['Toàn văn','Full text'],
  lb_empty:['Nhập từ khóa để tìm trong chỉ mục.','Type a keyword to search the index.'],lb_nohit:['Không thấy văn bản khớp. Chưa có trong thư viện thì không trích nguyên văn.','No matching document. Not in the library means no verbatim quotes.'],
- lb_open:['Mở','Open'],lb_noft:['Không có','None'],lb_t_check:['Kiểm tra thư viện nguồn','Check the source library'],lb_t_init:['Tạo khung thư viện','Create the library'],nav_upgrade:['Nâng cấp package','Upgrade package'],nav_maintain:['Bảo trì','Maintenance'],
+ lb_open:['Mở','Open'],lb_noft:['Không có','None'],lb_t_check:['Kiểm tra thư viện nguồn','Check the source library'],lb_t_init:['Tạo khung thư viện','Create the library'],nav_upgrade:['Cập nhật bộ công cụ','Update package'],nav_maintain:['Bảo trì','Maintenance'],
  theme:['Đổi nền sáng/tối','Toggle light/dark'],quit:['Tắt bảng điều khiển','Stop the panel'],open_folder:['Mở thư mục','Open folder'],guide:['Hướng dẫn','Guide'],open_output:['Mở output','Open output'],copy_path:['Bấm để chép đường dẫn','Click to copy the path'],
  st_ready:['Đã khởi tạo','Set up'],st_notinit:['Chưa khởi tạo','Not set up'],
- st_template:['Bộ mẫu chưa khởi tạo','Uninitialized template'],st_unknown:['Chưa xác định trạng thái','Status unknown'],
- evidence_project:['Có thông tin khởi tạo hợp lệ','Valid initialization record'],evidence_template:['PROJECT còn nguyên mẫu theo manifest; chưa có thông tin khởi tạo','PROJECT matches a manifest template; no initialization record'],evidence_unknown:['Chưa đủ thông tin để xác định; kiểm tra ngữ cảnh project trước khi khởi tạo','Insufficient evidence; check project context before setup'],
+ st_template:['Bộ mẫu (giữ nguyên)','Template (keep as is)'],st_unknown:['Chưa xác định trạng thái','Status unknown'],
+ evidence_project:['Có thông tin khởi tạo hợp lệ','Valid initialization record'],evidence_template:['PROJECT còn nguyên mẫu theo manifest; chưa có thông tin khởi tạo','PROJECT matches a manifest template; no initialization record'],evidence_unknown:['Chưa đủ thông tin để xác định; kiểm tra ngữ cảnh dự án trước khi khởi tạo','Insufficient evidence; check project context before setup'],
  check_pass:['Đã kiểm — đạt trong phạm vi hỗ trợ','Checked — passed within supported scope'],check_issues:['Đã kiểm — cần xem xét','Checked — needs review'],check_not_checked:['Chưa kiểm được đầy đủ','Not fully checked'],merge_required:['Cần hợp nhất','Merge needed'],merge_msg:['Còn file cần hợp nhất: bản hiện có được giữ nguyên, bản mới nằm cạnh với đuôi .new. Bước tiếp: mở Chờ hợp nhất để so sánh và xử lý từng file.','Some files need merging: the current versions are kept and the new ones sit beside them with a .new ending. Next step: open Pending merges to compare and handle each file.'],
- result_success:['Thành công','Succeeded'],result_preview:['Đã xem trước','Preview ready'],result_issues:['Cần xem xét','Needs review'],result_not_checked:['Chưa kiểm được','Not checked'],result_blocked:['Đang bị chặn','Blocked'],result_partial:['Chưa hoàn tất','Incomplete'],result_error:['Lỗi công cụ','Tool error'],
- mg_p:['Các bản `.new` do package hoặc gói lĩnh vực tạo khi cần giữ cả file hiện hành và bản mới.','Package or domain-pack `.new` files created when both the current and new versions must be preserved.'],
- mg_safe:['Ứng dụng chỉ theo dõi file do package quản lý, không tự hợp nhất và không ghi đè file hiện hành. Mục sẽ tự biến mất sau khi bạn xử lý và bỏ file `.new`.','The panel tracks only package-managed files. It never merges automatically or overwrites the current file. An item disappears after you handle and remove its `.new` file.'],
- mg_title:['Danh sách cần xử lý','Items to resolve'],mg_file:['File','File'],mg_origin:['Nguồn','Origin'],mg_state:['Trạng thái','Status'],mg_actions:['Thao tác','Actions'],mg_none:['Không có file package nào đang chờ hợp nhất.','No package-managed files are waiting to be merged.'],
- mg_package:['Package','Package'],mg_domain_pack:['Gói lĩnh vực','Domain pack'],mg_unseen:['Chưa xem','Not reviewed'],mg_reviewing:['Đang xem','Reviewing'],mg_ready:['Đã xem, chờ xử lý','Reviewed; awaiting merge'],mg_open_current:['Mở bản hiện hành','Open current'],mg_open_new:['Mở bản mới','Open new'],mg_start:['Bắt đầu xem','Start review'],mg_ready_b:['Đánh dấu đã xem','Mark reviewed'],mg_reopen:['Xem lại','Review again'],
- bn_init_t:['Thư mục này chưa là project','This folder is not a project yet'],bn_init_p:['Khởi tạo để điền PROJECT.md, đặt STATE sạch và bật các chức năng cài gói, nâng cấp.','Set it up to fill PROJECT.md, start a clean STATE and enable packs and upgrades.'],bn_init_b:['Khởi tạo','Set up'],
- k_skills:['Skill trong chỉ mục','Skills in the index'],k_packs:['Gói lĩnh vực đã cài','Domain packs installed'],k_out:['File trong output','Files in output'],k_ref:['File nguồn (references)','Source files (references)'],
- state_t:['Trạng thái công việc','Work status'],quick_t:['Lối tắt','Shortcuts'],state_empty:['Chưa có trạng thái','No status yet'],state_empty_p:['Agent ghi vào .agent/STATE.md khi làm việc: mục tiêu, giai đoạn, việc chờ bạn.','The agent writes .agent/STATE.md while working: goal, phase, what waits on you.'],
+ result_success:['Thành công','Succeeded'],result_preview:['Đã xem trước','Preview ready'],result_issues:['Cần xem xét','Needs review'],result_not_checked:['Chưa kiểm được','Not checked'],result_blocked:['Chưa thể thực hiện','Not carried out'],result_partial:['Chưa hoàn tất','Incomplete'],result_error:['Lỗi công cụ','Tool error'],
+ mg_p:['Các bản `.new` do bộ công cụ hoặc gói lĩnh vực tạo khi cần giữ cả file hiện hành và bản mới.','Package or domain-pack `.new` files created when both the current and new versions must be preserved.'],
+ mg_safe:['Ứng dụng chỉ theo dõi file do bộ công cụ quản lý, không tự hợp nhất và không ghi đè file hiện hành. Mục sẽ tự biến mất sau khi bạn xử lý và bỏ file `.new`.','The panel tracks only package-managed files. It never merges automatically or overwrites the current file. An item disappears after you handle and remove its `.new` file.'],
+ mg_title:['Danh sách cần xử lý','Items to resolve'],mg_file:['File','File'],mg_origin:['Nguồn','Origin'],mg_state:['Trạng thái','Status'],mg_actions:['Thao tác','Actions'],mg_none:['Không có file bộ công cụ nào đang chờ hợp nhất.','No package-managed files are waiting to be merged.'],
+ mg_package:['Bộ công cụ','Package'],mg_domain_pack:['Gói lĩnh vực','Domain pack'],mg_unseen:['Chưa xem','Not reviewed'],mg_reviewing:['Đang xem','Reviewing'],mg_ready:['Đã xem, chờ xử lý','Reviewed; awaiting merge'],mg_open_current:['Mở bản hiện hành','Open current'],mg_open_new:['Mở bản mới','Open new'],mg_start:['Bắt đầu xem','Start review'],mg_ready_b:['Đánh dấu đã xem','Mark reviewed'],mg_reopen:['Xem lại','Review again'],
+ bn_init_t:['Thư mục này chưa là dự án','This folder is not a project yet'],bn_init_p:['Khởi tạo để điền PROJECT.md, đặt STATE sạch và bật các chức năng cài gói, cập nhật.','Set it up to fill PROJECT.md, start a clean STATE and enable packs and upgrades.'],bn_init_b:['Khởi tạo','Set up'],
+ k_skills:['Kỹ năng trong chỉ mục','Skills in the index'],k_packs:['Gói lĩnh vực đã cài','Domain packs installed'],k_out:['File trong output','Files in output'],k_ref:['File nguồn (references)','Source files (references)'],
+ state_t:['Trạng thái công việc','Work status'],quick_t:['Lối tắt','Shortcuts'],state_empty:['Chưa có trạng thái','No status yet'],state_empty_p:['Trợ lý AI ghi vào .agent/STATE.md khi làm việc: mục tiêu, giai đoạn, việc chờ bạn.','The assistant writes .agent/STATE.md while working: goal, phase, what waits on you.'],
  upd:['cập nhật','updated'],
  q1:['Kiểm tra file trước khi giao','Check a file before delivery'],q1d:['Chỗ chưa điền, nhãn mẫu, tài nguyên mạng','Placeholders, demo labels, network resources'],
- q2:['Gói lĩnh vực','Domain packs'],q2d:['Cài bộ skill theo mảng việc','Install skill sets by line of work'],
- q3:['Đưa skill vào Claude, Codex, Gemini','Put skills into Claude, Codex, Gemini'],q3d:['Hiện trong menu của ứng dụng','Show them in the app menu'],
- q4:['Nâng cấp package','Upgrade the package'],q4d:['Giữ nguyên file bạn đã sửa','Keeps the files you changed'],
- skills_t:['Skill trong project','Skills in this project'],col_scope:['Phạm vi','Scope'],col_use:['Dùng khi','Use when'],all:['Tất cả','All'],f_shared:['Dùng chung','Shared'],f_pack:['Gói','Pack'],f_proj:['Riêng','Project'],no_match:['Không có skill phù hợp.','No matching skill.'],n_skills:['skill','skills'],
+ q2:['Gói lĩnh vực','Domain packs'],q2d:['Cài bộ kỹ năng theo mảng việc','Install skill sets by line of work'],
+ q3:['Đưa kỹ năng vào Claude, Codex, Gemini','Put skills into Claude, Codex, Gemini'],q3d:['Hiện trong menu của ứng dụng','Show them in the app menu'],
+ q4:['Cập nhật bộ công cụ','Upgrade the package'],q4d:['Giữ nguyên file bạn đã sửa','Keeps the files you changed'],
+ skills_t:['Kỹ năng trong dự án','Skills in this project'],col_scope:['Phạm vi','Scope'],col_use:['Dùng khi','Use when'],all:['Tất cả','All'],f_shared:['Dùng chung','Shared'],f_pack:['Gói','Pack'],f_proj:['Riêng','Project'],no_match:['Không có kỹ năng phù hợp.','No matching skill.'],n_skills:['kỹ năng','skills'],
  ck_p:['Kiểm tra cơ học: chỗ chưa điền, nhãn mẫu minh họa còn sót, tài nguyên mạng trong HTML, lỗi bảng tính. Không thay việc đọc lại và đối chiếu số liệu với nguồn.','A mechanical check: unfilled placeholders, leftover demo labels, network resources in HTML, spreadsheet issues. It does not replace re-reading and checking figures against sources.'],
  ck_drop:['Chọn file cần kiểm tra','Choose files to check'],ck_types:['.docx · .xlsx · .csv · .html · .md · .txt','.docx · .xlsx · .csv · .html · .md · .txt'],ck_or:['Hoặc dán đường dẫn file','Or paste a file path'],add:['Thêm','Add'],
- ck_decl:['Đây là câu trả lời đã lưu của agent: kiểm khối "Khai báo thực hiện"','This is a saved agent reply: check the "Execution declaration" block'],ck_ro:['Chỉ đọc, không sửa file.','Read only; files are not changed.'],ck_run:['Kiểm tra','Check'],ck_none:['Chưa có file nào để kiểm. Bước tiếp: bấm Chọn file hoặc dán đường dẫn, rồi bấm Thêm.','No file to check yet. Next step: press Choose files or paste a path, then press Add.'],
- pk_p:['Bộ skill theo mảng việc, cài vào project khi cần. Gói "thử nghiệm" chưa qua tiếp nhận: cài để dùng thử trong project này, agent nói rõ là bản thử, không chép sang ứng dụng. Mỗi gói có bảng căn cứ pháp lý ghi số hiệu, điều khoản và ngày đối chiếu để bạn kiểm lại. Gỡ gói chỉ chuyển thư mục vào archive/.','Skill sets by line of work, installed into a project when needed. A "trial" pack has not been through intake: install it to try in this project; the agent says it is a trial, and it is not copied into apps. Each pack has a legal-basis table with numbers, articles and the check date so you can verify. Removing a pack only moves its folder into archive/.'],
- pk_need:['Đây là thư mục package gốc, chưa phải project, nên chưa cài gói ở đây. Để dùng gói cho một project (ví dụ TIEN 081): đưa bản package này vào project đó, rồi mở APP.bat trong thư mục project để cài gói.','This is the original package folder, not a project, so packs are not installed here. To use packs in a project: bring this package version into that project, then open APP.bat in the project folder to install packs.'],
- pk_need_a:['Đưa vào project →','Bring into a project →'],pk_to_proj:['Cài vào project','Install in a project'],
- up_self:['Nâng cấp thư mục này','Upgrade this folder'],up_other:['Đưa bản này vào project khác','Bring this version into another project'],
- up_other_p:['Dùng bản package đang mở để nâng cấp một project đã có (thêm file mới, cập nhật file chưa sửa, giữ file bạn đã sửa). Project chưa từng dùng package thì dùng Khởi tạo → Project đã có.','Use the package you have open to upgrade an existing project (adds new files, updates untouched files, keeps the ones you changed). A project that never used the package: use Set up → Existing project.'],
- up_to:['Thư mục project cần nâng cấp','Project folder to upgrade'],
- installed:['Đã cài','Installed'],available:['Có sẵn','Available'],newer:['Có bản mới','Update available'],install:['Cài gói','Install'],update:['Cập nhật','Update'],remove:['Gỡ','Remove'],no_packs:['Chưa có gói nào trong packs/.','No pack in packs/ yet.'],confirm_remove:['Gỡ gói này? Thư mục của gói được chuyển vào archive/, không xóa.','Remove this pack? Its folder is moved into archive/, nothing is deleted.'],
- sk_p:['Chép skill đã được nhận vào thư mục skill của ứng dụng để chúng hiện trong menu. Cùng định dạng SKILL.md dùng được cho cả Claude, Codex và Gemini CLI. Skill cùng tên mà ứng dụng đã có luôn được giữ nguyên.','Copy accepted skills into an app\u2019s skills folder so they show up in its menu. The same SKILL.md format works in Claude, Codex and Gemini CLI. A same-name skill the app already has is always kept.'],
- sk_pick:['Chọn skill cần chép','Choose the skills to copy'],sk_all:['Chọn mọi skill đã nhận','Select every accepted skill'],sk_none:['Bỏ chọn','Clear'],
- sk_native:['Chỉ chép skill bạn thật sự cần. Ứng dụng đã có khả năng tương tự thì không cần chép; agent vẫn đọc được skill của project như file. Skill thử nghiệm không được chép.','Copy only the skills you really need. If the app already has a similar capability there is no need; the agent can still read project skills as files. Trial skills are not copied.'],
- sk_need:['Chọn ít nhất một skill.','Choose at least one skill.'],sk_cand:['Thử nghiệm, chưa qua tiếp nhận: không chép','Trial, not through intake: not copied'],sk_off:['Đã tắt: không chép','Disabled: not copied'],sk_none_rows:['Chỉ mục chưa có skill nào chép được.','The index has no skill that can be copied.'],
- st_review:['Thử nghiệm','Trial'],st_unconf:['Chưa xác nhận','Not confirmed'],pk_confirm:['Xác nhận tiếp nhận','Confirm intake'],pk_addconf:['Cài và nhận gói','Install and accept'],pk_trialinst:['Cài để thử','Install to try'],pk_ask:['Bạn đã đọc hồ sơ tiếp nhận của gói này và muốn nhận cho project này? Sau đó, nếu nội dung gói đổi thì phải xác nhận lại.','Have you read this pack\u2019s intake record and do you accept it for this project? If the pack content changes later, you will need to confirm again.'],pk_conf_ok:['Đã xác nhận ở project này','Confirmed in this project'],
- sk_r_pack_not_confirmed:['Gói chưa xác nhận tiếp nhận ở project này: không chép','Pack not confirmed in this project: not copied'],sk_r_pack_content_changed:['Nội dung gói đổi sau khi xác nhận: xét lại rồi xác nhận lại','Pack content changed after confirming: review and confirm again'],sk_r_pack_refused:['Hồ sơ tiếp nhận từ chối bản này: không chép','The intake record refuses this version: not copied'],sk_r_pack_claim_withdrawn:['Hồ sơ tiếp nhận không còn ở mức đã nhận: không chép','The intake record no longer claims acceptance: not copied'],st_off:['Đã tắt','Disabled'],pk_trial:['Thử nghiệm, chưa qua tiếp nhận','Trial, not through intake'],pk_acc:['Đã tiếp nhận','Accepted'],pk_ref:['Không nhận phiên bản này','Not taken'],
+ ck_decl:['Đây là câu trả lời đã lưu của trợ lý AI: kiểm khối "Khai báo thực hiện"','This is a saved assistant reply: check the "Execution declaration" block'],ck_ro:['Chỉ đọc, không sửa file.','Read only; files are not changed.'],ck_run:['Kiểm tra','Check'],ck_none:['Chưa có file nào để kiểm. Bước tiếp: bấm Chọn file hoặc dán đường dẫn, rồi bấm Thêm.','No file to check yet. Next step: press Choose files or paste a path, then press Add.'],
+ pk_p:['Bộ kỹ năng theo mảng việc, cài vào dự án khi cần. Gói "thử nghiệm" chưa qua tiếp nhận: cài để dùng thử trong dự án này, trợ lý AI nói rõ là bản thử, không chép sang ứng dụng. Mỗi gói có bảng căn cứ pháp lý ghi số hiệu, điều khoản và ngày đối chiếu để bạn kiểm lại. Gỡ gói chỉ chuyển thư mục vào archive/.','Skill sets by line of work, installed into a project when needed. A "trial" pack has not been through intake: install it to try in this project; the assistant says it is a trial, and it is not copied into apps. Each pack has a legal-basis table with numbers, articles and the check date so you can verify. Removing a pack only moves its folder into archive/.'],
+ pk_need:['Thư mục này là bộ mẫu, chưa phải dự án, nên không cài gói ở đây. Tạo dự án mới từ bộ mẫu rồi cài gói trong bảng điều khiển của dự án đó; với dự án có sẵn, cập nhật bộ công cụ cho dự án đó trước.','This folder is the template, not a project, so packs are not installed here. Create a new project from the template, then install packs from that project\u2019s panel; for an existing project, update its package first.'],
+ pk_need_a:['Đưa vào dự án →','Bring into a project →'],pk_to_proj:['Cài vào dự án','Install in a project'],
+ up_self:['Cập nhật thư mục đang mở','Update the open folder'],up_other:['Cập nhật một dự án khác','Update another project'],
+ up_other_p:['Dùng bản bộ công cụ đang mở để cập nhật một dự án đã có (thêm file mới, cập nhật file chưa sửa, giữ file bạn đã sửa). Dự án chưa từng dùng bộ công cụ thì dùng Khởi tạo → Dự án đã có.','Use the package you have open to upgrade an existing project (adds new files, updates untouched files, keeps the ones you changed). A project that never used the package: use Set up → Existing project.'],
+ up_to:['Thư mục dự án cần cập nhật','Project folder to upgrade'],
+ installed:['Đã cài','Installed'],available:['Có sẵn','Available'],newer:['Có bản mới','Update available'],install:['Cài để dùng thử','Install to try'],update:['Cập nhật','Update'],remove:['Gỡ','Remove'],no_packs:['Chưa có gói nào trong packs/.','No pack in packs/ yet.'],confirm_remove:['Gỡ gói này? Thư mục của gói được chuyển vào archive/, không xóa.','Remove this pack? Its folder is moved into archive/, nothing is deleted.'],
+ sk_p:['Chép kỹ năng đã được nhận vào thư mục kỹ năng của ứng dụng để chúng hiện trong menu. Cùng định dạng SKILL.md dùng được cho cả Claude, Codex và Gemini CLI. Kỹ năng cùng tên mà ứng dụng đã có luôn được giữ nguyên.','Copy accepted skills into an app\u2019s skills folder so they show up in its menu. The same SKILL.md format works in Claude, Codex and Gemini CLI. A same-name skill the app already has is always kept.'],
+ sk_pick:['Chọn kỹ năng cần chép','Choose the skills to copy'],sk_all:['Chọn mọi kỹ năng đã nhận','Select every accepted skill'],sk_none:['Bỏ chọn','Clear'],
+ sk_native:['Chỉ chép kỹ năng bạn thật sự cần. Ứng dụng đã có khả năng tương tự thì không cần chép; trợ lý AI vẫn đọc được kỹ năng của dự án như file. Kỹ năng thử nghiệm không được chép.','Copy only the skills you really need. If the app already has a similar capability there is no need; the assistant can still read project skills as files. Trial skills are not copied.'],
+ sk_need:['Chọn ít nhất một kỹ năng.','Choose at least one skill.'],sk_cand:['Thử nghiệm, chưa qua tiếp nhận: không chép','Trial, not through intake: not copied'],sk_off:['Đã tắt: không chép','Disabled: not copied'],sk_none_rows:['Chỉ mục chưa có kỹ năng nào chép được.','The index has no skill that can be copied.'],
+ st_review:['Thử nghiệm','Trial'],st_unconf:['Chưa xác nhận','Not confirmed'],pk_confirm:['Cho phép dùng trong dự án','Allow in this project'],pk_addconf:['Cài và cho phép dùng','Install and allow'],pk_trialinst:['Cài để dùng thử','Install to try'],pk_ask:['Bạn đã đọc hồ sơ tiếp nhận của gói này và muốn cho phép dùng gói trong dự án này? Nếu nội dung gói thay đổi, bạn sẽ phải cho phép lại. Việc cho phép không thay cho việc tự kiểm tra nội dung gói.','Have you read this pack’s intake record, and do you want to allow it in this project? If the pack content changes, you will have to allow it again. Allowing it does not replace checking the pack content yourself.'],pk_conf_ok:['Đã cho phép dùng ở dự án này','Allowed in this project'],
+ sk_r_pack_not_confirmed:['Gói chưa xác nhận tiếp nhận ở dự án này: không chép','Pack not confirmed in this project: not copied'],sk_r_pack_content_changed:['Nội dung gói đổi sau khi xác nhận: xét lại rồi xác nhận lại','Pack content changed after confirming: review and confirm again'],sk_r_pack_refused:['Hồ sơ tiếp nhận từ chối bản này: không chép','The intake record refuses this version: not copied'],sk_r_pack_claim_withdrawn:['Hồ sơ tiếp nhận không còn ở mức đã nhận: không chép','The intake record no longer claims acceptance: not copied'],st_off:['Đã tắt','Disabled'],pk_trial:['Thử nghiệm, chưa qua tiếp nhận','Trial, not through intake'],pk_acc:['Đã tiếp nhận','Accepted'],pk_ref:['Không nhận phiên bản này','Not taken'],
  sk_where:['Chép vào đâu?','Copy to where?'],sk_claude:['Claude Desktop, Cowork, Claude Code','Claude Desktop, Cowork, Claude Code'],sk_agents:['Hai ứng dụng cùng đọc thư mục này','Both apps read this folder'],sk_custom:['Thư mục khác','Another folder'],sk_custom_d:['Antigravity hoặc ứng dụng khác','Antigravity or another app'],
  sk_dest:['Thư mục đích','Destination folder'],choose:['Chọn…','Choose…'],sk_over:['Thay bản do bảng điều khiển này đã chép trước đó (bản cũ lưu vào archive/)','Replace copies this panel made earlier (the old copy goes into archive/)'],
  preview:['Xem trước','Preview'],apply:['Thực hiện','Apply'],
- su_p:['Tạo project từ thư mục này, hoặc đưa package vào một project đã có. Mọi thao tác xem trước rồi mới ghi; không xóa file nào.','Create a project from this folder, or bring the package into an existing project. Every action is previewed before writing; no file is deleted.'],
- su_new:['Project mới (thư mục này)','New project (this folder)'],su_adopt:['Project đã có','Existing project'],
- su_tpl:['PROJECT còn nguyên mẫu và chưa có thông tin khởi tạo. Nên sao chép bộ mẫu ra thư mục project riêng rồi khởi tạo ở đó.','PROJECT is an unchanged template with no initialization record. Copy the template into a separate project folder before setup.'],
+ su_p:['Tạo dự án từ thư mục này, hoặc đưa bộ công cụ vào một dự án đã có. Mọi thao tác xem trước rồi mới ghi; không xóa file nào.','Create a project from this folder, or bring the package into an existing project. Every action is previewed before writing; no file is deleted.'],
+ su_new:['Dự án mới (chính thư mục này)','New project (this folder itself)'],su_adopt:['Dự án đã có','Existing project'],
+ su_tpl:['Đây là bộ mẫu gốc. Thiết lập tại chỗ sẽ biến chính bộ mẫu thành một dự án. Muốn giữ bộ mẫu để dùng lại, dùng "Tạo dự án mới" (tạo bản sao).','This is the original template. Setting it up here turns the template itself into a project. To keep the template for reuse, use "New project" (makes a copy).'],
  su_inited:['Thư mục này đã khởi tạo. Chạy lại chỉ điền các dòng còn trống trong PROJECT.md; dòng đã có nội dung và STATE được giữ nguyên.','This folder is already set up. Running again only fills empty lines in PROJECT.md; lines with content and STATE are kept.'],
- f_name:['Tên project','Project name'],f_lang:['Ngôn ngữ của project','Project language'],f_purpose:['Mục đích và người đọc','Purpose and readers'],f_outputs:['Đầu ra mong đợi','Expected outputs'],f_style:['Ngôn ngữ và văn phong','Language and style'],f_sources:['Nguồn, mẫu chính đã duyệt','Main approved sources and templates'],f_constraints:['Ràng buộc quan trọng','Important constraints'],f_sensitivity:['Mức nhạy cảm dữ liệu','Data sensitivity'],
- f_hint:['Ô nào chưa biết thì để trống, điền sau trong PROJECT.md.','Leave unknown fields empty and fill them in PROJECT.md later.'],
- a_dir:['Thư mục project đã có','Existing project folder'],a_hint:['Thêm file còn thiếu; file của bạn được giữ, bản của package lưu thành .new hoặc .bak.','Adds missing files; your files are kept and the package versions are saved as .new or .bak.'],
- up_p:['Giải nén bản package mới ra một thư mục riêng, chọn thư mục đó rồi xem trước.','Unzip the new package into its own folder, choose that folder and preview.'],up_from:['Thư mục package mới','New package folder'],
+ f_name:['Tên dự án','Project name'],f_lang:['Ngôn ngữ hướng dẫn','Guidance language'],f_purpose:['Mục đích và người đọc','Purpose and readers'],f_outputs:['Bạn muốn nhận được gì?','What do you want to receive?'],f_style:['Ngôn ngữ và văn phong','Language and style'],f_sources:['Nguồn, mẫu chính đã duyệt','Main approved sources and templates'],f_constraints:['Ràng buộc quan trọng','Important constraints'],f_sensitivity:['Thông tin cần bảo mật','Information to keep confidential'],
+ f_hint:['Ô nào chưa biết thì để trống, bổ sung sau trong PROJECT.md. Chỉ nêu loại thông tin cần bảo mật; không ghi mật khẩu hay dữ liệu thật.','Leave anything you do not know yet blank and add it later in PROJECT.md. Only name the kind of confidential information; never write passwords or real data.'],
+ a_dir:['Thư mục dự án đã có','Existing project folder'],a_hint:['Thêm file còn thiếu; file của bạn được giữ, bản của bộ công cụ lưu thành .new hoặc .bak.','Adds missing files; your files are kept and the package versions are saved as .new or .bak.'],
+ up_p:['Giải nén bản bộ công cụ mới ra một thư mục riêng, chọn thư mục đó rồi xem trước.','Unzip the new package into its own folder, choose that folder and preview.'],up_from:['Thư mục bộ công cụ mới','New package folder'],
  up_r1:['File chưa ai sửa được cập nhật lên bản mới','Untouched files are updated'],up_r2:['File bạn đã sửa được giữ nguyên','Files you changed are kept'],up_r3:['Hai bên cùng đổi thì bản mới lưu thành .new','When both changed, the new one is saved as .new'],cur:['Bản hiện tại','Current version'],
- mt_p:['Dành cho người duy trì package, hoặc khi cần kiểm tra project còn nguyên vẹn.','For the package maintainer, or to check that a project is intact.'],
- mt1:['Kiểm tra nguyên vẹn','Integrity check'],mt1d:['So file với MANIFEST: file nào của package đã bị sửa hoặc thiếu','Compare with MANIFEST: which package files were changed or are missing'],
- mt2:['Kiểm tra package','Check the package'],mt2d:['Cấu trúc, chỉ mục skill, bản tiếng Anh, số phiên bản, các gói','Structure, skill index, English copies, versions, packs'],
+ mt_p:['Dành cho người duy trì bộ công cụ, hoặc khi cần kiểm tra dự án còn nguyên vẹn.','For the package maintainer, or to check that a project is intact.'],
+ mt1:['Kiểm tra nguyên vẹn','Integrity check'],mt1d:['So file với MANIFEST: file nào của bộ công cụ đã bị sửa hoặc thiếu','Compare with MANIFEST: which package files were changed or are missing'],
+ mt2:['Kiểm tra bộ công cụ','Check the package'],mt2d:['Cấu trúc, chỉ mục kỹ năng, bản tiếng Anh, số phiên bản, các gói','Structure, skill index, English copies, versions, packs'],
  mt3:['Dựng lại hướng dẫn HTML','Rebuild the HTML guides'],mt3d:['Sau khi sửa Markdown trong docs/','After editing the Markdown in docs/'],
  mt4:['Đóng gói phát hành','Build a release'],mt4d:['Chỉ dùng trong kho nguồn: kiểm tra và đóng ZIP vào dist/ mà không sửa dữ liệu phát triển','Source repository only: validate and build the ZIP in dist/ without changing development data'],run:['Chạy','Run'],
  close:['Đóng','Close'],copy:['Chép','Copy'],copied:['Đã chép','Copied'],running:['Đang chạy…','Running…'],ok:['Thành công','Succeeded'],fail:['Cần xem lại','Needs attention'],bad:['Thiếu thông tin','Missing input'],
- m_preview:['Mới xem trước, chưa ghi gì. Đọc kết quả rồi bấm Thực hiện.','Preview only, nothing written yet. Read it, then press Apply.'],m_nothing:['Không có gì cần thay đổi.','Nothing to change.'],m_done:['Đã ghi thay đổi. Bước tiếp: kiểm lại kết quả ở trang tương ứng.','Changes written. Next step: check the result on the matching page.'],m_ro:['Chỉ đọc, không ghi gì.','Read only, nothing written.'],
+ m_preview:['Mới xem trước, chưa ghi gì. Đọc kết quả rồi bấm Thực hiện.','Preview only, nothing written yet. Read it, then press Apply.'],m_nothing:['Không có gì cần thay đổi.','Nothing to change.'],m_done:['Đã ghi thay đổi. Bước tiếp: kiểm lại kết quả ở trang tương ứng.','Changes written. Next step: check the result on the matching page.'],m_ro:['Chỉ đọc, không ghi gì.','Read only, nothing written.'],m_issues_ro:['Đã kiểm xong và có điểm cần xem ở các dòng phía trên. Chỉ đọc: Không file nào bị sửa. Bước tiếp: xử lý từng điểm rồi kiểm lại.','The check finished and found points to review in the lines above. Read only: Nothing was changed. Next step: deal with each point, then check again.'],m_issues:['Công cụ đã chạy xong và có điểm cần xem ở các dòng phía trên. Bước tiếp: xử lý từng điểm rồi chạy lại.','The tool finished and found points to review in the lines above. Next step: deal with each point, then run it again.'],
  pick_fail:['Không mở được hộp chọn. Không có gì bị thay đổi. Bước tiếp: dán đường dẫn vào ô bên cạnh.','The picker could not open. Nothing was changed. Next step: paste the path into the field beside it.'],
  off_t:['Đã tắt bảng điều khiển','The control panel has stopped'],off_p:['Có thể đóng trang này. Mở lại bằng APP.bat hoặc APP.command.','You can close this page. Open it again with APP.bat or APP.command.'],
- t_init:['Khởi tạo project','Set up project'],t_adopt:['Đưa vào project đã có','Bring into existing project'],t_up:['Nâng cấp package','Upgrade package'],t_pack:['Gói','Pack'],t_check:['Kiểm tra trước khi giao','Check before delivery'],t_install:['Cài skill vào ứng dụng','Install skills'],
+ t_init:['Khởi tạo dự án','Set up project'],t_adopt:['Đưa vào dự án đã có','Bring into existing project'],t_up:['Cập nhật bộ công cụ','Upgrade package'],t_pack:['Gói','Pack'],t_check:['Kiểm tra trước khi giao','Check before delivery'],t_install:['Cài kỹ năng vào ứng dụng','Install skills'],
  nav_health:['Tình trạng ứng dụng','App status'],
- health_p:['Phiên bản, chức năng tùy chọn, giao dịch dở và lịch sử thao tác gần đây. Ứng dụng không tự cài thêm gì; các nút trên trang chỉ làm việc khi bạn bấm.','Version, optional features, unfinished transactions and recent operations. The app installs nothing automatically; the buttons on this page act only when you press them.'],
- h_app:['Ứng dụng','Application'],h_version:['Phiên bản package','Package version'],h_kind:['Loại workspace','Workspace type'],h_evidence:['Căn cứ nhận diện','Basis of identification'],h_python:['Python','Python'],h_platform:['Hệ điều hành','Operating system'],
+ health_p:['Phiên bản, chức năng tùy chọn, lần lưu file bị dở và lịch sử thao tác gần đây. Ứng dụng không tự cài thêm gì; các nút trên trang chỉ làm việc khi bạn bấm.','Version, optional features, unfinished transactions and recent operations. The app installs nothing automatically; the buttons on this page act only when you press them.'],
+ h_app:['Ứng dụng','Application'],h_version:['Phiên bản bộ công cụ','Package version'],h_kind:['Loại workspace','Workspace type'],h_evidence:['Căn cứ nhận diện','Basis of identification'],h_python:['Python','Python'],h_platform:['Hệ điều hành','Operating system'],
  h_comp:['Chức năng tùy chọn','Optional features'],h_comp_p:['Chức năng cần thư viện hoặc thành phần thêm. Phần còn lại của ứng dụng vẫn dùng được.','Features that need an extra library or component. The rest of the app still works.'],
  usable:['Dùng được','Usable'],not_usable:['Chưa dùng được','Not usable'],why_label:['Vì sao','Why'],fix_label:['Cách khắc phục','How to fix'],
  f_python:['Python 3.8 trở lên','Python 3.8 or newer'],f_library:['Thư viện nguồn: tra cứu và kiểm chỉ mục','Source library: search and index check'],f_xlsx:['Kiểm tra file .xlsx','Check .xlsx files'],f_picker:['Hộp chọn file và thư mục','File and folder picker'],
  why_opx:['Chưa cài thư viện openpyxl','The openpyxl library is not installed'],why_tk:['Python này không có tkinter','This Python has no tkinter'],why_py:['Python quá cũ','Python is too old'],
  fix_opx:['Chạy lệnh sau trong cửa sổ terminal. Ứng dụng không tự cài.','Run this in a terminal window. The app never installs anything by itself.'],fix_tk:['Dùng nút dán đường dẫn, hoặc cài Python từ python.org và bật Tcl/Tk. Các chức năng khác không bị ảnh hưởng.','Paste the path instead, or install Python from python.org with Tcl/Tk enabled. Other features are not affected.'],fix_py:['Cài Python 3.8 trở lên.','Install Python 3.8 or newer.'],
  hl_merges:['Chờ hợp nhất','Pending merges'],hl_merge_go:['Mở trang chờ hợp nhất','Open pending merges'],hl_merge_count:['file đang chờ hợp nhất','file(s) waiting to be merged'],hl_none_merge:['Không có file nào đang chờ hợp nhất.','No files are waiting to be merged.'],
- h_tx:['Giao dịch chưa hoàn tất','Unfinished transactions'],h_tx_p:['Thao tác ghi nhiều file bị gián đoạn. Tiếp tục để hoàn tất, hoặc phục hồi để đưa file về trạng thái trước khi ghi.','A multi-file write that was interrupted. Resume to finish it, or roll back to return the files to their state before the write.'],h_tx_none:['Không có giao dịch dở.','No unfinished transactions.'],
+ h_tx:['Thao tác lưu file bị gián đoạn','Interrupted file saves'],h_tx_p:['Thao tác ghi nhiều file bị gián đoạn. Tiếp tục để hoàn tất, hoặc phục hồi để đưa file về trạng thái trước khi ghi.','A multi-file write that was interrupted. Resume to finish it, or roll back to return the files to their state before the write.'],h_tx_none:['Không có thao tác lưu file nào bị gián đoạn.','No interrupted file saves.'],
  tx_st:['Còn dở','Unfinished'],
- tx_op_init:['Khởi tạo','Set up'],tx_op_adopt:['Đưa vào project đã có','Bring into existing project'],tx_op_upgrade:['Nâng cấp package','Upgrade package'],
- tx_resume:['Tiếp tục','Resume'],tx_rollback:['Phục hồi','Roll back'],tx_rb_confirm:['Phục hồi giao dịch này? File bạn chưa sửa sẽ về bản gốc; file mới do thao tác dở tạo ra sẽ bị xóa nếu bạn chưa sửa; file bạn đã sửa sau khi bị gián đoạn được giữ nguyên.','Roll back this transaction? Files you have not edited return to their originals; files the interrupted run created are removed if you have not edited them; files you edited after the interruption are kept.'],
- tx_partial:['Chưa hoàn tất: giao dịch vẫn còn dở, nên file có thể đang ở giữa hai trạng thái. Bước tiếp: bấm Tiếp tục để hoàn tất, hoặc Phục hồi để đưa file về trước khi ghi.','Not complete: the transaction is still open, so files may be between two states. Next step: press Resume to finish, or Roll back to return the files to before the write.'],
+ tx_op_init:['Khởi tạo','Set up'],tx_op_adopt:['Đưa vào dự án đã có','Bring into existing project'],tx_op_upgrade:['Cập nhật bộ công cụ','Upgrade package'],
+ tx_resume:['Tiếp tục','Resume'],tx_rollback:['Phục hồi','Roll back'],tx_rb_confirm:['Phục hồi lần lưu file này? File bạn chưa sửa sẽ về bản gốc; file mới do thao tác dở tạo ra sẽ bị xóa nếu bạn chưa sửa; file bạn đã sửa sau khi bị gián đoạn được giữ nguyên.','Roll back this transaction? Files you have not edited return to their originals; files the interrupted run created are removed if you have not edited them; files you edited after the interruption are kept.'],
+ tx_partial:['Chưa hoàn tất: lần lưu file vẫn còn dở, nên một số file có thể đang ở giữa bản cũ và bản mới. Bước tiếp: bấm Tiếp tục để hoàn tất, hoặc Phục hồi để đưa file về như trước khi ghi.','Not complete: the file save is still open, so some files may be between the old and the new version. Next step: press Resume to finish, or Roll back to put the files back as they were before the write.'],
  tx_partial_rb:['Phục hồi chưa xong: file bạn đã sửa được giữ nguyên, phần còn lại không tự phục hồi được. Bước tiếp: làm theo các bước bên dưới, rồi kiểm lại file.','Rollback is not complete: files you edited are kept, and the rest could not be restored automatically. Next step: follow the steps below, then check the files.'],
- tx_banner_t:['Có giao dịch chưa hoàn tất','An unfinished transaction is waiting'],tx_banner_p:['Một thao tác ghi bị gián đoạn. Mở Tình trạng ứng dụng để tiếp tục hoặc phục hồi trước khi làm việc khác.','A write was interrupted. Open App status to resume or roll back before other work.'],tx_banner_b:['Mở tình trạng','Open status'],
+ tx_banner_t:['Có thao tác lưu file bị gián đoạn','A file save was interrupted'],tx_banner_p:['Một thao tác ghi bị gián đoạn. Mở Tình trạng ứng dụng để tiếp tục hoặc phục hồi trước khi làm việc khác.','A write was interrupted. Open App status to resume or roll back before other work.'],tx_banner_b:['Mở tình trạng','Open status'],
  sh_next:['Bước tiếp theo','Next steps'],
- hist_t:['Lịch sử thao tác','Operations history'],hist_p:['Chỉ ghi thời điểm, tên thao tác, trạng thái, số file tác động và mã giao dịch. Không ghi nội dung, tên file, tên người hay dữ liệu đã nhập.','Only records the time, action, status, number of files affected and transaction id. Never records content, file names, names of people or typed data.'],
+ hist_t:['Lịch sử thao tác','Operations history'],hist_p:['Chỉ ghi thời điểm, tên thao tác, trạng thái, số file tác động và mã lần lưu file. Không ghi nội dung, tên file, tên người hay dữ liệu đã nhập.','Only records the time, action, status, number of files affected and transaction id. Never records content, file names, names of people or typed data.'],
  hist_last_ok:['Lần thành công gần nhất','Last success'],hist_last_fail:['Lần lỗi gần nhất','Last failure'],hist_last_unf:['Lần dang dở gần nhất','Last unfinished'],hist_none:['Chưa có','None yet'],hist_empty:['Chưa có thao tác nào được ghi.','No operations recorded yet.'],
  hist_c_time:['Thời điểm','Time'],hist_c_act:['Thao tác','Action'],hist_c_st:['Trạng thái','Status'],hist_c_files:['File','Files'],
- hist_clear:['Xóa lịch sử','Clear history'],hist_clear_confirm:['Xóa toàn bộ lịch sử thao tác cục bộ? Chỉ xóa file .agent/runtime/operations.jsonl. Tài liệu, STATE và giao dịch không bị ảnh hưởng.','Delete the whole local operations history? Only the file .agent/runtime/operations.jsonl is deleted. Documents, STATE and transactions are not affected.'],hist_cleared:['Đã xóa lịch sử.','History cleared.'],
- dg_title:['Gói chẩn đoán','Diagnostics bundle'],dg_p:['Tạo một file ZIP trong .agent/runtime/diagnostics/ để gửi cho người hỗ trợ khi gặp lỗi. Gói gồm: phiên bản package, loại workspace, Python và hệ điều hành, tình trạng chức năng tùy chọn, số file chờ hợp nhất (chỉ đường dẫn tương đối), giao dịch dở, lịch sử thao tác và kết quả kiểm tra toàn vẹn package.','Creates a ZIP in .agent/runtime/diagnostics/ to send to a helper when something goes wrong. It contains: package version, workspace type, Python and operating system, optional-feature status, pending merge files (relative paths only), unfinished transactions, operations history and the package integrity check.'],
- dg_no:['Không có nội dung tài liệu, tên người, tên project hay đường dẫn tuyệt đối. Đường dẫn thư mục và tên người dùng máy tính đã được che. Bạn tự quyết định có chia sẻ gói này hay không.','No document content, names of people, project name or absolute paths. Folder paths and the computer user name are masked. You decide whether to share this bundle.'],dg_decide:['Chỉ tạo file trên máy này; không gửi đi đâu.','Only creates a file on this computer; nothing is sent anywhere.'],
+ hist_clear:['Xóa lịch sử','Clear history'],hist_clear_confirm:['Xóa toàn bộ lịch sử thao tác cục bộ? Chỉ xóa file .agent/runtime/operations.jsonl. Tài liệu, STATE và lần lưu file không bị ảnh hưởng.','Delete the whole local operations history? Only the file .agent/runtime/operations.jsonl is deleted. Documents, STATE and transactions are not affected.'],hist_cleared:['Đã xóa lịch sử.','History cleared.'],
+ dg_title:['Gói chẩn đoán','Diagnostics bundle'],dg_p:['Tạo một file ZIP trong .agent/runtime/diagnostics/ để gửi cho người hỗ trợ khi gặp lỗi. Gói gồm: phiên bản bộ công cụ, loại workspace, Python và hệ điều hành, tình trạng chức năng tùy chọn, số file chờ hợp nhất (chỉ đường dẫn tương đối), lần lưu file bị dở, lịch sử thao tác và kết quả kiểm tra toàn vẹn bộ công cụ.','Creates a ZIP in .agent/runtime/diagnostics/ to send to a helper when something goes wrong. It contains: package version, workspace type, Python and operating system, optional-feature status, pending merge files (relative paths only), unfinished transactions, operations history and the package integrity check.'],
+ dg_no:['Không có nội dung tài liệu, tên người, tên dự án hay đường dẫn tuyệt đối. Đường dẫn thư mục và tên người dùng máy tính đã được che. Bạn tự quyết định có chia sẻ gói này hay không.','No document content, names of people, project name or absolute paths. Folder paths and the computer user name are masked. You decide whether to share this bundle.'],dg_decide:['Chỉ tạo file trên máy này; không gửi đi đâu.','Only creates a file on this computer; nothing is sent anywhere.'],
  dg_btn:['Tạo gói chẩn đoán','Create diagnostics bundle'],dg_open:['Mở thư mục gói','Open the bundle folder'],dg_done:['Đã tạo gói chẩn đoán. Mở thư mục để xem trước khi quyết định chia sẻ.','Diagnostics bundle created. Open the folder to review it before deciding whether to share it.'],
  lb_nochk_t:['Thư viện nguồn chưa dùng được.','The source library is not usable yet.'],
  mg_compare:['So sánh','Compare'],df_title:['So sánh bản hiện hành với bản .new','Current version compared with the .new copy'],df_same:['Giống nhau','Identical'],df_identical:['Hai bản giống hệt nhau; không cần hợp nhất nội dung.','The two versions are identical; no content needs merging.'],
  df_cannot:['Không so sánh được','Cannot compare'],df_binary:['File nhị phân hoặc không phải UTF-8: không hiển thị nội dung. Mở hai bản bằng ứng dụng gốc để xem.','Binary file or not UTF-8: content is not shown. Open both versions in their own app.'],df_large:['File lớn hơn %d KB: không so sánh trong giao diện. Mở hai bản bằng ứng dụng gốc để xem.','File larger than %d KB: not compared in the panel. Open both versions in their own app.'],
  df_new:['Bản mới','New file'],df_missing:['Chưa có file hiện hành; toàn bộ bản .new là phần thêm.','The current file is missing; the whole .new copy is additions.'],df_diff:['+%d thêm · -%d bỏ','+%d added · -%d removed'],df_trunc:['Kết quả dài: chỉ hiện phần đầu.','The result is long: only the first part is shown.'],
  df_ro:['Chỉ đọc, không lưu và không hợp nhất tự động. Tự sửa file rồi xóa bản .new khi xong.','Read only, nothing is saved or merged automatically. Edit the file yourself, then remove the .new copy when done.'],
- act_init:['Khởi tạo project','Set up project'],act_adopt:['Đưa vào project đã có','Bring into existing project'],act_upgrade:['Nâng cấp package','Upgrade package'],act_upgrade_other:['Nâng cấp project khác','Upgrade another project'],
- act_pack_list:['Danh sách gói','Pack list'],act_pack_add:['Cài gói','Install pack'],act_pack_remove:['Gỡ gói','Remove pack'],act_pack_update:['Cập nhật gói','Update pack'],act_pack_confirm:['Xác nhận tiếp nhận gói','Confirm pack intake'],act_check_output:['Kiểm tra trước khi giao','Check before delivery'],act_install_skills:['Cài skill vào ứng dụng','Install skills'],
+ act_init:['Khởi tạo dự án','Set up project'],act_adopt:['Đưa vào dự án đã có','Bring into existing project'],act_upgrade:['Cập nhật bộ công cụ','Upgrade package'],act_upgrade_other:['Cập nhật dự án khác','Upgrade another project'],
+ act_pack_list:['Danh sách gói','Pack list'],act_pack_add:['Cài gói','Install pack'],act_pack_remove:['Gỡ gói','Remove pack'],act_pack_update:['Cập nhật gói','Update pack'],act_pack_confirm:['Cho phép dùng gói','Allow a pack'],act_check_output:['Kiểm tra trước khi giao','Check before delivery'],act_install_skills:['Cài kỹ năng vào ứng dụng','Install skills'],
  act_library_init:['Tạo khung thư viện','Create the library'],act_library_check:['Kiểm tra thư viện','Check the library'],act_library_stats:['Thống kê thư viện','Library statistics'],act_library_find:['Tra cứu thư viện','Library search'],
- act_check_package:['Kiểm tra package','Check the package'],act_build_guides:['Dựng hướng dẫn HTML','Build HTML guides'],act_build_release:['Đóng gói phát hành','Build a release'],act_merge_state:['Đổi trạng thái hợp nhất','Change merge state'],act_merge_diff:['So sánh bản hợp nhất','Compare a merge item'],
- act_diagnostics:['Gói chẩn đoán','Diagnostics bundle'],act_tx_resume:['Tiếp tục giao dịch','Resume transaction'],act_tx_rollback:['Phục hồi giao dịch','Roll back transaction'],act_unknown:['Thao tác khác','Other action'],
- SEC_Goal:['Mục tiêu','Goal'],'SEC_Current phase':['Giai đoạn hiện tại','Current phase'],SEC_Completed:['Đã xong','Completed'],'SEC_Current artifact':['Sản phẩm hiện hành','Current artifact'],'SEC_Open items':['Việc còn mở','Open items'],'SEC_Waiting on user':['Đang chờ bạn','Waiting on you'],SEC_Decisions:['Quyết định','Decisions'],'SEC_Next milestone':['Mốc tiếp theo','Next milestone'],
- skip:['Bỏ qua menu, đến nội dung','Skip the menu, go to content'],lang_group:['Ngôn ngữ giao diện','Interface language'],su_mode_group:['Cách thiết lập','How to set up'],up_mode_group:['Project cần nâng cấp','Project to upgrade'],
- lb_group:['Nhóm văn bản','Document group'],sk_filter:['Lọc skill theo phạm vi','Filter skills by scope'],sh_out_label:['Kết quả chi tiết','Detailed output'],remove_file:['Bỏ file này khỏi danh sách','Remove this file from the list'],
- lb_q_label:['Từ khóa tra cứu','Search keyword'],sk_search:['Tìm skill','Search skills'],
+ act_check_package:['Kiểm tra bộ công cụ','Check the package'],act_build_guides:['Dựng hướng dẫn HTML','Build HTML guides'],act_build_release:['Đóng gói phát hành','Build a release'],act_merge_state:['Đổi trạng thái hợp nhất','Change merge state'],act_merge_diff:['So sánh bản hợp nhất','Compare a merge item'],
+ act_diagnostics:['Gói chẩn đoán','Diagnostics bundle'],act_tx_resume:['Tiếp tục lần lưu file','Resume a file save'],act_tx_rollback:['Phục hồi lần lưu file','Roll back a file save'],act_unknown:['Thao tác khác','Other action'],
+ SEC_Goal:['Mục tiêu','Goal'],'SEC_Current phase':['Đang làm đến đâu','Where things stand'],SEC_Completed:['Đã xong','Completed'],'SEC_Current artifact':['Kết quả đang dùng','Current result'],'SEC_Open items':['Việc chưa giải quyết','Unresolved items'],'SEC_Waiting on user':['Đang chờ bạn','Waiting on you'],SEC_Decisions:['Quyết định','Decisions'],'SEC_Next milestone':['Bước tiếp theo','Next step'],
+ skip:['Bỏ qua menu, đến nội dung','Skip the menu, go to content'],lang_group:['Ngôn ngữ giao diện','Interface language'],su_mode_group:['Cách thiết lập','How to set up'],up_mode_group:['Dự án cần cập nhật','Project to upgrade'],
+ lb_group:['Nhóm văn bản','Document group'],sk_filter:['Lọc kỹ năng theo phạm vi','Filter skills by scope'],sh_out_label:['Kết quả chi tiết','Detailed output'],remove_file:['Bỏ file này khỏi danh sách','Remove this file from the list'],
+ lb_q_label:['Từ khóa tra cứu','Search keyword'],sk_search:['Tìm kỹ năng','Search skills'],
  busy_wait:['Thao tác đang chạy; đợi xong rồi thử lại.','An action is running; wait for it to finish, then try again.'],
- err_conn:['Không nhận được kết quả từ bảng điều khiển, nên chưa biết thao tác đã xong hay chưa. Bước tiếp: mở Tình trạng ứng dụng để xem giao dịch dở, rồi thử lại. Giữ cửa sổ APP.bat đang mở.','No result came back from the panel, so it is not known whether the change finished. Next step: open App status to check for an unfinished transaction, then try again. Keep the APP.bat window open.'],
- err_tool:['Công cụ không hoàn tất, chưa rõ đã ghi hết hay chưa. Bước tiếp: mở Tình trạng ứng dụng để xem giao dịch dở; nếu không có, đọc thông báo phía trên rồi thử lại.','The tool did not finish; it is not yet clear whether every change was written. Next step: open App status to check for an unfinished transaction; if there is none, read the message above and try again.'],
+ err_conn:['Không nhận được kết quả từ bảng điều khiển, nên chưa biết thao tác đã xong hay chưa. Bước tiếp: mở Tình trạng ứng dụng để xem lần lưu file bị dở, rồi thử lại. Giữ cửa sổ APP.bat đang mở.','No result came back from the panel, so it is not known whether the change finished. Next step: open App status to check for an unfinished transaction, then try again. Keep the APP.bat window open.'],
+ err_tool:['Công cụ không hoàn tất, chưa rõ đã ghi hết hay chưa. Bước tiếp: mở Tình trạng ứng dụng để xem lần lưu file bị dở; nếu không có, đọc thông báo phía trên rồi thử lại.','The tool did not finish; it is not yet clear whether every change was written. Next step: open App status to check for an unfinished transaction; if there is none, read the message above and try again.'],
  err_blocked:['Chưa ghi gì. Bước tiếp: sửa thông tin đã nêu ở trên, rồi xem trước lại.','Nothing was written. Next step: fix the input named above, then preview again.'],
  ck_not_checked_next:['Chưa kiểm được đầy đủ: không phải kết quả đạt. Bước tiếp: đọc lại file và đối chiếu bằng tay.','Not fully checked: this is not a pass. Next step: re-read the file and check it by hand.'],
  merge_state_fail:['Không lưu được trạng thái. Không file tài liệu nào bị thay đổi. Bước tiếp: thử lại; nếu vẫn lỗi, kiểm tra quyền ghi của thư mục .agent.','The status could not be saved. No document was changed. Next step: try again; if it still fails, check write permission on the .agent folder.'],
  diff_fail:['Không so sánh được file này. Không có gì bị thay đổi. Bước tiếp: kiểm tra file .new còn tồn tại, rồi thử lại.','This file could not be compared. Nothing was changed. Next step: check that the .new file still exists, then try again.'],
  lb_nochk_safe:['Chỉ đọc: không có file nào bị thay đổi.','Read only: no file was changed.'],
- copy_fail:['Không chép được. Hãy chọn đường dẫn bằng chuột rồi chép thủ công.','Could not copy. Select the path with the mouse and copy it by hand.']
+ copy_fail:['Không chép được. Hãy chọn đường dẫn bằng chuột rồi chép thủ công.','Could not copy. Select the path with the mouse and copy it by hand.'],
+ np_lang_h:['Ngôn ngữ của các file hướng dẫn và mẫu trong dự án. Không đổi ngôn ngữ hay cài đặt của ứng dụng AI.','Language of the guidance files and templates in the project. It does not change your AI app’s language or settings.'],
+ ag_start_h:['Dùng khi giao một việc mới. Tên file trong lời nhắc giúp trợ lý tìm đúng thông tin; bạn chỉ cần điền phần trong [ ].','Use it for a new task. The file names in the message help the assistant find the right information; you only fill in the part in [ ].'],
+ ag_cont_h:['Dùng khi quay lại sau một thời gian. Trợ lý chỉ tóm tắt việc đang dở và bước tiếp theo, chưa sửa file nào cho tới khi bạn đồng ý.','Use it when you come back later. The assistant only summarises the unfinished work and the next step, and changes no file until you agree.'],
+ col_skill:['Kỹ năng','Skill'],
+ pk_trial_note:['Các gói đi kèm hiện là bản thử nghiệm, chưa qua tiếp nhận. Bảng căn cứ pháp lý được tổng hợp từ trang tin và trang tư vấn, chưa đối chiếu từng điều với văn bản chính thức (Công báo, cổng văn bản của Nhà nước); khi thử, trợ lý AI vẫn có lúc đưa ra câu \u201ctrích nguyên văn\u201d không có trong gói. Dùng để tham khảo và soạn nháp. Với văn bản trình ký hoặc gửi ra ngoài, tự đối chiếu căn cứ với văn bản chính thức trước khi dùng.','The bundled packs are trial versions that have not been through intake. Their legal-basis tables were compiled from news and advisory sites and have not been checked article by article against official texts (the Official Gazette, government legal portals); in tests the AI assistant still sometimes produced \u201cverbatim quotes\u201d that are not in the pack. Use them for reference and drafting. For documents to be signed or sent outside, check the legal basis against the official texts yourself first.']
 };
 var PACK_ICON={'phap-ly':'scale','van-thu-luu-tru':'archive','cang-logistics':'anchor','hanh-chinh-nhan-su':'users','ke-toan-noi-bo':'calc'};
-var NAV=[['nav1',[['home','home','nav_home'],['library','library','nav_library'],['check','check','nav_check'],['merges','merge','nav_merges'],['packs','box','nav_packs'],['skills','monitor','nav_skills']]],['nav2',[['setup','plus','nav_setup'],['upgrade','up','nav_upgrade'],['maintain','gear','nav_maintain'],['health','activity','nav_health']]]];
+// Thanh bên theo vai trò thư mục: việc hằng ngày ở trên, quản lý/bảo trì gom vào nhóm thu gọn / Sidebar by folder role
+var NAV_ALL={home:['home','nav_home'],check:['check','nav_check'],library:['library','nav_library'],merges:['merge','nav_merges'],packs:['box','nav_packs'],skills:['monitor','nav_skills'],upgrade:['up','nav_upgrade'],setup:['plus','nav_setup'],maintain:['gear','nav_maintain'],health:['activity','nav_health']};
+function navLists(){var kind=S?(S.workspace_kind||'unknown'):'project',m=S?(S.merges||[]).length:0;
+  if(kind==='template')return[['home'],['skills','upgrade','setup','maintain','health']];
+  if(kind==='unknown')return[['home'],['setup','upgrade','maintain','health']];
+  return[['home','check','library'].concat(m?['merges']:[]),['packs','skills'].concat(m?[]:['merges']).concat(['upgrade','setup','maintain','health'])];}
+function navLabel(id){var kind=S?(S.workspace_kind||'unknown'):'project';if(id==='home')return t(kind==='template'?'nav_new':kind==='unknown'?'nav_start':'nav_home');return t(NAV_ALL[id][1]);}
+var navOpen=null;
 var lang='vi',S=null,files=[],pending=null,page='home',skFilter='all';
 function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);}catch(e){return null;}}
 function $(id){return document.getElementById(id);}
@@ -697,10 +809,15 @@ function paint(){
   document.querySelectorAll('[data-t]').forEach(function(el){el.textContent=t(el.dataset.t);});
   document.querySelectorAll('[data-tt]').forEach(function(el){el.title=t(el.dataset.tt);el.setAttribute('aria-label',t(el.dataset.tt));});
   document.querySelectorAll('.lang button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.lang===lang?'true':'false');});
-  $('sk-q').placeholder=lang==='en'?'Search skills':'Tìm skill';
-  NAV.forEach(function(g){$(g[0]).innerHTML=g[1].map(function(n){var badge=n[0]==='packs'&&S?(S.packs.items||[]).length:n[0]==='merges'&&S?(S.merges||[]).length:n[0]==='health'&&S&&(S.transactions||[]).length?S.transactions.length:null;return'<button data-page="'+n[0]+'"'+(n[0]===page?' aria-current="page"':'')+'>'+ico(n[1])+'<span>'+esc(t(n[2]))+'</span>'+(badge!==null?'<span class="badge">'+badge+'</span>':'')+'</button>';}).join('');});
+  $('sk-q').placeholder=lang==='en'?'Search skills':'Tìm kỹ năng';
+  var lists=navLists();
+  ['nav1','nav2'].forEach(function(id,gi){$(id).innerHTML=lists[gi].map(function(n){var badge=n==='merges'&&S?(S.merges||[]).length:n==='health'&&S&&(S.transactions||[]).length?S.transactions.length:null;return'<button data-page="'+n+'"'+(n===page?' aria-current="page"':'')+'>'+ico(NAV_ALL[n][0])+'<span>'+esc(navLabel(n))+'</span>'+(badge?'<span class="badge">'+badge+'</span>':'')+'</button>';}).join('');});
   document.querySelectorAll('.nav button').forEach(function(b){b.addEventListener('click',function(){go(b.dataset.page);});});
-  $('cr-page').textContent=t(NAV[0][1].concat(NAV[1][1]).filter(function(n){return n[0]===page;})[0][2]);
+  // nhóm quản lý thu gọn, tự mở khi đang ở một trang của nhóm / the management group stays collapsed unless one of its pages is open
+  var inMore=lists[1].indexOf(page)>=0,open=navOpen===null?(inMore||store('panel.more')==='1'):(navOpen||inMore);
+  $('nav2').hidden=!open;$('nav-more').setAttribute('aria-expanded',open?'true':'false');
+  var att=S?((S.transactions||[]).length+(lists[1].indexOf('merges')>=0?(S.merges||[]).length:0)):0;$('nav-more-b').hidden=!att||open;$('nav-more-b').textContent=att;
+  $('cr-page').textContent=NAV_ALL[page]?navLabel(page):'';
   if(S)render();
 }
 document.querySelectorAll('[data-ico]').forEach(function(el){el.insertAdjacentHTML('afterbegin',ico(el.dataset.ico));});
@@ -710,10 +827,27 @@ function go(p){if(p==='library'){setTimeout(function(){lbStats();lbChips();if(!$
 document.addEventListener('click',function(e){var g=e.target.closest('[data-goto]');if(g){e.preventDefault();go(g.dataset.goto);}var o=e.target.closest('[data-open]');if(o)openPath(o.dataset.open);});
 function openPath(p){api('/api/open',{path:p}).then(function(r){if(r.input_error)toast(r.out);});}
 $('b-guide').addEventListener('click',function(){openPath(lang==='en'?'START_HERE.en.html':'START_HERE.html');});
-$('ov-path').addEventListener('click',function(){if(!S)return;(navigator.clipboard?navigator.clipboard.writeText(S.root):Promise.reject()).then(function(){toast(t('copied'));},function(){toast(t('copy_fail'));});});
+$('nav-more').addEventListener('click',function(){var o=$('nav-more').getAttribute('aria-expanded')!=='true';navOpen=o;store('panel.more',o?'1':'0');paint();});
+$('unk-tpl').addEventListener('click',function(){openPath(lang==='en'?'docs/en/NEW_PROJECT_GUIDE.html':'docs/HUONG_DAN_TAO_PROJECT_MOI_VI.html');});
+function copyText(x){(navigator.clipboard?navigator.clipboard.writeText(x):Promise.reject()).then(function(){toast(t('copied'));},function(){toast(t('copy_fail'));});}
+$('ov-path').addEventListener('click',function(){if(S)copyText(S.root);});
 function seg(id,cb){var g=$(id);g.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){g.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});if(cb)cb(b.dataset.v);});});}
 function segVal(id){var b=$(id).querySelector('[aria-pressed="true"]');return b?b.dataset.v:'vi';}
-seg('f-lang');seg('a-lang');seg('su-mode',function(v){$('su-new').hidden=v!=='new';$('su-adopt').hidden=v!=='adopt';});
+seg('f-lang');seg('a-lang');seg('np-lang');seg('ag-mode',function(){if(S)drawAgent();});
+// tạo project mới từ bộ mẫu: xem trước rồi thực hiện; bộ mẫu chỉ được đọc / new project from the template: preview then apply
+function npWhere(){if(!S)return;var n=$('np-name').value.trim().replace(/[<>:"\/\\|?*]/g,' ').replace(/\s+/g,' ').trim(),d=$('np-dest').value.trim()||S.parent,sep=d.indexOf('\\')>=0?'\\':'/';
+  $('np-where').innerHTML=n?esc(t('np_where'))+':<br><span class="mono">'+esc(d.replace(/[\\/]+$/,'')+sep+n)+'</span>':esc(t('np_where_empty'));}
+$('np-name').addEventListener('input',npWhere);$('np-dest').addEventListener('input',npWhere);
+$('np-run').addEventListener('click',function(){var n=$('np-name').value.trim();if(!n){toast(t('np_need'));$('np-name').focus();return;}
+  run(t('np_h'),'plus','new_project',{name:n,lang:segVal('np-lang'),dest:$('np-dest').value.trim()},{preview:true,btn:$('np-run'),after:npDone});});
+function npDone(res){if(!res||!res.target||res.status!=='success')return;var tg=res.target;
+  $('np-done').hidden=false;
+  $('np-done').innerHTML='<div class="card-b"><div class="done-h"><span class="ic">'+ico('check')+'</span><div style="min-width:0"><b style="font-size:15px">'+esc(t('np_done_t'))+': '+esc(res.name||'')+'</b><div class="mono" style="color:var(--ink-2);overflow-wrap:anywhere;margin-top:2px">'+esc(tg)+'</div><p class="hint" style="margin-top:6px">'+esc(t('np_done_p'))+'</p>'
+    +'<div class="hact" style="margin-top:10px"><button class="btn pri" data-po="panel">'+ico('monitor')+esc(t('np_open_panel'))+'</button><button class="btn" data-po="folder">'+ico('folder')+esc(t('np_open_dir'))+'</button><button class="btn ghost" data-pc="1">'+ico('copy')+esc(t('np_copy_path'))+'</button></div></div></div></div>';
+  $('np-done').querySelectorAll('[data-po]').forEach(function(b){b.addEventListener('click',function(){api('/api/run',{action:'project_open',params:{target:tg,what:b.dataset.po}}).then(function(r){toast(r.code===0?(b.dataset.po==='panel'?t('np_opening'):r.out):r.out);});});});
+  $('np-done').querySelector('[data-pc]').addEventListener('click',function(){copyText(tg);});
+  $('np-name').value='';npWhere();}
+$('ag-copy').addEventListener('click',function(){copyText($('ag-prompt').textContent);});seg('su-mode',function(v){$('su-new').hidden=v!=='new';$('su-adopt').hidden=v!=='adopt';});
 document.querySelectorAll('[data-pick]').forEach(function(b){b.addEventListener('click',function(){b.disabled=true;
   api('/api/pick',{kind:'dir'}).then(function(r){b.disabled=false;if(r.paths&&r.paths.length){$(b.dataset.pick).value=r.paths[0];if(b.dataset.pick==='a-dir')autoName();}else if(r.error)toast(t('pick_fail'));}).catch(function(){b.disabled=false;toast(t('pick_fail'));});});});
 // result sheet
@@ -759,7 +893,8 @@ function run(title,icon,act,params,opts){opts=opts||{};if(busy){toast(t('busy_wa
     if(params&&params.apply)$('sh-s2').classList.add('on');
     // every outcome says what happened, whether data is safe, and the next step (see the err_* and *_next strings)
     var msg='';
-    if(!ok)msg=res.status==='blocked'?t('err_blocked'):res.status==='not_checked'?t('ck_not_checked_next'):res.status==='partial'?'':t('err_tool');
+    // 'issues' = công cụ chạy xong và có phát hiện; không phải lỗi công cụ / the tool finished with findings; not a tool failure
+    if(!ok)msg=res.status==='issues'?t(res.changes===false||opts.ro?'m_issues_ro':'m_issues'):res.status==='blocked'?t('err_blocked'):res.status==='not_checked'?t('ck_not_checked_next'):res.status==='partial'?'':t('err_tool');
     else if(params&&params.apply)msg=t(res.merge_required?'merge_msg':'m_done');
     else if(opts.preview){
       if(res.changes===false){msg=t('m_nothing');}
@@ -769,7 +904,7 @@ function run(title,icon,act,params,opts){opts=opts||{};if(busy){toast(t('busy_wa
     if(ok&&opts.done)msg=t(opts.done);
     $('sh-msg').textContent=msg;
     sheetExtra(res,opts,ok,act);
-    if(ok&&opts.after)opts.after();
+    if(ok&&opts.after)opts.after(res);
     if(opts.always)opts.always();
   }).catch(function(e){setBusy(false,btn);$('sh-tag').innerHTML='<span class="tag err">'+ico('alert')+esc(t('fail'))+'</span>';$('sh-msg').textContent=t('err_conn');$('sh-out').textContent=String(e);});}
 // next steps, recovery buttons for an interrupted transaction, and the folder button after a bundle is made
@@ -860,23 +995,29 @@ function render(){
   document.title=name+' · Workspace';
   $('sb-av').textContent=$('ov-av').textContent=initials(name);$('sb-name').textContent=name;$('sb-name').title=name;
   var kind=s.workspace_kind||'unknown',statusLabel=t(kind==='project'?'st_ready':kind==='template'?'st_template':'st_unknown');
-  $('sb-dot').className='dot'+(s.initialized?'':' warn');$('sb-st').textContent=statusLabel;$('sb-st').title=t('evidence_'+kind);
+  $('sb-dot').className='dot'+(kind==='unknown'?' warn':'');$('sb-st').textContent=statusLabel;$('sb-st').title=t('evidence_'+kind);
   $('sb-ver').textContent='v'+s.version;$('cr-proj').textContent=name;
-  $('ov-name').textContent=name;$('ov-path').innerHTML=ico('folder')+esc(s.root);$('ov-path').title=t('copy_path');
-  var tags=['<span class="tag acc">package v'+esc(s.version)+'</span>','<span class="tag '+(s.initialized?'ok':'warn')+'">'+esc(statusLabel)+'</span>','<span class="tag">'+esc(t('evidence_'+kind))+'</span>'];
-  if(s.initialized)tags.push('<span class="tag">'+(s.lang==='en'?'English':'Tiếng Việt')+'</span>');
-  if(s.info&&s.info.initialized)tags.push('<span class="tag">'+esc(s.info.initialized)+'</span>');
-  $('ov-tags').innerHTML=tags.join('');
-  $('bn-init').hidden=kind!=='template';
-  $('bn-tx').hidden=!(s.transactions||[]).length;
+  $('home-tpl').hidden=kind!=='template';$('home-unk').hidden=kind!=='unknown';$('home-prj').hidden=kind!=='project';
+  $('bn-tx').hidden=!(s.transactions||[]).length;$('bn-merge').hidden=kind!=='project'||!(s.merges||[]).length;
   $('m-release').closest('.rw').hidden=!s.release_source;
-  $('k-skills').textContent=s.skills.length;$('k-packs').textContent=inst;$('k-out').textContent=s.counts.output;$('k-ref').textContent=s.counts.references;
-  var secs=(s.state.sections||[]).filter(function(x){return!x.empty&&x.lines.length;});
-  $('st-box').innerHTML=secs.length?'<dl class="dl">'+secs.map(function(x){var k='SEC_'+x.title;return'<div class="it"><dt>'+esc(D[k]?t(k):x.title)+'</dt><dd>'+mdl(x.lines)+'</dd></div>';}).join('')+'</dl>'
-    :'<div class="empty"><div class="ic">'+ico('activity')+'</div><b style="color:var(--ink)">'+esc(t('state_empty'))+'</b><span>'+esc(t('state_empty_p'))+'</span></div>';
-  if(s.state.mtime){$('st-time').hidden=false;$('st-time').textContent=t('upd')+' '+fmtDate(s.state.mtime);}else $('st-time').hidden=true;
-  $('quick').innerHTML=[['check','check','q1','q1d'],['packs','box','q2','q2d'],['skills','monitor','q3','q3d'],['upgrade','up','q4','q4d']].map(function(q){
-    return'<button class="act" data-goto="'+q[0]+'"><span class="ic">'+ico(q[1])+'</span><span><b>'+esc(t(q[2]))+'</b><span>'+esc(t(q[3]))+'</span></span><span class="chev">'+ico('chev')+'</span></button>';}).join('');
+  if(kind==='template'){
+    if(!$('np-dest').value)$('np-dest').placeholder=s.parent;npWhere();
+    $('np-flow').innerHTML=[1,2,3,4].map(function(i){return'<li><span><b>'+esc(t('np_f'+i))+'</b><span class="sub">'+esc(t('np_f'+i+'d'))+'</span></span></li>';}).join('');}
+  if(kind==='project'){
+    $('ov-name').textContent=name;$('ov-path').innerHTML=ico('folder')+esc(s.folder);$('ov-path').title=t('copy_path')+': '+s.root;
+    $('ov-purpose').textContent=s.purpose||t('purpose_none');$('ov-purpose').className='purpose'+(s.purpose?'':' muted');
+    $('ov-tags').innerHTML=(s.lang==='en'?'<span class="tag">English</span>':'');
+    var secs=(s.state.sections||[]).filter(function(x){return!x.empty&&x.lines.length;});
+    var fresh=secs.length===1&&/Current phase|Giai đoạn/i.test(secs[0].title)&&/Mới khởi tạo|Just initialised/i.test(secs[0].lines.join(' '));
+    // thứ tự ưu tiên khi tiếp tục: đang ở đâu, việc chờ bạn, bước tiếp, sản phẩm hiện hành / priority order for continuing
+    var ORDER=['Current phase','Waiting on user','Next milestone','Current artifact','Open items','Goal'];
+    secs=secs.filter(function(x){return ORDER.indexOf(x.title)>=0;}).sort(function(a,b){return ORDER.indexOf(a.title)-ORDER.indexOf(b.title);}).concat(secs.filter(function(x){return ORDER.indexOf(x.title)<0;})).slice(0,5);
+    $('st-box').innerHTML=(secs.length&&!fresh)?'<dl class="dl">'+secs.map(function(x){var k='SEC_'+x.title;return'<div class="it"><dt>'+esc(D[k]?t(k):x.title)+'</dt><dd>'+mdl(x.lines.slice(0,6))+'</dd></div>';}).join('')+'</dl>'
+      :'<div class="empty"><div class="ic">'+ico('activity')+'</div><b style="color:var(--ink)">'+esc(t('cont_empty_t'))+'</b><span>'+esc(t('cont_empty_p'))+'</span></div>';
+    if(s.state.mtime&&!fresh){$('st-time').hidden=false;$('st-time').textContent=t('upd')+' '+fmtDate(s.state.mtime);}else $('st-time').hidden=true;
+    drawAgent();
+    drawList('src',s.sources,'src_empty','file');
+    drawList('out',s.outputs,'out_empty','inbox',s.drafts);}
   $('sk-filter').innerHTML=[['all','all'],['SHARED','f_shared'],['PACK','f_pack'],['PROJECT','f_proj']].map(function(f){return'<button data-f="'+f[0]+'" aria-pressed="'+(skFilter===f[0])+'">'+esc(t(f[1]))+'</button>';}).join('');
   $('sk-filter').querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){skFilter=b.dataset.f;render();});});
   drawSkills();
@@ -885,6 +1026,8 @@ function render(){
   drawHealth();
   // packs
   $('pk-need').hidden=s.initialized;
+  // gói chưa qua tiếp nhận: luôn nói rõ giới hạn căn cứ / packs not through intake: always state the limits of their legal basis
+  $('pk-trial-note').hidden=!(s.packs.items||[]).some(function(p){return p.intake!=='accepted';});
   var items=s.packs.items||[];
   $('pk-list').innerHTML=items.length?items.map(function(p){
     var newer=p.installed&&p.version&&p.version!==p.installed;
@@ -915,6 +1058,21 @@ function render(){
   document.querySelectorAll('[data-pick]').forEach(function(b){b.hidden=!s.picker;});$('ck-drop').hidden=!s.picker;
   drawFiles();
 }
+function drawList(k,data,emptyKey,icon,drafts){data=data||{items:[],total:0};
+  $(k+'-n').textContent=data.total?t('n_files').replace('%d',data.total):'';
+  var rows=data.items.map(function(f){var dir=f.path.split('/').slice(0,-1).join('/');
+    return'<div class="fr"><span class="ic">'+ico(icon)+'</span><div class="nm"><b title="'+esc(f.path)+'">'+esc(f.name)+'</b><span>'+esc(dir+'/')+(f.mtime?' · '+esc(fmtDate(f.mtime)):'')+'</span></div><button class="btn ghost" data-open="'+esc(f.path)+'" aria-label="'+esc(t('open_file')+': '+f.name)+'">'+ico('eye')+'<span>'+esc(t('lb_open'))+'</span></button></div>';}).join('');
+  var more=data.total>data.items.length?'<div class="more">'+esc(t('f_more').replace('%d',data.total-data.items.length))+'</div>':'';
+  var dr=drafts&&drafts.total?'<div class="more">'+esc(t('drafts_n').replace('%d',drafts.total))+'</div>':'';
+  $(k+'-list').innerHTML=rows?rows+more+dr:'<div class="empty"><div class="ic">'+ico(icon)+'</div><span>'+esc(t(emptyKey))+'</span></div>'+dr;}
+function drawAgent(){var s=S,name=s.project_name||s.folder,n=(s.sources||{}).total||0,mode=segVal('ag-mode');
+  $('ag-steps').innerHTML='<li><span><b>'+esc(t('ag_s1'))+'</b><span class="sub">'+esc(n?t('ag_s1_n').replace('%d',n):t('ag_s1_0'))+'</span></span></li>'
+    +'<li><span><b>'+esc(t('ag_s2'))+'</b><span class="sub">'+esc(t('ag_s2d'))+'</span><span class="hact"><button class="btn" id="ag-path">'+ico('copy')+esc(t('np_copy_path'))+'</button></span></span></li>'
+    +'<li><span><b>'+esc(t('ag_s3'))+'</b><span class="sub">'+esc(t('ag_s3d'))+'</span></span></li>';
+  $('ag-path').addEventListener('click',function(){copyText(s.root);});
+  $('ag-prompt').textContent=t(mode==='cont'?'pr_cont':'pr_start').replace('%s',name);
+  $('ag-mode-h').textContent=t(mode==='cont'?'ag_cont_h':'ag_start_h');
+  $('ag-verify').textContent=t('ag_verify').replace('%s',name);}
 function drawMerges(){var rows=S.merges||[];$('mg-count').textContent=rows.length;
   $('mg-rows').innerHTML=rows.length?rows.map(function(m,i){var state='mg_'+m.state,btn=m.state==='unseen'?'<button class="btn pri" data-ms="reviewing" data-mp="'+esc(m.pending)+'">'+esc(t('mg_start'))+'</button>':m.state==='reviewing'?'<button class="btn pri" data-ms="ready" data-mp="'+esc(m.pending)+'">'+esc(t('mg_ready_b'))+'</button>':'<button class="btn" data-ms="reviewing" data-mp="'+esc(m.pending)+'">'+esc(t('mg_reopen'))+'</button>';
     return'<tr><td class="id">'+esc(m.path)+'<div style="color:var(--muted);font-size:11.5px">'+esc(m.pending)+'</div></td><td><span class="tag">'+esc(t(m.origin==='domain_pack'?'mg_domain_pack':'mg_package'))+'</span></td><td><span class="tag '+(m.state==='ready'?'ok':m.state==='reviewing'?'info':'warn')+'">'+esc(t(state))+'</span></td><td><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn" data-md="'+i+'">'+esc(t('mg_compare'))+'</button>'+(m.current_exists?'<button class="btn" data-open="'+esc(m.path)+'">'+esc(t('mg_open_current'))+'</button>':'')+'<button class="btn" data-open="'+esc(m.pending)+'">'+esc(t('mg_open_new'))+'</button>'+btn+'</div></td></tr>';}).join('')

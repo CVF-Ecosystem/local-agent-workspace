@@ -192,6 +192,9 @@ class BrowserCase(unittest.TestCase):
         expect(self.page.locator('#sheet')).not_to_have_class(re.compile(r'\bon\b'))
 
     def go(self, page_id):
+        # các trang quản lý nằm trong nhóm thu gọn: mở nhóm nếu cần / management pages sit in a collapsed group: open it if needed
+        if not self.page.is_visible('.nav [data-page="%s"]' % page_id) and self.page.is_visible('#nav-more'):
+            self.page.click('#nav-more')
         self.page.click('.nav [data-page="%s"]' % page_id)
 
 
@@ -201,8 +204,8 @@ class MainFlows(BrowserCase):
 
     def test_init_preview_apply_then_overview_shows_project(self):
         p = self.open_panel()
-        expect(p.locator('#bn-init')).to_be_visible()
-        p.click('#bn-init [data-goto="setup"]')
+        expect(p.locator('#home-tpl')).to_be_visible()  # bộ mẫu: trang chính là tạo project mới / template: home is "new project"
+        self.go('setup')  # khởi tạo tại chỗ vẫn có, trong nhóm quản lý / in-place setup still exists, in the management group
         p.fill('#f-name', 'Test UI')
         p.click('#su-run')
         expect(p.locator('#sh-tag')).to_contain_text('Đã xem trước')
@@ -213,8 +216,50 @@ class MainFlows(BrowserCase):
         self.close_sheet()
         self.go('home')
         expect(p.locator('#ov-name')).to_have_text('Test UI')
-        expect(p.locator('#bn-init')).to_be_hidden()
+        expect(p.locator('#home-tpl')).to_be_hidden()
         self.assertTrue((self.pkg / '.agent' / 'PACKAGE_INFO.json').exists())
+
+    def test_template_home_creates_a_separate_project_and_keeps_the_template(self):
+        before = {rel: (self.pkg / rel).read_bytes() for rel in ('PROJECT.md', '.agent/STATE.md', 'AGENTS.md')}
+        p = self.open_panel()
+        expect(p.locator('#np-run')).to_be_visible()
+        expect(p.locator('#nav2')).to_be_hidden()  # quản lý thu gọn / management collapsed
+        p.fill('#np-name', 'Biên bản họp')
+        expect(p.locator('#np-where')).to_contain_text('Biên bản họp')
+        p.click('#np-run')
+        expect(p.locator('#sh-tag')).to_contain_text('Đã xem trước')
+        target = self.base / 'Biên bản họp'
+        self.assertFalse(target.exists(), 'preview must write nothing')
+        p.click('#sh-apply')
+        expect(p.locator('#sh-tag')).to_contain_text('Thành công')
+        self.close_sheet()
+        expect(p.locator('#np-done')).to_contain_text(str(target))
+        expect(p.locator('#np-done [data-po="panel"]')).to_be_visible()
+        self.assertTrue((target / '.agent' / 'PACKAGE_INFO.json').is_file())
+        self.assertFalse((self.pkg / '.agent' / 'PACKAGE_INFO.json').exists(), 'the template is not set up')
+        self.assertEqual({rel: (self.pkg / rel).read_bytes() for rel in before}, before)
+        p.fill('#np-name', 'Biên bản họp')  # trùng tên: bị chặn / same name: blocked
+        p.click('#np-run')
+        expect(p.locator('#sh-tag')).to_contain_text('Chưa thể thực hiện')
+        self.close_sheet()
+
+    def test_project_home_shows_the_work_sources_results_and_an_opening_message(self):
+        init_project(self.pkg)
+        (self.pkg / 'references' / 'source-documents' / 'ghi-chu.txt').write_text('ghi chú', encoding='utf-8')
+        (self.pkg / 'output' / 'bien-ban.md').write_text('# Biên bản', encoding='utf-8')
+        p = self.open_panel()
+        expect(p.locator('#home-prj')).to_be_visible()
+        expect(p.locator('#src-list')).to_contain_text('ghi-chu.txt')
+        expect(p.locator('#out-list')).to_contain_text('bien-ban.md')
+        expect(p.locator('#ag-prompt')).to_contain_text('«Test»')
+        expect(p.locator('#st-box')).to_contain_text('Chưa có tiến độ được lưu')  # chưa có tiến độ thật thì nói rõ / no fake progress
+        p.click('#ag-mode button[data-v="cont"]')
+        expect(p.locator('#ag-prompt')).to_contain_text('Tiếp tục công việc')
+        expect(p.locator('#ag-mode-h')).to_contain_text('chưa sửa file nào')  # chế độ xem lại chỉ tóm tắt / review mode only summarises
+        expect(p.locator('#nav2')).to_be_hidden()
+        p.click('#nav-more')
+        expect(p.locator('#nav2 [data-page="packs"]')).to_be_visible()
+        self.assertEqual(p.get_attribute('#nav-more', 'aria-expanded'), 'true')
 
     def test_install_skills_copies_only_the_chosen_accepted_skills(self):
         init_project(self.pkg)
@@ -278,6 +323,9 @@ class MainFlows(BrowserCase):
         p.click('#ck-run')
         expect(p.locator('#sh-tag')).to_contain_text('Cần xem xét')
         expect(p.locator('#sh-out')).to_contain_text('Tên khách hàng')
+        # có phát hiện là kiểm xong, không phải công cụ lỗi (D1) / findings mean the check finished, not a tool failure (D1)
+        expect(p.locator('#sh-msg')).to_contain_text('Không file nào bị sửa')
+        expect(p.locator('#sh-msg')).not_to_contain_text('Công cụ không hoàn tất')
         self.close_sheet()
         p.reload()  # the file list lives in the page only
         p.fill('#ck-path', str(pdf))
@@ -347,7 +395,7 @@ class MainFlows(BrowserCase):
         p.click('#hl-tx [data-txa="resume"]')
         expect(p.locator('#sh-tag')).to_contain_text('Thành công')
         self.close_sheet()
-        expect(p.locator('#hl-tx')).to_contain_text('Không có giao dịch dở')
+        expect(p.locator('#hl-tx')).to_contain_text('Không có thao tác lưu file nào bị gián đoạn')
         self.assertFalse(has_unfinished(self.pkg))
         self.assertEqual((self.pkg / 'MANIFEST.sha256').read_bytes(), (new1 / 'MANIFEST.sha256').read_bytes())
         self.go('home')
@@ -371,7 +419,7 @@ class MainFlows(BrowserCase):
         p.click('#hl-tx [data-txa="rollback"]')
         p.wait_for_timeout(500)
         self.assertEqual(len(dialogs), 1)
-        self.assertIn('Phục hồi giao dịch', dialogs[0])
+        self.assertIn('Phục hồi lần lưu file', dialogs[0])
         self.assertTrue(has_unfinished(self.pkg), 'cancelled rollback must keep the transaction')
         self.assertEqual(p.locator('#sheet.on').count(), 0)
         p.click('#hl-tx [data-txa="rollback"]')
@@ -382,7 +430,7 @@ class MainFlows(BrowserCase):
         # back to the state before the second upgrade: the version installed by the first one
         self.assertEqual((self.pkg / '.agent' / 'README.md').read_bytes(),
                          (new1 / '.agent' / 'README.md').read_bytes())
-        expect(p.locator('#hl-tx')).to_contain_text('Không có giao dịch dở')
+        expect(p.locator('#hl-tx')).to_contain_text('Không có thao tác lưu file nào bị gián đoạn')
 
 
 PAGES = ['home', 'library', 'check', 'merges', 'packs', 'skills', 'setup', 'upgrade', 'maintain', 'health']
@@ -464,6 +512,7 @@ class Accessibility(BrowserCase):
         self.assertFalse(self.app_inert())
 
     def test_closed_dialog_is_not_in_the_tab_order(self):
+        init_project(self.pkg)  # trang Kiểm tra thuộc project, không có ở bộ mẫu / the check page belongs to a project
         p = self.open_panel()
         self.go('check')
         p.focus('#ck-path')
@@ -596,11 +645,11 @@ class ContrastAndWording(unittest.TestCase):
         entries = {}
         for m in re.finditer(r"([A-Za-z_][A-Za-z0-9_]*)\s*:\s*\[\s*'((?:[^'\\]|\\.)*)'\s*,\s*'((?:[^'\\]|\\.)*)'\s*\]", block):
             entries[m.group(1)] = (m.group(2), m.group(3))
-        keys = ['err_conn', 'err_tool', 'err_blocked', 'tx_partial', 'tx_partial_rb', 'merge_msg',
+        keys = ['err_conn', 'err_tool', 'err_blocked', 'm_issues_ro', 'tx_partial', 'tx_partial_rb', 'merge_msg',
                 'ck_not_checked_next', 'merge_state_fail', 'diff_fail', 'pick_fail']
         vi_safe = ('Chưa ghi', 'chưa biết', 'chưa rõ', 'Chưa rõ', 'không bị thay đổi', 'Không có gì bị', 'Không file',
-                   'được giữ', 'giữa hai trạng thái', 'không phải kết quả đạt')
-        en_safe = ('Nothing was', 'not known', 'not yet clear', 'No document', 'kept', 'between two states', 'not a pass')
+                   'được giữ', 'giữa hai trạng thái', 'giữa bản cũ và bản mới', 'không phải kết quả đạt')
+        en_safe = ('Nothing was', 'not known', 'not yet clear', 'No document', 'kept', 'between two states', 'between the old and the new', 'not a pass')
         problems = []
         for key in keys:
             if key not in entries:

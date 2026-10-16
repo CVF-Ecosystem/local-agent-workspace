@@ -6,63 +6,78 @@ Cách chạy / How to run: bấm đúp SETUP.bat (Windows) hoặc SETUP.command 
 Chỉ cần Python 3.8+. Không dùng mạng. Chỉ ghi file qua init_project.py (không xóa file nào).
 """
 import io, json, os, re, subprocess, sys, webbrowser
+sys.dont_write_bytecode = True  # không để lại __pycache__ trong bộ mẫu / leave no __pycache__ in the template
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 TXT = {
  'vi': {
-  'lang_q': 'Chọn ngôn ngữ cho project',
-  'title': 'KHỞI TẠO PROJECT MỚI',
-  'intro': 'Trả lời vài câu hỏi. Câu nào chưa biết thì nhấn Enter để bỏ qua, điền sau trong PROJECT.md.',
-  'name': 'Tên project (bắt buộc)',
+  'lang_q': 'Chọn ngôn ngữ hướng dẫn cho dự án',
+  'title': 'THIẾT LẬP THƯ MỤC NÀY LÀM DỰ ÁN',
+  'intro': 'Trả lời vài câu hỏi. Câu nào chưa biết thì nhấn Enter để bỏ qua, bổ sung sau trong PROJECT.md.',
+  'name': 'Tên dự án (bắt buộc)',
   'purpose': 'Công việc này để làm gì, ai sẽ dùng? (ví dụ: soạn quy trình cho phòng Vận hành)',
-  'outputs': 'Đầu ra mong đợi (ví dụ: quy trình, biểu mẫu, báo cáo tuần)',
+  'outputs': 'Bạn muốn nhận được gì? (ví dụ: quy trình, biểu mẫu, báo cáo tuần)',
   'style': 'Ngôn ngữ và văn phong (ví dụ: tiếng Việt, trang trọng, theo mẫu hiện có)',
-  'sources': 'Nguồn / mẫu chính đã duyệt (đường dẫn hoặc tên tài liệu)',
+  'sources': 'Tài liệu nguồn hoặc mẫu chính đã được duyệt (tên tài liệu hoặc đường dẫn)',
   'constraints': 'Ràng buộc quan trọng (ví dụ: không đưa số liệu khách hàng ra ngoài)',
-  'sensitivity': 'Mức nhạy cảm dữ liệu (ví dụ: nội bộ; có dữ liệu cá nhân khách hàng thì ghi rõ)',
-  'need_name': 'Cần nhập tên project.',
-  'summary': 'Sẽ khởi tạo với thông tin sau:',
+  'sensitivity': 'Thông tin cần bảo mật (chỉ nêu loại thông tin, ví dụ: dữ liệu cá nhân khách hàng; không ghi mật khẩu hay dữ liệu thật)',
+  'need_name': 'Cần nhập tên dự án.',
+  'summary': 'Sẽ thiết lập thư mục này với thông tin sau:',
   'confirm': 'Tiếp tục? (Enter = Có, n = Hủy)',
   'cancel': 'Đã hủy, chưa ghi gì.',
   'done_head': 'XONG. Việc nên làm tiếp:',
   'next1': '1. Mở PROJECT.md, xem lại các dòng vừa điền và bổ sung nếu cần.',
   'next2': '2. Đặt tài liệu nguồn vào references/ (hoặc ghi đường dẫn vào .agent/INDEX.md).',
-  'next3': '3. Mở thư mục này bằng ứng dụng bạn dùng (Claude, Codex, Gemini...) và giao việc đầu tiên.',
-  'clip_ok': 'Đã sao chép đoạn hướng dẫn cho Project/cloud vào clipboard (nếu dùng Claude Project, dán vào phần hướng dẫn).',
-  'clip_no': 'Nếu dùng Project/cloud, dán đoạn dưới đây vào phần hướng dẫn của Project:',
+  'next3': '3. Mở thư mục này bằng ứng dụng AI bạn dùng (Claude, Codex, Gemini...) và giao việc đầu tiên.',
+  'clip_ok': 'Đã sao chép đoạn hướng dẫn vào bộ nhớ tạm. Nếu ứng dụng AI có phần hướng dẫn riêng cho Project (ví dụ Claude Project), dán vào đó.',
+  'clip_no': 'Nếu ứng dụng AI có phần hướng dẫn riêng cho Project (ví dụ Claude Project), dán đoạn dưới đây vào đó:',
   'open_q': 'Mở bộ hướng dẫn (START_HERE) trong trình duyệt? (y/N)',
-  'already': 'Thư mục này đã được khởi tạo trước đó (có .agent/PACKAGE_INFO.json). Không làm gì thêm.\nMuốn chạy lại: python tools/init_project.py --name "Tên" --force',
-  'fail': 'Khởi tạo gặp lỗi, xem thông báo phía trên.',
+  'already': 'Thư mục này đã được thiết lập thành dự án (có .agent/PACKAGE_INFO.json). Không làm gì thêm.\nMuốn chạy lại: python tools/init_project.py --name "Tên" --force',
+  'fail': 'Thiết lập gặp lỗi, xem thông báo phía trên.',
   'ctx': 'Bối cảnh: %s.',
   'loaded': 'Đã đọc setup_answers.json (từ form Khởi tạo nhanh); dùng thông tin này, không hỏi lại.',
+  'role_q': 'Thư mục này là BỘ MẪU GỐC (chưa dùng cho công việc nào). Bạn muốn:\n  1 = Tạo dự án mới là một bản sao, đặt cùng cấp với bộ mẫu (khuyên dùng; bộ mẫu gốc giữ nguyên)\n  2 = Dùng chính thư mục này làm dự án (thư mục này sẽ không còn là bộ mẫu)\n(Enter = 1)',
+  'task': 'Tên công việc (dùng làm tên thư mục dự án, bắt buộc)',
+  'dest': 'Nơi lưu dự án (Enter = cùng cấp với bộ mẫu: %s)',
+  'copy_done': 'Dự án mới nằm ở thư mục nêu trên. Bộ mẫu gốc không thay đổi. Việc nên làm tiếp:',
+  'copy1': '1. Chép tài liệu nguồn vào thư mục references/ của dự án mới.',
+  'copy2': '2. Mở thư mục dự án mới bằng ứng dụng AI bạn dùng (Claude, Codex, Gemini...) và giao việc.',
+  'copy3': '3. Bấm đúp APP.bat / APP.command trong thư mục dự án để lấy lời nhắc cho trợ lý AI và theo dõi công việc.',
  },
  'en': {
-  'lang_q': 'Choose the project language',
-  'title': 'NEW PROJECT SETUP',
+  'lang_q': 'Choose the guidance language for the project',
+  'title': 'SET UP THIS FOLDER AS A PROJECT',
   'intro': 'Answer a few questions. Press Enter to skip any you do not know yet; fill it in later in PROJECT.md.',
   'name': 'Project name (required)',
   'purpose': 'What is this work for and who will use it? (e.g. writing procedures for the Operations team)',
-  'outputs': 'Expected outputs (e.g. procedures, forms, weekly report)',
+  'outputs': 'What do you want to receive? (e.g. procedures, forms, weekly report)',
   'style': 'Language and house style (e.g. English, formal, follow the existing template)',
   'sources': 'Main approved sources / templates (paths or document names)',
   'constraints': 'Important constraints (e.g. do not share customer data externally)',
-  'sensitivity': 'Data sensitivity (e.g. internal; say so if it holds customer personal data)',
+  'sensitivity': 'Information to keep confidential (name the kind only, e.g. customer personal data; never write passwords or real data)',
   'need_name': 'A project name is required.',
-  'summary': 'The project will be set up with:',
+  'summary': 'This folder will be set up with:',
   'confirm': 'Continue? (Enter = Yes, n = Cancel)',
   'cancel': 'Cancelled, nothing was written.',
   'done_head': 'DONE. Suggested next steps:',
   'next1': '1. Open PROJECT.md, review the lines just filled in and add anything missing.',
   'next2': '2. Put source documents in references/ (or list their paths in .agent/INDEX.md).',
-  'next3': '3. Open this folder in the app you use (Claude, Codex, Gemini...) and give it the first task.',
-  'clip_ok': 'The Project/cloud instructions were copied to the clipboard (if you use a Claude Project, paste them into its instructions).',
-  'clip_no': 'If you use a Project/cloud, paste the text below into the Project instructions:',
+  'next3': '3. Open this folder in your AI app (Claude, Codex, Gemini...) and give it the first task.',
+  'clip_ok': 'The instructions were copied to the clipboard. If your AI app has its own Project instructions (for example a Claude Project), paste them there.',
+  'clip_no': 'If your AI app has its own Project instructions (for example a Claude Project), paste the text below there:',
   'open_q': 'Open the handbook (START_HERE) in your browser? (y/N)',
-  'already': 'This folder was already initialized (.agent/PACKAGE_INFO.json exists). Nothing more to do.\nTo run again: python tools/init_project.py --name "Name" --force',
+  'already': 'This folder is already set up as a project (.agent/PACKAGE_INFO.json exists). Nothing more to do.\nTo run again: python tools/init_project.py --name "Name" --force',
   'fail': 'Setup failed; see the message above.',
   'ctx': 'Context: %s.',
   'loaded': 'Read setup_answers.json (from the Quick setup form); using it without asking again.',
+  'role_q': 'This folder is the ORIGINAL TEMPLATE (not used for any work yet). Do you want to:\n  1 = Create a new project as a copy beside the template (recommended; the original template stays as is)\n  2 = Use this folder itself as the project (it will no longer be a template)\n(Enter = 1)',
+  'task': 'Task name (becomes the project folder name, required)',
+  'dest': 'Project location (Enter = beside the template: %s)',
+  'copy_done': 'The new project is in the folder above. The original template is unchanged. Suggested next steps:',
+  'copy1': '1. Copy source documents into the new project\'s references/ folder.',
+  'copy2': '2. Open the new project folder in your AI app (Claude, Codex, Gemini...) and give it the task.',
+  'copy3': '3. Double-click APP.bat / APP.command in the project folder to get the message for your AI assistant and follow the work.',
  },
 }
 FIELDS = [('purpose', '--purpose'), ('outputs', '--outputs'), ('style', '--style'),
@@ -136,6 +151,27 @@ def main():
         c = ask('Ngôn ngữ / Language:  1 = Tiếng Việt   2 = English  (Enter = 1)')
         lang = 'en' if c.strip() in ('2', 'en', 'EN', 'english', 'English') else 'vi'
         t = TXT[lang]
+        # bộ mẫu: hỏi vai trò trước khi ghi gì; mặc định tạo bản sao / template: ask its role before writing; default is a copy
+        sys.path.insert(0, os.path.join(ROOT, 'tools'))
+        try:
+            import new_project
+            role = new_project.template_role()
+        except Exception:
+            role = 'unknown'
+        if role == 'template' and ask(t['role_q']).strip() not in ('2',):
+            task = ask(t['task'], required=True, t=t)
+            dest = ask(t['dest'] % os.path.dirname(ROOT))
+            cmd = [sys.executable, os.path.join(ROOT, 'tools', 'new_project.py'), '--name', task, '--lang', lang, '--apply']
+            if dest:
+                cmd += ['--dest', dest]
+            print()
+            r = subprocess.run(cmd, cwd=ROOT)
+            if r.returncode != 0:
+                print('\n' + t['fail']); sys.exit(r.returncode)
+            print('\n' + '=' * 60 + '\n' + t['copy_done'])
+            for k in ('copy1', 'copy2', 'copy3'):
+                print(t[k])
+            return
         print('\n' + t['title'] + '\n' + t['intro'])
         name = ask(t['name'], required=True, t=t)
         ans = {k: ask(t[k]) for k, _ in FIELDS}

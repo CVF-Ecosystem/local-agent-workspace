@@ -473,6 +473,17 @@ def cmd_update(a):
         else:
             conf.append(rel)
     print(L('Gói %s: v%s -> v%s', 'Pack %s: v%s -> v%s') % (a.name, old['version'], meta['version']))
+    # bản .new đang chờ hợp nhất không bao giờ bị ghi đè: khác nội dung thì dừng trước mọi lần ghi (như upgrade_package.py)
+    # a pending .new is never overwritten: if it differs, stop before any write (as upgrade_package.py does)
+    pending_new = [r for r in conf if os.path.exists(P('%s/%s.new' % (dst, r)))
+                   and (not os.path.isfile(P('%s/%s.new' % (dst, r))) or sha_file(P('%s/%s.new' % (dst, r))) != newfiles[r])]
+    if pending_new:
+        stop(L('Chưa ghi gì: %s đang chờ hợp nhất và khác bản mới của gói. Hợp nhất hoặc dời file .new đó đi rồi chạy lại.',
+               'Nothing written: %s is waiting to be merged and differs from the new pack version. Merge or move that .new file, then run again.')
+             % ', '.join('%s/%s.new' % (dst, r) for r in pending_new),
+             merge_required=True, files=[{'path': '%s/%s.new' % (dst, r), 'action': 'blocked'} for r in pending_new],
+             next_actions=[L('Hợp nhất hoặc dời file .new đang chờ, rồi chạy lại.', 'Merge or move the pending .new file, then run again.')],
+             pack=a.name, from_version=old.get('version'), to_version=meta['version'])
     for k, vi, en, it in (('u', 'Cập nhật', 'Updated', upd), ('a', 'Thêm', 'Added', add), ('c', 'XUNG ĐỘT (lưu <tên>.new)', 'CONFLICT (saved as <name>.new)', conf)):
         if it:
             print('%s: %s' % (L(vi, en), ', '.join(it)))
@@ -503,8 +514,9 @@ def cmd_update(a):
         shutil.copyfile(P('packs/%s/%s' % (a.name, rel)), P('%s/%s' % (dst, rel)))
         DONE.append({'path': '%s/%s' % (dst, rel), 'action': 'update' if rel in upd else 'add'})
     for rel in conf:
-        shutil.copyfile(P('packs/%s/%s' % (a.name, rel)), P('%s/%s.new' % (dst, rel)))
-        DONE.append({'path': '%s/%s.new' % (dst, rel), 'action': 'merge'})
+        if not os.path.isfile(P('%s/%s.new' % (dst, rel))):  # đã có bản .new giống hệt thì để nguyên / an identical pending .new is left as is
+            shutil.copyfile(P('packs/%s/%s' % (a.name, rel)), P('%s/%s.new' % (dst, rel)))
+            DONE.append({'path': '%s/%s.new' % (dst, rel), 'action': 'merge'})
     new_digest = content_digest(P(dst))
     it = meta.get('intake', {})
     if a.confirm and st['state'] == 'accepted':  # người dùng xác nhận nội dung mới ngay lúc cập nhật / the user confirms the new content right on update

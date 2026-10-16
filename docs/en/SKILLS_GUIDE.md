@@ -1,8 +1,8 @@
 # Choosing and using skills
 
-Whichever agent you choose uses its own capabilities and native skills; the package neither replaces
+Whichever assistant you choose uses its own capabilities and native skills; the package neither replaces
 nor edits them. Skills in the package are **extra** guidance and resources: templates, sources and
-business rules that native skills lack. The agent chooses by fit with the work and is not pushed to use
+business rules that native skills lack. The assistant chooses by fit with the work and is not pushed to use
 a package skill when the existing way is enough.
 
 ## 1. When is a skill useful?
@@ -28,7 +28,7 @@ task contains a word similar to its name.
 | Build a tracking workbook, data-entry form or calculation appendix in Excel | Consider `excel-workbooks`; check an existing file with `spreadsheet-check`. |
 | An offline dashboard that reads the user's Excel files | Consider `excel-html-viewer`; charts follow `data-charts`. |
 
-These are examples of choices, not a mandatory routing table. The agent can combine skills when
+These are examples of choices, not a mandatory routing table. The assistant can combine skills when
 they complement each other, or work directly if it is already capable.
 
 ## 2. The business documents skill
@@ -61,13 +61,13 @@ Use this table of figures to create an offline HTML report in output/.
 Choose the template or presentation that fits best. Keep the figures exact and state the source and reporting period.
 ```
 
-The agent can replace the `report-data` block in the template and then adjust layout and
+The assistant can replace the `report-data` block in the template and then adjust layout and
 commentary. You do not need to edit code to use the skill: handing over the data and the request
 is enough. The filter buttons only change how the data in the file is viewed; the templates are
 not connected to live data.
 
 Both templates support printing through the “In báo cáo” (Print report) button. Opening offline
-does not mean the agent's process of reading data and building the report is also fully offline.
+does not mean the assistant's process of reading data and building the report is also fully offline.
 
 ## 4. The charts skill
 
@@ -102,7 +102,7 @@ There is no need to run this skill after every report or SOP.
 
 ## 6. Skills for everyday work
 
-These nine skills are short, and each has a “when to stop” part so the agent does not go beyond scope.
+These nine skills are short, and each has a “when to stop” part so the assistant does not go beyond scope.
 
 | Skill | Use when | Typical output |
 |---|---|---|
@@ -126,18 +126,18 @@ prioritising figures, deadlines and roles. Where the impact is unclear, write "n
 Excel needs `openpyxl`; add `--lang en` for English output). `vn-admin-documents` is only a starting point for format: records-management rules may
 have changed and an organisation may have its own, so check the current version before issuing.
 
-`doc-coauthoring` is only used when you want it; the agent will ask first, and if you decline it
+`doc-coauthoring` is only used when you want it; the assistant will ask first, and if you decline it
 simply drafts directly. The other skills do not need permission before use.
 
-## 7. How the agent finds skills
+## 7. How the assistant finds skills
 
-`.agent/SKILL_INDEX.md` describes when each skill is useful and gives its path. The agent can
+`.agent/SKILL_INDEX.md` describes when each skill is useful and gives its path. The assistant can
 look there to discover skills, or open one directly when it already knows which fits.
 
 `AVAILABLE` means accepted and ready to use, `ACTIVE` means commonly used in the project. Neither
-requires loading at the start of a session. `REVIEW` means **trial**: not through intake yet; the agent
+requires loading at the start of a session. `REVIEW` means **trial**: not through intake yet; the assistant
 only tries it in the project and says it is a trial, and the tools do not copy it into apps. Native notes
-only describe the known capabilities of one environment; when you switch agents, use what is really
+only describe the known capabilities of one environment; when you switch assistants, use what is really
 available in the new session.
 
 The package does not install the skills into the application's native menu. When needed, point to the path:
@@ -156,14 +156,14 @@ classify later.
 Putting a file in a folder does not mean the skill is accepted. Skills learned while working and
 skills or packs downloaded from outside share one intake standard (`skills/README.md`, section "Intake
 of skills and packs"): it must add something native or the current way cannot do, with a clear origin,
-clear permissions and evidence that it works. If your agent already does the job well, no duplicate
+clear permissions and evidence that it works. If your assistant already does the job well, no duplicate
 skill is needed; concluding "not needed" is also a good result. While it is being assessed, the skill is
 recorded as `REVIEW` and can still be tried in the project.
 
-When adding or heavily changing one, ask the agent to read enough to record `Use when`, location,
+When adding or heavily changing one, ask the assistant to read enough to record `Use when`, location,
 origin and notable dependencies in the index. There is no need to re-evaluate an accepted skill
 when using it. The user keeps the right to add, remove or edit the library and to put skills into the
-template root; the agent chooses actively within the work. Updating the template root does not change
+template root; the assistant chooses actively within the work. Updating the template root does not change
 projects created earlier.
 
 ## 9. Domain packs and installing skills into an app
@@ -178,8 +178,10 @@ version 0.2.0): `phap-ly` (researching and applying legal documents), `van-thu-l
 filing, archiving), `cang-logistics` (ship, barge and equipment-incident reports), `hanh-chinh-nhan-su` (personnel decisions,
 leave, overtime, discipline, pay, insurance) and `ke-toan-noi-bo` (advances, payments, vouchers, invoices, retention). Each pack
 has a legal-basis table (the legal-basis.md file in the skill’s references folder) with numbers, articles, effective dates, sources and a check date so users can verify them.
-Install with `python tools/pack.py add <name>` or the "Domain packs" page of the control panel. There is also the `_template`
+Install with `python tools/pack.py add <name>` or on the control panel: "Manage and maintain" group → "Manage skills". There is also the `_template`
 skeleton for writing new packs.
+
+**Note:** the five bundled packs are trial versions that have not been through intake. Their legal basis was compiled from news and advisory sites and has not been checked article by article against official texts (the Official Gazette, government legal portals); in tests the AI assistant still sometimes produced "verbatim quotes" that are not in the pack. Use them for reference and drafting; for documents to be signed or sent outside, check the legal basis against the official texts yourself first.
 
 Each project keeps its own copy of the skills, so a project is always self-contained and portable; `tools/upgrade_package.py` keeps
 these copies in sync with a new package when you upgrade. If you want a skill to show up in an app's menu (for example Claude), use
@@ -188,7 +190,7 @@ these copies in sync with a new package when you upgrade. If you want a skill to
 if the app already has a similar capability there is no need. Only accepted skills can be copied; a same-name skill the app already has
 (native or from another source) is always kept, and an older package copy being replaced is saved into `archive/`. The skills use the
 common `SKILL.md` format: Claude reads `~/.claude/skills`; Codex and Gemini CLI both read `~/.agents/skills`, so one copy serves both.
-This is optional; the agent can still read the skills as files.
+This is optional; the assistant can still read the skills as files.
 
 Vietnamese–English glossary for administrative documents: `docs/GLOSSARY_VI_EN.md`. Before handing over a deliverable you can use
 `python tools/check_output.py <file>` and the checklist `skills/local/shared/office-documents/references/delivery-checklist.md`.

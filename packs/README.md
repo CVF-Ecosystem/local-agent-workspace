@@ -6,6 +6,10 @@ nhân sự, tài chính...) nằm trong **gói lĩnh vực**: bộ skill và m�
 The package core only holds the working rules and the shared skills. Knowledge specific to a domain (port and logistics,
 HR, finance...) lives in a **domain pack**: a set of skills and templates installed per project on demand.
 
+**Lưu ý:** năm gói đi kèm hiện là bản thử nghiệm, chưa qua tiếp nhận. Căn cứ pháp lý trong gói được tổng hợp từ trang tin và trang tư vấn, chưa đối chiếu từng điều với văn bản chính thức (Công báo, cổng văn bản của Nhà nước); khi thử, trợ lý AI vẫn có lúc đưa ra câu "trích nguyên văn" không có trong gói. Dùng để tham khảo và soạn nháp; với văn bản trình ký hoặc gửi ra ngoài, tự đối chiếu căn cứ với văn bản chính thức trước khi dùng.
+
+**Note:** the five bundled packs are trial versions that have not been through intake. Their legal basis was compiled from news and advisory sites and has not been checked article by article against official texts (the Official Gazette, government legal portals); in tests the AI assistant still sometimes produced "verbatim quotes" that are not in the pack. Use them for reference and drafting; for documents to be signed or sent outside, check the legal basis against the official texts yourself first.
+
 ## Cách dùng / Usage
 
 ```text

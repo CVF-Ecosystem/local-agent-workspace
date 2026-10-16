@@ -69,6 +69,7 @@ def setUpModule():
     PKG_TMP = tempfile.TemporaryDirectory(prefix='panel-pkg-')
     PKG = Path(PKG_TMP.name) / 'package'
     shutil.copytree(ROOT, PKG, ignore=PKG_IGNORE)
+    shutil.rmtree(str(PKG / '.agent' / 'runtime'), ignore_errors=True)  # dữ liệu vận hành của máy phát triển không vào bản sao / dev-machine runtime data never enters the copy
 
 
 def tearDownModule():
@@ -209,6 +210,25 @@ class StatusData(PanelBase):
         self.assertEqual(status['history'], [])
         self.assertEqual({c['feature'] for c in status['components']}, {'python', 'library', 'xlsx', 'picker'})
         self.assertTrue(all(isinstance(c['usable'], bool) for c in status['components']))
+
+    def test_status_lists_sources_results_and_purpose_newest_first(self):
+        write(self.project, 'references/source-documents/a.txt', 'a')
+        write(self.project, 'references/README.md', 'scaffold')
+        write(self.project, 'output/old.md', 'old')
+        write(self.project, 'output/new.md', 'new')
+        os.utime(str(self.project / 'output' / 'old.md'), (1700000000, 1700000000))
+        write(self.project, 'PROJECT.md', '- Tên dự án: X\n- Mục đích và người đọc: Biên bản cho tổ\n- Đầu ra mong đợi: [Tài liệu]\n')
+        with patch.object(app, 'pack_info', return_value={'items': []}):
+            status = app.status()
+        self.assertEqual([f['path'] for f in status['sources']['items']], ['references/source-documents/a.txt'])
+        self.assertEqual([f['name'] for f in status['outputs']['items']], ['new.md', 'old.md'])
+        self.assertEqual((status['purpose'], status['expected']), ('Biên bản cho tổ', None))
+        self.assertEqual(status['parent'], os.path.dirname(app.ROOT))
+
+    def test_project_open_accepts_only_another_initialised_project(self):
+        for bad in ('', str(self.project / 'nope'), str(app.ROOT)):
+            with self.assertRaises(app.BadInput):
+                app.open_project(bad, 'folder')
 
     def test_missing_optional_components_are_reported_not_usable(self):
         with patch.object(app, '_has_module', return_value=False), patch.object(app, 'tk_available', return_value=False):

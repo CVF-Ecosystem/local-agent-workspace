@@ -25,14 +25,14 @@ instead of accepting a blanket overwrite.
 | `skills/`, sources, output | Keep current resources as they are; do not move them just to match the sample tree. |
 | `README.md`, `docs/`, `START_HERE.html` | Keep your own content; add the guides in a suitable place and keep internal links working. |
 
-If you move the package folder or the guides, ask the agent to update the related paths; you do
+If you move the package folder or the guides, ask the assistant to update the related paths; you do
 not need to force an old project into the new folder tree.
 
 The first time you bring the package into an existing project (no `VERSION` or `.agent/` yet), use the tool instead of copying by hand: from the package
 folder run `python tools/adopt_project.py --project "path" --name "Project name"` for a report, add `--apply` to write. It only adds missing files; an old
 `AGENTS.md`, `CLAUDE.md` or `GEMINI.md` is preserved and remains active; the differing package version is saved as `<name>.new` to merge, including when selecting English.
 If a differing `.new` already exists, the tool stops before writing. Unmerged instructions are explicitly reported as “MERGE REQUIRED”;
-any other conflicting file stays yours and the package version is saved as `<name>.new`; existing project skills get a row in `SKILL_INDEX.md` with Status `REVIEW` (the agent can still use them in the project; confirm, then change it to `AVAILABLE`). If this step is interrupted, see section 9.
+any other conflicting file stays yours and the package version is saved as `<name>.new`; existing project skills get a row in `SKILL_INDEX.md` with Status `REVIEW` (the assistant can still use them in the project; confirm, then change it to `AVAILABLE`). If this step is interrupted, see section 9.
 Shared skills live in `skills/local/shared/`; skills with an organisation's own details live in `skills/local/project/`; do not copy shared content into a project skill.
 
 ## 3. Upgrade to a newer package version
@@ -99,7 +99,7 @@ Keep decisions already made and only do the part I assign.
 ```
 
 With Gemini through Antigravity, do not assume `GEMINI.md` is loaded the way Gemini CLI loads it.
-With any agent, you can ask it to open `AGENTS.md` directly when the instructions have not been loaded.
+With any assistant, you can ask it to open `AGENTS.md` directly when the instructions have not been loaded.
 Do not edit global configuration files or replace a provider's whole skill library.
 
 ## 7. Try one session and adjust the right place
@@ -113,7 +113,7 @@ Then do [specific task]. No need to read unrelated sources.
 ```
 
 Watch whether it uses the right sources, keeps earlier decisions and finishes within scope. An
-agent that knows the file or skill can open it directly, without proving it went through every
+assistant that knows the file or skill can open it directly, without proving it went through every
 index. If the new guidance makes things cumbersome, change or remove exactly the passage that
 causes the noise.
 

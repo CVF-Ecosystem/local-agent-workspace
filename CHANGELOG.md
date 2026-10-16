@@ -42,6 +42,51 @@
   `qwen-max` không dùng skill pháp lý và không nhắc bản thử. **Chưa đạt:** khi được nhờ "cài skill REVIEW vào Claude", `qwen-max` vẫn
   nói sẽ tự đổi `REVIEW` thành `AVAILABLE` (5/5 lần, kể cả sau khi thêm câu cấm). Việc chặn thật nằm ở công cụ (`install_skills.py` từ
   chối skill `REVIEW`), không ở hướng dẫn; xem giới hạn trong `skills/README.md`.
+- Sửa theo review ngày 15/10/2026 (tái hiện từng lỗi trên source `75b4863` trước khi sửa; mỗi lỗi có test hỏng ở bản cũ, đạt ở bản này):
+  (1) LAW-01: `transaction.py rollback` xét cả thao tác còn `pending` theo nội dung file. Trước đây sự cố rơi đúng lúc sau `os.replace`, trước
+  khi nhật ký ghi `done` thì rollback báo thành công, file không được phục hồi và bản sao lưu bị xóa; nay file được phục hồi (hoặc xóa nếu do
+  giao dịch tạo), còn nếu file đã bị sửa tiếp thì báo `partial` và giữ bản sao lưu. (2) `pack.py update` không ghi đè `<tên>.new` đang chờ
+  hợp nhất: khác nội dung thì dừng trước mọi lần ghi (cả xem trước), giống `upgrade_package.py`. (3) `check_package.py` không áp quy tắc phát
+  hành (số phiên bản, bản tiếng Anh, đường dẫn trong tài liệu) vào file của project: dòng gói trong `.agent/SKILL_INDEX.md`, tài liệu trong
+  `references/`, `working/`, `output/`..., kể cả `README.md` người dùng tự tạo trong thư mục riêng (README chỉ là của package khi có trong MANIFEST của package; `in_manifest` dùng cùng quy tắc); file của package, kể cả README khung như `references/policies/README.md`, vẫn kiểm như cũ. (4) Bảng điều khiển: kết quả "Cần xem xét" (công cụ chạy xong, có
+  phát hiện) không còn kèm thông báo "Công cụ không hoàn tất"; chỉ đọc thì ghi rõ không file nào bị sửa. Mã thoát 1 của công cụ kiểm giữ nguyên.
+  (5) `init_project.py`: `PROJECT.md` dùng CRLF vẫn nhận câu trả lời (`--purpose`...) và giữ CRLF. (6) `.agent/STATE.md` của kho nguồn mang dấu
+  `<!-- local-agent-workspace: maintainer-state -->`; khởi tạo project từ bản chép kho nguồn (vd. Code → Download ZIP) thay STATE đó bằng mẫu
+  sạch trong `release_templates/` (bản cũ lưu `.bak-<ngày>`); STATE của project có công việc thật không có dấu nên giữ nguyên.
+  `check_package.py` báo lỗi nếu STATE kho nguồn mất dấu này. Chưa làm trong lượt này: các mục LAW khác, chạy browser trên Windows/macOS thật,
+  thay image `macos-13` trong CI.
+- Hành trình người mới (16/10/2026, theo brief redesign UX): **giữ một bộ mẫu, mỗi công việc một bản sao**. Công cụ mới
+  `tools/new_project.py` tạo project là bản sao của bộ mẫu (xem trước rồi `--apply`; đặt cạnh bộ mẫu hoặc `--dest`; không ghi
+  đè thư mục đã có; chép vào thư mục tạm rồi đổi tên một lần; chỉ chép file của package; ở kho nguồn dùng mẫu sạch; khởi tạo trong
+  bản sao; từ chối khi chạy trong project hay thư mục không còn là bộ mẫu nguyên vẹn). Bảng điều khiển: ở bộ mẫu, trang chính là
+  "Tạo project mới" (tên công việc, ngôn ngữ, nơi tạo, kết quả có nút mở thư mục/bảng điều khiển của project mới); khởi tạo tại chỗ
+  chuyển xuống nhóm quản lý kèm cảnh báo. Ở project, trang "Công việc" gồm Tiếp tục công việc (từ STATE; mới khởi tạo thì nói rõ
+  chưa có công việc), Giao việc cho agent (ba bước, câu mở đầu "Việc mới"/"Tiếp tục phiên trước" để chép, cách kiểm agent đọc
+  đúng project), Tài liệu nguồn và Kết quả (file mới nhất, mở được). Thanh bên: việc hằng ngày ở trên, "Quản lý và bảo trì" thu gọn
+  (quản lý kỹ năng gồm bảng skill và gói lĩnh vực, cài skill vào ứng dụng, chờ hợp nhất, cập nhật package, khởi tạo, bảo trì, tình
+  trạng); thư mục chưa rõ vai trò thì hỏi trước. `SETUP` ở bộ mẫu hỏi tạo bản sao (mặc định) hay khởi tạo tại chỗ. README, hướng
+  dẫn tạo project, hướng dẫn dùng hằng ngày, `examples/demo-project`, START_HERE (VI/EN) thống nhất một đường chính; demo giao việc
+  theo nguồn và kết quả, không theo tên skill. Bỏ tên một project thật khỏi chuỗi giao diện. Bảng điều khiển và trình hướng dẫn
+  không để lại `__pycache__` trong bộ mẫu; `check_package.py` bỏ qua file `.git` của git worktree. Đã chạy trọn hành trình bằng
+  giao diện thật và ba phiên agent mới (Claude trong Cowork) trên bản sao, dữ liệu giả; chưa kiểm Codex, Gemini, Claude Desktop trên
+  máy người dùng và chưa có lượt người mới độc lập.
+- Biên tập ngôn ngữ (brief R2, 16/10/2026), không đổi hành vi: chữ người dùng đọc dùng "dự án", "bộ mẫu gốc", "trợ lý AI",
+  "bộ công cụ", "gói bổ sung theo lĩnh vực" (giao diện, SETUP, thông báo của `new_project.py`/bảng điều khiển, README, hướng dẫn,
+  demo, START_HERE VI/EN). Nút tạo dự án ghi đúng là "Xem trước khi tạo"; "Nơi lưu dự án", "Ngôn ngữ hướng dẫn" (kèm giải thích);
+  "Giao việc cho trợ lý AI", "Sao chép lời nhắc", chế độ "Xem lại việc đang dở" (vẫn dặn trợ lý chưa sửa file) kèm dòng giải thích theo
+  chế độ; nút gói "Cài để dùng thử" / "Cài và cho phép dùng" / "Cho phép dùng trong dự án"; "Chưa thể thực hiện"; "Thao tác lưu file
+  bị gián đoạn". Lời nhắc cho trợ lý giữ nguyên tên file và đường dẫn. Lời giới thiệu START_HERE nói rõ giới hạn (hướng dẫn là yêu cầu,
+  không bảo đảm mọi mô hình tuân thủ; bảng điều khiển không chạy mô hình AI). `AGENTS.md` (VI/EN): giữ tiêu đề khung STATE, viết nội dung
+  bằng lời văn công việc. Khóa dịch, ID, mã trạng thái, cờ lệnh và placeholder giữ nguyên.
+  Theo quyết định của operator: tiếng Việt dùng "bộ công cụ" thay cho "package" và "kỹ năng" thay cho "skill" trong chữ người
+  dùng đọc (giao diện, README, hướng dẫn, demo, START_HERE); bản tiếng Anh giữ "package" và "skill". Tên file, ID kỹ năng, `SKILL.md`,
+  `SKILL_INDEX.md` và nội dung trong khối mã giữ nguyên.
+- Sửa theo phản hồi 16/10/2026: (1) Các test chép package từ thư mục nguồn (`test_transactions`, `test_workflows`, `test_structured_tools`,
+  `test_release_gate`, `test_panel`) bỏ `.agent/runtime/` sau khi chép, nên không còn hỏng khi máy phát triển đã từng mở bảng điều khiển
+  (đã tái hiện bằng cách tạo `.agent/runtime/` ở thư mục nguồn: trước sửa 1 ca hỏng, sau sửa 125 ca đạt). (2) Năm gói đi kèm vẫn
+  `DEFER`/thử nghiệm; trang Quản lý kỹ năng hiện cảnh báo khi có gói chưa qua tiếp nhận, `packs/README.md` và các hướng dẫn (VI/EN) nói rõ
+  căn cứ pháp lý chưa đối chiếu với văn bản chính thức, chỉ dùng tham khảo và soạn nháp, tự đối chiếu trước khi dùng cho văn bản trình ký
+  hoặc gửi ra ngoài. (3) CI bỏ job `macos-13`/Python 3.8 (image đã ngừng); Python 3.8 vẫn kiểm trên Ubuntu và Windows.
 
 ## v1.7.0 — 2026-10-13
 

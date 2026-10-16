@@ -201,7 +201,7 @@ class Transaction:
             dst = os.path.join(self.project, *op['path'].split('/'))
             if sha_file(dst) != op['before']:
                 self._set_state(op, 'skipped_conflict')
-                raise CommitConflict(L('Fileđã đổi sau khi lập kế hoạch: %s', 'File changed after planning: %s') % op['path'])
+                raise CommitConflict(L('File đã đổi sau khi lập kế hoạch: %s', 'File changed after planning: %s') % op['path'])
             os.makedirs(os.path.dirname(dst), exist_ok=True)
             os.replace(os.path.join(self.stage_dir, *op['path'].split('/')), dst)
             self._set_state(op, 'done')
@@ -370,9 +370,9 @@ def _restore_atomic(backup, dst, tdir, expect):
     os.replace(tmp, dst)
 
 def rollback(project_root, txid):
-    """Khôi phục bản gốc của thao tác đã done nếu file chưa bị sửa. File người dùng đã sửa được giữ nguyên;
+    """Khôi phục bản gốc của thao tác đã done hoặc còn pending (xét theo nội dung file) nếu file chưa bị sửa. File người dùng đã sửa được giữ nguyên;
     khi đó trạng thái rollback_partial KHÔNG chặn thao tác mới và thư mục backup được giữ để khôi phục tay.
-    Restore originals for done ops; user-edited files are kept. rollback_partial does not block new work;
+    Restore originals for done or pending ops (judged by file content); user-edited files are kept. rollback_partial does not block new work;
     the backup folder is kept for manual recovery.
     """
     project = os.path.abspath(project_root)
@@ -385,7 +385,9 @@ def rollback(project_root, txid):
     tdir = txdir(project, txid)
     restored, removed = [], []
     for op in j['ops']:
-        if op['state'] not in ('done', 'skipped_conflict'):
+        # 'pending' cũng phải xét theo nội dung: sự cố có thể xảy ra sau os.replace nhưng trước khi nhật ký ghi 'done'
+        # 'pending' is judged by content too: a crash can land after os.replace but before the journal records 'done'
+        if op['state'] not in ('pending', 'done', 'skipped_conflict'):
             continue
         dst = os.path.join(project, *op['path'].split('/'))
         cur = sha_file(dst)
@@ -406,8 +408,8 @@ def rollback(project_root, txid):
             else:
                 op['state'] = 'skipped_conflict'
         _save_journal(project, txid, j)
-    pending = [o['path'] for o in j['ops'] if o['state'] == 'pending']
-    partial = [o['path'] for o in j['ops'] if o['state'] == 'skipped_conflict']
+    pending = [o['path'] for o in j['ops'] if o['state'] == 'pending']  # còn lại sau vòng trên: không xác định được / left undecided
+    partial = [o['path'] for o in j['ops'] if o['state'] in ('skipped_conflict', 'pending')]
     j['status'] = 'rollback_partial' if partial else 'rolled_back'
     _save_journal(project, txid, j)
     shutil.rmtree(os.path.join(tdir, 'staging'), ignore_errors=True)

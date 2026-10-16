@@ -17,7 +17,6 @@ Maintainer guide for the source repository. The `.github/` folder is never packa
 | Windows (latest) | 3.8, 3.12 | Chỉ có trong CI (`.github/workflows/ci.yml`). Chưa chạy. |
 | Ubuntu (latest) | 3.8, 3.12 | Chỉ có trong CI. Chưa chạy. |
 | macOS (latest, Apple silicon) | 3.12 | Chỉ có trong CI. Chưa chạy. |
-| macOS 13 (Intel) | 3.8 | Chỉ có trong CI. Chưa chạy; image này có thể đã bị GitHub gỡ, khi đó đổi image trong `ci.yml`. |
 | Mọi tổ hợp khác (ví dụ Python 3.9, 3.10, 3.13) | — | Chưa kiểm thử, không phải hỗ trợ chính thức. |
 
 Chỉ coi một ô là hỗ trợ chính thức khi job CI tương ứng đã chạy xanh trên commit sắp phát hành.
@@ -65,7 +64,7 @@ Trước khi nâng cấp, giữ một bản sao của project (mục 1 trong `do
 ## 6. Giới hạn còn lại
 
 - CI chưa chạy lần nào. Các ô chưa được xác nhận cho đến khi job xanh.
-- macOS và Python 3.8 chưa được chạy trên máy phát triển này; không có Python 3.8 trên máy.
+- macOS và Python 3.8 chưa được chạy trên máy phát triển này; không có Python 3.8 trên máy. CI không kiểm Python 3.8 trên macOS (image `macos-13` đã ngừng).
 - Kiểm tương thích 3.8 là heuristic: `ast.parse(feature_version=(3, 8))` và một danh sách regex. Có thể bỏ sót (ví dụ `dict | dict`) hoặc báo nhầm. Kiểm chứng thật là CI chạy trên Python 3.8.
 - Không có kiểm thử giao diện tự động (E2E) cho bảng điều khiển trong cổng này.
 - ZIP không có chữ ký số và chưa được notarize. SHA-256 chỉ cho biết file có toàn vẹn, không xác thực người phát hành.
@@ -86,7 +85,6 @@ Anything without evidence of a run is listed as unconfirmed. A CI configuration 
 | Windows (latest) | 3.8, 3.12 | CI configuration only (`.github/workflows/ci.yml`). Not run yet. |
 | Ubuntu (latest) | 3.8, 3.12 | CI configuration only. Not run yet. |
 | macOS (latest, Apple silicon) | 3.12 | CI configuration only. Not run yet. |
-| macOS 13 (Intel) | 3.8 | CI configuration only. Not run yet; GitHub may retire this image, in which case change it in `ci.yml`. |
 | Any other combination (for example Python 3.9, 3.10, 3.13) | — | Untested; not officially supported. |
 
 A cell counts as officially supported only when its CI job has passed on the commit being released.
@@ -134,7 +132,7 @@ Before upgrading, keep a copy of the project (section 1 of `docs/en/EXISTING_PRO
 ## 6. Remaining limits
 
 - CI has not run yet. Every cell stays unconfirmed until its job passes.
-- macOS and Python 3.8 have not been run on this development machine, which has no Python 3.8.
+- macOS and Python 3.8 have not been run on this development machine, which has no Python 3.8. CI does not test Python 3.8 on macOS (the `macos-13` image is retired).
 - The Python 3.8 check is a heuristic: `ast.parse(feature_version=(3, 8))` plus a regex list. It can miss cases (for example `dict | dict`) or report false positives. Real verification is the Python 3.8 CI job.
 - No automated UI (end-to-end) tests for the control panel are part of these gates.
 - The ZIP is not code-signed or notarized. The SHA-256 shows the file is intact, not who published it.

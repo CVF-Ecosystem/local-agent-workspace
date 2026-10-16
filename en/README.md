@@ -1,17 +1,18 @@
-# Local Agent Workspace v1.8
+# Local Assistant Workspace v1.8
 
-A local workspace for office work with Claude, Codex, Gemini or another agent.
+A local workspace for office work with Claude, Codex, Gemini or another assistant.
 
 **Open `START_HERE.en.html` to read the handbook in English (or `START_HERE.html` for the Vietnamese version; every page has a language switch button).** The page opens directly
 in a browser, with no installation, server, online font or network connection.
 
 ## Getting started
 
-1. **Create a project:** download the ZIP from [Releases](https://github.com/CVF-Ecosystem/local-agent-workspace/releases/latest), unzip into a separate folder, then run `SETUP.bat` (Windows) or `SETUP.command` (macOS). Already have this folder? No download is needed. Do not work inside the ZIP.
-2. **Add sources:** put documents in `references/` or point to existing source paths. Keep originals intact.
-3. **Give the first task:** open the folder in your AI app, name the source and the result you need. Try the synthetic examples in `examples/demo-project/README.md` first if useful.
+1. **Keep one template:** download the ZIP from [Releases](https://github.com/CVF-Ecosystem/local-agent-workspace/releases/latest) and unzip it once into its own folder. That folder is the template: keep it as is and do not work in it (nor inside the ZIP).
+2. **Make a project for each piece of work:** double-click `APP.bat` (Windows) or `APP.command` (macOS) in the template and type a task name on the "New project" page, press "Preview project creation", then "Apply". A copy is created next to the template, already set up; the template does not change.
+3. **Add sources and give the task:** copy documents into the project's `references/`, open the project folder in your AI app (Claude, Codex, Gemini) and send the message copied from the project's control panel (fill in the part in square brackets first). Results go to `output/`.
+4. **Continue next time:** open `APP` in the project folder; the "Continue the work" box shows where things stand; the "Review unfinished work" message has the AI assistant summarise before carrying on.
 
-A template creates projects; a working project keeps its own context in `PROJECT.md` and progress in STATE. Basic setup needs Python 3.8+. Excel checking and the source library also need `openpyxl` (`python -m pip install openpyxl`); tools never install it automatically. Without Python, follow the new-project guide manually.
+The control panel needs Python 3.8+. Without Python: copy the whole template folder (including the hidden `.agent/` folder), rename it and open it in your AI app; see `docs/en/NEW_PROJECT_GUIDE.md`. Excel checking and the source library also need `openpyxl` (`python -m pip install openpyxl`); tools never install it. To try it first with synthetic data: `examples/demo-project/README.md`, in a trial project.
 
 ## What is it for?
 
@@ -22,34 +23,30 @@ introduction is at the top of `START_HERE.en.html`.
 
 Reading documents, drafting procedures, forms and reports; handling spreadsheets when needed; continuing
 work across sessions; producing lightweight HTML reports. The workspace holds the documents and the project
-context, and the agent picks the way of working that fits the request.
+context, and the assistant picks the way of working that fits the request.
 
 The guides are working suggestions, not a mandatory process for every task. Small jobs can be done directly;
-jobs that need a source or a template open only the useful part. This is not an application, an agent
+jobs that need a source or a template open only the useful part. This is not an application, an assistant
 framework or a software development kit.
 
 ## Optional setup and reference guides
 
-Unzip the whole ZIP, rename the folder to the project name, then open `START_HERE.en.html`. Do not work
-directly inside the ZIP. The easiest way: double-click `SETUP.bat` (Windows) or `SETUP.command` (macOS); the wizard asks a few questions, then initializes the project and fills in `PROJECT.md`. Or use the command (once, needs Python 3.8+; nothing else to install):
+Besides the control panel there are two other ways to the same result. `SETUP.bat` / `SETUP.command` asks questions in a command window; run in the template, it asks whether to make a copy (recommended) or set up this folder itself. Or use the command in the template (needs Python 3.8+; nothing else to install):
 
 ```text
-python tools/init_project.py --name "Project name" --lang en
+python tools/new_project.py --name "Task name" --apply
 ```
 
-`--lang vi` keeps the Vietnamese version of the files. Without Python, follow
-`docs/en/NEW_PROJECT_GUIDE.md` by hand. The package version is in `VERSION`.
+Add `--dest` to choose the location and `--lang en` for the English assistant instructions, skills and READMEs; leave out `--apply` to only preview. If you copied the folder yourself, set it up inside the copy with `python tools/init_project.py --name "Project name" --lang en`. The package version is in `VERSION`.
 
-After setup, double-click `APP.bat` (Windows) or `APP.command` (macOS) to open the **control panel** in the browser: see the
-work status, install domain packs, check files before delivery, upgrade the package, copy skills into Claude, Codex, Gemini. The
-panel is only an interface for the tools in `tools/`; it runs on your computer (no network) and stops when the page is closed. If a write was interrupted, the **App status** page lets you resume or roll it back (see `docs/en/EXISTING_PROJECT_UPGRADE_GUIDE.md`, section 9).
+The control panel (`APP`) has one main job in the template: create a new project. In a project, **The work** page holds: continue the work (read from `.agent/STATE.md`), give your AI assistant a task (message to copy), source documents and results. Managing skills and domain packs, copying skills into apps, updating the package, pending merges, maintenance and app status sit in the "Manage and maintain" group. The panel is only an interface for the tools in `tools/`; it runs on your computer (no network) and stops when the page is closed. If a write was interrupted, the **App status** page lets you resume or roll it back (see `docs/en/EXISTING_PROJECT_UPGRADE_GUIDE.md`, section 9).
 
 - New project: `docs/en/NEW_PROJECT_GUIDE.md` or the `.html` file of the same name.
 - Existing project and package upgrade: `docs/en/EXISTING_PROJECT_UPGRADE_GUIDE.md` or `.html`.
 - Daily use: `docs/en/DAILY_USE_GUIDE.md` or `.html`.
 - Choosing and using skills: `docs/en/SKILLS_GUIDE.md` or `.html`.
 
-The Markdown and HTML versions have the same guide content. The agent can read Markdown and
+The Markdown and HTML versions have the same guide content. The assistant can read Markdown and
 does not need the HTML version as well. HTML is for users, not default context.
 
 ## Resources in the package
@@ -72,7 +69,7 @@ does not need the HTML version as well. HTML is for users, not default context.
 | `source-library` | The source library in `references/` (legal documents, company rules, templates) with an Excel index; look up before quoting. |
 
 The fourteen skills are in `skills/local/shared/` and are recorded as `AVAILABLE` in
-`.agent/SKILL_INDEX.md`. The agent uses its own capabilities and native skills; the package skills
+`.agent/SKILL_INDEX.md`. The assistant uses its own capabilities and native skills; the package skills
 only add what is missing (templates, sources, business rules). Not using a skill is also a valid choice.
 Adding or importing skills and packs follows the intake standard in `skills/README.md`.
 
@@ -86,7 +83,7 @@ Sources of ideas and the scope of what was consulted are in `docs/en/SOURCES_AND
 project/
 ├── START_HERE.html          Guide for users (Vietnamese)
 ├── START_HERE.en.html       Guide for users (English)
-├── SETUP.bat / SETUP.command  Double-click to set up the project (the wizard runs by itself)
+├── SETUP.bat / SETUP.command  Double-click to create or set up a project (question-and-answer wizard)
 ├── APP.bat / APP.command      Control panel in the browser (optional)
 ├── README.md
 ├── AGENTS.md                General instructions for agents
@@ -99,7 +96,7 @@ project/
 ├── VERSION                  Package version number (single source)
 ├── MANIFEST.sha256          Hashes of the package files, to check integrity
 ├── docs/                    Guides in Markdown + HTML, Vietnamese–English glossary
-├── examples/demo-project/   Demo project (fake data) to try in 10 minutes
+├── examples/demo-project/   Practice exercise (sample data) to try in 10 minutes
 ├── packs/                   Domain packs (installed on demand with tools/pack.py)
 ├── .agent/                  STATE, HANDOFF, INDEX, SKILL_INDEX, PENDING_LESSONS
 ├── skills/
@@ -115,7 +112,7 @@ project/
 
 ## The English tree and maintenance tools
 
-The `en/` folder mirrors the Vietnamese files at the root: the agent files (`AGENTS.md`, `CLAUDE.md`,
+The `en/` folder mirrors the Vietnamese files at the root: the assistant files (`AGENTS.md`, `CLAUDE.md`,
 `GEMINI.md`, `PROJECT.md`), the `.agent/` notes, all fourteen skills with their references, templates and
 script, the folder READMEs and this README. File and folder names are the same in both trees, so
 `python tools/init_project.py --lang en` simply overlays `en/` onto the root (except
@@ -128,22 +125,22 @@ The English handbook is in `docs/en/` and `START_HERE.en.html`.
 in `docs/` or `docs/en/` (see `tools/README.md`). It is not needed in everyday office work.
 When you change a rule in one language, change it in the other too; `tools/check_package.py` compares their structure.
 
-## Using it with an agent
+## Using it with an assistant
 
-Open the project folder or grant access to it in the app you use. When the agent does not yet
+Open the project folder or grant access to it in the app you use. When the assistant does not yet
 know the workspace, you can say:
 
-> This folder uses Local Agent Workspace. Refer to AGENTS.md and the relevant context in
+> This folder uses Local Assistant Workspace. Refer to AGENTS.md and the relevant context in
 > PROJECT.md. Use STATE if continuing unfinished work. Choose the tools and skills that best
 > fit the request; work directly when there is enough information.
 
 An adapter file name does not guarantee that every app loads it automatically. `skills/local/shared/` is a
-file library for the agent to consult; the package does not install these skills into the native catalog
+file library for the assistant to consult; the package does not install these skills into the native catalog
 of Claude, Codex or Antigravity. It does not change any app's global configuration.
 
 ## Quick try, upgrading and extending
 
-- Try it in 10 minutes with fake data: `examples/demo-project/README.md`.
+- Try it in 10 minutes with sample data: `examples/demo-project/README.md`.
 - Feedback after use: `docs/FEEDBACK_FORM_VI_EN.md` (a mostly tick-box form) or GitHub Issues.
 - A newer package version exists: `python tools/upgrade_package.py` (three-way comparison, never overwrites your work; see `docs/en/EXISTING_PROJECT_UPGRADE_GUIDE.md`).
 - Knowledge specific to one domain: a domain pack in `packs/`, installed with `python tools/pack.py add <name>`.

@@ -157,7 +157,9 @@ STATE is a short current snapshot in the template of `.agent/STATE.md`. Overwrit
 append, about 60 lines at most, written so an agent that knows nothing can carry on. Update it
 after meaningful changes (a decision is made, a new output exists, you are about to ask the
 user), not after every response. Anything that became a stable rule moves to `PROJECT.md` or a
-skill and leaves STATE. HANDOFF is for continuity across sessions; leave it `None`
+skill and leaves STATE. The control panel shows the STATE sections to the user: keep the template's `##`
+headings, and write the content in plain work language the user understands (where things stand, what
+waits for them, the next step); name files only when they are needed to find things again. HANDOFF is for continuity across sessions; leave it `None`
 when unused. Reusable lessons may be noted when worthwhile, not after every task.
 The human HTML guides are alternative presentations of the Markdown guides;
 there is no need to read both or regenerate HTML during ordinary office tasks. When the user

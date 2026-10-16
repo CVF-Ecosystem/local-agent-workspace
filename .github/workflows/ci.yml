@@ -4,10 +4,9 @@
 #
 # Ghi chú ma trận / matrix notes:
 # - Python 3.8 và 3.12 trên ubuntu-latest và windows-latest.
-# - macOS: Python 3.12 chạy trên macos-latest (Apple silicon). Python 3.8 chạy trên macos-13 (Intel)
-#   vì macos-latest là Apple silicon, nơi không bảo đảm có bản Python 3.8 từ setup-python. Đây là lựa chọn
-#   chưa kiểm chứng; nếu GitHub gỡ macos-13 hoặc job không tìm được Python 3.8, cập nhật image ở đây và
-#   trong RELEASING.md.
+# - macOS: chỉ Python 3.12 trên macos-latest (Apple silicon). Image Intel macos-13 đã bị GitHub ngừng nên job
+#   Python 3.8 trên macOS được bỏ; Python 3.8 vẫn được kiểm trên ubuntu-latest và windows-latest. setup-python
+#   không bảo đảm có bản Python 3.8 cho Apple silicon, nên không chuyển job 3.8 sang macos-latest.
 # - Mỗi cặp (hệ điều hành, Python) là một job riêng; fail-fast tắt để thấy đủ kết quả.
 # - Bước build release candidate chạy lại cổng đầy đủ (kể cả bộ kiểm thử) như bản phát hành thật.
 
@@ -36,9 +35,6 @@ jobs:
         python: ['3.8', '3.12']
         exclude:
           - os: macos-latest
-            python: '3.8'
-        include:
-          - os: macos-13
             python: '3.8'
     steps:
       - name: Checkout

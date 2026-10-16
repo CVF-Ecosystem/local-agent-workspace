@@ -48,16 +48,44 @@ def all_files():
                          and os.path.relpath(os.path.join(d, x), ROOT).replace(os.sep, '/') != RUNTIME_DIR)
         for f in sorted(files):
             rel = os.path.relpath(os.path.join(d, f), ROOT).replace(os.sep, '/')
-            if f.endswith(('.pyc', '.bak')) or '.bak-' in f:
+            if f.endswith(('.pyc', '.bak')) or '.bak-' in f or f == '.git':  # '.git' là file khi dùng git worktree / a file in a git worktree
                 continue
             out.append(rel)
     return out
+
+_SCAFFOLD = {}
+
+def package_readme(rel):
+    """README.md trong thư mục người dùng có phải của package không: dựa vào đường dẫn thực, không chỉ tên file.
+    - Kho nguồn/gói chưa khởi tạo (chưa có .agent/PACKAGE_INFO.json): mọi README ở đó là khung của package.
+    - Project: chỉ README có trong MANIFEST.sha256 của package; không có MANIFEST thì README có bản en/ tương ứng.
+    README do người dùng tự tạo trong thư mục riêng (vd. references/khach-hang-a/README.md) thuộc project.
+    Whether a README.md in a user folder belongs to the package, by its real path, not just its name: in the source or an
+    uninitialised package every such README is scaffold; in a project only those listed in the package MANIFEST (or, with
+    no MANIFEST, those with an en/ mirror). A README the user creates in their own folder belongs to the project."""
+    if os.path.basename(rel) != 'README.md':
+        return False
+    if not os.path.exists(P('.agent/PACKAGE_INFO.json')):
+        return True
+    if 'm' not in _SCAFFOLD:
+        _SCAFFOLD['m'] = read_manifest()
+    m = _SCAFFOLD['m']
+    return (rel in m) if m is not None else os.path.isfile(P('en/' + rel))
+
+def user_owned(rel):
+    """File do người dùng/project sở hữu (không phải của package): không áp quy tắc phát hành như số phiên bản,
+    bản tiếng Anh hay đường dẫn trong tài liệu. Cùng một quy tắc với in_manifest.
+    User/project-owned file (not the package's): release rules such as version strings, the English mirror and doc paths
+    do not apply. Same ownership rule as in_manifest."""
+    if rel in USER_FILES:
+        return True
+    return rel.startswith(USER_DIRS) and not package_readme(rel)
 
 def in_manifest(rel):
     if rel in GENERATED:
         return False
     if rel.startswith(USER_DIRS):
-        return os.path.basename(rel) == 'README.md'
+        return package_readme(rel)
     return True
 
 def sha(rel):
@@ -216,8 +244,8 @@ def check_all(release=False):
     # 2. chuỗi phiên bản nhất quán
     vre = re.compile(r'(?<![\w.])v(\d+)\.(\d+)(?:\.(\d+))?(?![\w.])')
     for f in files:
-        if f in ('CHANGELOG.md', 'MANIFEST.sha256') or not f.endswith(('.md', '.html', '.py', '.json')):
-            continue
+        if f in ('CHANGELOG.md', 'MANIFEST.sha256') or not f.endswith(('.md', '.html', '.py', '.json')) or user_owned(f):
+            continue  # file của project (SKILL_INDEX có dòng gói, tài liệu trong references/...) có số phiên bản riêng / project files carry their own versions
         for m in vre.finditer(rd(f)):
             got = '%s.%s' % (m.group(1), m.group(2))
             if got != maj_min or (m.group(3) is not None and m.group(0)[1:] != ver):
@@ -262,7 +290,7 @@ def check_all(release=False):
     root_lang = [f for f in files if not f.startswith(('en/', 'docs/', 'tools/', 'dist/')) and f.endswith(('.md', '.html', '.csv', '.txt')) and
                  (f in ('AGENTS.md', 'CLAUDE.md', 'GEMINI.md', 'PROJECT.md', 'README.md') or f.startswith(('.agent/', 'archive/', 'output/', 'working/', 'references/', 'skills/', 'examples/')))
                  and '/scripts/' not in f and f not in ('.agent/PACKAGE_INFO.json',)
-                 and not (f.startswith(('archive/', 'output/', 'working/')) and f.count('/') > 1)  # nội dung của người dùng, chỉ README cần bản en/
+                 and not (user_owned(f) and f not in USER_FILES)  # mẫu PROJECT/STATE... vẫn cần bản en/ cho lớp phủ; nội dung của người dùng (kể cả references/, working/...): chỉ README cần bản en/ / user content: only READMEs need en/
                  and not f.startswith(('skills/local/project/', 'skills/local/packs/', 'skills/external/', 'skills/inbox/'))]  # skill của project/pack do người dùng quản lý, không bắt buộc bản en/
     root_lang.append('docs/README.md')
     for f in sorted(root_lang):
@@ -276,7 +304,7 @@ def check_all(release=False):
                 warns.append('%s không nhắc tới skill "%s".' % (doc, d))
     # 4. đường dẫn trong tài liệu
     for f in md:
-        if f == 'CHANGELOG.md': continue
+        if f == 'CHANGELOG.md' or user_owned(f): continue  # tài liệu của project có thể nhắc file của chính project / project docs may name project files
         t = strip_fences(rd(f))
         base = os.path.dirname(f)
         anc = base
@@ -332,6 +360,12 @@ def check_all(release=False):
             if os.path.isdir(P('packs/' + n)):
                 for e in packmod.validate_pack(P('packs/' + n), n):
                     errs.append('Gói: ' + e)
+    # 7c. kho nguồn chưa khởi tạo: STATE phải là mẫu sạch hoặc mang dấu người bảo trì, để init_project.py không mang sang project
+    # source tree not initialised: STATE is the clean template or carries the maintainer marker, so init does not carry it over
+    if os.path.isdir(P('release_templates')) and not os.path.exists(P('.agent/PACKAGE_INFO.json')) and os.path.isfile(P('.agent/STATE.md')):
+        st = rd('.agent/STATE.md')
+        if '[Phase/trạng thái hiện tại]' not in st and '<!-- local-agent-workspace: maintainer-state -->' not in st:
+            errs.append('.agent/STATE.md của kho nguồn thiếu dấu "<!-- local-agent-workspace: maintainer-state -->" (init_project.py dựa vào dấu này để không mang trạng thái người bảo trì sang project).')
     # 8. phát hành
     if release:
         if os.path.exists(P('setup_answers.json')): errs.append('Bản phát hành không được có setup_answers.json.')
@@ -348,7 +382,7 @@ def check_all(release=False):
         if any(not os.path.isfile(P(f)) or not rd(f).lstrip().startswith('# HANDOFF\n\nNone') for f in handoffs):
             errs.append('Mẫu HANDOFF phát hành thiếu hoặc không ở dạng "None".')
         for f in files:
-            if f.startswith(USER_DIRS) and os.path.basename(f) != 'README.md':
+            if f.startswith(USER_DIRS) and not package_readme(f):
                 errs.append('Có file người dùng trong bản phát hành: %s.' % f)
     return errs, warns
 
