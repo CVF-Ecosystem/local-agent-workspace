@@ -146,6 +146,8 @@ STATE là bản chụp ngắn của hiện trạng, theo đúng khung trong `.ag
 cộng dồn, tối đa khoảng 60 dòng, viết đủ để agent chưa biết gì cũng làm tiếp được. Cập nhật sau
 thay đổi có ý nghĩa (chốt quyết định, có đầu ra mới, sắp hỏi người dùng), không phải sau mỗi
 phản hồi. Điều đã thành quy tắc ổn định thì chuyển sang `PROJECT.md` hoặc skill rồi xóa khỏi STATE.
+Bảng điều khiển hiện các mục của STATE cho người dùng: giữ nguyên các tiêu đề `##` của khung, còn nội dung viết
+bằng lời văn công việc người dùng hiểu (đang làm đến đâu, việc chờ họ, bước tiếp theo); tên file chỉ ghi khi cần tìm lại.
 HANDOFF dùng để bàn giao giữa các phiên; để `None` khi không dùng. Bài học dùng lại
 có thể ghi khi đáng giá, không phải sau mỗi việc. Các hướng dẫn HTML là bản trình bày thay thế
 của hướng dẫn Markdown; không cần đọc cả hai hay tạo lại HTML khi làm việc văn phòng thông thường.

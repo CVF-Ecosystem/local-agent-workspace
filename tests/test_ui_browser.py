@@ -240,7 +240,7 @@ class MainFlows(BrowserCase):
         self.assertEqual({rel: (self.pkg / rel).read_bytes() for rel in before}, before)
         p.fill('#np-name', 'Biên bản họp')  # trùng tên: bị chặn / same name: blocked
         p.click('#np-run')
-        expect(p.locator('#sh-tag')).to_contain_text('Đang bị chặn')
+        expect(p.locator('#sh-tag')).to_contain_text('Chưa thể thực hiện')
         self.close_sheet()
 
     def test_project_home_shows_the_work_sources_results_and_an_opening_message(self):
@@ -252,9 +252,10 @@ class MainFlows(BrowserCase):
         expect(p.locator('#src-list')).to_contain_text('ghi-chu.txt')
         expect(p.locator('#out-list')).to_contain_text('bien-ban.md')
         expect(p.locator('#ag-prompt')).to_contain_text('«Test»')
-        expect(p.locator('#st-box')).to_contain_text('Chưa có công việc nào')  # chưa có tiến độ thật thì nói rõ / no fake progress
+        expect(p.locator('#st-box')).to_contain_text('Chưa có tiến độ được lưu')  # chưa có tiến độ thật thì nói rõ / no fake progress
         p.click('#ag-mode button[data-v="cont"]')
         expect(p.locator('#ag-prompt')).to_contain_text('Tiếp tục công việc')
+        expect(p.locator('#ag-mode-h')).to_contain_text('chưa sửa file nào')  # chế độ xem lại chỉ tóm tắt / review mode only summarises
         expect(p.locator('#nav2')).to_be_hidden()
         p.click('#nav-more')
         expect(p.locator('#nav2 [data-page="packs"]')).to_be_visible()
@@ -394,7 +395,7 @@ class MainFlows(BrowserCase):
         p.click('#hl-tx [data-txa="resume"]')
         expect(p.locator('#sh-tag')).to_contain_text('Thành công')
         self.close_sheet()
-        expect(p.locator('#hl-tx')).to_contain_text('Không có giao dịch dở')
+        expect(p.locator('#hl-tx')).to_contain_text('Không có thao tác lưu file nào bị gián đoạn')
         self.assertFalse(has_unfinished(self.pkg))
         self.assertEqual((self.pkg / 'MANIFEST.sha256').read_bytes(), (new1 / 'MANIFEST.sha256').read_bytes())
         self.go('home')
@@ -418,7 +419,7 @@ class MainFlows(BrowserCase):
         p.click('#hl-tx [data-txa="rollback"]')
         p.wait_for_timeout(500)
         self.assertEqual(len(dialogs), 1)
-        self.assertIn('Phục hồi giao dịch', dialogs[0])
+        self.assertIn('Phục hồi lần lưu file', dialogs[0])
         self.assertTrue(has_unfinished(self.pkg), 'cancelled rollback must keep the transaction')
         self.assertEqual(p.locator('#sheet.on').count(), 0)
         p.click('#hl-tx [data-txa="rollback"]')
@@ -429,7 +430,7 @@ class MainFlows(BrowserCase):
         # back to the state before the second upgrade: the version installed by the first one
         self.assertEqual((self.pkg / '.agent' / 'README.md').read_bytes(),
                          (new1 / '.agent' / 'README.md').read_bytes())
-        expect(p.locator('#hl-tx')).to_contain_text('Không có giao dịch dở')
+        expect(p.locator('#hl-tx')).to_contain_text('Không có thao tác lưu file nào bị gián đoạn')
 
 
 PAGES = ['home', 'library', 'check', 'merges', 'packs', 'skills', 'setup', 'upgrade', 'maintain', 'health']
@@ -647,8 +648,8 @@ class ContrastAndWording(unittest.TestCase):
         keys = ['err_conn', 'err_tool', 'err_blocked', 'm_issues_ro', 'tx_partial', 'tx_partial_rb', 'merge_msg',
                 'ck_not_checked_next', 'merge_state_fail', 'diff_fail', 'pick_fail']
         vi_safe = ('Chưa ghi', 'chưa biết', 'chưa rõ', 'Chưa rõ', 'không bị thay đổi', 'Không có gì bị', 'Không file',
-                   'được giữ', 'giữa hai trạng thái', 'không phải kết quả đạt')
-        en_safe = ('Nothing was', 'not known', 'not yet clear', 'No document', 'kept', 'between two states', 'not a pass')
+                   'được giữ', 'giữa hai trạng thái', 'giữa bản cũ và bản mới', 'không phải kết quả đạt')
+        en_safe = ('Nothing was', 'not known', 'not yet clear', 'No document', 'kept', 'between two states', 'between the old and the new', 'not a pass')
         problems = []
         for key in keys:
             if key not in entries:

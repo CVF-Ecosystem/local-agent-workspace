@@ -13,10 +13,10 @@ Each piece of work happens in **a copy** of the template. The main way:
 
 - Double-click `APP.bat` (Windows) or `APP.command` (macOS) in the template. The control panel opens
   on "New project".
-- Type a task name, for example "Intake team meeting minutes", press "Create project", read the preview, then press "Apply".
-- The copy is created next to the template (you can change "Location") and is already set up. An
+- Type a task name, for example "Intake team meeting minutes", press "Preview project creation", read the preview, then press "Apply".
+- The copy is created beside the template (you can change it in "Project location") and is already set up. An
   existing folder with the same name is never overwritten. The template is not changed.
-- Press "Open the project panel" to switch to the new project; from now on, work in that folder.
+- Press "Open project panel" to switch to the new project ("Open project folder" only opens the folder; neither opens your AI app); from now on, work in that folder.
 
 Python 3.8+ is needed; if it is missing, `APP.bat` explains how to install it. Without Python, do it
 by hand: copy the whole template folder (including the hidden `.agent/` folder; file managers may hide
@@ -39,7 +39,7 @@ The handbook also has a Vietnamese version: open `START_HERE.html`.
 ## 2. Fill in the context you need
 
 Not needed to start: the project name is filled in when the copy is made. When it is clear, add the
-purpose, readers, outputs, main sources/templates and known limits to `PROJECT.md`, or ask the agent
+purpose, readers, outputs, main sources/templates and known limits to `PROJECT.md`, or ask the assistant
 to fill them in after you talk it through. Only stable, useful information is needed; do not paste a
 whole document library into it.
 
@@ -70,14 +70,14 @@ sources. You do not need to move them into the project's regulations area.
 
 The package already includes fourteen compact skills in `skills/local/shared/` and matching entries in
 `.agent/SKILL_INDEX.md`. You do not need to create or install more skills to start. The skill
-files are written in Vietnamese; agents read them without problems.
+files are written in Vietnamese; assistants read them without problems.
 
 For specialised work, also install a **domain pack**: `phap-ly`, `van-thu-luu-tru`, `cang-logistics`, `hanh-chinh-nhan-su`,
-`ke-toan-noi-bo`. The easiest way: double-click `APP.bat` (Windows) or `APP.command` (macOS), open "Domain packs" and press
-"Install". An installed pack is recorded in `.agent/SKILL_INDEX.md`, so the agent finds it when the work needs it; you do
-not need to name the pack when giving work. A pack labelled "Trial" has not been through intake: the agent tries it and says so.
+`ke-toan-noi-bo`. The easiest way: double-click `APP.bat` (Windows) or `APP.command` (macOS), open the "Manage and maintain" group →
+"Manage skills", "Domain packs" section, and press "Install to try". An installed pack is recorded in `.agent/SKILL_INDEX.md`, so the assistant finds it when the work needs it; you do
+not need to name the pack when giving work. A pack labelled "Trial" has not been through intake: the assistant tries it and says so. A pack with a valid intake record also has "Install and allow"; allowing it is your decision for this project, not proof that the pack was checked as safe.
 
-Let the agent choose a native skill, a local skill or direct work according to the task. A
+Let the assistant choose a native skill, a local skill or direct work according to the task. A
 skill written for one project is only worth adding when there is a real template or lesson
 to reuse. There is no need to pre-fill a list of native skills that are not confirmed to be
 available in the session.
@@ -88,8 +88,9 @@ Open the **project folder** (the copy, not the template) in the AI app you use, 
 access to that folder: Claude (Cowork, or Desktop with the folder added), Codex Desktop, or Gemini
 through Antigravity or Gemini CLI. The package does not modify the application's configuration.
 
-The project control panel ("The work" page, "Give the agent a task" box) has two opening messages
-ready to copy: **New task** and **Continue last session**. The "New task" message reads:
+The project control panel ("The work" page, "Give your AI assistant a task" box) has two messages
+ready to copy: **New task** and **Review unfinished work**. The file names in them help the assistant find
+the right information; you only fill in the part in square brackets, then send it. The "New task" message reads:
 
 ```text
 This is the project folder "[project name]". Before you start:
@@ -99,26 +100,26 @@ This is the project folder "[project name]". Before you start:
 Task: [describe the task and the result you need]
 
 Save the result in output/. Where the sources lack information, write "to be confirmed" instead of
-guessing. Do not edit the source files. At the end, update .agent/STATE.md.
+guessing. Do not edit the source files. At the end, update .agent/STATE.md in plain work language.
 ```
 
-**Check that the agent reads the right project:** its first answer must give the right project name
-and the same source documents the panel lists under "Source documents". A wrong name, missing sources
-or files from another folder mean you should stop and check which folder the app opened. The agent
-saying it "understands" is not proof.
+**Check that the assistant reads the right project:** compare the project name and the files the
+assistant lists with the folder you opened and with "Source documents" on the panel. A wrong name,
+missing sources or files from another folder mean you should stop and check which folder the app has
+access to. A correct name does not prove the assistant read everything, and "I understand" is not proof either.
 
 Results go to `output/` and show up under "Results". To change something, say it in plain words (for
-example "the meeting started at 8:30, Lan chaired"); the agent edits the result, never the source files.
-Next session, use **Continue last session**: the agent reads `.agent/STATE.md`, then reports the goal,
-the current result, what is unfinished and the next step.
+example "the meeting started at 8:30, Lan chaired"); the assistant edits the result, never the source files.
+Next session, use **Review unfinished work**: the assistant reads `.agent/STATE.md`, then summarises the goal,
+the current result, what is unfinished and the next step; the message tells it not to change any file until you agree.
 
 This whole journey (make a copy, give a task, ask for a change, continue in a new session) was checked
-with Claude in Cowork, a fresh agent per session working on a project copy (16 October 2026, synthetic
+with Claude in Cowork, a fresh assistant per session working on a project copy (16 October 2026, synthetic
 data). Codex, Gemini and Claude Desktop on a user's computer were not checked in this round; the steps
 do not depend on the app, but how to open a folder and grant access differs per app.
 
 The `CLAUDE.md` and `GEMINI.md` adapters only help environments that support that way of reading.
-If the environment does not load them by itself, ask the agent to open the file directly; do not
+If the environment does not load them by itself, ask the assistant to open the file directly; do not
 treat an import as a guarantee of connection. Skill files in the workspace do not appear in the
 provider's native menu by themselves.
 
@@ -169,10 +170,10 @@ stored; check by opening a new session and asking what is in progress.
 
 ## 6. Try it with a real task
 
-Start with a small document or form. See whether the agent uses the right sources, understands
+Start with a small document or form. See whether the assistant uses the right sources, understands
 the output and keeps what has been decided. If something is unclear, fix the relevant guidance;
 you do not need to build a test suite or many preventive rules.
 
-If you need to continue in a new session, ask the agent to write a short STATE and carry on
+If you need to continue in a new session, ask the assistant to write a short STATE and carry on
 from there; the "Continue the work" box on the project panel shows that STATE. Keep only what really reduces repeating yourself; the rest can stay as it is, and
 you do not have to fill in everything.

@@ -5,7 +5,7 @@
 Hoàn thiện Local Agent Workspace: bảo toàn native của agent người dùng chọn, chuẩn tiếp nhận skill/gói chung (yêu cầu của operator, 14/10/2026).
 
 ## Current phase
-Nhánh ux-new-user-journey (từ fix-law01-checker-ui-crlf a94c807): redesign hành trình người mới theo brief 16/10/2026 (bộ mẫu → bản sao → giao việc → sửa → tiếp tục). Commit cục bộ, chưa push. Hai nhánh sửa trước (LAW-01/E1/D1/E2/B3) cũng chưa push.
+Nhánh ux-language-r2 (từ ux-new-user-journey 5ae7675): biên tập câu chữ theo brief ngôn ngữ R2, không đổi hành vi. Commit cục bộ, chưa push; ba nhánh trước cũng chưa push.
 
 ## Completed
 - Chuẩn tiếp nhận chung tại `skills/README.md` (VI/EN); AGENTS, SKILL_INDEX, README vùng skill, packs/README, hướng dẫn skill/tạo/chuyển đổi project dẫn chiếu về đó.

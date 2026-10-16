@@ -1,7 +1,7 @@
 # Hướng dẫn sử dụng hằng ngày
 
-Local Agent Workspace v1.8 giúp giữ tài liệu, ngữ cảnh và kết quả công việc trên
-cùng một thư mục. Agent vẫn chủ động chọn cách làm, công cụ và skill phù hợp.
+Local Trợ lý AI Workspace v1.8 giúp giữ tài liệu, ngữ cảnh và kết quả công việc trên
+cùng một thư mục. Trợ lý AI vẫn chủ động chọn cách làm, công cụ và skill phù hợp.
 
 ## 1. Giao việc bằng ngôn ngữ tự nhiên
 
@@ -20,8 +20,8 @@ Với việc nhỏ, chỉ cần nói điều cần sửa:
 Sửa đoạn này cho gọn, giữ nguyên số liệu và tên bộ phận. Trả ngay bản đã chỉnh.
 ```
 
-Agent có thể làm trực tiếp nếu ngữ cảnh đã đủ. Không cần đọc STATE, tìm skill hay
-lập kế hoạch chỉ vì đây là một project có workspace.
+Trợ lý AI có thể làm trực tiếp nếu ngữ cảnh đã đủ. Không cần đọc STATE, tìm skill hay
+lập kế hoạch chỉ vì đây là một dự án có workspace.
 
 ## 2. Tiếp tục công việc đang dở
 
@@ -29,11 +29,14 @@ Khi nhiệm vụ phụ thuộc vào dự án, `PROJECT.md` cung cấp thông tin
 `.agent/STATE.md` cho biết đang làm đến đâu. `HANDOFF.md` chỉ có ích khi cần bàn giao.
 
 ```text
-Tiếp tục việc đang dở trong STATE. Hoàn thiện phần hướng dẫn điền biểu mẫu;
-đừng viết lại các trường đã chốt. Dùng HANDOFF nếu có nội dung bàn giao.
+Tiếp tục phần hướng dẫn điền biểu mẫu đang dở. Dùng thông tin đã lưu của dự án
+(.agent/STATE.md, và HANDOFF.md nếu có) và giữ nguyên các trường đã chốt.
 ```
 
-Không cần yêu cầu agent đọc toàn bộ lịch sử. Khi chưa biết nguồn nằm ở đâu, index
+Lời nhắc tự viết như trên cho phép trợ lý làm tiếp. Lời nhắc "Xem lại việc đang dở" trên bảng điều khiển
+hẹp hơn: trợ lý chỉ tóm tắt, chưa sửa file nào cho tới khi bạn đồng ý.
+
+Không cần yêu cầu trợ lý AI đọc toàn bộ lịch sử. Khi chưa biết nguồn nằm ở đâu, index
 có thể giúp tìm; khi bạn chỉ đúng file, có thể mở file đó trực tiếp.
 
 ## 3. Yêu cầu nháp và yêu cầu file là hai việc khác nhau
@@ -55,13 +58,13 @@ Có thể đặt nguồn trong `references/` hoặc giữ nguyên vị trí đan
 `.agent/INDEX.md` ghi nguồn nào nằm ở đâu và dùng cho việc gì.
 
 Mẫu của đơn vị và quy định đã xác nhận có giá trị nghiệp vụ. Mẫu đi kèm skill chỉ
-là ví dụ để tham khảo, không tự trở thành quy định. Agent nên nêu điểm thiếu, thay
+là ví dụ để tham khảo, không tự trở thành quy định. Trợ lý AI nên nêu điểm thiếu, thay
 vì tự đặt thêm vai trò, thời hạn hoặc thẩm quyền.
 
 Khi nguồn đã được đọc, có thể tận dụng phần liên quan trong ngữ cảnh. Nếu nguồn
 vừa sửa hoặc kết luận phụ thuộc một điều khoản, đối chiếu lại đúng phần cần thiết.
 
-## 5. Để agent chọn skill phù hợp
+## 5. Để trợ lý AI chọn skill phù hợp
 
 Workspace có mười bốn skill gợi ý, từ soạn tài liệu (`office-documents`, `internal-comms`,
 `doc-coauthoring`), phân tích (`document-comparison`, `spreadsheet-check`), biểu đồ và báo cáo
@@ -69,9 +72,9 @@ Workspace có mười bốn skill gợi ý, từ soạn tài liệu (`office-doc
 hành chính đúng thể thức (`vn-admin-documents`), sổ và công cụ Excel (`excel-workbooks`, `excel-html-viewer`) đến biên tập (`vietnamese-editing`) và thư viện nguồn (`source-library`). Bạn không phải gọi chúng bằng tên.
 
 Ngoài ra có năm gói lĩnh vực cài khi cần (pháp lý, văn thư - lưu trữ, cảng - logistics, hành chính - nhân sự, kế toán nội bộ),
-mỗi gói kèm bảng căn cứ pháp lý có ngày đối chiếu. Gói đã cài thì agent tự dùng; gói chưa cài thì agent sẽ gợi ý bạn cài.
+mỗi gói kèm bảng căn cứ pháp lý có ngày đối chiếu. Gói đã cài thì trợ lý AI tự dùng; gói chưa cài thì trợ lý AI sẽ gợi ý bạn cài.
 
-Agent có thể dùng native skill, skill của workspace, kết hợp hoặc không dùng skill.
+Trợ lý AI có thể dùng native skill, skill của workspace, kết hợp hoặc không dùng skill.
 Tiêu chí là độ phù hợp với công việc và khả năng thực có, không phải nơi cung cấp.
 `ACTIVE` trong index không có nghĩa skill cần nạp ở mọi phiên.
 
@@ -79,7 +82,7 @@ Chi tiết và ví dụ nằm trong `HUONG_DAN_SKILLS_VI.md` cùng thư mục.
 
 ## 6. Dùng với Claude, Codex và Gemini qua Antigravity
 
-Mở hoặc cấp quyền thư mục dự án bằng khả năng hiện có của ứng dụng. Nếu agent chưa
+Mở hoặc cấp quyền thư mục dự án bằng khả năng hiện có của ứng dụng. Nếu trợ lý AI chưa
 đọc hướng dẫn chung, có thể gửi:
 
 ```text
@@ -90,13 +93,13 @@ phù hợp nhất với yêu cầu; có thể làm trực tiếp khi đã đủ 
 
 `CLAUDE.md` và `GEMINI.md` là adapter mỏng cho môi trường hỗ trợ cách đọc tương ứng.
 Không giả định Gemini CLI và Antigravity nạp file giống nhau. Khi chưa tự nạp,
-chỉ đường dẫn `AGENTS.md` cho agent là cách bắt đầu rõ ràng.
+chỉ đường dẫn `AGENTS.md` cho trợ lý AI là cách bắt đầu rõ ràng.
 
-Các skill trong package được tra cứu như file; giải nén không tự cài chúng vào
+Các skill trong bộ công cụ được tra cứu như file; giải nén không tự cài chúng vào
 thư viện native của các ứng dụng. Một native skill có ở phiên này không bảo đảm
-có ở phiên khác. Package không sửa cấu hình toàn cục của provider.
+có ở phiên khác. Bộ công cụ không sửa cấu hình toàn cục của provider.
 
-Nếu agent không có quyền đọc/ghi thư mục, cần cấp quyền hoặc đưa đúng file vào phiên
+Nếu trợ lý AI không có quyền đọc/ghi thư mục, cần cấp quyền hoặc đưa đúng file vào phiên
 bằng cơ chế của ứng dụng; không xem một câu hướng dẫn là đã tạo kết nối.
 
 ## 7. Lưu kết quả và kết thúc phiên
@@ -112,7 +115,7 @@ thực sự có thể dùng lại.
 Báo rõ nếu file chưa lưu thành công vào nơi dự kiến. Giữ file ở local không có
 nghĩa mô hình xử lý hoàn toàn offline hoặc mọi đầu ra cloud tự trở về máy.
 
-## 8. Khi agent bắt đầu làm quá nhiều
+## 8. Khi trợ lý AI bắt đầu làm quá nhiều
 
 Thu hẹp lại bằng một yêu cầu cụ thể, chẳng hạn:
 
@@ -121,7 +124,7 @@ Chỉ hoàn thiện phần tôi vừa yêu cầu. Không cần thêm phương á
 phần khác. Khi bản đó đã dùng được thì dừng.
 ```
 
-Nếu agent thiếu thông tin quan trọng, để nó đọc thêm đúng nguồn hoặc hỏi đúng điểm.
+Nếu trợ lý AI thiếu thông tin quan trọng, để nó đọc thêm đúng nguồn hoặc hỏi đúng điểm.
 Mục tiêu là làm vừa đủ để đúng việc, không phải bỏ qua kiểm tra cần thiết.
 
 `AGENTS.md` có khối "Giới hạn công việc": việc nhỏ làm một lần, việc vừa một lượt kèm tối đa một
@@ -129,7 +132,7 @@ lần soát (lỗi cụ thể thì sửa đúng chỗ), không lặp vô hạn, 
 tự đọc `AGENTS.md`, dán đoạn hướng dẫn trong mục 5 của `HUONG_DAN_TAO_PROJECT_MOI_VI.md`
 vào phần hướng dẫn của Project.
 
-Với việc có hậu quả cao (pháp lý, tài chính, số liệu hoặc văn bản gửi ra ngoài, trình ký), agent
+Với việc có hậu quả cao (pháp lý, tài chính, số liệu hoặc văn bản gửi ra ngoài, trình ký), trợ lý AI
 áp dụng "Mức thận trọng cao" trong `AGENTS.md`: đối chiếu từng số, ngày, tên, điều khoản với nguồn,
 nêu phần chưa kiểm được. Bạn có thể nhắc: "Việc này gửi ra ngoài, áp dụng mức thận trọng cao."
 
@@ -137,48 +140,48 @@ nêu phần chưa kiểm được. Bạn có thể nhắc: "Việc này gửi ra
 
 Trước khi đưa tài liệu cho AI, tự hỏi: file này có mật khẩu, khóa truy cập, dữ liệu cá nhân của khách hàng hoặc nhân sự, hay
 tài liệu mật không? Nếu có, che hoặc bỏ phần đó trước (thay tên thật bằng ký hiệu, xóa số định danh), và ghi mức nhạy cảm vào
-dòng "Mức nhạy cảm dữ liệu" trong `PROJECT.md`. Tuân thủ quy định bảo mật của đơn vị; package không thay thế các quy định đó.
+dòng "Mức nhạy cảm dữ liệu" trong `PROJECT.md`. Tuân thủ quy định bảo mật của đơn vị; bộ công cụ không thay thế các quy định đó.
 
-Package giữ file ở máy bạn, nhưng khi mở bằng ứng dụng AI thì nội dung bạn giao vẫn được ứng dụng đó xử lý theo điều khoản của
-nó. Không dùng project này cho dữ liệu mà quy định của đơn vị cấm đưa vào dịch vụ AI.
+Bộ công cụ giữ file ở máy bạn, nhưng khi mở bằng ứng dụng AI thì nội dung bạn giao vẫn được ứng dụng đó xử lý theo điều khoản của
+nó. Không dùng dự án này cho dữ liệu mà quy định của đơn vị cấm đưa vào dịch vụ AI.
 
 Với văn bản gửi ra ngoài hoặc trình ký, người ký chịu trách nhiệm về nội dung: nên đọc lại toàn bộ và đối chiếu số liệu với nguồn.
 Nếu đơn vị yêu cầu ghi nhận phần AI hỗ trợ, thêm một dòng vào hồ sơ (ví dụ: "Bản nháp có hỗ trợ của AI, đã được [tên] rà soát").
 
-## 10. Đọc "Khai báo thực hiện" của agent
+## 10. Đọc "Khai báo thực hiện" của trợ lý AI
 
-Khi agent đọc, kiểm tra, đối chiếu hoặc tính toán trên file của bạn, cuối câu trả lời nên có khối "Khai báo thực hiện"
+Khi trợ lý AI đọc, kiểm tra, đối chiếu hoặc tính toán trên file của bạn, cuối câu trả lời nên có khối "Khai báo thực hiện"
 (quy tắc 9 trong `AGENTS.md`): cách làm (script đã chạy kèm lệnh, hay đọc thủ công), skill đã đọc, nguồn đã đọc, file đã tạo hoặc sửa,
 và điều chưa kiểm. Hãy đọc khối này trước khi tin kết quả. Phát hiện về số nên kèm con số cụ thể; chỗ mơ hồ (như `1.234`) nên được
-nêu cả hai cách hiểu. Thiếu khối này, hoặc khai báo chung chung, thì yêu cầu agent bổ sung. Khai báo do agent tự ghi nên không phải
+nêu cả hai cách hiểu. Thiếu khối này, hoặc khai báo chung chung, thì yêu cầu trợ lý AI bổ sung. Khai báo do trợ lý AI tự ghi nên không phải
 bằng chứng tuyệt đối; với việc quan trọng, dòng "Dấu vết" của script (file, sha256, giờ chạy) giúp bạn đối chiếu được.
 Lưu câu trả lời thành file rồi chạy `python tools/check_output.py --declaration <file>` để kiểm khai báo đủ mục hay chưa.
 
 ## 11. Vai trò của các hướng dẫn HTML
 
 `START_HERE.html` tập hợp cẩm nang cho người dùng; mỗi hướng dẫn Markdown cũng có
-bản HTML cùng tên. Chỉ cần đọc một dạng. Agent không cần nạp HTML, đọc toàn bộ README
+bản HTML cùng tên. Chỉ cần đọc một dạng. Trợ lý AI không cần nạp HTML, đọc toàn bộ README
 hoặc cập nhật bản HTML trong mỗi công việc văn phòng.
 
 Khi bạn chủ động sửa hướng dẫn Markdown và muốn cập nhật bản trình bày, chạy
-`python tools/build_guides_html.py` từ thư mục gốc của project (xem `tools/README.md`), hoặc nhờ
-agent chạy giúp. Bản HTML không tự đồng bộ khi sửa Markdown; thêm `--check` để kiểm tra HTML
+`python tools/build_guides_html.py` từ thư mục gốc của dự án (xem `tools/README.md`), hoặc nhờ
+trợ lý AI chạy giúp. Bản HTML không tự đồng bộ khi sửa Markdown; thêm `--check` để kiểm tra HTML
 có còn khớp không.
 
 ## 12. Bảng điều khiển (APP.bat)
 
 Bấm đúp `APP.bat` (Windows) hoặc `APP.command` (macOS) để mở bảng điều khiển trong trình duyệt. Mở trong bộ mẫu, trang chính
-là "Tạo project mới": nhập tên công việc, bản sao được tạo cạnh bộ mẫu (`tools/new_project.py`), bộ mẫu không đổi. Mở trong
-project, trang **Công việc** gồm: "Tiếp tục công việc" (đọc từ `.agent/STATE.md`: đang ở đâu, việc chờ bạn, bước tiếp), "Giao
-việc cho agent" (các bước và câu mở đầu để chép, kèm cách kiểm agent đọc đúng project), "Tài liệu nguồn" (file trong
+là "Tạo dự án mới": nhập tên công việc, bản sao được tạo cạnh bộ mẫu (`tools/new_project.py`), bộ mẫu không đổi. Mở trong
+dự án, trang **Công việc** gồm: "Tiếp tục công việc" (đọc từ `.agent/STATE.md`: đang ở đâu, việc chờ bạn, bước tiếp), "Giao
+việc cho trợ lý AI" (các bước và lời nhắc để sao chép, kèm cách kiểm trợ lý AI đọc đúng dự án), "Tài liệu nguồn" (file trong
 `references/`) và "Kết quả" (file trong `output/`). Kiểm tra trước khi giao (`check_output.py`) và thư viện nguồn nằm ngay
 dưới. Nhóm "Quản lý và bảo trì" (thu gọn) gom phần còn lại: quản lý kỹ năng và gói lĩnh vực, chép skill vào ứng dụng
-(`install_skills.py`), chờ hợp nhất, cập nhật package, khởi tạo hoặc đưa vào project đã có, bảo trì package. Trang **Tình trạng ứng dụng** cho biết phiên bản, Python, chức năng tùy chọn còn thiếu (kèm cách khắc phục), giao dịch chưa hoàn tất và lịch sử thao tác gần đây.
+(`install_skills.py`), chờ hợp nhất, cập nhật bộ công cụ, khởi tạo hoặc đưa vào dự án đã có, bảo trì bộ công cụ. Trang **Tình trạng ứng dụng** cho biết phiên bản, Python, chức năng tùy chọn còn thiếu (kèm cách khắc phục), giao dịch chưa hoàn tất và lịch sử thao tác gần đây.
 
 Thao tác có ghi file luôn chạy xem trước; đọc kết quả rồi mới bấm "Thực hiện". Bảng điều khiển chạy trên máy này (địa chỉ
 127.0.0.1, có mã truy cập riêng mỗi lần mở), không dùng mạng, tự tắt khoảng 3 phút sau khi đóng trang. Nút
 "Chọn…" mở hộp chọn thư mục của máy; nếu máy không có, gõ hoặc dán đường dẫn. Bảng điều khiển không thay việc giao việc cho
-agent; nó chỉ gom các lệnh `python tools/...` vào một chỗ.
+trợ lý AI; nó chỉ gom các lệnh `python tools/...` vào một chỗ.
 
 Kiểm tra đầu ra có ba trạng thái: đã kiểm đạt trong phạm vi hỗ trợ; đã kiểm có vấn đề/cần xem xét; chưa kiểm được. Thiếu file, định dạng không hỗ trợ hoặc thiếu thư viện không được coi là đạt. Word được kiểm chữ trong thân bài, đầu/chân trang và chú thích chân trang/cuối tài liệu; chưa kiểm bố cục, chữ trong ảnh, bình luận hoặc thay đổi được theo dõi. Excel và thư viện nguồn cần `openpyxl`; nếu thiếu, chạy `python -m pip install openpyxl`. Công cụ không tự cài.
 
@@ -186,6 +189,6 @@ Bảng điều khiển không xóa file của bạn, trừ hai trường hợp. 
 
 **Lịch sử thao tác.** Mỗi lần bấm một nút ghi một dòng: thời điểm, tên thao tác, kết quả, số file tác động và mã giao dịch nếu có. Không ghi nội dung tài liệu, tên file, tên người hay dữ liệu đã gõ. Bảng điều khiển giữ tối đa 500 dòng; trang Tình trạng ứng dụng hiện 20 dòng gần nhất. Muốn xóa, bấm "Xóa lịch sử"; việc này không ảnh hưởng tài liệu hay giao dịch.
 
-**Gói chẩn đoán.** Nút "Tạo gói chẩn đoán" tạo một file ZIP trên máy này, trong `.agent/runtime/diagnostics/diagnostics-<thời điểm>.zip`, để gửi cho người hỗ trợ khi gặp lỗi. Gói gồm phiên bản package, loại workspace, Python và hệ điều hành, tình trạng chức năng tùy chọn, số file chờ hợp nhất (chỉ đường dẫn tương đối), giao dịch dở, lịch sử thao tác và kết quả kiểm tra package. Gói không có nội dung tài liệu, tên project, tên người hay đường dẫn tuyệt đối. Gói không được gửi đi tự động. Bấm "Mở thư mục gói" để xem trước; bạn tự quyết định có chia sẻ hay không.
+**Gói chẩn đoán.** Nút "Tạo gói chẩn đoán" tạo một file ZIP trên máy này, trong `.agent/runtime/diagnostics/diagnostics-<thời điểm>.zip`, để gửi cho người hỗ trợ khi gặp lỗi. Gói gồm phiên bản của bộ công cụ, loại workspace, Python và hệ điều hành, tình trạng chức năng tùy chọn, số file chờ hợp nhất (chỉ đường dẫn tương đối), giao dịch dở, lịch sử thao tác và kết quả kiểm tra bộ công cụ. Gói không có nội dung tài liệu, tên dự án, tên người hay đường dẫn tuyệt đối. Gói không được gửi đi tự động. Bấm "Mở thư mục gói" để xem trước; bạn tự quyết định có chia sẻ hay không.
 
 **So sánh ở trang Chờ hợp nhất.** Nút "So sánh" cho thấy chỗ khác nhau giữa bản hiện hành và bản `.new`, theo từng đoạn có số dòng. Chỉ đọc: không lưu gì và không tự hợp nhất hay ghi đè. File lớn hơn 256 KB, hoặc không phải văn bản UTF-8, không hiện nội dung trong bảng điều khiển; mở hai bản bằng ứng dụng gốc để xem. Sau khi tự hợp nhất, bạn xóa file .new.

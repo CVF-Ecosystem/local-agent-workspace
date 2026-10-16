@@ -1,12 +1,12 @@
-# Demo project: try it in 10 minutes
+# Practice exercise: try it in 10 minutes
 
-This is a **fake** data set (invented) so you can try the package without preparing real documents. Try it in **a trial
+This exercise uses **sample data**, not real records; you do not need to prepare documents of your own. Try it in **a trial
 project**, not in the template: on the template's control panel, "New project" page, create a project called "Demo trial";
 open that project folder (not just the `examples/` folder) in the AI app you use (Claude, Codex, Gemini...), then send the
 requests below one at a time. Each request only names the source and the result you need; there is no need to name a skill,
-the agent uses the app's own abilities or the package's additions when needed.
+the assistant uses the app's own abilities or the package's additions when needed.
 
-| File | Contents (fake) |
+| File | Contents (sample) |
 |---|---|
 | `data/weekly_log.csv` | A daily log of files received and completed, with a few deliberate errors |
 | `notes/meeting_notes.txt` | Unsorted meeting notes |
@@ -37,11 +37,11 @@ Compare examples/demo-project/docs/procedure_v1.md and examples/demo-project/doc
 
 You should see: a table listing real changes only (an added step, a changed owner, a different deadline), not differences of wording alone (step 1 of version 2 is only reworded and should not be in the table). The impact column carries the label "(inferred)" (in the column header or per item).
 
-## Check how the agent worked
+## Check how the assistant worked
 
-At the end of each reply the agent should give an **"Execution declaration"** (method, skill, sources, files, not checked; see `AGENTS.md`).
-For Try 1 the package ships a spreadsheet-check script: if the agent uses it, the declaration should give the command run and the script's "Trace" line, or say
-why the work was done manually. A missing block is a sign the agent did not follow the package guidance. For a quick check, save the
+At the end of each reply the assistant should give an **"Execution declaration"** (method, skill, sources, files, not checked; see `AGENTS.md`).
+For Try 1 the package ships a spreadsheet-check script: if the assistant uses it, the declaration should give the command run and the script's "Trace" line, or say
+why the work was done manually. A missing block is a sign the assistant did not follow the package guidance. For a quick check, save the
 reply to a file and run `python tools/check_output.py --declaration <file>`.
 
 ## After trying

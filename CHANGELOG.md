@@ -70,6 +70,14 @@
   không để lại `__pycache__` trong bộ mẫu; `check_package.py` bỏ qua file `.git` của git worktree. Đã chạy trọn hành trình bằng
   giao diện thật và ba phiên agent mới (Claude trong Cowork) trên bản sao, dữ liệu giả; chưa kiểm Codex, Gemini, Claude Desktop trên
   máy người dùng và chưa có lượt người mới độc lập.
+- Biên tập ngôn ngữ (brief R2, 16/10/2026), không đổi hành vi: chữ người dùng đọc dùng "dự án", "bộ mẫu gốc", "trợ lý AI",
+  "bộ công cụ", "gói bổ sung theo lĩnh vực" (giao diện, SETUP, thông báo của `new_project.py`/bảng điều khiển, README, hướng dẫn,
+  demo, START_HERE VI/EN). Nút tạo dự án ghi đúng là "Xem trước khi tạo"; "Nơi lưu dự án", "Ngôn ngữ hướng dẫn" (kèm giải thích);
+  "Giao việc cho trợ lý AI", "Sao chép lời nhắc", chế độ "Xem lại việc đang dở" (vẫn dặn trợ lý chưa sửa file) kèm dòng giải thích theo
+  chế độ; nút gói "Cài để dùng thử" / "Cài và cho phép dùng" / "Cho phép dùng trong dự án"; "Chưa thể thực hiện"; "Thao tác lưu file
+  bị gián đoạn". Lời nhắc cho trợ lý giữ nguyên tên file và đường dẫn. Lời giới thiệu START_HERE nói rõ giới hạn (hướng dẫn là yêu cầu,
+  không bảo đảm mọi mô hình tuân thủ; bảng điều khiển không chạy mô hình AI). `AGENTS.md` (VI/EN): giữ tiêu đề khung STATE, viết nội dung
+  bằng lời văn công việc. Khóa dịch, ID, mã trạng thái, cờ lệnh và placeholder giữ nguyên.
 
 ## v1.7.0 — 2026-10-13
 

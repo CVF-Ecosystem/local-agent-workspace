@@ -316,7 +316,7 @@ def need_txid(p):
 
 def need_project():
     if not os.path.isfile(os.path.join(ROOT, '.agent', 'PACKAGE_INFO.json')):
-        raise BadInput('Thư mục này chưa khởi tạo thành project; khởi tạo trước rồi mới cài gói hoặc nâng cấp.\n'
+        raise BadInput('Thư mục này chưa được thiết lập thành dự án; thiết lập trước rồi mới cài gói hoặc cập nhật.\n'
                        'This folder is not set up as a project yet; set it up before installing packs or upgrading.')
 
 
@@ -325,7 +325,7 @@ def action(name, p):
     if name in ('upgrade', 'pack_add', 'pack_remove', 'pack_update', 'pack_confirm'):
         need_project()
     if name == 'init':
-        args = ['--name', need_text(p, 'name', 'Cần nhập tên project / A project name is required.'),
+        args = ['--name', need_text(p, 'name', 'Cần nhập tên dự án / A project name is required.'),
                 '--lang', 'en' if p.get('lang') == 'en' else 'vi']
         for k in ('purpose', 'outputs', 'style', 'sources', 'constraints', 'sensitivity'):
             v = (p.get(k) or '').strip()
@@ -347,11 +347,11 @@ def action(name, p):
     if name == 'upgrade_other':
         target = need_dir(p.get('project'))
         if os.path.normcase(os.path.abspath(target)) == os.path.normcase(ROOT):
-            raise BadInput('Chọn thư mục project khác, không phải thư mục đang mở. / Choose another project folder, not this one.')
+            raise BadInput('Chọn thư mục dự án khác, không phải thư mục đang mở. / Choose another project folder, not this one.')
         return run_tool('upgrade_package.py', ['--project', target] + (['--apply'] if apply else []))
     if name == 'adopt':
         args = ['--project', need_dir(p.get('project')),
-                '--name', need_text(p, 'name', 'Cần nhập tên project / A project name is required.'),
+                '--name', need_text(p, 'name', 'Cần nhập tên dự án / A project name is required.'),
                 '--lang', 'en' if p.get('lang') == 'en' else 'vi']
         return run_tool('adopt_project.py', args + (['--apply'] if apply else []))
     if name == 'pack_list':
@@ -551,13 +551,13 @@ def open_project(target, what):
     except (OSError, ValueError, AttributeError):
         ok = False
     if not ok or not os.path.isfile(os.path.join(t, 'tools', 'app.py')) or os.path.normcase(t) == os.path.normcase(ROOT):
-        raise BadInput('Không phải thư mục project / Not a project folder: %s' % (target or ''))
+        raise BadInput('Không phải thư mục dự án đã thiết lập / Not a set-up project folder: %s' % (target or ''))
     if what == 'panel':
         kw = {'cwd': t, 'stdin': subprocess.DEVNULL, 'stdout': subprocess.DEVNULL, 'stderr': subprocess.DEVNULL}
         if sys.platform.startswith('win'):
             kw['creationflags'] = getattr(subprocess, 'CREATE_NEW_CONSOLE', 0)
         subprocess.Popen([sys.executable, os.path.join(t, 'tools', 'app.py')], **kw)
-        msg = 'Đang mở bảng điều khiển của project trong tab mới. / Opening the project panel in a new tab.'
+        msg = 'Đang mở bảng điều khiển dự án trong một tab mới của trình duyệt. / Opening the project panel in a new browser tab.'
     else:
         if sys.platform.startswith('win'):
             os.startfile(t)  # noqa
@@ -565,7 +565,7 @@ def open_project(target, what):
             subprocess.Popen(['open', t])
         else:
             subprocess.Popen(['xdg-open', t], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        msg = 'Đã mở thư mục project. / Opened the project folder.'
+        msg = 'Đã mở thư mục dự án. / Opened the project folder.'
     return {'code': 0, 'out': msg, 'cmd': '', 'result': make('success', code=0, message=msg, changes=False)}
 
 

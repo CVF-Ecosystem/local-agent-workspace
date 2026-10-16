@@ -1,8 +1,8 @@
 # Chọn và sử dụng skills
 
-Bạn chọn agent nào thì agent đó dùng năng lực và native skill sẵn có của nó; package không thay
-hay sửa chúng. Skill trong package là hướng dẫn và tài nguyên **bổ sung**: mẫu, nguồn, quy tắc nghiệp
-vụ mà native chưa có. Agent chọn theo độ phù hợp với công việc, không ép dùng skill của package khi
+Bạn chọn trợ lý AI nào thì trợ lý AI đó dùng năng lực và native skill sẵn có của nó; bộ công cụ không thay
+hay sửa chúng. Skill trong bộ công cụ là hướng dẫn và tài nguyên **bổ sung**: mẫu, nguồn, quy tắc nghiệp
+vụ mà native chưa có. Trợ lý AI chọn theo độ phù hợp với công việc, không ép dùng skill của bộ công cụ khi
 cách sẵn có đã đủ.
 
 ## 1. Khi nào một skill có ích?
@@ -28,7 +28,7 @@ một từ khóa giống tên skill.
 | Dựng sổ theo dõi, form nhập liệu hoặc phụ lục tính bằng Excel | Cân nhắc `excel-workbooks`; kiểm tra file có sẵn bằng `spreadsheet-check`. |
 | Dashboard offline đọc file Excel của người dùng | Cân nhắc `excel-html-viewer`; biểu đồ theo `data-charts`. |
 
-Đây là ví dụ lựa chọn, không phải bảng định tuyến bắt buộc. Agent có thể kết hợp
+Đây là ví dụ lựa chọn, không phải bảng định tuyến bắt buộc. Trợ lý AI có thể kết hợp
 skills khi chúng bổ sung nhau hoặc xử lý trực tiếp nếu đã đủ khả năng.
 
 ## 2. Skill tài liệu nghiệp vụ
@@ -53,7 +53,7 @@ vẫn đến từ nguồn hoặc quyết định được xác nhận, không t�
 | Báo cáo định kỳ | `assets/periodic-report.html` | Báo cáo tháng/tuần có nhận xét, KPI, diễn biến và bảng số liệu. |
 | Tổng quan chỉ số | `assets/metrics-overview.html` | Trang KPI có lọc theo kỳ/kênh và bảng chi tiết. |
 
-Cả hai mẫu là HTML tự chứa, viết mới cho package, dùng font hệ thống và không cần
+Cả hai mẫu là HTML tự chứa, viết mới cho bộ công cụ, dùng font hệ thống và không cần
 mạng. Dữ liệu trong bản mẫu là **minh họa**, không phải dữ liệu của dự án.
 
 ```text
@@ -61,12 +61,12 @@ Dùng bảng số liệu này để tạo một báo cáo HTML mở offline tron
 Chọn mẫu hoặc cách trình bày phù hợp nhất. Giữ đúng số liệu, ghi nguồn và kỳ báo cáo.
 ```
 
-Agent có thể thay khối `report-data` trong file mẫu rồi chỉnh bố cục và nhận xét.
-Bạn không cần sửa mã để sử dụng skill: giao dữ liệu và yêu cầu cho agent là đủ.
+Trợ lý AI có thể thay khối `report-data` trong file mẫu rồi chỉnh bố cục và nhận xét.
+Bạn không cần sửa mã để sử dụng skill: giao dữ liệu và yêu cầu cho trợ lý AI là đủ.
 Nút lọc chỉ thay cách xem dữ liệu trong file; mẫu không kết nối dữ liệu sống.
 
 Hai mẫu hỗ trợ in qua nút “In báo cáo”. Mở được offline không có nghĩa quá trình
-agent đọc dữ liệu và tạo báo cáo cũng diễn ra hoàn toàn offline.
+trợ lý AI đọc dữ liệu và tạo báo cáo cũng diễn ra hoàn toàn offline.
 
 ## 4. Skill biểu đồ
 
@@ -99,7 +99,7 @@ Không cần tự chạy skill này sau mọi báo cáo hoặc SOP.
 
 ## 6. Các skill cho công việc hằng ngày
 
-Chín skill này ngắn, mỗi skill có phần “khi nào dừng” để agent không làm quá phạm vi.
+Chín skill này ngắn, mỗi skill có phần “khi nào dừng” để trợ lý AI không làm quá phạm vi.
 
 | Skill | Dùng khi | Đầu ra điển hình |
 |---|---|---|
@@ -112,7 +112,7 @@ Chín skill này ngắn, mỗi skill có phần “khi nào dừng” để agen
 | `vn-admin-documents` | Cần văn bản hành chính đúng thể thức. | Bản nháp có đủ thành phần thể thức; số, ngày, người ký để `[cần xác nhận]`. |
 | `excel-workbooks` | Cần sổ theo dõi, form nhập liệu hoặc phụ lục tính bằng Excel. | File Excel có sheet nhập, sheet báo cáo bằng công thức, dữ liệu mẫu tách riêng; đã tính lại không lỗi. |
 | `excel-html-viewer` | Muốn xem số liệu trực quan từ file Excel mà không cài phần mềm. | Một file HTML mở offline, đọc Excel, có tab kiểm tra dữ liệu; nêu rõ giới hạn khi giao. |
-| `source-library` | Lưu và tra văn bản pháp luật, quy chế, mẫu biểu của project; cần biết văn bản còn hiệu lực, đã xác minh tới đâu. | Khung `references/` theo nhóm và lĩnh vực, chỉ mục `_INDEX.xlsx`, lệnh `tools/library.py` (init, check, find); trích dẫn chỉ từ file có trong thư viện. |
+| `source-library` | Lưu và tra văn bản pháp luật, quy chế, mẫu biểu của dự án; cần biết văn bản còn hiệu lực, đã xác minh tới đâu. | Khung `references/` theo nhóm và lĩnh vực, chỉ mục `_INDEX.xlsx`, lệnh `tools/library.py` (init, check, find); trích dẫn chỉ từ file có trong thư viện. |
 
 ```text
 Đối chiếu Quy_dinh_cu.docx với Quy_dinh_moi.docx. Chỉ lập bảng thay đổi có ý nghĩa,
@@ -123,20 +123,20 @@ Chín skill này ngắn, mỗi skill có phần “khi nào dừng” để agen
 `openpyxl`; thêm `--lang en` để báo cáo bằng tiếng Anh). `vn-admin-documents` chỉ là điểm xuất phát về thể thức: quy định văn thư có thể đã đổi và đơn vị
 có thể có quy chế riêng, nên kiểm bản hiện hành trước khi ban hành.
 
-`doc-coauthoring` chỉ dùng khi bạn muốn; agent sẽ hỏi trước, và nếu bạn từ chối thì soạn
+`doc-coauthoring` chỉ dùng khi bạn muốn; trợ lý AI sẽ hỏi trước, và nếu bạn từ chối thì soạn
 thẳng. Các skill còn lại không cần xin phép trước khi dùng.
 
-## 7. Cách agent tìm skills
+## 7. Cách trợ lý AI tìm skills
 
-`.agent/SKILL_INDEX.md` có mô tả khi nào hữu ích và đường dẫn đến từng skill. Agent
+`.agent/SKILL_INDEX.md` có mô tả khi nào hữu ích và đường dẫn đến từng skill. Trợ lý AI
 có thể tra khi cần khám phá hoặc mở trực tiếp khi đã biết skill phù hợp.
 
-`AVAILABLE` nghĩa đã được nhận và sẵn dùng, `ACTIVE` nghĩa thường dùng trong project. Cả hai đều
-không yêu cầu nạp đầu phiên. `REVIEW` là **thử nghiệm**: chưa qua tiếp nhận, agent chỉ dùng thử trong
-project và nói rõ là bản thử, công cụ không chép nó sang ứng dụng. Ghi chú native chỉ mô tả khả năng
-đã biết của một môi trường; khi chuyển agent, dùng những khả năng thực có trong phiên mới.
+`AVAILABLE` nghĩa đã được nhận và sẵn dùng, `ACTIVE` nghĩa thường dùng trong dự án. Cả hai đều
+không yêu cầu nạp đầu phiên. `REVIEW` là **thử nghiệm**: chưa qua tiếp nhận, trợ lý AI chỉ dùng thử trong
+dự án và nói rõ là bản thử, công cụ không chép nó sang ứng dụng. Ghi chú native chỉ mô tả khả năng
+đã biết của một môi trường; khi chuyển trợ lý AI, dùng những khả năng thực có trong phiên mới.
 
-Package không tự cài các skill vào menu native của ứng dụng. Khi cần, chỉ đường dẫn:
+Bộ công cụ không tự cài các skill vào menu native của ứng dụng. Khi cần, chỉ đường dẫn:
 
 ```text
 Skill bổ sung của project được mô tả trong .agent/SKILL_INDEX.md.
@@ -152,45 +152,45 @@ tạm nếu bạn muốn phân loại sau.
 Đặt file vào thư mục chưa có nghĩa skill đã được nhận. Skill tự rút ra khi làm việc và skill
 hay gói tải từ ngoài dùng chung một chuẩn tiếp nhận (`skills/README.md`, mục "Tiếp nhận skill và gói"):
 nó phải bổ sung điều native hoặc cách đang có chưa làm được, rõ nguồn, rõ quyền, có bằng chứng dùng
-được. Nếu agent của bạn đã làm tốt việc đó thì không cần thêm skill trùng; kết luận "không cần" cũng
-là kết quả tốt. Trong lúc xét, skill được ghi `REVIEW` và vẫn có thể dùng thử trong project.
+được. Nếu trợ lý AI của bạn đã làm tốt việc đó thì không cần thêm skill trùng; kết luận "không cần" cũng
+là kết quả tốt. Trong lúc xét, skill được ghi `REVIEW` và vẫn có thể dùng thử trong dự án.
 
-Khi thêm hoặc sửa lớn, nhờ agent đọc đủ để ghi `Use when`, vị trí, nguồn gốc và
+Khi thêm hoặc sửa lớn, nhờ trợ lý AI đọc đủ để ghi `Use when`, vị trí, nguồn gốc và
 dependency đáng chú ý vào index. Không cần đánh giá lại khi dùng skill đã được nhận.
-Người dùng giữ quyền thêm/bỏ/sửa thư viện và quyền đưa skill vào bộ mẫu gốc; agent chủ động
-lựa chọn trong tác nghiệp. Cập nhật bộ mẫu gốc không tự đổi các project đã tạo trước đó.
+Người dùng giữ quyền thêm/bỏ/sửa thư viện và quyền đưa skill vào bộ mẫu gốc; trợ lý AI chủ động
+lựa chọn trong tác nghiệp. Cập nhật bộ mẫu gốc không tự đổi các dự án đã tạo trước đó.
 
 ## 9. Gói lĩnh vực và cài skill vào ứng dụng
 
-Lõi của package chỉ giữ quy tắc làm việc và mười bốn skill dùng chung. Kiến thức riêng của một lĩnh vực (cảng và logistics,
-nhân sự, tài chính...) nên nằm trong **gói lĩnh vực** trong `packs/`, cài vào project nào cần bằng
+Lõi của bộ công cụ chỉ giữ quy tắc làm việc và mười bốn skill dùng chung. Kiến thức riêng của một lĩnh vực (cảng và logistics,
+nhân sự, tài chính...) nên nằm trong **gói lĩnh vực** trong `packs/`, cài vào dự án nào cần bằng
 `python tools/pack.py add <tên>` (xem `python tools/pack.py list`). Gói cài vào `skills/local/packs/` và được ghi trong
 `.agent/SKILL_INDEX.md` với Scope `PACK`; gỡ bằng `pack.py remove <tên>` (thư mục được chuyển vào `archive/`, không xóa).
-Quy tắc nhận một gói và cách viết gói mới ở `packs/README.md`. Mọi gói cài vào đều ghi `REVIEW` (dùng thử, không được chép sang ứng dụng); khối `intake` trong gói chỉ là lời khai. Đọc hồ sơ rồi muốn nhận cho project
-này thì cài kèm `python tools/pack.py add <tên> --confirm` (đã cài rồi thì `pack.py confirm <tên>`; trong bảng điều khiển là nút "Cài và nhận gói" / "Xác nhận tiếp nhận", một hộp thoại là xong); sửa nội dung gói sau đó thì phải xác nhận lại. Package kèm năm gói lĩnh vực (thử nghiệm, bản 0.2.0): `phap-ly` (tra cứu, áp dụng văn bản quy phạm pháp luật), `van-thu-luu-tru`
+Quy tắc nhận một gói và cách viết gói mới ở `packs/README.md`. Mọi gói cài vào đều ghi `REVIEW` (dùng thử, không được chép sang ứng dụng); khối `intake` trong gói chỉ là lời khai. Đọc hồ sơ rồi muốn nhận cho dự án
+này thì cài kèm `python tools/pack.py add <tên> --confirm` (đã cài rồi thì `pack.py confirm <tên>`; trong bảng điều khiển là nút "Cài và cho phép dùng" / "Cho phép dùng trong dự án", một hộp thoại là xong); sửa nội dung gói sau đó thì phải xác nhận lại. Bộ công cụ kèm năm gói lĩnh vực (thử nghiệm, bản 0.2.0): `phap-ly` (tra cứu, áp dụng văn bản quy phạm pháp luật), `van-thu-luu-tru`
 (văn bản đi, đến, sao văn bản, lập hồ sơ, nộp lưu), `cang-logistics` (báo cáo khai thác tàu, sà lan, sự cố thiết bị),
 `hanh-chinh-nhan-su` (quyết định nhân sự, phép năm, làm thêm giờ, kỷ luật, lương, bảo hiểm) và `ke-toan-noi-bo` (tạm ứng, thanh
 toán, chứng từ, hóa đơn, lưu trữ). Mỗi gói có bảng căn cứ (tệp legal-basis.md trong thư mục references của skill) ghi số hiệu, điều khoản, hiệu lực, nguồn và ngày đối
-chiếu để người dùng kiểm lại. Cài bằng `python tools/pack.py add <tên>` hoặc trang "Gói lĩnh vực" của bảng điều khiển. Ngoài ra
+chiếu để người dùng kiểm lại. Cài bằng `python tools/pack.py add <tên>` hoặc trong bảng điều khiển: nhóm "Quản lý và bảo trì" → "Quản lý kỹ năng". Ngoài ra
 là khung `_template` để viết gói mới.
 
-Mỗi project giữ bản sao skill của riêng mình, nên project luôn tự đủ và mang đi được; công cụ `tools/upgrade_package.py` giữ
-các bản sao này đồng bộ với package mới khi bạn nâng cấp. Nếu muốn một skill hiện trong menu của ứng dụng (ví dụ Claude), dùng
+Mỗi dự án giữ bản sao skill của riêng mình, nên dự án luôn tự đủ và mang đi được; công cụ `tools/upgrade_package.py` giữ
+các bản sao này đồng bộ với bộ công cụ mới khi bạn nâng cấp. Nếu muốn một skill hiện trong menu của ứng dụng (ví dụ Claude), dùng
 `python tools/install_skills.py --dest <thư mục skill của ứng dụng> --skills <tên,tên> --yes` (không có `--yes` thì chỉ xem trước), hoặc
 trang "Cài skill vào ứng dụng" của bảng điều khiển (`APP.bat`), nơi bạn đánh dấu skill cần chép. Chỉ chép skill bạn thật sự cần: ứng dụng
 đã có khả năng tương tự thì không cần. Chỉ skill đã được nhận mới chép được; skill cùng tên mà ứng dụng đã có (native hoặc nguồn khác)
-luôn được giữ nguyên, và bản cũ do package chép khi thay sẽ được lưu vào `archive/`. Skill viết theo định dạng `SKILL.md` chung: Claude
+luôn được giữ nguyên, và bản cũ do bộ công cụ chép khi thay sẽ được lưu vào `archive/`. Skill viết theo định dạng `SKILL.md` chung: Claude
 đọc `~/.claude/skills`; Codex và Gemini CLI cùng đọc `~/.agents/skills`, nên một lần chép dùng được cho cả hai. Việc này là tùy chọn;
-agent vẫn đọc được skill như file.
+trợ lý AI vẫn đọc được skill như file.
 
 Bảng thuật ngữ Việt–Anh cho văn bản hành chính: `docs/GLOSSARY_VI_EN.md`. Trước khi giao sản phẩm, có thể dùng
 `python tools/check_output.py <file>` và checklist `skills/local/shared/office-documents/references/delivery-checklist.md`.
 
 ## 10. Phạm vi tham khảo repo
 
-Các skill trong package được biên soạn mới dựa trên nhu cầu đã trao đổi. Repo
+Các skill trong bộ công cụ được biên soạn mới dựa trên nhu cầu đã trao đổi. Repo
 `sharkrebel/everything-everywhere-for-antigravity` được dùng để tham khảo ý tưởng (kể cả
-bốn skill được chọn qua audit); package viết lại thành bản tiếng Việt gọn, không cài hay
+bốn skill được chọn qua audit); bộ công cụ viết lại thành bản tiếng Việt gọn, không cài hay
 nhập nguyên bản. Không có global rules, hook, installer hoặc skill định dạng proprietary
 được đóng gói lại.
 

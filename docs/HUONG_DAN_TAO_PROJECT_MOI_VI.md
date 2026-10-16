@@ -1,22 +1,22 @@
-# Tạo project mới
+# Tạo dự án mới
 
 Bắt đầu bằng một thư mục và công việc thực tế, không cần cài thêm ứng dụng hay một
-bộ quản trị agent.
+bộ quản trị trợ lý AI.
 
 ## 1. Giữ bộ mẫu, tạo bản sao cho từng công việc
 
 Giải nén toàn bộ `local-agent-workspace-vX.Y.Z.zip` (tên file ZIP đã tải) **một lần** ra một thư mục
-riêng, ví dụ `D:\Workspace\bo-mau`. Thư mục này là **bộ mẫu**: giữ nguyên để tạo các project sau,
+riêng, ví dụ `D:\Workspace\bo-mau`. Thư mục này là **bộ mẫu**: giữ nguyên để tạo các dự án sau,
 không làm việc trong đó. Không làm việc ngay trong cửa sổ xem nội dung ZIP.
 
 Mỗi công việc làm trong **một bản sao** của bộ mẫu. Cách chính:
 
 - Bấm đúp `APP.bat` (Windows) hoặc `APP.command` (macOS) trong bộ mẫu. Bảng điều khiển mở ở trang
-  "Tạo project mới".
-- Nhập tên công việc, ví dụ "Biên bản họp Tổ Tiếp nhận", bấm "Tạo project", đọc phần xem trước rồi bấm "Thực hiện".
-- Bản sao được tạo cạnh bộ mẫu (đổi được "Nơi tạo"), đã khởi tạo sẵn. Thư mục trùng tên đã có thì
+  "Tạo dự án mới".
+- Nhập tên công việc, ví dụ "Biên bản họp Tổ Tiếp nhận", bấm "Xem trước khi tạo", đọc phần xem trước rồi bấm "Thực hiện".
+- Bản sao được tạo cùng cấp với bộ mẫu (đổi được ở ô "Nơi lưu dự án"), đã thiết lập sẵn. Thư mục trùng tên đã có thì
   không ghi đè. Bộ mẫu không bị sửa.
-- Bấm "Mở bảng điều khiển của project" để sang project mới; từ đây làm việc trong thư mục đó.
+- Bấm "Mở bảng điều khiển dự án" để sang dự án mới (nút "Mở thư mục dự án" chỉ mở thư mục; cả hai không mở ứng dụng AI); từ đây làm việc trong thư mục đó.
 
 Cần Python 3.8+; nếu máy chưa có, `APP.bat` chỉ cách cài. Không có Python thì làm tay: sao chép cả
 thư mục bộ mẫu (kể cả thư mục ẩn `.agent/`; nó có thể bị ẩn trong trình quản lý file), đổi tên bản sao
@@ -37,8 +37,8 @@ Cẩm nang cũng có bản tiếng Anh: mở `START_HERE.en.html`.
 
 ## 2. Điền ngữ cảnh cần biết
 
-Không bắt buộc để bắt đầu: tên project đã được điền khi tạo. Khi đã rõ, bổ sung vào `PROJECT.md`
-mục đích, người đọc, đầu ra, nguồn/mẫu chính và những giới hạn đã biết, hoặc nhờ agent điền sau khi
+Không bắt buộc để bắt đầu: tên dự án đã được điền khi tạo. Khi đã rõ, bổ sung vào `PROJECT.md`
+mục đích, người đọc, đầu ra, nguồn/mẫu chính và những giới hạn đã biết, hoặc nhờ trợ lý AI điền sau khi
 trao đổi. Chỉ cần thông tin ổn định hữu ích; không chép cả kho tài liệu vào đó.
 
 Nếu dự án kéo dài nhiều phiên, khởi tạo `.agent/STATE.md` với mục tiêu hiện tại,
@@ -65,48 +65,51 @@ nguồn đã được duyệt. Không cần chuyển chúng vào khu vực quy �
 
 ## 4. Bắt đầu với skills sẵn có
 
-Package đã có mười bốn skill gọn trong `skills/local/shared/` và các mục tương ứng trong
+Bộ công cụ đã có mười bốn skill gọn trong `skills/local/shared/` và các mục tương ứng trong
 `.agent/SKILL_INDEX.md`. Không cần tạo hoặc cài thêm skill để bắt đầu.
 
 Công việc thuộc một mảng chuyên sâu thì cài thêm **gói lĩnh vực**: `phap-ly`, `van-thu-luu-tru`, `cang-logistics`,
-`hanh-chinh-nhan-su`, `ke-toan-noi-bo`. Cách dễ nhất: bấm đúp `APP.bat` (Windows) hoặc `APP.command` (macOS), vào trang
-"Gói lĩnh vực", bấm "Cài gói". Gói đã cài được ghi vào `.agent/SKILL_INDEX.md`, nên agent tự tìm thấy khi việc cần; bạn
-không cần nhắc tên gói khi giao việc. Gói có nhãn "Thử nghiệm" chưa qua tiếp nhận: agent dùng thử và nói rõ là bản thử.
+`hanh-chinh-nhan-su`, `ke-toan-noi-bo`. Cách dễ nhất: bấm đúp `APP.bat` (Windows) hoặc `APP.command` (macOS), mở nhóm
+"Quản lý và bảo trì" → "Quản lý kỹ năng", phần "Gói bổ sung theo lĩnh vực", bấm "Cài để dùng thử". Gói đã cài được ghi vào `.agent/SKILL_INDEX.md`, nên trợ lý AI tự tìm thấy khi việc cần; bạn
+không cần nhắc tên gói khi giao việc. Gói có nhãn "Thử nghiệm" chưa qua tiếp nhận: trợ lý AI dùng thử và nói rõ là bản thử. Gói có hồ sơ tiếp nhận hợp lệ có thêm nút "Cài và cho phép dùng"; cho phép dùng là quyết định của bạn cho dự án này, không phải bằng chứng gói đã được kiểm an toàn. Gói có hồ sơ tiếp nhận hợp lệ có thêm nút "Cài và cho phép dùng"; cho phép dùng là quyết định của bạn cho dự án này, không phải bằng chứng gói đã được kiểm an toàn.
 
-Để agent chọn native skill, local skill hoặc làm trực tiếp theo công việc. Một
+Để trợ lý AI chọn native skill, local skill hoặc làm trực tiếp theo công việc. Một
 skill viết riêng cho dự án chỉ đáng thêm khi có mẫu/kinh nghiệm thực tế cần dùng lại.
 Không cần điền trước danh sách native skills chưa được xác nhận có trong phiên.
 
 ## 5. Mở bằng ứng dụng đang dùng
 
-Mở **thư mục project** (bản sao, không phải bộ mẫu) bằng ứng dụng AI bạn dùng, với quyền đọc và ghi
+Mở **thư mục dự án** (bản sao, không phải bộ mẫu) bằng ứng dụng AI bạn dùng, với quyền đọc và ghi
 thư mục đó: Claude (Cowork hoặc Desktop có thêm thư mục), Codex Desktop, hoặc Gemini qua Antigravity
-hay Gemini CLI. Không cần package tự sửa cấu hình của ứng dụng.
+hay Gemini CLI. Không cần bộ công cụ tự sửa cấu hình của ứng dụng.
 
-Bảng điều khiển của project (trang "Công việc", ô "Giao việc cho agent") có sẵn hai câu mở đầu để
-chép: **Việc mới** và **Tiếp tục phiên trước**. Câu "Việc mới" có dạng:
+Bảng điều khiển của dự án (trang "Công việc", ô "Giao việc cho trợ lý AI") có sẵn hai lời nhắc để
+sao chép: **Việc mới** và **Xem lại việc đang dở**. Tên file trong lời nhắc giúp trợ lý AI tìm đúng
+thông tin; bạn chỉ điền phần trong ngoặc vuông rồi gửi. Lời nhắc "Việc mới" có dạng:
 
 ```text
-Đây là thư mục project «[tên project]». Trước khi làm:
+Đây là thư mục dự án «[tên dự án]». Trước khi làm:
 1. Đọc AGENTS.md, PROJECT.md và .agent/STATE.md.
-2. Nhắc lại tên project và liệt kê tài liệu nguồn bạn thấy trong references/.
+2. Nhắc lại tên dự án và liệt kê tài liệu nguồn bạn thấy trong references/.
 
 Việc cần làm: [mô tả việc và kết quả cần nhận]
 
 Lưu kết quả vào output/. Chỗ nguồn không có thông tin thì ghi "cần xác nhận", không đoán.
-Không sửa file nguồn. Cuối phiên cập nhật .agent/STATE.md.
+Không sửa file nguồn. Cuối phiên cập nhật .agent/STATE.md bằng lời văn công việc dễ hiểu.
 ```
 
-**Kiểm agent đang đọc đúng project:** câu trả lời đầu phải nêu đúng tên project và đúng các tài liệu
-nguồn mà bảng điều khiển liệt kê ở ô "Tài liệu nguồn". Sai tên, thiếu nguồn hoặc nhắc file của thư
-mục khác thì dừng và kiểm lại thư mục đã mở trong ứng dụng. Lời "đã hiểu" của agent chưa phải bằng chứng.
+**Kiểm trợ lý AI đang đọc đúng dự án:** đối chiếu tên dự án và các file trợ lý liệt kê với thư mục bạn
+đã mở và ô "Tài liệu nguồn" trên bảng điều khiển. Sai tên, thiếu nguồn hoặc nhắc file của thư mục khác
+thì dừng và kiểm lại thư mục đã cấp quyền cho ứng dụng. Nhắc đúng tên chưa chứng minh trợ lý đã đọc đủ;
+lời "đã hiểu" cũng chưa phải bằng chứng.
 
 Kết quả nằm trong `output/` và hiện ở ô "Kết quả". Muốn sửa, nói bằng lời thường (ví dụ "bổ sung giờ họp
-8h30, chị Lan chủ trì"); agent sửa bản kết quả, không sửa file nguồn. Phiên sau, dùng câu **Tiếp tục
-phiên trước**: agent đọc `.agent/STATE.md` rồi cho biết mục tiêu, bản hiện hành, việc đang dở và bước tiếp.
+8h30, chị Lan chủ trì"); trợ lý AI sửa bản kết quả, không sửa file nguồn. Phiên sau, dùng lời nhắc **Xem lại
+việc đang dở**: trợ lý AI đọc `.agent/STATE.md` rồi tóm tắt mục tiêu, bản hiện hành, việc đang dở và bước tiếp;
+lời nhắc này dặn trợ lý chưa sửa file nào cho tới khi bạn đồng ý.
 
 Đã kiểm trọn hành trình này (tạo bản sao, giao việc, sửa, tiếp tục ở phiên mới) với Claude trong Cowork,
-mỗi phiên một agent mới làm việc trên bản sao project (16/10/2026, dữ liệu giả). Codex, Gemini và
+mỗi phiên một trợ lý AI mới làm việc trên bản sao dự án (16/10/2026, dữ liệu giả). Codex, Gemini và
 Claude Desktop trên máy người dùng chưa được kiểm trong đợt này; các bước trên không phụ thuộc ứng
 dụng, nhưng cách mở thư mục và cấp quyền theo từng ứng dụng.
 
@@ -159,9 +162,9 @@ cách mở phiên mới và hỏi việc đang dở.
 
 ## 6. Thử bằng một việc thật
 
-Bắt đầu với một tài liệu hoặc biểu mẫu nhỏ. Xem agent có dùng đúng nguồn, hiểu
+Bắt đầu với một tài liệu hoặc biểu mẫu nhỏ. Xem trợ lý AI có dùng đúng nguồn, hiểu
 đầu ra và giữ phần đã chốt không. Có điều chưa rõ thì sửa đúng hướng dẫn liên quan,
 không cần dựng thêm bộ kiểm thử hoặc nhiều rule phòng ngừa.
 
-Nếu cần làm tiếp ở phiên mới, nhờ ghi STATE ngắn rồi tiếp tục từ đó; ô "Tiếp tục công việc" trên bảng điều khiển của project hiện đúng phần STATE này. Giữ những gì
+Nếu cần làm tiếp ở phiên mới, nhờ ghi STATE ngắn rồi tiếp tục từ đó; ô "Tiếp tục công việc" trên bảng điều khiển của dự án hiện đúng phần STATE này. Giữ những gì
 thực sự giúp giảm việc nhắc lại; phần chưa cần có thể để nguyên, không phải điền hết.

@@ -84,39 +84,39 @@ def main(argv):
     name = a.name.strip()
     folder = folder_name(name)
     if not folder:
-        return finish('blocked', 1, L('Cần tên công việc (chữ hoặc số). Chưa ghi gì.', 'A task name (letters or digits) is required. Nothing written.'),
+        return finish('blocked', 1, L('Cần nhập tên công việc (có chữ hoặc số). Chưa tạo gì.', 'A task name (with letters or digits) is required. Nothing was created.'),
                       changes=False)
     role = template_role()
     if role == 'project':
-        return finish('blocked', 1, L('Thư mục này đã là một project, không phải bộ mẫu. Hãy tạo project mới từ bộ mẫu (thư mục giải nén từ ZIP, chưa dùng để làm việc). Chưa ghi gì.',
-                                      'This folder is already a project, not the template. Create new projects from the template (the folder unzipped from the ZIP and not used for work). Nothing written.'),
+        return finish('blocked', 1, L('Thư mục này đã là một dự án, không phải bộ mẫu. Hãy tạo dự án mới từ bộ mẫu gốc (thư mục giải nén từ file ZIP, chưa dùng để làm việc). Chưa tạo gì.',
+                                      'This folder is already a project, not the template. Create new projects from the original template (the folder unzipped from the ZIP and not used for work). Nothing was created.'),
                       changes=False, role=role)
     if role == 'unknown':
-        return finish('blocked', 1, L('Thư mục này không còn là bộ mẫu nguyên vẹn (PROJECT.md đã sửa) và chưa khởi tạo thành project. Nếu đây là project của bạn: dùng "Khởi tạo thư mục này". Nếu cần bộ mẫu: giải nén lại ZIP. Chưa ghi gì.',
-                                      'This folder is no longer an untouched template (PROJECT.md was edited) and is not set up as a project. If it is your project: use "Set up this folder". If you need the template: unzip the ZIP again. Nothing written.'),
+        return finish('blocked', 1, L('Chưa rõ đây là bộ mẫu hay dự án: PROJECT.md đã được sửa nhưng thư mục chưa được thiết lập thành dự án. Nếu đây là dự án của bạn: dùng "Thiết lập thư mục này". Nếu cần bộ mẫu: giải nén lại file ZIP. Chưa tạo gì.',
+                                      'It is not clear whether this is the template or a project: PROJECT.md was edited but the folder was never set up as a project. If it is your project: use "Set up this folder". If you need the template: unzip the ZIP file again. Nothing was created.'),
                       changes=False, role=role)
     dest = os.path.abspath(os.path.expanduser(a.dest.strip().strip('"'))) if a.dest.strip() else os.path.dirname(ROOT)
     target = os.path.join(dest, folder)
     info = dict(name=name, target=target, dest=dest, folder=folder, template=ROOT, role=role)
     if not os.path.isdir(dest):
-        return finish('blocked', 1, L('Không thấy thư mục nơi tạo: %s. Chưa ghi gì.', 'The destination folder does not exist: %s. Nothing written.') % dest,
+        return finish('blocked', 1, L('Không tìm thấy thư mục nơi lưu: %s. Chọn một thư mục có sẵn. Chưa tạo gì.', 'The location folder was not found: %s. Choose an existing folder. Nothing was created.') % dest,
                       changes=False, **info)
     real_t, real_root = os.path.realpath(target), os.path.realpath(ROOT)
     if real_t == real_root or real_t.startswith(real_root + os.sep):
-        return finish('blocked', 1, L('Không tạo project bên trong bộ mẫu. Chọn nơi khác (mặc định: cạnh bộ mẫu). Chưa ghi gì.',
+        return finish('blocked', 1, L('Không tạo dự án bên trong bộ mẫu. Chọn nơi lưu khác (mặc định: cùng cấp với bộ mẫu). Chưa tạo gì.',
                                       'A project cannot be created inside the template. Choose another place (default: next to it). Nothing written.'),
                       changes=False, **info)
     if os.path.lexists(target):
-        return finish('blocked', 1, L('Đã có thư mục "%s" ở nơi tạo; không ghi đè. Đặt tên khác hoặc chọn nơi khác. Chưa ghi gì.',
+        return finish('blocked', 1, L('Nơi lưu đã có thư mục "%s"; thư mục đó được giữ nguyên, không ghi đè. Đặt tên công việc khác hoặc chọn nơi lưu khác. Chưa tạo gì.',
                                       'A folder "%s" already exists there; it is never overwritten. Pick another name or place. Nothing written.') % folder,
                       changes=False, **info)
     files = package_files()
     if not a.apply:
-        print(L('[XEM TRƯỚC, chưa ghi gì] Tạo project mới từ bộ mẫu:', '[PREVIEW, nothing written] New project from the template:'))
+        print(L('[XEM TRƯỚC, chưa tạo gì] Dự án mới từ bộ mẫu:', '[PREVIEW, nothing created yet] New project from the template:'))
         print('  ' + L('Tên công việc', 'Task name') + ': ' + name)
-        print('  ' + L('Thư mục sẽ tạo', 'Folder to create') + ': ' + target)
-        print('  ' + L('Chép %d file của package; bộ mẫu không bị sửa.', 'Copies %d package files; the template is not changed.') % len(files))
-        LAST['result'] = make('preview', code=0, message=L('Xem trước tạo project; chưa ghi gì.', 'New project preview; nothing written.'),
+        print('  ' + L('Thư mục sẽ được tạo', 'Folder to be created') + ': ' + target)
+        print('  ' + L('Sẽ chép %d file của bộ công cụ vào thư mục này rồi thiết lập dự án; bộ mẫu không bị thay đổi.', 'Will copy %d workspace files into this folder, then set up the project; the template is not changed.') % len(files))
+        LAST['result'] = make('preview', code=0, message=L('Xem trước dự án mới; chưa tạo gì.', 'New project preview; nothing created yet.'),
                               changes=True, files=[{'path': target, 'action': 'create'}], file_count=len(files), **info)
         return 0
     tmp = os.path.join(dest, '.%s.creating-%s' % (folder, uuid.uuid4().hex[:8]))
@@ -134,20 +134,20 @@ def main(argv):
     except OSError as e:
         shutil.rmtree(tmp, ignore_errors=True)
         return finish('blocked' if isinstance(e, FileExistsError) else 'error', 1,
-                      L('Không tạo được project (%s). Thư mục tạm đã dọn; bộ mẫu không bị sửa.', 'Could not create the project (%s). The temp folder was removed; the template is unchanged.') % e,
+                      L('Không tạo được dự án (%s). Phần đã chép dở đã được xóa; bộ mẫu không bị thay đổi.', 'Could not create the project (%s). The partly copied files were removed; the template is unchanged.') % e,
                       changes=False, **info)
     env = dict(os.environ, PYTHONUTF8='1', PYTHONIOENCODING='utf-8')
     r = subprocess.run([sys.executable, os.path.join(target, 'tools', 'init_project.py'), '--name', name, '--lang', a.lang],
                        cwd=target, capture_output=True, env=env, stdin=subprocess.DEVNULL)
     out = (r.stdout + r.stderr).decode('utf-8', 'replace').strip()
     if r.returncode != 0:
-        return finish('partial', 1, L('Đã chép bộ mẫu sang %s nhưng bước khởi tạo chưa xong:\n%s', 'The template was copied to %s but setup did not finish:\n%s') % (target, out),
+        return finish('partial', 1, L('Đã tạo bản sao tại %s nhưng bước thiết lập dự án chưa xong:\n%s', 'A copy was made at %s but the project setup did not finish:\n%s') % (target, out),
                       changes=True, files=[{'path': target, 'action': 'created'}],
-                      next_actions=[L('Mở bảng điều khiển trong thư mục mới và dùng "Khởi tạo thư mục này".', 'Open the panel in the new folder and use "Set up this folder".')], **info)
-    return finish('success', 0, L('Đã tạo project "%s" tại %s. Bộ mẫu giữ nguyên.', 'Created project "%s" at %s. The template is unchanged.') % (name, target),
+                      next_actions=[L('Mở bảng điều khiển trong thư mục mới và dùng "Thiết lập thư mục này".', 'Open the panel in the new folder and use "Set up this folder".')], **info)
+    return finish('success', 0, L('Đã tạo dự án "%s" tại %s. Bộ mẫu gốc giữ nguyên.', 'Created project "%s" at %s. The original template is unchanged.') % (name, target),
                   changes=True, files=[{'path': target, 'action': 'created'}],
-                  next_actions=[L('Đặt tài liệu nguồn vào thư mục references/ của project mới.', 'Put source documents in the new project\'s references/ folder.'),
-                                L('Mở thư mục project mới bằng ứng dụng AI bạn dùng (Claude, Codex, Gemini) và giao việc.', 'Open the new project folder in your AI app (Claude, Codex, Gemini) and give it the task.')],
+                  next_actions=[L('Chép tài liệu nguồn vào thư mục references/ của dự án mới.', 'Copy source documents into the new project\'s references/ folder.'),
+                                L('Mở thư mục dự án mới bằng ứng dụng AI bạn dùng (Claude, Codex, Gemini) và giao việc.', 'Open the new project folder in your AI app (Claude, Codex, Gemini) and give it the task.')],
                   **info)
 
 
