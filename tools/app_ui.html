@@ -42,9 +42,12 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
 /* sidebar */
 .side{position:sticky;top:0;height:100vh;overflow:auto;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:18px 14px 14px}
 .brand{display:flex;align-items:center;gap:10px;padding:2px 8px 16px}
-.logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--accent),#0e7490);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;letter-spacing:-.02em;box-shadow:var(--sh-1)}
-.brand-t{font-weight:650;font-size:14px;line-height:1.2}
-.brand-s{font-size:12px;color:var(--muted)}
+.logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--accent),#0e7490);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;letter-spacing:-.02em;box-shadow:var(--sh-1);overflow:hidden;flex:none}
+.logo img{width:100%;height:100%;object-fit:contain;display:block}
+.logo.custom{background:#fff;border:1px solid var(--line);padding:3px}
+.brand>div:last-child{min-width:0;flex:1}
+.brand-t{font-weight:650;font-size:14px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand-s{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .projcard{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:var(--r);padding:10px;background:var(--panel-2);margin-bottom:14px}
 .avatar{width:34px;height:34px;border-radius:8px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
 .projcard .nm{font-weight:600;font-size:13.5px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -351,7 +354,7 @@ textarea{min-height:68px;resize:vertical}
 <a class="skip" href="#content" data-t="skip"></a>
 <div class="app">
 <aside class="side">
-  <div class="brand"><div class="logo">LW</div><div><div class="brand-t">Local Agent Workspace</div><div class="brand-s" data-t="panel"></div></div></div>
+  <div class="brand"><div class="logo" id="sb-logo">LW</div><div><div class="brand-t" id="sb-title">Local Agent Workspace</div><div class="brand-s" id="sb-sub" data-t="panel"></div></div></div>
   <div class="projcard"><div class="avatar" id="sb-av">·</div><div style="min-width:0"><div class="nm" id="sb-name">…</div><div class="st"><span class="dot" id="sb-dot"></span><span id="sb-st"></span></div></div></div>
   <div class="navgroup" data-t="g_work"></div>
   <div class="nav" id="nav1"></div>
@@ -990,9 +993,39 @@ function lbChips(){$('lb-grp').innerHTML=[['','all'],['Pháp luật','Pháp lu�
 // render dynamic parts
 function fmtDate(sec){var d=new Date(sec*1000);function z(n){return(n<10?'0':'')+n;}return z(d.getDate())+'/'+z(d.getMonth()+1)+'/'+d.getFullYear()+' '+z(d.getHours())+':'+z(d.getMinutes());}
 function mdl(lines){return lines.map(function(l){var h=/^\s*#{1,6}\s+/.test(l);var e=esc(l.replace(/^\s*#{1,6}\s+/,'')).replace(/`([^`]+)`/g,'<code class="mono">$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>');return h?'<b class="sub-h">'+e+'</b>':e;}).join('\n');}
+function fitBrand(){/* tên đơn vị dài: thu nhỏ chữ cho vừa một dòng / long brand names shrink to fit one line */
+  var el=$('sb-title');el.style.fontSize='';var f=parseFloat(getComputedStyle(el).fontSize);
+  while(el.scrollWidth>el.clientWidth&&f>11){f-=.5;el.style.fontSize=f+'px';}
+}
+window.addEventListener('resize',function(){if($('sb-title'))fitBrand();});
 function render(){
   var s=S,name=s.project_name||s.folder,inst=(s.packs.items||[]).filter(function(p){return p.installed;}).length;
   document.title=name+' · Workspace';
+  var b=s.branding;
+  if(b){
+    if(b.logo){
+      $('sb-logo').className='logo custom';
+      $('sb-logo').innerHTML='<img src="'+esc(b.logo)+'" alt="Logo">';
+    }else{
+      $('sb-logo').className='logo';
+      $('sb-logo').textContent='LW';
+    }
+    $('sb-title').textContent=b.title||'Local Agent Workspace';$('sb-title').title=$('sb-title').textContent;
+    if(b.subtitle){
+      $('sb-sub').removeAttribute('data-t');
+      $('sb-sub').textContent=b.subtitle;
+    }else{
+      $('sb-sub').setAttribute('data-t','panel');
+      $('sb-sub').textContent=t('panel');
+    }
+  }else{
+    $('sb-logo').className='logo';
+    $('sb-logo').textContent='LW';
+    $('sb-title').textContent='Local Agent Workspace';
+    $('sb-sub').setAttribute('data-t','panel');
+    $('sb-sub').textContent=t('panel');
+  }
+  fitBrand();
   $('sb-av').textContent=$('ov-av').textContent=initials(name);$('sb-name').textContent=name;$('sb-name').title=name;
   var kind=s.workspace_kind||'unknown',statusLabel=t(kind==='project'?'st_ready':kind==='template'?'st_template':'st_unknown');
   $('sb-dot').className='dot'+(kind==='unknown'?' warn':'');$('sb-st').textContent=statusLabel;$('sb-st').title=t('evidence_'+kind);

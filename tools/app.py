@@ -211,6 +211,61 @@ def components():
     ]
 
 
+def branding_info():
+    """Đọc cấu hình định danh tác giả/thương hiệu tùy biến từ thư mục assets/ (nếu có).
+    Read custom author/brand customization from assets/ (if any)."""
+    assets_dir = os.path.join(ROOT, 'assets')
+    if not os.path.isdir(assets_dir):
+        return None
+    cfg_file = os.path.join(assets_dir, 'branding.json')
+    cfg = {}
+    if os.path.isfile(cfg_file):
+        try:
+            with io.open(cfg_file, encoding='utf-8') as f:
+                raw = json.load(f)
+                if isinstance(raw, dict):
+                    cfg = raw
+        except Exception:
+            cfg = {}
+    logo_file = cfg.get('logo')
+    logo_path = os.path.join(assets_dir, logo_file) if logo_file else None
+    if not logo_path or not os.path.isfile(logo_path):
+        for ext in ('.png', '.svg', '.jpg', '.jpeg', '.webp'):
+            candidate = os.path.join(assets_dir, 'logo' + ext)
+            if os.path.isfile(candidate):
+                logo_path = candidate
+                break
+    logo_data = None
+    if logo_path and os.path.isfile(logo_path):
+        try:
+            if os.path.getsize(logo_path) <= 2 * 1024 * 1024:
+                import base64
+                ext = os.path.splitext(logo_path)[1].lower()
+                mime = 'image/svg+xml' if ext == '.svg' else ('image/jpeg' if ext in ('.jpg', '.jpeg') else ('image/webp' if ext == '.webp' else 'image/png'))
+                with open(logo_path, 'rb') as lf:
+                    logo_data = 'data:%s;base64,%s' % (mime, base64.b64encode(lf.read()).decode('ascii'))
+        except Exception:
+            logo_data = None
+    title = cfg.get('title')
+    subtitle = cfg.get('subtitle')
+    if not (title or subtitle or logo_data):
+        return None
+    try:
+        js_file = os.path.join(assets_dir, 'branding.js')
+        rel_logo = ('assets/' + os.path.basename(logo_path)) if logo_path else ''
+        js_content = 'window.WORKSPACE_BRANDING = %s;\n' % json.dumps({
+            'title': title or '',
+            'subtitle': subtitle or '',
+            'logo': rel_logo
+        }, ensure_ascii=False, indent=2)
+        if not os.path.isfile(js_file) or io.open(js_file, encoding='utf-8').read() != js_content:
+            with io.open(js_file, 'w', encoding='utf-8') as jf:
+                jf.write(js_content)
+    except Exception:
+        pass
+    return {'title': title, 'subtitle': subtitle, 'logo': logo_data}
+
+
 def status():
     info, name = project_info()
     lang = info.get('language') or info.get('lang') or ('en' if re.search(r'^- Project name:', rd('PROJECT.md'), re.M) else 'vi')
@@ -248,6 +303,7 @@ def status():
         'components': components(),
         'history': list(reversed(records))[:HISTORY_SHOWN],
         'history_summary': ops_log.summary(records),
+        'branding': branding_info(),
     }
 
 

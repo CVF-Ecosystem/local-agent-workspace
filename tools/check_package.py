@@ -25,7 +25,7 @@ RUNTIME_DIR = '.agent/runtime'
 USER_FILES = {'PROJECT.md', '.agent/STATE.md', '.agent/HANDOFF.md', '.agent/INDEX.md',
               '.agent/SKILL_INDEX.md', '.agent/PENDING_LESSONS.md', '.agent/PACKAGE_INFO.json',
               '.agent/MERGE_STATUS.json', 'setup_answers.json'}
-USER_DIRS = ('working/', 'output/', 'archive/', 'references/', 'skills/external/', 'skills/inbox/', 'skills/local/project/', 'skills/local/packs/')
+USER_DIRS = ('working/', 'output/', 'archive/', 'references/', 'assets/', 'skills/external/', 'skills/inbox/', 'skills/local/project/', 'skills/local/packs/')
 OVERLAY_SKIP = {'en/PROJECT_INSTRUCTIONS_SNIPPET.md'}
 PAIRS = [('AGENTS.md', 'en/AGENTS.md'), ('PROJECT.md', 'en/PROJECT.md'),
          ('docs/HUONG_DAN_TAO_PROJECT_MOI_VI.md', 'docs/en/NEW_PROJECT_GUIDE.md'),

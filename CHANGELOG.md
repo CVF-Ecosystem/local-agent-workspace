@@ -87,6 +87,11 @@
   `DEFER`/thử nghiệm; trang Quản lý kỹ năng hiện cảnh báo khi có gói chưa qua tiếp nhận, `packs/README.md` và các hướng dẫn (VI/EN) nói rõ
   căn cứ pháp lý chưa đối chiếu với văn bản chính thức, chỉ dùng tham khảo và soạn nháp, tự đối chiếu trước khi dùng cho văn bản trình ký
   hoặc gửi ra ngoài. (3) CI bỏ job `macos-13`/Python 3.8 (image đã ngừng); Python 3.8 vẫn kiểm trên Ubuntu và Windows.
+- Nhận diện tùy biến và đồng bộ tông thiết kế: thư mục người dùng `assets/` (logo, `branding.json`; xem `assets/README.md`) thay biểu
+  tượng "LW" và tên trên bảng điều khiển và 10 trang hướng dẫn; bảng điều khiển ghi `assets/branding.js` cho các trang mở từ file. Tên đơn
+  vị dài được thu chữ cho vừa một dòng (trước đây xuống dòng ở cẩm nang). 10 trang hướng dẫn dùng chung bộ màu, font, bo góc và đổ bóng
+  với bảng điều khiển (thanh bên tối giữ nguyên bố cục). Sửa START_HERE bị định dạng lại làm `build_guides_html.py` không dựng được.
+  Thanh bên các trang hướng dẫn VI dùng "Tạo dự án mới", "Kỹ năng"; số kỹ năng sửa thành 14.
 
 ## v1.7.0 — 2026-10-13
 

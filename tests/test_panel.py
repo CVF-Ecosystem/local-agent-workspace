@@ -247,6 +247,22 @@ class StatusData(PanelBase):
         item = status['transactions'][0]
         self.assertEqual((item['id'], item['operation'], item['status'], item['done']), (txid, 'upgrade', 'committing', 1))
 
+    def test_status_branding_from_assets(self):
+        work = Path(tempfile.mkdtemp(prefix='test-brand-'))
+        try:
+            write(work, 'VERSION', '1.8.0\n')
+            write(work, 'PROJECT.md', '- Tên dự án: Demo\n')
+            write(work, 'assets/branding.json', json.dumps({'title': 'Đơn vị Mẫu', 'subtitle': 'Agent Workspace', 'logo': 'logo.png'}))
+            write(work, 'assets/logo.png', b'\x89PNG\r\n\x1a\nfakeimage')
+            with patch.object(app, 'ROOT', str(work)), patch.object(app, 'pack_info', return_value={'items': []}):
+                st = app.status()
+            self.assertIsNotNone(st['branding'])
+            self.assertEqual(st['branding']['title'], 'Đơn vị Mẫu')
+            self.assertEqual(st['branding']['subtitle'], 'Agent Workspace')
+            self.assertTrue(st['branding']['logo'].startswith('data:image/png;base64,'))
+        finally:
+            shutil.rmtree(work, ignore_errors=True)
+
 
 class TransactionRecovery(PanelBase):
     def test_bad_transaction_ids_are_rejected_before_any_tool_runs(self):
