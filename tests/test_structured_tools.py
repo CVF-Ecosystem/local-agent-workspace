@@ -4,6 +4,7 @@ Each test works on a disposable copy of the package; the real repository is neve
 Steps inside one test share the copy because they depend on each other (install, update, remove).
 """
 import datetime
+import hashlib
 import importlib.util
 import json
 import os
@@ -471,6 +472,56 @@ class GuidesResults(StructuredBase):
         self.assertTrue(data['findings'][0]['message'])
         result, _, data = self.structured('build_guides_html.py', '--bogus')
         self.assertEqual((result.returncode, data['status']), (2, 'blocked'))
+
+
+class UpgradeBranding(StructuredBase):
+    """Nhận diện đơn vị khi nâng cấp: chỉ thêm khi project chưa có logo/branding.json/branding.js, không ghi đè; font thiếu thì thêm theo tên.
+    Organization branding on upgrade: added only when the project has no logo, branding.json or branding.js of its own;
+    never overwritten; missing fonts are added by name."""
+    LOGO = b'\x89PNG\r\n\x1a\nlogo cua goi moi'
+    FONT_A = b'font A cua goi moi'
+    FONT_B = b'font B chi co trong goi moi'
+    BRAND_JSON = json.dumps({'title': 'Đơn vị Mẫu', 'subtitle': 'Agent Workspace', 'logo': 'logo.png'}, ensure_ascii=False).encode('utf-8')
+
+    def make_package(self, root, version, brand=None):
+        """Gói có MANIFEST như thật. Nhận diện đặt SAU MANIFEST vì MANIFEST thật không liệt kê assets/ của đơn vị.
+        A package with a real-style MANIFEST; branding is written after it, as a real MANIFEST never lists organization assets."""
+        write(root / 'VERSION', version + '\n')
+        write(root / 'PROJECT.md', 'private context')
+        lines = [hashlib.sha256((root / rel).read_bytes()).hexdigest() + '  ' + rel for rel in ('PROJECT.md', 'VERSION')]
+        write(root / 'MANIFEST.sha256', '\n'.join(lines) + '\n')
+        for rel, data in (brand or {}).items():
+            (root / rel).parent.mkdir(parents=True, exist_ok=True)
+            (root / rel).write_bytes(data)
+        return root
+
+    def make_project(self, root, brand=None):
+        self.make_package(root, '1.6.0', brand)
+        write(root / '.agent' / 'PACKAGE_INFO.json', json.dumps({'package': 'local-agent-workspace', 'version': '1.6.0', 'language': 'vi'}))
+        return root
+
+    def test_upgrade_adds_template_branding_only_when_project_has_none(self):
+        root = Path(self.tmp.name)
+        new = self.make_package(root / 'new', '1.7.0', {
+            'assets/branding.json': self.BRAND_JSON, 'assets/logo.png': self.LOGO,
+            'assets/fonts/A.ttf': self.FONT_A, 'assets/fonts/B.ttf': self.FONT_B})
+
+        # (a) dự án chưa có nhận diện: nhận logo, branding.json, font / no branding of its own: receives all of it
+        bare = self.make_project(root / 'bare')
+        result = self.run_tool('upgrade_package.py', '--project', bare, '--from', new, '--apply')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        for rel in ('assets/branding.json', 'assets/logo.png', 'assets/fonts/A.ttf'):
+            self.assertEqual((bare / rel).read_bytes(), (new / rel).read_bytes(), rel)
+
+        # (b) dự án có logo và font riêng: giữ nguyên, không thêm branding.json, chỉ thêm font còn thiếu
+        # own logo and font kept, no branding.json, only the missing font is added
+        own = self.make_project(root / 'own', {'assets/logo.png': b'logo rieng cua don vi', 'assets/fonts/A.ttf': b'font rieng cua don vi'})
+        result = self.run_tool('upgrade_package.py', '--project', own, '--from', new, '--apply')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual((own / 'assets' / 'logo.png').read_bytes(), b'logo rieng cua don vi')
+        self.assertEqual((own / 'assets' / 'fonts' / 'A.ttf').read_bytes(), b'font rieng cua don vi')
+        self.assertFalse((own / 'assets' / 'branding.json').exists())
+        self.assertEqual((own / 'assets' / 'fonts' / 'B.ttf').read_bytes(), self.FONT_B)
 
 
 if __name__ == '__main__':

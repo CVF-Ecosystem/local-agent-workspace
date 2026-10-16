@@ -65,18 +65,10 @@ def template_role():
     return 'unknown'
 
 
-FONT_EXT = ('.ttf', '.otf', '.woff', '.woff2')
-BRANDING = ('assets/branding.json', 'assets/branding.js', 'assets/logo.png', 'assets/logo.svg', 'assets/logo.jpg', 'assets/logo.jpeg', 'assets/logo.webp')
-
-
-
-def is_font(rel):
-    return rel.startswith('assets/fonts/') and rel.lower().endswith(FONT_EXT)
-
-
 def package_files():
+    brand = set(cp.branding_files())
     files = [f for f in cp.all_files() if f not in ('.agent/PACKAGE_INFO.json', '.agent/MERGE_STATUS.json', 'setup_answers.json')
-             and (cp.in_manifest(f) or f in cp.USER_FILES or f == 'MANIFEST.sha256' or f in BRANDING or is_font(f))]  # logo, tên đơn vị, font của bộ mẫu đi theo dự án mới / template branding and fonts carry over
+             and (cp.in_manifest(f) or f in cp.USER_FILES or f == 'MANIFEST.sha256' or f in brand)]  # logo, tên đơn vị, font của bộ mẫu đi theo dự án mới / template branding and fonts carry over
     return sorted(set(files))
 
 

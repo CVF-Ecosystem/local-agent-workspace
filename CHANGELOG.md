@@ -96,6 +96,9 @@
 - Font riêng của đơn vị: `assets/fonts/` (có README VI/EN) và quy tắc mới cuối `AGENTS.md`: khi người dùng yêu cầu hoặc `PROJECT.md`
   ghi font chuẩn, agent dùng font trong thư mục này; HTML/PDF nhúng font, Word/Excel chỉ đặt tên font và phải báo máy nhận cần cài font.
   Dự án mới mang theo font của bộ mẫu. Đã thử một phiên agent: HTML nhúng đúng font (khớp sha256), Word đặt tên font ở mọi chỗ.
+- Nhận diện đơn vị đi kèm bản phát hành: `build_release.py` đóng logo, `branding.json`, font trong `assets/` vào ZIP (dựng lại
+  `branding.js`; bỏ bằng `--no-branding`; báo cáo cổng có trường `branding`). `check_package --release` không còn chặn các file này
+  (file khác trong `assets/` vẫn bị chặn). Nâng cấp thêm nhận diện cho dự án chưa có, thêm font còn thiếu, không ghi đè.
 
 ## v1.7.0 — 2026-10-13
 

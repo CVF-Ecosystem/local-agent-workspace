@@ -32,4 +32,12 @@ New projects created from the template ("Create a new project") carry over its `
 
 Put the organization's font files in `assets/fonts/`. See `assets/fonts/README.md` for how the AI agent uses them and the limits for Word and Excel files.
 
+## 5. Handing it to colleagues
+
+Recipients do not have to copy the logo or fonts themselves:
+
+- Build the release ZIP (`python tools/build_release.py`) from the folder that has the logo, `branding.json` and fonts: they are packed in. Recipients see the logo and name as soon as they unzip; projects created from it have the logo and fonts. For a build without branding, add `--no-branding`.
+- Or send the whole template folder with its `assets/` (including the hidden `.agent` folder).
+- Upgrading an older project with the new version: a project without its own logo or name gets them; missing fonts are added; a project's own logo, name and fonts are kept.
+
 *This folder belongs to you: package upgrades never overwrite files here.*

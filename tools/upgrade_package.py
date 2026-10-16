@@ -19,6 +19,7 @@ Script không xóa file nào. Cần Python 3.8+, không dùng mạng.
 import argparse, datetime, hashlib, io, json, os, re, shutil, sys
 from result_schema import emit, make
 import transaction as tx
+from check_package import branding_files
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TX = {'id': None}  # mã giao dịch đang ghi / transaction id of the current write
@@ -100,6 +101,12 @@ def plan(project, source, lang):
             out['kept'].append(rel)
         else:
             out['conflict'].append((rel, src_rel))
+    # Nhận diện đơn vị của bản mới (logo, tên, font): chỉ thêm khi dự án còn thiếu, không ghi đè nhận diện riêng của dự án.
+    # Organization branding in the new package: added only where the project lacks it, never overwriting its own.
+    src_brand, own_brand = branding_files(source), branding_files(project)
+    if not any(not r.startswith('assets/fonts/') for r in own_brand):
+        out['user_missing'] += [(r, r) for r in src_brand if not r.startswith('assets/fonts/')]
+    out['user_missing'] += [(r, r) for r in src_brand if r.startswith('assets/fonts/') and r not in own_brand]
     for rel in sorted(old):
         if rel not in new and rel != 'MANIFEST.sha256' and rel not in USER_FILES and os.path.isfile(os.path.join(project, *rel.split('/'))):
             out['obsolete'].append(rel)

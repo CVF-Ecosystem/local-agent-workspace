@@ -32,4 +32,12 @@ Dự án mới tạo từ bộ mẫu (nút "Tạo dự án mới") mang theo `br
 
 Đặt file font của đơn vị trong thư mục `assets/fonts/`. Xem `assets/fonts/README.md` để biết trợ lý AI dùng các font này ra sao và giới hạn khi dùng với file Word, Excel.
 
+## 5. Chuyển cho đồng nghiệp
+
+Không cần hướng dẫn người nhận tự chép logo hay font:
+
+- Dựng file ZIP phát hành (`python tools/build_release.py`) từ thư mục có logo, `branding.json` và font: các file này được đóng kèm. Người nhận giải nén là thấy logo, tên đơn vị; dự án tạo từ đó có sẵn logo và font. Muốn bản không kèm nhận diện: thêm `--no-branding`.
+- Hoặc gửi cả thư mục bộ mẫu đã có `assets/` (kể cả thư mục ẩn `.agent`).
+- Nâng cấp dự án cũ bằng bản mới: dự án chưa có logo, tên đơn vị thì được thêm; font còn thiếu thì được thêm; logo, tên, font riêng của dự án được giữ nguyên.
+
 *Thư mục này thuộc về người dùng: nâng cấp bộ công cụ không ghi đè file ở đây.*

@@ -37,6 +37,66 @@ GENERATED = {'.agent/PACKAGE_INFO.json', '.agent/MERGE_STATUS.json', 'MANIFEST.s
 # Mỗi file trong en/ (trừ OVERLAY_SKIP) thay cho file cùng đường dẫn không có tiền tố en/
 
 def P(rel): return os.path.join(ROOT, *rel.split('/'))
+
+
+LOGO_EXT = ('.png', '.svg', '.jpg', '.jpeg', '.webp')
+FONT_EXT = ('.ttf', '.otf', '.woff', '.woff2')
+
+
+def branding_config(base=None):
+    """(title, subtitle, đường dẫn logo hoặc None) từ assets/ / from assets/."""
+    adir = os.path.join(base or ROOT, 'assets')
+    cfg = {}
+    try:
+        with io.open(os.path.join(adir, 'branding.json'), encoding='utf-8') as f:
+            raw = json.load(f)
+        cfg = raw if isinstance(raw, dict) else {}
+    except (OSError, ValueError):
+        pass
+    logo = cfg.get('logo')
+    path = os.path.join(adir, logo) if isinstance(logo, str) and logo == os.path.basename(logo) else None
+    if not path or not os.path.isfile(path):
+        path = next((os.path.join(adir, 'logo' + e) for e in LOGO_EXT if os.path.isfile(os.path.join(adir, 'logo' + e))), None)
+    title, sub = cfg.get('title'), cfg.get('subtitle')
+    return (title if isinstance(title, str) else ''), (sub if isinstance(sub, str) else ''), path
+
+
+def branding_js(base=None):
+    """Nội dung assets/branding.js cho các trang hướng dẫn mở từ file; None khi không có nhận diện.
+    Content of assets/branding.js for guide pages opened from disk; None without branding."""
+    title, sub, logo = branding_config(base)
+    if not (title or sub or logo):
+        return None
+    return 'window.WORKSPACE_BRANDING = %s;\n' % json.dumps(
+        {'title': title, 'subtitle': sub, 'logo': ('assets/' + os.path.basename(logo)) if logo else ''}, ensure_ascii=False, indent=2)
+
+
+def branding_files(base=None):
+    """File nhận diện của đơn vị trong assets/: branding.json, branding.js, logo (logo.* hoặc tên ghi trong branding.json)
+    và font trong assets/fonts/. Thuộc người dùng (không vào MANIFEST, nâng cấp không ghi đè) nhưng được phép đi theo
+    bộ mẫu: vào ZIP phát hành, sang dự án mới. / Organization branding in assets/: user-owned, yet carried by the template."""
+    base = base or ROOT
+    adir = os.path.join(base, 'assets')
+    if not os.path.isdir(adir):
+        return []
+    named = set()
+    try:
+        with io.open(os.path.join(adir, 'branding.json'), encoding='utf-8') as f:
+            logo = json.load(f).get('logo')
+        if isinstance(logo, str) and logo == os.path.basename(logo) and logo.lower().endswith(LOGO_EXT):
+            named.add(logo)
+    except (OSError, ValueError, AttributeError):
+        pass
+    out = []
+    for n in sorted(os.listdir(adir)):
+        if os.path.isfile(os.path.join(adir, n)) and (n in ('branding.json', 'branding.js') or n in named
+                                                      or (n.lower().startswith('logo.') and n.lower().endswith(LOGO_EXT))):
+            out.append('assets/' + n)
+    fdir = os.path.join(adir, 'fonts')
+    if os.path.isdir(fdir):
+        out += ['assets/fonts/' + n for n in sorted(os.listdir(fdir))
+                if os.path.isfile(os.path.join(fdir, n)) and n.lower().endswith(FONT_EXT)]
+    return out
 def rd(rel):
     with io.open(P(rel), encoding='utf-8', newline='') as f:
         return f.read()
@@ -381,8 +441,9 @@ def check_all(release=False):
         handoffs = (prefix + '.agent/HANDOFF.md', prefix + 'en/.agent/HANDOFF.md')
         if any(not os.path.isfile(P(f)) or not rd(f).lstrip().startswith('# HANDOFF\n\nNone') for f in handoffs):
             errs.append('Mẫu HANDOFF phát hành thiếu hoặc không ở dạng "None".')
+        branding = set(branding_files())  # logo, tên đơn vị, font được phép vào ZIP / organization branding may ship
         for f in files:
-            if f.startswith(USER_DIRS) and not package_readme(f):
+            if f.startswith(USER_DIRS) and not package_readme(f) and f not in branding:
                 errs.append('Có file người dùng trong bản phát hành: %s.' % f)
     return errs, warns
 
