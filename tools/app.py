@@ -211,6 +211,36 @@ def components():
     ]
 
 
+def branding_info():
+    """Logo và tên đơn vị trong assets/ (nếu có) cho thanh bên; ghi lại assets/branding.js cho trang hướng dẫn.
+    Organization logo and name from assets/ for the sidebar; refreshes assets/branding.js for the guide pages."""
+    import check_package as cp
+    title, sub, logo_path = cp.branding_config(ROOT)
+    logo_data = None
+    if logo_path:
+        try:
+            if os.path.getsize(logo_path) <= 2 * 1024 * 1024:
+                import base64
+                ext = os.path.splitext(logo_path)[1].lower()
+                mime = {'.svg': 'image/svg+xml', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp'}.get(ext, 'image/png')
+                with open(logo_path, 'rb') as lf:
+                    logo_data = 'data:%s;base64,%s' % (mime, base64.b64encode(lf.read()).decode('ascii'))
+        except OSError:
+            logo_data = None
+    js = cp.branding_js(ROOT)
+    if js:
+        try:
+            js_file = os.path.join(ROOT, 'assets', 'branding.js')
+            if not os.path.isfile(js_file) or io.open(js_file, encoding='utf-8').read() != js:
+                with io.open(js_file, 'w', encoding='utf-8', newline='\n') as jf:
+                    jf.write(js)
+        except OSError:
+            pass
+    if not (title or sub or logo_data):
+        return None
+    return {'title': title or None, 'subtitle': sub or None, 'logo': logo_data}
+
+
 def status():
     info, name = project_info()
     lang = info.get('language') or info.get('lang') or ('en' if re.search(r'^- Project name:', rd('PROJECT.md'), re.M) else 'vi')
@@ -248,6 +278,7 @@ def status():
         'components': components(),
         'history': list(reversed(records))[:HISTORY_SHOWN],
         'history_summary': ops_log.summary(records),
+        'branding': branding_info(),
     }
 
 

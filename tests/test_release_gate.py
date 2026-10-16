@@ -35,6 +35,7 @@ def make_copy(base, name, with_tests=True):
     dst = base / name
     shutil.copytree(ROOT, dst, ignore=shutil.ignore_patterns(*ignore))
     shutil.rmtree(str(dst / '.agent' / 'runtime'), ignore_errors=True)  # dữ liệu vận hành của máy phát triển không vào bản sao / dev-machine runtime data never enters the copy
+    [f.unlink() for f in (dst / 'assets').rglob('*') if f.is_file() and f.name != 'README.md']  # logo, font của máy phát triển / dev-machine branding and fonts
     return dst
 
 
@@ -203,6 +204,64 @@ class ReleaseGateTests(unittest.TestCase):
         r = run_tool(bare, 'check_package.py', '--verify', '--result-json')
         _, env = envelope(r)
         self.assertEqual((r.returncode, env['code'], env['status']), (2, 2, 'error'))
+
+    def test_branding_ships_in_zip_and_can_be_left_out(self):
+        pkg = make_copy(self.base, 'branding-build')  # bản sao riêng, không dùng chung / own copy: builds must not depend on shared branding
+        assets = pkg / 'assets'
+        (assets / 'fonts').mkdir(parents=True, exist_ok=True)
+        logo = b'\x89PNG\r\n\x1a\nfake'
+        write_lf(assets / 'branding.json', json.dumps({'title': 'Đơn vị Mẫu', 'subtitle': 'Agent Workspace', 'logo': 'logo.png'}, ensure_ascii=False))
+        (assets / 'logo.png').write_bytes(logo)
+        (assets / 'fonts' / 'DonVi-Regular.ttf').write_bytes(b'\x00\x01\x00\x00fake font')
+        write_lf(assets / 'branding.js', 'window.WORKSPACE_BRANDING = {"title": "cu"};\n')  # bản cũ: build phải thay / stale copy, the build must replace it
+        branding = ['assets/branding.js', 'assets/branding.json', 'assets/fonts/DonVi-Regular.ttf', 'assets/logo.png']
+        top = 'local-agent-workspace-v%s' % self.version
+
+        out = self.base / 'branding-rc3'
+        r = run_tool(pkg, 'build_release.py', '--rc', '3', '--out', out, '--result-json')
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertIn('organization branding included', r.stdout)
+        archive = out / ('local-agent-workspace-v%s-rc3.zip' % self.version)
+        report = json.loads((out / (archive.name + '.gate.json')).read_text(encoding='utf-8'))
+        self.assertEqual(report['branding'], branding)
+        with zipfile.ZipFile(str(archive)) as z:
+            names = set(z.namelist())
+            self.assertTrue(all(n.startswith(top + '/') for n in names))
+            for rel in branding:
+                self.assertIn(top + '/' + rel, names)
+            js = z.read(top + '/assets/branding.js').decode('utf-8')
+            self.assertIn('Đơn vị Mẫu', js)
+            self.assertIn('assets/logo.png', js)
+            self.assertNotIn('"cu"', js)
+            self.assertEqual(z.read(top + '/assets/logo.png'), logo)
+            manifest = z.read(top + '/MANIFEST.sha256').decode('utf-8')
+        self.assertNotIn('assets/logo.png', manifest)
+        self.assertNotIn('assets/fonts/DonVi-Regular.ttf', manifest)
+        self.assertIn('assets/fonts/README.md', manifest)  # README của package vẫn được liệt kê / package README stays listed
+
+        out2 = self.base / 'branding-rc4'
+        r = run_tool(pkg, 'build_release.py', '--rc', '4', '--no-branding', '--out', out2, '--result-json')
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertNotIn('organization branding included', r.stdout)
+        archive2 = out2 / ('local-agent-workspace-v%s-rc4.zip' % self.version)
+        report2 = json.loads((out2 / (archive2.name + '.gate.json')).read_text(encoding='utf-8'))
+        self.assertEqual(report2['branding'], [])
+        with zipfile.ZipFile(str(archive2)) as z:
+            names2 = set(z.namelist())
+        for rel in branding:
+            self.assertNotIn(top + '/' + rel, names2)
+        self.assertIn(top + '/assets/README.md', names2)
+
+    def test_other_user_files_in_assets_still_block_release(self):
+        pkg = make_copy(self.base, 'assets-user-file')
+        write_lf(pkg / 'assets' / 'ghi-chu.txt', 'Ghi chú riêng, không phải nhận diện.\n')
+        r = run_tool(pkg, 'check_package.py', '--release')
+        self.assertEqual(r.returncode, 1, r.stdout + r.stderr)
+        self.assertIn('assets/ghi-chu.txt', r.stdout)
+        (pkg / 'assets' / 'ghi-chu.txt').unlink()
+        write_lf(pkg / 'assets' / 'logo.svg', '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"/>\n')
+        r = run_tool(pkg, 'check_package.py', '--release')
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
 
 
 if __name__ == '__main__':

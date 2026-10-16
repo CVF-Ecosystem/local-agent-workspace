@@ -18,7 +18,7 @@ Build được gọi bên trong bộ kiểm thử với biến này chỉ bỏ q
 
 Báo cáo cổng: <ZIP>.gate.json (schema local-agent-workspace/release-gate-v1), chỉ ghi khi ZIP được tạo.
 Các bước sau cổng: dựng cây tạm -> chép PROJECT/STATE/HANDOFF sạch từ `release_templates/` -> tạo manifest
-trong cây tạm -> đóng ZIP (không có timestamp, byte-reproducible) -> giải nén và chạy `--verify`.
+trong cây tạm -> kèm nhận diện đơn vị trong assets/ (logo, branding.json, font; bỏ bằng --no-branding) -> đóng ZIP (không có timestamp, byte-reproducible) -> giải nén và chạy `--verify`.
 Mã thoát: 0 thành công; 1 cổng không đạt hoặc lỗi đóng gói; 2 lỗi dùng (ví dụ --skip-check không kèm --rc).
 """
 import argparse, datetime, hashlib, io, json, os, platform, shutil, subprocess, sys, tempfile, time, zipfile
@@ -42,9 +42,11 @@ TEMPLATE_OVERLAYS = {
     'en/.agent/HANDOFF.md': 'release_templates/en/.agent/HANDOFF.md',
 }
 
-def copy_release_tree(stage):
+def copy_release_tree(stage, branding=True):
+    """Chép file package (và nhận diện đơn vị trong assets/ khi branding=True) vào cây tạm. Trả về (file, file nhận diện)."""
+    brand = cp.branding_files() if branding else []
     files = [f for f in cp.all_files() if f not in ('.agent/PACKAGE_INFO.json', '.agent/MERGE_STATUS.json', 'MANIFEST.sha256')
-             and (cp.in_manifest(f) or f in cp.USER_FILES)]
+             and (cp.in_manifest(f) or f in cp.USER_FILES or f in brand)]
     for rel in files:
         dst = os.path.join(stage, *rel.split('/'))
         os.makedirs(os.path.dirname(dst), exist_ok=True)
@@ -53,7 +55,17 @@ def copy_release_tree(stage):
         dst = os.path.join(stage, *rel.split('/'))
         os.makedirs(os.path.dirname(dst), exist_ok=True)
         shutil.copyfile(cp.P(src), dst)
-    return files
+    if brand:  # branding.js dựng lại từ branding.json để trang hướng dẫn trong ZIP đúng ngay / rebuilt so the guides are right on unzip
+        js = cp.branding_js()
+        js_path = os.path.join(stage, 'assets', 'branding.js')
+        if js:
+            os.makedirs(os.path.dirname(js_path), exist_ok=True)
+            with io.open(js_path, 'w', encoding='utf-8', newline='\n') as f:
+                f.write(js)
+            if 'assets/branding.js' not in files:
+                files.append('assets/branding.js')
+                brand.append('assets/branding.js')
+    return files, sorted(brand)
 
 def run_stage(stage, *args):
     return subprocess.run([sys.executable, os.path.join(stage, 'tools', 'check_package.py')] + list(args),
@@ -142,6 +154,8 @@ def main():
                     help='dựng release candidate N: tên ZIP có -rcN (build release candidate N)')
     ap.add_argument('--skip-check', action='store_true',
                     help='bỏ qua các cổng, ghi skipped trong báo cáo; chỉ dùng với --rc (skip gates, --rc only)')
+    ap.add_argument('--no-branding', action='store_true',
+                    help='không kèm logo, tên đơn vị, font trong assets/ (leave organization branding out)')
     ap.add_argument('--result-json', action='store_true', help=argparse.SUPPRESS)
     a = ap.parse_args()
     if a.rc is not None and a.rc < 0:
@@ -178,7 +192,7 @@ def main():
 
     os.makedirs(out_dir, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='local-agent-release-') as stage:
-        files = copy_release_tree(stage)
+        files, brand = copy_release_tree(stage, branding=not a.no_branding)
         t0 = time.perf_counter()
         checked = run_stage(stage, '--release')
         stage_rec = {'name': 'release_tree', 'status': 'failed' if checked.returncode else 'passed',
@@ -225,6 +239,7 @@ def main():
         'skip_check': a.skip_check,
         'archive': archive,
         'archive_sha256': digest,
+        'branding': brand,
         'gates': [{k: r[k] for k in ('name', 'status', 'duration_s', 'detail')} for r in records],
         'platform': {'system': platform.system(), 'release': platform.release()},
         'python': platform.python_version(),
@@ -238,6 +253,8 @@ def main():
         shown_path = os.path.abspath(zpath)
     print('Đã tạo %s (%d file, %.0f KB)\nSHA-256: %s' % (shown_path, len(files), os.path.getsize(zpath) / 1024, digest))
     print('Báo cáo cổng / gate report: %s' % os.path.basename(rpath))
+    if brand:
+        print('Kèm nhận diện đơn vị / organization branding included: %s (bỏ bằng --no-branding)' % ', '.join(brand))
     if a.result_json:
         emit(make('success', message='Release archive created (%s)' % kind, changes=True,
                   files=[{'path': os.path.abspath(zpath), 'action': 'created'},

@@ -166,3 +166,9 @@ lấy từ nguồn khỏi đề xuất của agent. Các quy tắc cấm nằm �
 Dữ liệu nhạy cảm (mật khẩu, khóa truy cập, dữ liệu cá nhân của khách hàng hoặc nhân sự, tài liệu mật): không
 chép vào file của project hay hội thoại nếu không cần; dùng bản đã che hoặc mô tả thay thế khi được. Theo dòng
 "Mức nhạy cảm dữ liệu" trong `PROJECT.md`; chưa ghi thì coi là nội bộ và hỏi trước khi xử lý dữ liệu cá nhân.
+
+Font riêng của đơn vị: nếu `assets/fonts/` có file font (`.ttf`, `.otf`, `.woff2`) và người dùng yêu cầu dùng font đó,
+hoặc `PROJECT.md` ghi font chuẩn của đơn vị, thì dùng font ấy cho văn bản đầu ra. HTML và PDF: nhúng font vào file
+(HTML dùng `@font-face` với dữ liệu base64) để mở ở máy khác vẫn đúng. Word, Excel: chỉ đặt tên font; khi giao file,
+nói rõ máy người nhận phải cài font đó, nếu không sẽ hiện font thay thế. Không có font phù hợp thì dùng font mặc định
+và nói ra; không tự tải hay thay bằng font khác. Không chép file font sang nơi khác ngoài file đầu ra.

@@ -9,3 +9,8 @@ setup_answers.json
 .agent/runtime/
 Thumbs.db
 .DS_Store
+assets/branding.json
+assets/branding.js
+assets/logo.*
+assets/fonts/*
+!assets/fonts/README.md
