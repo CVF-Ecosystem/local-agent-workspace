@@ -60,22 +60,22 @@ Bước tiếp theo: Tạo bản nháp biểu mẫu để duyệt.
 đơn vị; `references/source-documents/` dành cho tài liệu nguồn khác. Có thể giữ cấu
 trúc riêng phù hợp hơn. Chỉ ghi nguồn cần tìm lại vào `.agent/INDEX.md`.
 
-Các mẫu đi kèm skill ở `skills/local/shared/` là tài nguyên tham khảo, không phải
+Các mẫu đi kèm kỹ năng ở `skills/local/shared/` là tài nguyên tham khảo, không phải
 nguồn đã được duyệt. Không cần chuyển chúng vào khu vực quy định của dự án.
 
-## 4. Bắt đầu với skills sẵn có
+## 4. Bắt đầu với kỹ năng sẵn có
 
-Bộ công cụ đã có mười bốn skill gọn trong `skills/local/shared/` và các mục tương ứng trong
-`.agent/SKILL_INDEX.md`. Không cần tạo hoặc cài thêm skill để bắt đầu.
+Bộ công cụ đã có mười bốn kỹ năng gọn trong `skills/local/shared/` và các mục tương ứng trong
+`.agent/SKILL_INDEX.md`. Không cần tạo hoặc cài thêm kỹ năng để bắt đầu.
 
 Công việc thuộc một mảng chuyên sâu thì cài thêm **gói lĩnh vực**: `phap-ly`, `van-thu-luu-tru`, `cang-logistics`,
 `hanh-chinh-nhan-su`, `ke-toan-noi-bo`. Cách dễ nhất: bấm đúp `APP.bat` (Windows) hoặc `APP.command` (macOS), mở nhóm
 "Quản lý và bảo trì" → "Quản lý kỹ năng", phần "Gói bổ sung theo lĩnh vực", bấm "Cài để dùng thử". Gói đã cài được ghi vào `.agent/SKILL_INDEX.md`, nên trợ lý AI tự tìm thấy khi việc cần; bạn
 không cần nhắc tên gói khi giao việc. Gói có nhãn "Thử nghiệm" chưa qua tiếp nhận: trợ lý AI dùng thử và nói rõ là bản thử. Gói có hồ sơ tiếp nhận hợp lệ có thêm nút "Cài và cho phép dùng"; cho phép dùng là quyết định của bạn cho dự án này, không phải bằng chứng gói đã được kiểm an toàn. Gói có hồ sơ tiếp nhận hợp lệ có thêm nút "Cài và cho phép dùng"; cho phép dùng là quyết định của bạn cho dự án này, không phải bằng chứng gói đã được kiểm an toàn.
 
-Để trợ lý AI chọn native skill, local skill hoặc làm trực tiếp theo công việc. Một
-skill viết riêng cho dự án chỉ đáng thêm khi có mẫu/kinh nghiệm thực tế cần dùng lại.
-Không cần điền trước danh sách native skills chưa được xác nhận có trong phiên.
+Để trợ lý AI chọn kỹ năng sẵn có (native), kỹ năng bổ sung của bộ công cụ hoặc làm trực tiếp theo công việc. Một
+kỹ năng viết riêng cho dự án chỉ đáng thêm khi có mẫu/kinh nghiệm thực tế cần dùng lại.
+Không cần điền trước danh sách kỹ năng sẵn có (native) chưa được xác nhận có trong phiên.
 
 ## 5. Mở bằng ứng dụng đang dùng
 
@@ -115,7 +115,7 @@ dụng, nhưng cách mở thư mục và cấp quyền theo từng ứng dụng.
 
 Adapter `CLAUDE.md` và `GEMINI.md` chỉ giúp các môi trường có hỗ trợ cách đọc đó.
 Nếu môi trường chưa tự nạp, yêu cầu mở file trực tiếp; không coi import là bảo đảm
-kết nối. File skill trong workspace không tự xuất hiện trong menu native của provider.
+kết nối. File kỹ năng trong workspace không tự xuất hiện trong menu native của provider.
 
 Nếu ứng dụng hoặc môi trường cloud không tự đọc `AGENTS.md`, hoặc không giữ thư mục `.agent/`
 giữa các phiên, dán đoạn sau vào phần hướng dẫn của Project (Claude), hướng dẫn tùy chỉnh

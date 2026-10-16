@@ -3,7 +3,7 @@
 Bài thực hành này dùng **dữ liệu minh họa**, không phải hồ sơ thật; bạn không cần chuẩn bị tài liệu riêng. Thử trong **một dự án thử**,
 không thử trong bộ mẫu: ở bảng điều khiển của bộ mẫu, trang "Tạo dự án mới", tạo dự án tên "Thử demo"; mở thư mục dự án
 đó (không phải riêng thư mục `examples/`) bằng ứng dụng AI bạn dùng (Claude, Codex, Gemini...), rồi gửi từng yêu cầu dưới đây.
-Mỗi yêu cầu chỉ nêu nguồn và kết quả cần nhận; không cần nêu tên skill, trợ lý AI tự chọn khả năng sẵn có của ứng dụng hoặc phần
+Mỗi yêu cầu chỉ nêu nguồn và kết quả cần nhận; không cần nêu tên kỹ năng, trợ lý AI tự chọn khả năng sẵn có của ứng dụng hoặc phần
 bổ sung của bộ công cụ khi cần.
 
 | File | Nội dung (minh họa) |
@@ -39,7 +39,7 @@ Bạn nên thấy: bảng chỉ liệt kê thay đổi thật (bước thêm, b�
 
 ## Kiểm tra cách trợ lý AI làm việc
 
-Cuối mỗi câu trả lời, trợ lý AI nên có khối **"Khai báo thực hiện"** (cách làm, skill, nguồn, file, chưa kiểm; xem `AGENTS.md`). Với bài 1,
+Cuối mỗi câu trả lời, trợ lý AI nên có khối **"Khai báo thực hiện"** (cách làm, kỹ năng, nguồn, file, chưa kiểm; xem `AGENTS.md`). Với bài 1,
 bộ công cụ có sẵn script kiểm bảng tính: nếu trợ lý AI dùng nó, khai báo nên ghi lệnh đã chạy và dòng "Dấu vết" của script, hoặc nói rõ vì sao đọc thủ công.
 Thiếu khối này là dấu hiệu trợ lý AI chưa làm theo hướng dẫn của bộ công cụ. Muốn kiểm nhanh, lưu câu trả lời thành file rồi chạy
 `python tools/check_output.py --declaration <file>`.

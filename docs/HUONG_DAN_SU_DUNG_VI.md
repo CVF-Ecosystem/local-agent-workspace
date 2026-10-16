@@ -1,12 +1,12 @@
 # Hướng dẫn sử dụng hằng ngày
 
 Local Trợ lý AI Workspace v1.8 giúp giữ tài liệu, ngữ cảnh và kết quả công việc trên
-cùng một thư mục. Trợ lý AI vẫn chủ động chọn cách làm, công cụ và skill phù hợp.
+cùng một thư mục. Trợ lý AI vẫn chủ động chọn cách làm, công cụ và kỹ năng phù hợp.
 
 ## 1. Giao việc bằng ngôn ngữ tự nhiên
 
 Nói rõ việc cần làm, nguồn nếu có và dạng đầu ra mong muốn. Bạn không cần nhớ tên
-skill, cú pháp hay chọn một chế độ trước khi làm việc.
+kỹ năng, cú pháp hay chọn một chế độ trước khi làm việc.
 
 ```text
 Dựa vào Quy_dinh_tiep_nhan.docx, soạn bản nháp quy trình tiếp nhận hồ sơ.
@@ -20,7 +20,7 @@ Với việc nhỏ, chỉ cần nói điều cần sửa:
 Sửa đoạn này cho gọn, giữ nguyên số liệu và tên bộ phận. Trả ngay bản đã chỉnh.
 ```
 
-Trợ lý AI có thể làm trực tiếp nếu ngữ cảnh đã đủ. Không cần đọc STATE, tìm skill hay
+Trợ lý AI có thể làm trực tiếp nếu ngữ cảnh đã đủ. Không cần đọc STATE, tìm kỹ năng hay
 lập kế hoạch chỉ vì đây là một dự án có workspace.
 
 ## 2. Tiếp tục công việc đang dở
@@ -57,16 +57,16 @@ Không có chế độ làm việc bắt buộc.
 Có thể đặt nguồn trong `references/` hoặc giữ nguyên vị trí đang dùng. Khi hữu ích,
 `.agent/INDEX.md` ghi nguồn nào nằm ở đâu và dùng cho việc gì.
 
-Mẫu của đơn vị và quy định đã xác nhận có giá trị nghiệp vụ. Mẫu đi kèm skill chỉ
+Mẫu của đơn vị và quy định đã xác nhận có giá trị nghiệp vụ. Mẫu đi kèm kỹ năng chỉ
 là ví dụ để tham khảo, không tự trở thành quy định. Trợ lý AI nên nêu điểm thiếu, thay
 vì tự đặt thêm vai trò, thời hạn hoặc thẩm quyền.
 
 Khi nguồn đã được đọc, có thể tận dụng phần liên quan trong ngữ cảnh. Nếu nguồn
 vừa sửa hoặc kết luận phụ thuộc một điều khoản, đối chiếu lại đúng phần cần thiết.
 
-## 5. Để trợ lý AI chọn skill phù hợp
+## 5. Để trợ lý AI chọn kỹ năng phù hợp
 
-Workspace có mười bốn skill gợi ý, từ soạn tài liệu (`office-documents`, `internal-comms`,
+Workspace có mười bốn kỹ năng gợi ý, từ soạn tài liệu (`office-documents`, `internal-comms`,
 `doc-coauthoring`), phân tích (`document-comparison`, `spreadsheet-check`), biểu đồ và báo cáo
 (`data-charts`, `html-reports`), quy trình và họp (`process-mapping`, `meeting-minutes`), văn bản
 hành chính đúng thể thức (`vn-admin-documents`), sổ và công cụ Excel (`excel-workbooks`, `excel-html-viewer`) đến biên tập (`vietnamese-editing`) và thư viện nguồn (`source-library`). Bạn không phải gọi chúng bằng tên.
@@ -74,9 +74,9 @@ hành chính đúng thể thức (`vn-admin-documents`), sổ và công cụ Exc
 Ngoài ra có năm gói lĩnh vực cài khi cần (pháp lý, văn thư - lưu trữ, cảng - logistics, hành chính - nhân sự, kế toán nội bộ),
 mỗi gói kèm bảng căn cứ pháp lý có ngày đối chiếu. Gói đã cài thì trợ lý AI tự dùng; gói chưa cài thì trợ lý AI sẽ gợi ý bạn cài.
 
-Trợ lý AI có thể dùng native skill, skill của workspace, kết hợp hoặc không dùng skill.
+Trợ lý AI có thể dùng kỹ năng sẵn có (native), kỹ năng của workspace, kết hợp hoặc không dùng kỹ năng.
 Tiêu chí là độ phù hợp với công việc và khả năng thực có, không phải nơi cung cấp.
-`ACTIVE` trong index không có nghĩa skill cần nạp ở mọi phiên.
+`ACTIVE` trong index không có nghĩa kỹ năng cần nạp ở mọi phiên.
 
 Chi tiết và ví dụ nằm trong `HUONG_DAN_SKILLS_VI.md` cùng thư mục.
 
@@ -95,8 +95,8 @@ phù hợp nhất với yêu cầu; có thể làm trực tiếp khi đã đủ 
 Không giả định Gemini CLI và Antigravity nạp file giống nhau. Khi chưa tự nạp,
 chỉ đường dẫn `AGENTS.md` cho trợ lý AI là cách bắt đầu rõ ràng.
 
-Các skill trong bộ công cụ được tra cứu như file; giải nén không tự cài chúng vào
-thư viện native của các ứng dụng. Một native skill có ở phiên này không bảo đảm
+Các kỹ năng trong bộ công cụ được tra cứu như file; giải nén không tự cài chúng vào
+thư viện native của các ứng dụng. Một kỹ năng sẵn có (native) có ở phiên này không bảo đảm
 có ở phiên khác. Bộ công cụ không sửa cấu hình toàn cục của provider.
 
 Nếu trợ lý AI không có quyền đọc/ghi thư mục, cần cấp quyền hoặc đưa đúng file vào phiên
@@ -151,7 +151,7 @@ Nếu đơn vị yêu cầu ghi nhận phần AI hỗ trợ, thêm một dòng v
 ## 10. Đọc "Khai báo thực hiện" của trợ lý AI
 
 Khi trợ lý AI đọc, kiểm tra, đối chiếu hoặc tính toán trên file của bạn, cuối câu trả lời nên có khối "Khai báo thực hiện"
-(quy tắc 9 trong `AGENTS.md`): cách làm (script đã chạy kèm lệnh, hay đọc thủ công), skill đã đọc, nguồn đã đọc, file đã tạo hoặc sửa,
+(quy tắc 9 trong `AGENTS.md`): cách làm (script đã chạy kèm lệnh, hay đọc thủ công), kỹ năng đã đọc, nguồn đã đọc, file đã tạo hoặc sửa,
 và điều chưa kiểm. Hãy đọc khối này trước khi tin kết quả. Phát hiện về số nên kèm con số cụ thể; chỗ mơ hồ (như `1.234`) nên được
 nêu cả hai cách hiểu. Thiếu khối này, hoặc khai báo chung chung, thì yêu cầu trợ lý AI bổ sung. Khai báo do trợ lý AI tự ghi nên không phải
 bằng chứng tuyệt đối; với việc quan trọng, dòng "Dấu vết" của script (file, sha256, giờ chạy) giúp bạn đối chiếu được.
@@ -175,7 +175,7 @@ là "Tạo dự án mới": nhập tên công việc, bản sao được tạo c
 dự án, trang **Công việc** gồm: "Tiếp tục công việc" (đọc từ `.agent/STATE.md`: đang ở đâu, việc chờ bạn, bước tiếp), "Giao
 việc cho trợ lý AI" (các bước và lời nhắc để sao chép, kèm cách kiểm trợ lý AI đọc đúng dự án), "Tài liệu nguồn" (file trong
 `references/`) và "Kết quả" (file trong `output/`). Kiểm tra trước khi giao (`check_output.py`) và thư viện nguồn nằm ngay
-dưới. Nhóm "Quản lý và bảo trì" (thu gọn) gom phần còn lại: quản lý kỹ năng và gói lĩnh vực, chép skill vào ứng dụng
+dưới. Nhóm "Quản lý và bảo trì" (thu gọn) gom phần còn lại: quản lý kỹ năng và gói lĩnh vực, chép kỹ năng vào ứng dụng
 (`install_skills.py`), chờ hợp nhất, cập nhật bộ công cụ, khởi tạo hoặc đưa vào dự án đã có, bảo trì bộ công cụ. Trang **Tình trạng ứng dụng** cho biết phiên bản, Python, chức năng tùy chọn còn thiếu (kèm cách khắc phục), giao dịch chưa hoàn tất và lịch sử thao tác gần đây.
 
 Thao tác có ghi file luôn chạy xem trước; đọc kết quả rồi mới bấm "Thực hiện". Bảng điều khiển chạy trên máy này (địa chỉ

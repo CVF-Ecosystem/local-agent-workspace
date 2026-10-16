@@ -78,6 +78,9 @@
   bị gián đoạn". Lời nhắc cho trợ lý giữ nguyên tên file và đường dẫn. Lời giới thiệu START_HERE nói rõ giới hạn (hướng dẫn là yêu cầu,
   không bảo đảm mọi mô hình tuân thủ; bảng điều khiển không chạy mô hình AI). `AGENTS.md` (VI/EN): giữ tiêu đề khung STATE, viết nội dung
   bằng lời văn công việc. Khóa dịch, ID, mã trạng thái, cờ lệnh và placeholder giữ nguyên.
+  Theo quyết định của operator: tiếng Việt dùng "bộ công cụ" thay cho "package" và "kỹ năng" thay cho "skill" trong chữ người
+  dùng đọc (giao diện, README, hướng dẫn, demo, START_HERE); bản tiếng Anh giữ "package" và "skill". Tên file, ID kỹ năng, `SKILL.md`,
+  `SKILL_INDEX.md` và nội dung trong khối mã giữ nguyên.
 
 ## v1.7.0 — 2026-10-13
 

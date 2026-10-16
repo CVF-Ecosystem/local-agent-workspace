@@ -115,7 +115,7 @@ def main(argv):
         print(L('[XEM TRƯỚC, chưa tạo gì] Dự án mới từ bộ mẫu:', '[PREVIEW, nothing created yet] New project from the template:'))
         print('  ' + L('Tên công việc', 'Task name') + ': ' + name)
         print('  ' + L('Thư mục sẽ được tạo', 'Folder to be created') + ': ' + target)
-        print('  ' + L('Sẽ chép %d file của bộ công cụ vào thư mục này rồi thiết lập dự án; bộ mẫu không bị thay đổi.', 'Will copy %d workspace files into this folder, then set up the project; the template is not changed.') % len(files))
+        print('  ' + L('Sẽ chép %d file của bộ công cụ vào thư mục này rồi thiết lập dự án; bộ mẫu không bị thay đổi.', 'Will copy %d package files into this folder, then set up the project; the template is not changed.') % len(files))
         LAST['result'] = make('preview', code=0, message=L('Xem trước dự án mới; chưa tạo gì.', 'New project preview; nothing created yet.'),
                               changes=True, files=[{'path': target, 'action': 'create'}], file_count=len(files), **info)
         return 0

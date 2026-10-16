@@ -6,7 +6,7 @@ có lợi. Không cần tạo dự án mới trong ứng dụng chỉ để sử
 ## 1. Giữ một bản sao trước khi thay đổi
 
 Sao lưu thư mục hoặc các file sẽ sửa. Xác định file hướng dẫn, trạng thái, đầu ra
-và skills đang dùng để không làm mất phần riêng của dự án.
+và kỹ năng đang dùng để không làm mất phần riêng của dự án.
 
 Không cần dùng Git hoặc công cụ coding để làm việc này; một bản sao thư mục là đủ
 cho nhu cầu đối chiếu và quay lại khi cần.
@@ -29,8 +29,8 @@ Lần đầu đưa bộ công cụ vào dự án đã có (chưa có `VERSION` h
 `python tools/adopt_project.py --project "đường dẫn" --name "Tên project"` để xem báo cáo, thêm `--apply` để ghi. Công cụ chỉ thêm file
 còn thiếu; `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` cũ giữ nguyên và vẫn có hiệu lực; bản của bộ công cụ khác nội dung được lưu thành `<tên>.new` để hợp nhất, kể cả khi chọn tiếng Anh.
 Nếu bản `.new` đã tồn tại và khác nội dung, công cụ dừng trước khi ghi. Kết quả có hướng dẫn chưa hợp nhất sẽ báo rõ “CẦN HỢP NHẤT”;
-file khác bị trùng giữ nguyên của bạn và bản của bộ công cụ lưu thành `<tên>.new`; skill riêng sẵn có được thêm dòng vào `SKILL_INDEX.md` với Status `REVIEW` (trợ lý AI vẫn dùng được trong dự án; bạn xác nhận rồi đổi sang `AVAILABLE`). Nếu việc này bị gián đoạn, xem mục 9.
-Skill dùng chung ở `skills/local/shared/`, skill chứa thông tin riêng của đơn vị ở `skills/local/project/`; không chép nội dung chung vào skill riêng.
+file khác bị trùng giữ nguyên của bạn và bản của bộ công cụ lưu thành `<tên>.new`; kỹ năng riêng sẵn có được thêm dòng vào `SKILL_INDEX.md` với Status `REVIEW` (trợ lý AI vẫn dùng được trong dự án; bạn xác nhận rồi đổi sang `AVAILABLE`). Nếu việc này bị gián đoạn, xem mục 9.
+Kỹ năng dùng chung ở `skills/local/shared/`, kỹ năng chứa thông tin riêng của đơn vị ở `skills/local/project/`; không chép nội dung chung vào kỹ năng riêng.
 
 Nếu đổi vị trí thư mục bộ công cụ hoặc tài liệu hướng dẫn, nhờ trợ lý AI cập nhật những
 đường dẫn liên quan; không cần ép dự án cũ vào cây thư mục mới.
@@ -49,7 +49,7 @@ trước rồi mới ghi khi bạn thêm `--apply`.
    File chưa ai sửa sẽ được cập nhật, file mới được thêm, file bạn đã sửa được giữ nguyên.
 - Bước 3: Nếu báo cáo ổn, chạy lại kèm `--apply`. File mà bạn đã sửa và bộ công cụ cũng đổi sẽ không bị ghi đè: bản mới
    được lưu thành `<tên>.new` để bạn hợp nhất, rồi xóa file `.new`. Các file của bạn (`PROJECT.md`, STATE, HANDOFF, INDEX,
-   `SKILL_INDEX.md`, `references/`, `working/`, `output/`, `archive/`, skill riêng) không bao giờ bị đụng tới.
+   `SKILL_INDEX.md`, `references/`, `working/`, `output/`, `archive/`, kỹ năng riêng) không bao giờ bị đụng tới.
 - Bước 4: Chạy `python tools/check_package.py --verify` và mở một phiên thử. Nếu dùng gói lĩnh vực, chạy
    `python tools/pack.py list` để xem gói nào có bản mới (`pack.py update <tên> --apply`).
 
@@ -70,14 +70,14 @@ vị trí cũ. Không cần chia lại tất cả tài liệu ngay trong một l
 Nếu có nhật ký dài, chỉ đưa trạng thái hiện tại và quyết định đã xác nhận vào STATE.
 Giữ lịch sử gốc để tham khảo khi cần, không nạp toàn bộ vào mỗi phiên.
 
-## 5. Giữ nguồn và skills đang hoạt động
+## 5. Giữ nguồn và kỹ năng đang hoạt động
 
 INDEX có thể trỏ đến nguồn ở vị trí hiện tại. Không cần dời cả kho vào `references/`.
 
-Skill native đang có không cần copy vào bộ công cụ. Skill tự xây và external skill
-có thể giữ nguyên vị trí, chỉ ghi nơi tìm và khi nào hữu ích. Với skill thêm mới,
+Kỹ năng native đang có không cần copy vào bộ công cụ. Kỹ năng tự xây và external kỹ năng
+có thể giữ nguyên vị trí, chỉ ghi nơi tìm và khi nào hữu ích. Với kỹ năng thêm mới,
 xem đủ mục đích, nguồn gốc, dependency và điểm đáng chú ý; không làm lại việc nhập
-skill mỗi lần dùng.
+kỹ năng mỗi lần dùng.
 
 Nếu sao chép tài nguyên từ ngoài, giữ nguồn và điều khoản của phần được nhập. Khi
 chỉ biên soạn mới theo ý tưởng tham khảo, ghi rõ thay vì gọi đó là bản sao upstream.
@@ -98,7 +98,7 @@ Giữ các quyết định đã chốt và chỉ làm phần tôi giao.
 
 Với Gemini qua Antigravity, không giả định cách nạp `GEMINI.md` giống Gemini CLI.
 Với mọi trợ lý AI, có thể yêu cầu mở `AGENTS.md` trực tiếp khi hướng dẫn chưa được nạp.
-Không sửa file cấu hình global hay thay toàn bộ thư viện skill của provider.
+Không sửa file cấu hình global hay thay toàn bộ thư viện kỹ năng của provider.
 
 ## 7. Thử một phiên và điều chỉnh đúng chỗ
 
@@ -111,12 +111,12 @@ Sau đó thực hiện [việc cụ thể]. Chưa cần đọc những nguồn k
 ```
 
 Quan sát việc dùng đúng nguồn, giữ quyết định cũ và hoàn thành đúng phạm vi.
-Trợ lý AI biết rõ file hoặc skill thì có thể mở trực tiếp, không cần chứng minh đã đi
+Trợ lý AI biết rõ file hoặc kỹ năng thì có thể mở trực tiếp, không cần chứng minh đã đi
 qua mọi index. Nếu hướng dẫn mới làm rườm rà, chỉnh hoặc bỏ đúng đoạn gây nhiễu.
 
 ## 8. Quay lại khi cần
 
-Dùng bản sao đã giữ để phục hồi phần không phù hợp. Có thể chỉ giữ một skill hoặc
+Dùng bản sao đã giữ để phục hồi phần không phù hợp. Có thể chỉ giữ một kỹ năng hoặc
 bộ hướng dẫn HTML hữu ích, không cần nâng mọi phần cùng lúc. Không xóa trạng thái
 hoặc tài liệu mới phát sinh trong quá trình thử khi chưa xem lại.
 
@@ -144,7 +144,7 @@ Nếu công cụ báo **CHƯA GHI GÌ**, không file nào trong dự án đã b�
 Số phiên bản có dạng MAJOR.MINOR.PATCH, nằm trong file VERSION:
 
 - MAJOR tăng khi có thay đổi không tương thích ngược: đổi cấu trúc thư mục .agent hoặc của dự án, đổi định dạng MANIFEST.sha256, đổi định dạng kết quả của công cụ, hoặc bỏ một lệnh hay cờ đã có.
-- MINOR tăng khi thêm tính năng tương thích ngược: công cụ, skill, cờ hoặc mục nội dung mới.
+- MINOR tăng khi thêm tính năng tương thích ngược: công cụ, kỹ năng, cờ hoặc mục nội dung mới.
 - PATCH tăng khi sửa lỗi, sửa tài liệu hoặc cập nhật mẫu mà không đổi dữ liệu của dự án.
 
 Mỗi bản có mục riêng trong CHANGELOG.md. Hãy đọc mục đó trước khi nâng cấp.
