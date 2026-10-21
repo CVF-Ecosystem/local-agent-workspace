@@ -8,3 +8,12 @@ tools/publish_new.py -text
 tools/context_update.py -text
 .cvf/checks/v3/observer.py -text
 .cvf/checks/v3/workflow.py -text
+
+# Historical v1 artifacts retain the reviewed raw bytes used by regression pins.
+.cvf/contracts/control.schema.json -text
+.cvf/contracts/CONTROL_CONTRACT.md -text
+.cvf/contracts/examples/EXPECTED.json -text
+.cvf/rules/ROUTING_POLICY.json -text
+.cvf/rules/CONTROL_RULES.md -text
+.cvf/checks/control_check.py -text
+tests/test_control_check.py -text

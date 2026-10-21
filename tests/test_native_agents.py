@@ -1393,6 +1393,7 @@ class RemainingReview(RolesBase):
         self.assertFalse((root / na.RECEIPT_REL).exists())
         self.assertEqual((root / na.retired_rel('scout')).read_bytes(), b'user inactive slot')
 
+    @unittest.skipUnless(os.name == 'nt', 'positive retire requires Windows; refusal is tested separately')
     def test_retire_reports_a_changed_active_file_as_conflict(self):
         root = self.project()
         self.install(root)
@@ -1406,6 +1407,7 @@ class RemainingReview(RolesBase):
         self.assertEqual((res['status'], res['reasons']), ('CONFLICT', ['RETIRE_ACTIVE_BYTES_DIFFER']), res)
         self.assertEqual((root / na.NATIVE_REL).read_bytes(), mine)
 
+    @unittest.skipUnless(os.name == 'nt', 'positive retire requires Windows; refusal is tested separately')
     def test_guard_error_after_move_is_reconciled_instead_of_reporting_no_effect(self):
         root = self.project()
         self.install(root)

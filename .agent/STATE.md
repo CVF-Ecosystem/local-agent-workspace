@@ -8,7 +8,7 @@ Phát triển LAW thành workspace local dùng lâu dài cho công việc văn p
 
 ## Current phase
 
-21/10/2026: RC1/MVP nội bộ đã qua review ACCEPTED_WITH_LIMITS. Operator chốt đẩy nguồn lên GitHub CVF-Ecosystem/local-agent-workspace; nhánh bàn giao branding-tokens. Commit nguồn RC1 vẫn6f39c60b; commit review/roadmap sau đó chỉ metadata, không đổi ZIP/code hoặc dựng lại. Chốt baseline để dùng và lấy feedback; chưa official/CI.
+21/10/2026: Operator giao “sửa đi” sau review L19. Đã sửa diagnostics export và test portability trên nhánh fix/l19-ci-diagnostics; giữ runtime, schema và giá trị pin. Main hoàn tất phần worker CI bị hết dung lượng, reviewer độc lập đã nhận diff, không thấy blocker; 103 test tập trung đạt. Đã push source 901e1d1, CI39560119618 đang chạy 5 job; chưa nhận CI xanh hoặc thay RC1 đã công bố.
 
 ## Completed
 
@@ -24,11 +24,11 @@ Phát triển LAW thành workspace local dùng lâu dài cho công việc văn p
 
 ## Current artifact
 
-- RC1: dist/local-agent-workspace-v1.9.0-rc1.zip,1177698byte/261file; SHA256 3b0ea0888496a653b9c1ece77d1a13fdd13d5996ffdc2bc5f212775026c703f4. Gate cùng tên+.gate.json:4passed, commit6f39c60b77d368793612541f546ca92688289518/dirty=false lúc build.
-- Verdict/lệnh/hash/phạm vi ở đầu HANDOFF và roadmap0.11. Buildstdout1/2/3 giữ ở dist;2/3 timeout trước đóng ZIP, không chuyển failed thànhpassed.
-- Main đã verify giải nén mới0đổi/0thiếu; archive probe từ git archive HEAD,2stage độc lập bằng owner projection/manifest+nguyên ZIPwriter đều trùng RC1. Không fullsuite/gate patch/newgateJSON hay thay RC1.
-- Worker nghiệm thu UI headless/newproject/upgrade/restore; Main so log và filesystem: profile0grant, rawbytes gói khớp trừ tools/check_output.py chủ ý sửa, incoming.new đúng;7file riêng giữ,229file restored khớp.
-- Source RC1 commit6f39c60b; review/roadmap/STATE được commit bổ sung để bàn giao GitHub. Remote origin=https://github.com/CVF-Ecosystem/local-agent-workspace.git; nhánh branding-tokens. dist vẫn gitignored, không upload ZIP/Release. Maintainerprofile thật vắng, không sửa global/native grants.
+- Release: https://github.com/CVF-Ecosystem/local-agent-workspace/releases/tag/v1.9.0-rc1 ; published2026-10-21T05:22:38Z, prerelease=true/draft=false, target6f39c60b77d368793612541f546ca92688289518.
+- Asset ZIP1177698byte/261file: SHA256 3b0ea0888496a653b9c1ece77d1a13fdd13d5996ffdc2bc5f212775026c703f4; gateJSON64cea39ce6e04cc892ce70705f908ede0488892f58d6bcf09d6caa6dd82165d0; checksumfile f8dcd28e1a25216559b90d22aecd9b76d316b029e389c610b3c6eba90195874a.
+- Bản local ở dist/local-agent-workspace-v1.9.0-rc1*; ZIP/gate đã upload nguyên bytes. Gate4passed/1492test6skip ở source6f39;2fullrebuild sau timeout vẫnfailed,2archiveprobe đúngwriter bằngSHA.
+- Release notes có tải/hướng dẫn/nâng cấp/backup/giới hạn và feedback. docs/FEEDBACK_FORM_VI_EN.md đã có trongZIP; GitHub Issue template phan-hoi.md tồn tại, Issues bật; chưa có feedback mới để ghi.
+- Nhánh sửa fix/l19-ci-diagnostics từ ddd6118; origin/main1ca3f0c đã mergePR6(370ea81). Run39548822713:5jobfailedBehaviour,package/HTMLsuccess,RCbuild/uploadskipped. Corrective source901e1d1 đã push nhánh riêng; CI39560119618 đang chạy đúng SHA này.
 
 ## Open items
 
@@ -37,12 +37,12 @@ Phát triển LAW thành workspace local dùng lâu dài cho công việc văn p
 - Upgrade bằng script cũ trong project không bootstrap profile; chạy lại bằng script mới. A-06/A-07 giữ giới hạn cũ; D4 chỉ bản lab6ee4cef2, không duyệt phát hành.
 - A-10 core có3vai/preset candidate/retire đã review. Proof lab chỉ capability/model/locator: còn1finding diễn đạt nhỏ candidate dòng21, giữ CANDIDATE/chưa user acceptance; telemetry0.38191935USD không hóa đơn. Không nhận model quality/fullR4/enforcement.
 - Adapter status vẫn NOT_INSPECTED cho host: receipt không chứng minh invocation. Proof riêng đã quan sát model/Read, chưa sandbox/tools enforcement. Native+receipt có journal nhưng không nguyên tử, còn TOCTOU cuối; parser identity subset/nested unknown từ chối.
-- RC1 chỉ có evidence local Windows/NTFS/Python3.11.9; CI/official chưa có. GateRC1 đo gitclean tại commit6f39; hiện dirty metadata sau build. UI log không chứng minh nội dung từng trang/visual; Office visualQA và symlink file thật chưa đo.
+- CI main1ca3 hiệnfailed5/5; RC1 localWindows3.11.9 giữ evidence lịch sử, không chuyển CI thànhPASS. L19-02diagnostics appliesRC1; chưa nên coi ZIPchẩnđoán đãche sạch đườngdẫn. Parser test đã chốt injection RecursionError, không thêm depth policy; chưa visualQA/symlinkfile thật.
 
 ## Waiting on user
 
-- Operator đã chốt baseline và cho push nguồn MVP lên repo chỉ định; không chờ xác nhận lại quyền này. Feedback trải nghiệm thật được ghi sau khi dùng, chưa có bằng chứng usability mới.
-- Chưa cấp official-release/upload ZIP, merge main hoặc host-global-admin/CVF cha; không tự mở scope. CI chưa có kết quả cho nguồn1.9.0, không suy push thành CI xanh.
+- Không còn quyết định chặn corrective L19: đã có quyền sửa và quyền GitHub từ phiên trước.
+- RC1 vẫn là prerelease; chưa có yêu cầu stable/final hoặc thay asset/tag RC1.
 
 ## Decisions
 
@@ -56,4 +56,4 @@ Phát triển LAW thành workspace local dùng lâu dài cho công việc văn p
 
 ## Next milestone
 
-Giữ baseline RC1 và nguồn bàn giao GitHub trên branding-tokens; nhận feedback thật khi dùng MVP nội bộ. Codex chốt finding cần sửa, Claude thi công/Codex review; chưa có finding thì không mở tranche hoặc build mới. Official/merge main là công việc riêng khi được giao.
+Theo dõi CI39560119618 trên source901e1d1; chỉ xử lý lỗi cụ thể nếu có. Source đã review và push, 103 test tập trung đạt; không claim fullsuite/ma trận xanh khi đang chạy. RC1 vẫn là artifact cũ, chưa chứa corrective; không đổi tag/asset hoặc gọi bản final.

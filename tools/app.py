@@ -522,6 +522,25 @@ def _mask_obj(value, pairs):
     return value
 
 
+def _diagnostic_components(rows):
+    """Export only bounded component metadata; local status keeps interpreter paths."""
+    fields = ('feature', 'needs', 'version', 'reason', 'jsonschema', 'fs')
+    out = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        item = {}
+        for key in fields:
+            value = row.get(key)
+            if key in row and (value is None or (isinstance(value, str) and
+                    re.fullmatch(r'[A-Za-z0-9_.<>= -]{1,80}', value))):
+                item[key] = value
+        if type(row.get('usable')) is bool:
+            item['usable'] = row['usable']
+        out.append(item)
+    return out
+
+
 def diagnostics_bundle():
     """Ghi ZIP chẩn đoán (đã che đường dẫn và tên người dùng); trả về đường dẫn tương đối của ZIP.
     Writes the diagnostics ZIP with paths and user name masked; returns its package-relative path.
@@ -540,7 +559,7 @@ def diagnostics_bundle():
         'workspace_kind': workspace_kind(info),
         'python': {'version': sys.version.split()[0], 'implementation': platform.python_implementation()},
         'platform': {'system': platform.system(), 'release': platform.release(), 'machine': platform.machine()},
-        'components': components(),
+        'components': _diagnostic_components(components()),
         'merges': {'count': len(merges), 'by_state': by_state,
                    'items': [{'path': m['path'], 'pending': m['pending'], 'state': m['state'],
                               'origin': m['origin'], 'current_exists': m['current_exists']} for m in merges]},

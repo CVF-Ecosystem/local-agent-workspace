@@ -15,6 +15,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CVF = os.path.join(ROOT, '.cvf')
@@ -393,8 +394,11 @@ class UnchangedBehaviour(Base):
         self.assertEqual((bad.state, bad.reason), ('UNSUPPORTED', 'NON_NFC_STRING'))
 
     def test_input_guards_are_unchanged(self):
-        deep = b'{"a":' + b'[' * 5000 + b']' * 5000 + b'}'
-        res = self.entry.check_bytes(deep, 'effect', 'v3')
+        # The loader translates a decoder RecursionError; it specifies no fixed depth limit.
+        # Inject at the decoder boundary so Python/OS recursion thresholds do not define the oracle.
+        with mock.patch.object(self.loader.json, 'loads', side_effect=RecursionError('simulated decoder limit')) as decode:
+            res = self.entry.check_bytes(b'{"a":[]}', 'effect', 'v3')
+        decode.assert_called_once()
         self.assertEqual((res['disposition'], res['reasons']), ('DENY', ['INPUT_MALFORMED']))
         nested = _setat(self.bundle(EX04), ('records', 0, 'note'), [[[[['deep']]]]])
         res = self.check(nested)

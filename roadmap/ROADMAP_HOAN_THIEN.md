@@ -1,6 +1,6 @@
 # Roadmap LAW — Workspace cá nhân dùng lâu dài
 
-Cập nhật: **21/10/2026**. Trạng thái: **D-01a–f và SCRIPT-01 đã nhận đúng phạm vi; D-01g đã nhận ACCEPTED_WITH_LIMITS, M1 đóng; M2 đã chốt danh sách nghiệm thu, M3 đã nhận ACCEPTED_WITH_LIMITS sau M3-C1+A1; snapshot M4 1.9.0 đã chuẩn bị/kiểm; diễn tập mock ba việc đã xong, operator là observer (mục0.9). Operator đã hoãn pilot người mới tới sau MVP; M5 không chặn MVP. E07-B/RC1 nội bộ đã nhận ACCEPTED_WITH_LIMITS tại mục0.11; operator đã chốt bàn giao nguồn MVP và push GitHub/branding-tokens; tiếp feedback sau dùng, không mở tính năng. Từ đây theo lộ trình đóng tại mục 0, không tự mở thêm tính năng. C-02 chưa pilot; D-02/phát hành còn chờ.** Các verdict WITH_LIMITS và gate dữ liệu/phát hành giữ nguyên.
+Cập nhật: **21/10/2026**. Trạng thái: **D-01a–f và SCRIPT-01 đã nhận đúng phạm vi; D-01g đã nhận ACCEPTED_WITH_LIMITS, M1 đóng; M2 đã chốt danh sách nghiệm thu, M3 đã nhận ACCEPTED_WITH_LIMITS sau M3-C1+A1; snapshot M4 1.9.0 đã chuẩn bị/kiểm; diễn tập mock ba việc đã xong, operator là observer (mục0.9). Operator đã hoãn pilot người mới tới sau MVP; M5 không chặn MVP. E07-B/RC1 nội bộ đã nhận ACCEPTED_WITH_LIMITS tại mục0.11; prerelease v1.9.0-rc1 đã công bố; đã nhận reviewL19/CI main1ca3đỏ và diagnostics conditionalpathleak, corrective L19 source đã review/push, CI mới đang chạy tại0.11, không mở tính năng. Từ đây theo lộ trình đóng tại mục 0, không tự mở thêm tính năng. C-02 chưa pilot; D-02/phát hành còn chờ.** Các verdict WITH_LIMITS và gate dữ liệu/phát hành giữ nguyên.
 
 Đây là roadmap duy nhất dẫn việc tiếp theo của Local Agent Workspace (LAW), hợp nhất định hướng operator, đề xuất external agent R2, phản biện Claude và đối chiếu Local. [Roadmap trước](archive/ROADMAP_HOAN_THIEN_TRUOC_LAW_R2_2026-10-17.md) được giữ nguyên; kết quả lịch sử chỉ có giá trị trong phạm vi đã kiểm.
 
@@ -42,7 +42,7 @@ D-01g đã nhận subset WITH_LIMITS/M1; tiếp M3 theo danh sách M2 đã chố
 | **M3 — Đóng blocker kỹ thuật và nghiệm thu tích hợp / ACCEPTED_WITH_LIMITS** | Claude sửa đúng danh sách M2; Codex kiểm phần sửa và các luồng thực thuộc A/B/C: nguồn→kết quả→mở lại→dùng lại→nguồn đổi/stale; tạo/adopt/nâng/hạ/phục hồi trong phạm vi T39 đã chốt. Kiểm nguồn/ID/revision/quan hệ/profile/quyền/phần riêng được giữ; tình huống không hỗ trợ phải từ chối trước ghi. | Từng blocker M2 có verdict đóng hoặc còn BLOCKED rõ ràng; không có mất dữ liệu/nâng quyền/nhận stale trong case bắt buộc. Có kết luận D-01/T39 đúng phạm vi gốc, không chỉ cộng test a–g hoặc dựa vào nhãn version. Lỗi ngoài phạm vi không tự mở tính năng. | Claude → Codex review độc lập |
 | **M4 — Đóng băng candidate MVP / SNAPSHOT KỸ THUẬT ĐÃ CHUẨN BỊ** | Chuẩn bị source/phiên bản/tài liệu và phạm vi hỗ trợ theo M2; dùng owner đóng gói/projection hiện có để có artifact cố định. Kiểm package/HTML/integrity và chạy/mở UI cùng case nâng cấp bắt buộc trên bản đó; ghi hash, source snapshot, môi trường, gate thực chạy và giới hạn. | Có artifact cố định dùng cho nghiệm thu MVP, hash/baseline rõ và các kiểm kỹ thuật bắt buộc đạt; không thay bytes khi đang thử. Candidate nội bộ chưa đáp ứng Git/CI/RC chính thức phải ghi đúng như vậy, không gọi release hay CI xanh. Gate RC chính thức giữ ở M6; người/lịch pilot sau MVP không chặn mốc này. | Claude chuẩn bị → Codex review độ sẵn sàng pilot |
 | **M5 — Pilot C-02 / DEFERRED_POST_MVP theo operator,21/10** | Sau MVP thu phản hồi người dùng thực; kit C-02 hiện có dùng khi tổ chức pilot có cấu trúc. Diễn tập mock đã xong tại0.9. | Không chặn MVP. T37/T38 và trải nghiệm người mới giữ NOT_RUN, không giả PASS hoặc tuyên LAW hiệu quả hơn native. Khi chạy pilot thật vẫn ghi nguồn/artifact/hỗ trợ/nhiễm context đúng kit. | Người dùng/observer sau MVP → Codex tổng hợp, operator ưu tiên cải tiến |
-| **M6 — Bàn giao MVP / OPERATOR CHỐT NGUỒN MVP ĐỂ PUSH GITHUB; RC1 ĐÃ REVIEW** | MVP nội bộ: giao RC1/ZIP/gate/giới hạn đã review tại0.11, giữ baseline để dùng và lấy feedback sau MVP. Phát hành chính thức: phần D-02 còn lại theo RELEASING khi có quyền. | MVP nội bộ: operator chốt baseline nguồn và push GitHub, RC1 đã review; không cần pilot người mới hoặc CI trước khi dùng nội bộ, chưa có claim usability mới. Official: vẫn cần gate đúng source/commit, Gitclean, CI cho ô công bố, RC verify/nghiệm thu và quyền phát hành; chưa đạt thì không tuyên official/toàn roadmap xong. | Codex bàn giao → operator nhận/dùng; Claude sửa theo feedback đã chốt; official theo quyền riêng |
+| **M6 — MVP DÙNG THỬ ĐÃ PHÁT HÀNH v1.9.0-rc1; CHƯA FINAL/STABLE** | MVP dùng thử: RC1/ZIP/gate/checksum đã công bố GitHub prerelease tại0.11, giữ baseline để dùng và lấy feedback. Phát hành chính thức: phần D-02 còn lại theo RELEASING khi có quyền. | MVP dùng thử: operator đã cấp quyền phát hành prerelease, RC1 đãreview/côngbố/tag-assets verified; không cần pilot người mới hoặc CIofficial để phát hành dùng thử, chưa có claim usability mới. Official: vẫn cần gate đúng source/commit, Gitclean, CI cho ô công bố, RC verify/nghiệm thu và quyền phát hành; chưa đạt thì không tuyên official/toàn roadmap xong. | Codex bàn giao → operator nhận/dùng; Claude sửa theo feedback đã chốt; official theo quyền riêng |
 
 Đường đi trước MVP: candidate cố định → E07 kiểm nguồn/tích hợp → RC và nghiệm thu
 kỹ thuật → operator nhận MVP trong quyền đã cấp. M5/pilot chuyển sau MVP theo0.10,
@@ -489,6 +489,56 @@ local theo hash đã review, không đổi hoặc dựng lại. Đây là chốt
 để bàn giao; tiếp theo feedback sau dùng. Không suy push là CI xanh, official hoặc
 người mới đã kiểm thành công. Ghi quyền/kiểm remote/payload ở đầu HANDOFF.
 
+### Công bố MVP prerelease để thu feedback —21/10/2026
+
+Operator yêu cầu phát hành version mới và nêu rõ chưa phải bản final, đã có phần
+feedback. Đã công bố **[v1.9.0-rc1 — MVP dùng thử](https://github.com/CVF-Ecosystem/local-agent-workspace/releases/tag/v1.9.0-rc1)**
+lúc2026-10-21T05:22:38Z, prerelease=true/draft=false/latestfalse; tag trỏ đúng source
+6f39c60b77d368793612541f546ca92688289518 tạo RC1. VERSION gói vẫn1.9.0 theo policyRC.
+Không cần build lại hoặc sửa nhãn trong ZIP đã review. Lateststable vẫnv1.8.0.
+
+Release có3asset: ZIP đã nhận, gate JSON và checksum đầy đủ2file. Main tải lại cả3
+asset, hash trùnglocal/serverdigest; releasebody/tag/assets đã kiểm thực. Notes nêu
+hướng dẫn bắt đầu/nâng cấp/backup, limits và cách gửi feedback qua form kèmZIP
+`docs/FEEDBACK_FORM_VI_EN.md`/[GitHub Issues](https://github.com/CVF-Ecosystem/local-agent-workspace/issues/new?template=phan-hoi.md).
+Không tạo thêm hệ thống feedback hoặc ghi nhận phản hồi chưa xảy ra.
+
+**Mốc MVP dùng thử đã bàn giao; bước tiếp là feedback thật.** Chưa final/stable,
+chưa CI/officialsupport1.9.0; T37/T38 vẫn sauMVP. Các fullbuild timeout trước đây giữ
+failed, không sửa gate/timeout hoặc tuyên toàn roadmapgốc đã đạt. Giữ baseline cho
+đến khi có finding cụ thể được operator chốt ưu tiên; final là quyết định sau feedback.
+Fullhash/lệnh/quyền và review độc lập publication ở đầu HANDOFF.
+
+### Corrective review ex-agent L19-01–03 —21/10/2026, SOURCE_REVIEW_ACCEPTED_CI_PENDING
+
+Review ban đầu chỉ đọc ZIP. Sau đó operator giao “sửa đi”: sửa trên nhánh
+`fix/l19-ci-diagnostics`, dùng worker Sol6.1Medium và reviewer độc lập.
+Main hoàn tất test sau khi worker CI hết dung lượng; giữ runtime/schema/pin.
+Đã đạt 103 test tập trung (0 skip), package 0 lỗi/15 cảnh báo và HTML 10 trang khớp.
+Reviewer độc lập không thấy blocker; source `901e1d1` đã push nhánh sửa.
+[CI39560119618](https://github.com/CVF-Ecosystem/local-agent-workspace/actions/runs/39560119618) đang chạy, chưa có kết quả.
+Chưa thay artifact RC1; không nhận official hoặc CI xanh. Chi tiết tại đầu HANDOFF.
+
+| Finding | Disposition sau đối chiếu | Phạm vi corrective đã giao |
+|---|---|---|
+| L19-02 diagnostics |Xác nhận bằng ZIPexportthật với toànpathPython giả; sys.executable ngoàihome vẫnlộ, app.pyRC1 cũngcó. Không khẳngđịnh key/source tựgửi hoặc causalfield trongCI ZIPchưađọc |Ưu tiên exportallowlist/tokenizepathfields, giữlocalpanelpath; kiểmZIPgiảhome/project/toolcache/slash, không bỏtestprivacy |
+| L19-01a fixtureEOL |Xác nhậnGitScout18LF/0CRLF khiến negativereplace no-op; ownermixedguard vẫnrefuse |FixtureLF/CRLF/mixed rõ và mutationkhác, giữguard |
+| L19-01b rawpins |Helper chứngminh7artifact lịch sử LF→CRLF khớp pin cũ; pin khác/câyv2 vẫnkhớp |Giữexpectedpin, bảo toàn đúng7rawartifact cócăn cứ; khôngrefreshhashall |
+| L19-01c profiletest |Xác nhậnpositiveWindowstests chạytrênPOSIX rồi kỳvọngplan/eligible |Giới hạn đúngpositiveWin/NTFS; giữtestrefusal/cross-platform, không blanket skip/nới runtime |
+| L19-01d deepJSON |RawUbuntu3.12classification khác; sourcekhôngMAX_DEPTHđộc lập, fixturevalid thiếuversion |Đã chọn test RecursionError bằng injection tại decoder; giữ loader và contract, không thêm MAX_DEPTH |
+| L19-03 continuity/release |main đãmergePR6; CIrun39548822713 đúng1ca3 có5/5jobfailedBehaviour. PublicprereleaseRC1 thực sựđãcó; latestv1.8 làstable |Đã đồngbộSTATE/roadmap/HANDOFF; không merge/checkout main. Sửa cáchđọc latestAPI, giữartifacthistory và CIred riêng |
+
+Main đã đọc rawfailedlogs Win3.12:1492test/10failure/40skip; Ubuntu3.12:1492test/
+13failure2error/396skip. Cả5job package/HTMLsuccess nhưng RCbuild/uploadskipped.
+Những kết quả này hiện là**CIđãchạyvàđỏ**, thaycho “chưacóCI”; không dùng localRC1
+để ghiCIpassed. RC1 vẫnprerelease, khôngfinal; không tựrút/cấm toànMVP hoặc miễn sửa
+privacy. Gópý “chưa public1.9artifact” không đúng trạngthái releaseđãxácnhận.
+
+**Corrective đềxuất là hữu hạn:** diagnostics + các test/EOL/pin/profile/parser có
+finding, rồi kiểmđúngphạmvi và CIđúngcommit trongquyền đượcgiao. Không tựchạy script
+đínhkèm, không sửacode/pin/gate hoặc push/release/CIrerun tronglượt xemgópý này.
+Không mở host/engine/OCR hoặc chươngtrình audit mới; không cần tuyển người thử.
+
 ## 1. Mục tiêu và quyết định đã chốt
 
 LAW cung cấp bộ khung local để cá nhân làm việc lâu dài bằng agent/model của ứng dụng họ chọn. Giá trị tích lũy nằm ở nguồn dữ liệu, kỹ năng cá nhân, quy tắc ổn định, vai trò rõ ràng và khả năng tiếp tục qua nhiều phiên.
@@ -933,7 +983,7 @@ R1a/R2a/R2b được làm mẫu trước khi dựng cây vai lõi; A-00 khắc p
 | **D-01e — P4 entrypoint finish / ACCEPTED_WITH_LIMITS,20/10** | Giữ current, archive pending của AGENTS/CLAUDE/GEMINI và en/ counterparts; FINISH14 tách REPLACE8, UI vào độc lập | Reviewer55scope đạt/0skip gồmChromium,5HTTP+1amendment đạt; harness Host10053 tái hiện5/12 và sau sửa0/12, app.py giữ. Không áp instruction/quyền/Undo; P4/D-01/T39 OPEN | D-01a–d giữ; chốt support matrix/gap còn lại trước việc kế, không release |
 | **D-01f — matrix/gap / ACCEPTED_WITH_LIMITS,21/10** | Matrix nhóm file/owner và guide VI/EN theo evidence a–e; A1 sửa unsupported/daily guide; Reviewer A2 sửa guard có điều kiện, metadata/index, lịch sử So sánh, incoming pack và df_ro, dựng6HTML. Không runtime mới | D01F_SUPPORT_MATRIX_ONLY+A1+A2: source cuối1test chữ UI đạt/0skip, JS chỉ parse,10HTML khớp; UI ngoài2khóa đảo về baseline,5protected+app.py giữ. Chưa visual/fullT39/P4/host support D-02 | D-01a–e giữ verdict; matrix/gap đã chốt đúng subset, phần pending ngoài14/schema migration còn mở; C-02 NOT_RUN, không release |
 | **D-01g — script finish / ACCEPTED_WITH_LIMITS,21/10** | Workorder WORKORDER_D01G_2026-10-21.md: finish-only đúng tools/audit_scripts.py và script spreadsheet-check; REPLACE8 giữ, FINISH14→16, pipeline archive/rename/observe giữ, không áp/chạy code | D01G_SCRIPT_FINISH_ONLY; phải phân allowlist với managed, audit_scripts chưa có MANIFESTrepo, fixture projection quản lý cả2; Reviewer16ca source test cuối đạt/0skip gồm Chromium,8protected khớp; raw inverse lịch sử NOT_VERIFIED, sai lệch --help giữ; Reviewer độc lập nhận subset, M1 đã đóng | D-01a–f/SCRIPT-01 giữ verdict; không pending generic/pack/schema migration/P4 tổng thể/C-02/D-02/release |
-| **D-02 — R7b / RC1 NỘI BỘ ACCEPTED_WITH_LIMITS; OFFICIAL/CI CHƯA LÀM** | Chốt source/docs/support matrix trong phạm vi đã đo, chạy gate nguồn và nghiệm thu gói/nâng cấp/phục hồi; không thêm host/adapter trước MVP | T40 và release gate của phạm vi công bố: ZIP/checksum, RC verify, dữ liệu/phần riêng được giữ, host có proof đúng app/phiên bản; không dùng mock thay CI hoặc hỗ trợ host chưa đo | D-01 đã nhận đúng subset + gate kỹ thuật E07; C-02 sau MVP theo0.10 |
+| **D-02 — R7b / PRERELEASE ĐÃ CÔNG BỐ; CI MAIN ĐỎ/L19 SOURCE ĐÃ SỬA, CI MỚI ĐANG CHẠY; CHƯA FINAL** | Chốt source/docs/support matrix trong phạm vi đã đo, chạy gate nguồn và nghiệm thu gói/nâng cấp/phục hồi; không thêm host/adapter trước MVP | T40 và release gate của phạm vi công bố: ZIP/checksum, RC verify, dữ liệu/phần riêng được giữ, host có proof đúng app/phiên bản; không dùng mock thay CI hoặc hỗ trợ host chưa đo | D-01 đã nhận đúng subset + gate kỹ thuật E07; C-02 sau MVP theo0.10 |
 
 Tiến độ lát cắt A: **A-02/A-06/A-07 cooperative Windows, A-08 static, A-09 profile/lifecycle và A-10 core một host đã nhận WITH_LIMITS; A-01/A-03/A-04 có mẫu, A-00/A-05 đã review tĩnh; x14 PARKED.** A-11/B-01/B-02/B-03/C-01 và D-01a–f đã nhận subset ở các hàng tương ứng; bước tiếp theo mục0, không giao lại audit A-11. Profile/projection và core acceptance không thành grant, host enforcement, fullR4 hoặc release.
 

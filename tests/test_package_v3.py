@@ -226,8 +226,17 @@ class Projection(unittest.TestCase):
             cp.project_refs('roles/scout/agent.md', raw + b'\r\nthem `.cvf/rules/CONTROL_RULES.md`\r\n')  # one more occurrence than expected
         with self.assertRaises(cp.ProjectionError):
             cp.project_refs('roles/scout/agent.md', raw.replace(b'`.cvf/rules/CONTROL_RULES.md`', b'`.cvf/rules/KHAC.md`'))  # anchor gone
-        with self.assertRaises(cp.ProjectionError):
-            cp.project_refs('roles/scout/agent.md', raw.replace(b'\r\n', b'\n', 1))  # mixed line endings
+        lf = raw.replace(b'\r\n', b'\n')
+        for valid in (lf, lf.replace(b'\n', b'\r\n')):
+            with self.subTest(eol='CRLF' if b'\r\n' in valid else 'LF'):
+                cp.project_refs('roles/scout/agent.md', valid)
+        mixed = lf.replace(b'\n', b'\r\n', 1)
+        self.assertNotEqual(mixed, lf)
+        self.assertIn(b'\r\n', mixed)
+        self.assertIn(b'\n', mixed.replace(b'\r\n', b''))
+        with self.assertRaises(cp.ProjectionError) as caught:
+            cp.project_refs('roles/scout/agent.md', mixed)
+        self.assertEqual(caught.exception.code, 'MIXED_LINE_ENDINGS')
         with self.assertRaises(cp.ProjectionError):
             cp.project_refs('roles/scout/agent.md', b'\xff\xfe' + raw)  # not UTF-8
 
