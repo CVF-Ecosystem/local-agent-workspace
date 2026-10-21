@@ -1,6 +1,6 @@
 # Roadmap LAW — Workspace cá nhân dùng lâu dài
 
-Cập nhật: **21/10/2026**. Trạng thái: **D-01a–f và SCRIPT-01 đã nhận đúng phạm vi; D-01g đã nhận ACCEPTED_WITH_LIMITS, M1 đóng; M2 đã chốt danh sách nghiệm thu, M3 đã nhận ACCEPTED_WITH_LIMITS sau M3-C1+A1; snapshot M4 1.9.0 đã chuẩn bị/kiểm; diễn tập mock ba việc đã xong, operator là observer (mục0.9). Operator đã hoãn pilot người mới tới sau MVP; M5 không chặn MVP. E07-B/RC1 nội bộ đã nhận ACCEPTED_WITH_LIMITS tại mục0.11; prerelease v1.9.0-rc1 đã công bố; đã nhận reviewL19/CI main1ca3đỏ và diagnostics conditionalpathleak, corrective L19 đang thi công theo quyền operator tại0.11, không mở tính năng. Từ đây theo lộ trình đóng tại mục 0, không tự mở thêm tính năng. C-02 chưa pilot; D-02/phát hành còn chờ.** Các verdict WITH_LIMITS và gate dữ liệu/phát hành giữ nguyên.
+Cập nhật: **21/10/2026**. Trạng thái: **D-01a–f và SCRIPT-01 đã nhận đúng phạm vi; D-01g đã nhận ACCEPTED_WITH_LIMITS, M1 đóng; M2 đã chốt danh sách nghiệm thu, M3 đã nhận ACCEPTED_WITH_LIMITS sau M3-C1+A1; snapshot M4 1.9.0 đã chuẩn bị/kiểm; diễn tập mock ba việc đã xong, operator là observer (mục0.9). Operator đã hoãn pilot người mới tới sau MVP; M5 không chặn MVP. E07-B/RC1 nội bộ đã nhận ACCEPTED_WITH_LIMITS tại mục0.11; prerelease v1.9.0-rc1 đã công bố; đã nhận reviewL19/CI main1ca3đỏ và diagnostics conditionalpathleak, corrective L19 source đã review/push, CI mới đang chạy tại0.11, không mở tính năng. Từ đây theo lộ trình đóng tại mục 0, không tự mở thêm tính năng. C-02 chưa pilot; D-02/phát hành còn chờ.** Các verdict WITH_LIMITS và gate dữ liệu/phát hành giữ nguyên.
 
 Đây là roadmap duy nhất dẫn việc tiếp theo của Local Agent Workspace (LAW), hợp nhất định hướng operator, đề xuất external agent R2, phản biện Claude và đối chiếu Local. [Roadmap trước](archive/ROADMAP_HOAN_THIEN_TRUOC_LAW_R2_2026-10-17.md) được giữ nguyên; kết quả lịch sử chỉ có giá trị trong phạm vi đã kiểm.
 
@@ -509,13 +509,15 @@ failed, không sửa gate/timeout hoặc tuyên toàn roadmapgốc đã đạt. 
 đến khi có finding cụ thể được operator chốt ưu tiên; final là quyết định sau feedback.
 Fullhash/lệnh/quyền và review độc lập publication ở đầu HANDOFF.
 
-### Corrective review ex-agent L19-01–03 —21/10/2026, IN_PROGRESS
+### Corrective review ex-agent L19-01–03 —21/10/2026, SOURCE_REVIEW_ACCEPTED_CI_PENDING
 
 Review ban đầu chỉ đọc ZIP. Sau đó operator giao “sửa đi”: sửa trên nhánh
 `fix/l19-ci-diagnostics`, dùng worker Sol6.1Medium và reviewer độc lập.
 Main hoàn tất test sau khi worker CI hết dung lượng; giữ runtime/schema/pin.
 Đã đạt 103 test tập trung (0 skip), package 0 lỗi/15 cảnh báo và HTML 10 trang khớp.
-Chờ review cuối và CI ma trận; chưa thay artifact RC1. Chi tiết tại đầu HANDOFF.
+Reviewer độc lập không thấy blocker; source `901e1d1` đã push nhánh sửa.
+[CI39560119618](https://github.com/CVF-Ecosystem/local-agent-workspace/actions/runs/39560119618) đang chạy, chưa có kết quả.
+Chưa thay artifact RC1; không nhận official hoặc CI xanh. Chi tiết tại đầu HANDOFF.
 
 | Finding | Disposition sau đối chiếu | Phạm vi corrective đã giao |
 |---|---|---|
@@ -981,7 +983,7 @@ R1a/R2a/R2b được làm mẫu trước khi dựng cây vai lõi; A-00 khắc p
 | **D-01e — P4 entrypoint finish / ACCEPTED_WITH_LIMITS,20/10** | Giữ current, archive pending của AGENTS/CLAUDE/GEMINI và en/ counterparts; FINISH14 tách REPLACE8, UI vào độc lập | Reviewer55scope đạt/0skip gồmChromium,5HTTP+1amendment đạt; harness Host10053 tái hiện5/12 và sau sửa0/12, app.py giữ. Không áp instruction/quyền/Undo; P4/D-01/T39 OPEN | D-01a–d giữ; chốt support matrix/gap còn lại trước việc kế, không release |
 | **D-01f — matrix/gap / ACCEPTED_WITH_LIMITS,21/10** | Matrix nhóm file/owner và guide VI/EN theo evidence a–e; A1 sửa unsupported/daily guide; Reviewer A2 sửa guard có điều kiện, metadata/index, lịch sử So sánh, incoming pack và df_ro, dựng6HTML. Không runtime mới | D01F_SUPPORT_MATRIX_ONLY+A1+A2: source cuối1test chữ UI đạt/0skip, JS chỉ parse,10HTML khớp; UI ngoài2khóa đảo về baseline,5protected+app.py giữ. Chưa visual/fullT39/P4/host support D-02 | D-01a–e giữ verdict; matrix/gap đã chốt đúng subset, phần pending ngoài14/schema migration còn mở; C-02 NOT_RUN, không release |
 | **D-01g — script finish / ACCEPTED_WITH_LIMITS,21/10** | Workorder WORKORDER_D01G_2026-10-21.md: finish-only đúng tools/audit_scripts.py và script spreadsheet-check; REPLACE8 giữ, FINISH14→16, pipeline archive/rename/observe giữ, không áp/chạy code | D01G_SCRIPT_FINISH_ONLY; phải phân allowlist với managed, audit_scripts chưa có MANIFESTrepo, fixture projection quản lý cả2; Reviewer16ca source test cuối đạt/0skip gồm Chromium,8protected khớp; raw inverse lịch sử NOT_VERIFIED, sai lệch --help giữ; Reviewer độc lập nhận subset, M1 đã đóng | D-01a–f/SCRIPT-01 giữ verdict; không pending generic/pack/schema migration/P4 tổng thể/C-02/D-02/release |
-| **D-02 — R7b / PRERELEASE ĐÃ CÔNG BỐ; CI MAIN ĐỎ/L19 CHỜ CORRECTIVE; CHƯA FINAL** | Chốt source/docs/support matrix trong phạm vi đã đo, chạy gate nguồn và nghiệm thu gói/nâng cấp/phục hồi; không thêm host/adapter trước MVP | T40 và release gate của phạm vi công bố: ZIP/checksum, RC verify, dữ liệu/phần riêng được giữ, host có proof đúng app/phiên bản; không dùng mock thay CI hoặc hỗ trợ host chưa đo | D-01 đã nhận đúng subset + gate kỹ thuật E07; C-02 sau MVP theo0.10 |
+| **D-02 — R7b / PRERELEASE ĐÃ CÔNG BỐ; CI MAIN ĐỎ/L19 SOURCE ĐÃ SỬA, CI MỚI ĐANG CHẠY; CHƯA FINAL** | Chốt source/docs/support matrix trong phạm vi đã đo, chạy gate nguồn và nghiệm thu gói/nâng cấp/phục hồi; không thêm host/adapter trước MVP | T40 và release gate của phạm vi công bố: ZIP/checksum, RC verify, dữ liệu/phần riêng được giữ, host có proof đúng app/phiên bản; không dùng mock thay CI hoặc hỗ trợ host chưa đo | D-01 đã nhận đúng subset + gate kỹ thuật E07; C-02 sau MVP theo0.10 |
 
 Tiến độ lát cắt A: **A-02/A-06/A-07 cooperative Windows, A-08 static, A-09 profile/lifecycle và A-10 core một host đã nhận WITH_LIMITS; A-01/A-03/A-04 có mẫu, A-00/A-05 đã review tĩnh; x14 PARKED.** A-11/B-01/B-02/B-03/C-01 và D-01a–f đã nhận subset ở các hàng tương ứng; bước tiếp theo mục0, không giao lại audit A-11. Profile/projection và core acceptance không thành grant, host enforcement, fullR4 hoặc release.
 
