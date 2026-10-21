@@ -8,7 +8,7 @@ Phát triển LAW thành workspace local dùng lâu dài cho công việc văn p
 
 ## Current phase
 
-21/10/2026: Operator giao đồng bộ source, gói prerelease và thông tin tải/feedback. Đang chuẩn bị v1.9.0-rc2 chứa L19; giữ tag/asset RC1 nguyên bản và dẫn người dùng sang RC2. Docs VI/EN/form và corrective fixture Python3.8/mac đã review; 68 test liên quan thành công gồm1skip. Chuẩn bị freeze/build đầy đủ. Chưa đóng gói hoặc công bố RC2.
+21/10/2026: Operator giao đồng bộ source, gói prerelease và thông tin tải/feedback. Đang chuẩn bị v1.9.0-rc2 chứa L19; giữ tag/asset RC1 nguyên bản và dẫn người dùng sang RC2. Docs VI/EN/form và corrective fixture Python3.8/mac đã review; 68 test liên quan thành công gồm1skip. Build nguồn30b thất bại timeout900, không ZIP. Reviewer đã nhận budget1800 dựa CI Windows thành công1108s; đang sửa/test gate để retry normal một lần. Chưa có RC2 công bố.
 
 ## Completed
 
@@ -56,4 +56,4 @@ Phát triển LAW thành workspace local dùng lâu dài cho công việc văn p
 
 ## Next milestone
 
-Review delta → freeze commit sạch gồm origin/main → build RC2 đầy đủ gate → verify/new-project/upgrade fixture → review artifact → push main fast-forward và công bố prerelease/checksum → tải lại xác minh, đồng bộ continuity. CI hiện có là nguồn901e1d1, không gán thành CI RC2; CI main nguồn mới chạy sau push.
+Review budget1800 → freeze commit sạch → retry RC2 normal một lần → verify/create/upgrade fixture → review artifact → publish đúng tag/gate, tải lại xác minh → metadata thật và main fast-forward. Timeout/failed vẫn chặn ZIP; không hạ gate. CI nguồn901e1d1 không gán RC2; CI main mới chạy sau push.

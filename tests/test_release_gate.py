@@ -14,6 +14,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 import zipfile
 import hashlib
 
@@ -21,6 +22,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools'))
 import check_package as cp
 import result_schema
+import build_release as br
 
 GATE_ENV = 'LOCAL_AGENT_WORKSPACE_GATE_NESTED'
 GATE_SCHEMA = 'local-agent-workspace/release-gate-v1'
@@ -61,6 +63,36 @@ def write_lf(path, text):
 
 def sha256(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+class BehaviourGateBudgetTests(unittest.TestCase):
+    def assertInvocation(self, run):
+        run.assert_called_once_with(
+            [sys.executable, '-B', '-m', 'unittest', 'discover', '-s', 'tests', '-v'],
+            cwd=br.ROOT, env=mock.ANY, capture_output=True, timeout=1800)
+        env = run.call_args.kwargs['env']
+        self.assertEqual(env[br.GATE_ENV], '1')
+        self.assertEqual(env['PYTHONUTF8'], '1')
+
+    def test_behaviour_gate_runs_with_the_finite_budget(self):
+        result = subprocess.CompletedProcess([], 0, b'', b'Ran 1 test in 0.001s\n\nOK\n')
+        # The parent suite can itself be inside the gate; restore its marker afterward.
+        with mock.patch.dict(os.environ, {br.GATE_ENV: '0'}), \
+                mock.patch.object(br.os.path, 'isdir', return_value=True), \
+                mock.patch.object(br.subprocess, 'run', return_value=result) as run:
+            gate = br.gate_behaviour_tests()
+            self.assertInvocation(run)
+        self.assertEqual(gate['status'], 'passed')
+        self.assertIn('Ran 1 test', gate['detail'])
+
+    def test_behaviour_timeout_is_failed_and_reports_the_same_budget(self):
+        expired = subprocess.TimeoutExpired('synthetic unittest', 1800)
+        with mock.patch.dict(os.environ, {br.GATE_ENV: '0'}), \
+                mock.patch.object(br.os.path, 'isdir', return_value=True), \
+                mock.patch.object(br.subprocess, 'run', side_effect=expired) as run:
+            gate = br.gate_behaviour_tests()
+            self.assertInvocation(run)
+        self.assertEqual((gate['status'], gate['detail']), ('failed', 'quá 1800 giây'))
 
 
 class ReleaseGateTests(unittest.TestCase):

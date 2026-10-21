@@ -57,6 +57,7 @@ Trạng thái cổng: `passed` (đạt), `failed` (lỗi), `skipped` (bỏ qua v
 - **Build lồng nhau**: khi cổng `behaviour_tests` chạy bộ kiểm thử, nó đặt `LOCAL_AGENT_WORKSPACE_GATE_NESTED=1`. Một build được gọi từ bộ kiểm thử với biến này chỉ ghi `behaviour_tests` là `nested` và bỏ qua việc chạy lại bộ kiểm thử, tránh đệ quy. Các cổng khác vẫn chạy. `nested` không phải `passed`.
 - **Báo cáo** `<ZIP>.gate.json`, schema `local-agent-workspace/release-gate-v1`: `version`, `kind` (`official` hoặc `rc`), `rc`, `skip_check`, `archive`, `archive_sha256`, `gates` (tên, trạng thái, `duration_s`, `detail`), `platform` (`system`, `release`), `python`, `git` (`commit`, `dirty`; `null` nếu không có git), `branding`, `generated_utc`.
 - **Nhận diện đơn vị**: logo, `assets/branding.json` và font trong `assets/fonts/` của thư mục nguồn được đóng kèm ZIP; `assets/branding.js` dựng lại từ `branding.json`. Danh sách ghi ở `branding` trong báo cáo. Các file này không vào MANIFEST nên nâng cấp không ghi đè. Bỏ bằng `--no-branding` (ví dụ bản công khai chung). File khác trong `assets/` vẫn làm cổng không đạt.
+- Ngân sách gate hành vi là 1.800 giây. CI Windows/Python 3.12 đã chạy thành công bước hành vi trong 1.108 giây; build RC2 đầu tại `30b7abe` hết 900 giây và không tạo ZIP. Tăng ngân sách giữ nguyên mọi test và điều kiện đạt; hết thời gian vẫn `failed`, không tạo artifact.
 - ZIP không chứa timestamp: hai lần dựng từ cùng nguồn phải cho cùng SHA-256.
 
 ## 5. Quay lại khi nâng cấp (cho người dùng)
@@ -127,6 +128,7 @@ Gate statuses: `passed`, `failed`, `skipped` (by `--skip-check`, or no `tests/` 
 - **Nested builds**: when `behaviour_tests` runs the test suite, it sets `LOCAL_AGENT_WORKSPACE_GATE_NESTED=1`. A build started from inside the test suite with this variable records `behaviour_tests` as `nested` and does not run the suite again, which prevents recursion. The other gates still run. `nested` is not `passed`.
 - **Report** `<ZIP>.gate.json`, schema `local-agent-workspace/release-gate-v1`: `version`, `kind` (`official` or `rc`), `rc`, `skip_check`, `archive`, `archive_sha256`, `gates` (name, status, `duration_s`, `detail`), `platform` (`system`, `release`), `python`, `git` (`commit`, `dirty`; `null` when git is unavailable), `branding`, `generated_utc`.
 - **Organization branding**: the logo, `assets/branding.json` and fonts in `assets/fonts/` of the source folder are packed into the ZIP; `assets/branding.js` is rebuilt from `branding.json`. The list is in `branding` in the report. These files are not in MANIFEST, so upgrades never overwrite them. Leave them out with `--no-branding` (for example a generic public build). Any other file in `assets/` still fails the gate.
+- The behaviour gate budget is 1,800 seconds. The Windows/Python 3.12 CI behaviour step passed in 1,108 seconds; the first RC2 build at `30b7abe` exceeded 900 seconds and created no ZIP. The larger budget keeps every test and pass condition; timeout still means `failed` and no artifact.
 - The ZIP contains no timestamps: two builds from the same source must produce the same SHA-256.
 
 ## 5. Rolling back an upgrade (for users)

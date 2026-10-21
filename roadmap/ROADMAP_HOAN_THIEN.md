@@ -518,6 +518,9 @@ giữ nguyên tag/asset RC1, chỉ dẫn người dùng sang RC2. Không thêm f
 Nghiệm thu: nguồn sạch/review → bốn gate RC2 passed → verify/create/upgrade fixture
 → review artifact → main fast-forward + prerelease/latestfalse + checksum tải lại.
 Chưa có RC2 hoặc CI của nguồn RC2; kết quả nguồn901e1d1 giữ riêng, không gọi official.
+Build đầu30b timeout900, không artifact. Amendment đã review: budget1800 vì
+Windows CI bước hành vi đạt cần1108s; giữ test/verdict/noartifact khi failed.
+Chỉ retry normal một lần trên nguồn sạch mới, không mở thêm scope.
 
 ### Corrective review ex-agent L19-01–03 —21/10/2026, SOURCE_REVIEW_ACCEPTED_CI_PENDING
 

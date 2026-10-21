@@ -33,6 +33,7 @@ from result_schema import emit, make  # noqa: E402
 
 GATE_ENV = 'LOCAL_AGENT_WORKSPACE_GATE_NESTED'
 GATE_SCHEMA = 'local-agent-workspace/release-gate-v1'
+BEHAVIOUR_TEST_TIMEOUT_S = 1800
 GATE_LABEL = {'passed': 'đạt', 'failed': 'lỗi', 'skipped': 'bỏ qua', 'nested': 'lồng nhau'}
 
 def copy_release_tree(stage, branding=True):
@@ -68,9 +69,9 @@ def gate_behaviour_tests():
     env = dict(os.environ, PYTHONUTF8='1', **{GATE_ENV: '1'})
     try:
         r = subprocess.run([sys.executable, '-B', '-m', 'unittest', 'discover', '-s', 'tests', '-v'],
-                           cwd=ROOT, env=env, capture_output=True, timeout=900)
+                           cwd=ROOT, env=env, capture_output=True, timeout=BEHAVIOUR_TEST_TIMEOUT_S)
     except subprocess.TimeoutExpired:
-        return gate_result('failed', 'quá 900 giây')
+        return gate_result('failed', 'quá %d giây' % BEHAVIOUR_TEST_TIMEOUT_S)
     lines = [l for l in (r.stdout + r.stderr).decode('utf-8', 'replace').splitlines() if l.strip()]
     ran = next((l for l in lines if l.startswith('Ran ')), '')
     detail = ('%s; %s' % (ran, lines[-1] if lines else '')).strip('; ')
