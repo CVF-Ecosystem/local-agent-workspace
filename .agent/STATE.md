@@ -8,7 +8,7 @@ Phát triển LAW thành workspace local dùng lâu dài cho công việc văn p
 
 ## Current phase
 
-21/10/2026: E07-A đã nhận ACCEPTED_WITH_LIMITS — READY_FOR_RC_PREPARATION; không review/test lại. Sau câu hỏi cụ thể về stage/commit phần bảo trì hiện tại và RC nội bộ, operator trả lời “vậy thì tiếp”: đã cho phép E07-B đúng scope đó. Chuẩn bị giao Claude; chưa stage/commit/build. C-02/M5 sau MVP; chưa RC/phát hành.
+21/10/2026: RC1/MVP nội bộ đã qua review ACCEPTED_WITH_LIMITS. Operator chốt đẩy nguồn lên GitHub CVF-Ecosystem/local-agent-workspace; nhánh bàn giao branding-tokens. Commit nguồn RC1 vẫn6f39c60b; commit review/roadmap sau đó chỉ metadata, không đổi ZIP/code hoặc dựng lại. Chốt baseline để dùng và lấy feedback; chưa official/CI.
 
 ## Completed
 
@@ -24,12 +24,11 @@ Phát triển LAW thành workspace local dùng lâu dài cho công việc văn p
 
 ## Current artifact
 
-- Bàn giao hiện hành ở đầu HANDOFF và roadmap0.11; phạm vi MVP ở0.10, mock ở0.9, M3 verdict ở0.8. Diễn tập ở mock-rehearsal-20261021 dưới gốc M4: A/B riêng, 4MD và sổ/STATE riêng; không phiếu pilot người thật. Candidate261file/L-template/N-A/N-B giữ hash. Bản so sánh r2 dùng nguồn revision2; r1 và biên bản giữ bytes. Locator/hash đầy đủ ở HANDOFF.
-- A-11/B-03 WITH_LIMITS: rolesREADME4ef708119400e59c/testc2ac1c912a96ab81. A-11 bodies AST giữ; B-03 revision/reconcile/identity/review gate/acceptance riêng. Reviewer33đạt trước sửa;14target đạt trước sửa oracle,4target sau/0skip; không fullmodule sourcecuối.
-- B-02 ACCEPTED_WITH_LIMITS: artifactsbe315aff047b0d73/test4b6223acef58869e/sync3dae368d7d2c82b8;2sheet lazy/writer chung/3read routes+UI hồ sơ nguồn. Copy đủ basis/unknown giữ/link reader chặn/Pcn identity recheck/closure trước opener; HANDOFF đầu giữ evidence/limits.
-- C-01 WITH_LIMITS: docsVIe05b7959154fbcf5/ENe59001cdfd3c0750/test367c252fb58298ce; grant đúng mẫu/bytes/index/baseline inventory/junction có probe;4HTML đồng bộ. README user96585b2a giữ, chưa renderGitHub.
-- Repo chưa có profile maintainer thật (cố ý): `execution_profile.py status` ở repo báo PROFILE_ABSENT + dòng PROJECT còn văn xuôi cũ (LEGACY). PROJECT.md/en/PROJECT.md thật không sửa.
-- Giữ nguyên: schema a550fcdb358a8df4/template 0c6510ae64d3304f; actual PROJECTs/CVF/transaction/pins/MANIFEST/READMEuser/binarytemplate/init. Library/sync có delta B-01/B-02 đã review; không .claude/profile/receipt maintainer hoặc _INDEX thật; dirty, chưa stage/commit/push.
+- RC1: dist/local-agent-workspace-v1.9.0-rc1.zip,1177698byte/261file; SHA256 3b0ea0888496a653b9c1ece77d1a13fdd13d5996ffdc2bc5f212775026c703f4. Gate cùng tên+.gate.json:4passed, commit6f39c60b77d368793612541f546ca92688289518/dirty=false lúc build.
+- Verdict/lệnh/hash/phạm vi ở đầu HANDOFF và roadmap0.11. Buildstdout1/2/3 giữ ở dist;2/3 timeout trước đóng ZIP, không chuyển failed thànhpassed.
+- Main đã verify giải nén mới0đổi/0thiếu; archive probe từ git archive HEAD,2stage độc lập bằng owner projection/manifest+nguyên ZIPwriter đều trùng RC1. Không fullsuite/gate patch/newgateJSON hay thay RC1.
+- Worker nghiệm thu UI headless/newproject/upgrade/restore; Main so log và filesystem: profile0grant, rawbytes gói khớp trừ tools/check_output.py chủ ý sửa, incoming.new đúng;7file riêng giữ,229file restored khớp.
+- Source RC1 commit6f39c60b; review/roadmap/STATE được commit bổ sung để bàn giao GitHub. Remote origin=https://github.com/CVF-Ecosystem/local-agent-workspace.git; nhánh branding-tokens. dist vẫn gitignored, không upload ZIP/Release. Maintainerprofile thật vắng, không sửa global/native grants.
 
 ## Open items
 
@@ -38,12 +37,12 @@ Phát triển LAW thành workspace local dùng lâu dài cho công việc văn p
 - Upgrade bằng script cũ trong project không bootstrap profile; chạy lại bằng script mới. A-06/A-07 giữ giới hạn cũ; D4 chỉ bản lab6ee4cef2, không duyệt phát hành.
 - A-10 core có3vai/preset candidate/retire đã review. Proof lab chỉ capability/model/locator: còn1finding diễn đạt nhỏ candidate dòng21, giữ CANDIDATE/chưa user acceptance; telemetry0.38191935USD không hóa đơn. Không nhận model quality/fullR4/enforcement.
 - Adapter status vẫn NOT_INSPECTED cho host: receipt không chứng minh invocation. Proof riêng đã quan sát model/Read, chưa sandbox/tools enforcement. Native+receipt có journal nhưng không nguyên tử, còn TOCTOU cuối; parser identity subset/nested unknown từ chối.
-- Candidate chỉ claim Windows26200/NTFS/Python3.11.9/jsonschema4.23.0/openpyxl3.1.5 đã đo. Gitclean/CI/official release còn chờ; Office output mới chưa visual QA.
+- RC1 chỉ có evidence local Windows/NTFS/Python3.11.9; CI/official chưa có. GateRC1 đo gitclean tại commit6f39; hiện dirty metadata sau build. UI log không chứng minh nội dung từng trang/visual; Office visualQA và symlink file thật chưa đo.
 
 ## Waiting on user
 
-- Không chờ người thử hoặc xin lại quyền E07-B đã cấp. Quyền gồm stage/commit phần bảo trì LAW hiện tại trong repo và dựng RC nội bộ1.9.0 để nghiệm thu trên bản sao.
-- Chưa cấp push/official-release/CI network/host-global-admin/CVF cha; không mở rộng Git hoặc quyền profile. Worker Claude vẫn do operator giao/chọn model-effort; Codex điều phối/review.
+- Operator đã chốt baseline và cho push nguồn MVP lên repo chỉ định; không chờ xác nhận lại quyền này. Feedback trải nghiệm thật được ghi sau khi dùng, chưa có bằng chứng usability mới.
+- Chưa cấp official-release/upload ZIP, merge main hoặc host-global-admin/CVF cha; không tự mở scope. CI chưa có kết quả cho nguồn1.9.0, không suy push thành CI xanh.
 
 ## Decisions
 
@@ -57,4 +56,4 @@ Phát triển LAW thành workspace local dùng lâu dài cho công việc văn p
 
 ## Next milestone
 
-Claude thi công E07-B theo roadmap0.11: kiểm scope Git, commit nguồn/metadata trước build, gate RC thật không skip/nested, giữ timeout900s; nghiệm thu verify/project/UI/upgrade/restore và ghi artifact/log/hash. Codex review RC sau bàn giao. Không tự clean/reset/amend/đổi gate hoặc dùng mock để tuyên bố usability.
+Giữ baseline RC1 và nguồn bàn giao GitHub trên branding-tokens; nhận feedback thật khi dùng MVP nội bộ. Codex chốt finding cần sửa, Claude thi công/Codex review; chưa có finding thì không mở tranche hoặc build mới. Official/merge main là công việc riêng khi được giao.

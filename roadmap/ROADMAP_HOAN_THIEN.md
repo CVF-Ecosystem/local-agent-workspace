@@ -1,6 +1,6 @@
 # Roadmap LAW — Workspace cá nhân dùng lâu dài
 
-Cập nhật: **21/10/2026**. Trạng thái: **D-01a–f và SCRIPT-01 đã nhận đúng phạm vi; D-01g đã nhận ACCEPTED_WITH_LIMITS, M1 đóng; M2 đã chốt danh sách nghiệm thu, M3 đã nhận ACCEPTED_WITH_LIMITS sau M3-C1+A1; snapshot M4 1.9.0 đã chuẩn bị/kiểm; diễn tập mock ba việc đã xong, operator là observer (mục0.9). Operator đã hoãn pilot người mới tới sau MVP; M5 không chặn MVP. E07-A đã nhận READY_FOR_RC_PREPARATION; operator đã cho phép E07-B/Git+RC nội bộ, giao Claude theo mục0.11; không mở tính năng. Từ đây theo lộ trình đóng tại mục 0, không tự mở thêm tính năng. C-02 chưa pilot; D-02/phát hành còn chờ.** Các verdict WITH_LIMITS và gate dữ liệu/phát hành giữ nguyên.
+Cập nhật: **21/10/2026**. Trạng thái: **D-01a–f và SCRIPT-01 đã nhận đúng phạm vi; D-01g đã nhận ACCEPTED_WITH_LIMITS, M1 đóng; M2 đã chốt danh sách nghiệm thu, M3 đã nhận ACCEPTED_WITH_LIMITS sau M3-C1+A1; snapshot M4 1.9.0 đã chuẩn bị/kiểm; diễn tập mock ba việc đã xong, operator là observer (mục0.9). Operator đã hoãn pilot người mới tới sau MVP; M5 không chặn MVP. E07-B/RC1 nội bộ đã nhận ACCEPTED_WITH_LIMITS tại mục0.11; operator đã chốt bàn giao nguồn MVP và push GitHub/branding-tokens; tiếp feedback sau dùng, không mở tính năng. Từ đây theo lộ trình đóng tại mục 0, không tự mở thêm tính năng. C-02 chưa pilot; D-02/phát hành còn chờ.** Các verdict WITH_LIMITS và gate dữ liệu/phát hành giữ nguyên.
 
 Đây là roadmap duy nhất dẫn việc tiếp theo của Local Agent Workspace (LAW), hợp nhất định hướng operator, đề xuất external agent R2, phản biện Claude và đối chiếu Local. [Roadmap trước](archive/ROADMAP_HOAN_THIEN_TRUOC_LAW_R2_2026-10-17.md) được giữ nguyên; kết quả lịch sử chỉ có giá trị trong phạm vi đã kiểm.
 
@@ -42,7 +42,7 @@ D-01g đã nhận subset WITH_LIMITS/M1; tiếp M3 theo danh sách M2 đã chố
 | **M3 — Đóng blocker kỹ thuật và nghiệm thu tích hợp / ACCEPTED_WITH_LIMITS** | Claude sửa đúng danh sách M2; Codex kiểm phần sửa và các luồng thực thuộc A/B/C: nguồn→kết quả→mở lại→dùng lại→nguồn đổi/stale; tạo/adopt/nâng/hạ/phục hồi trong phạm vi T39 đã chốt. Kiểm nguồn/ID/revision/quan hệ/profile/quyền/phần riêng được giữ; tình huống không hỗ trợ phải từ chối trước ghi. | Từng blocker M2 có verdict đóng hoặc còn BLOCKED rõ ràng; không có mất dữ liệu/nâng quyền/nhận stale trong case bắt buộc. Có kết luận D-01/T39 đúng phạm vi gốc, không chỉ cộng test a–g hoặc dựa vào nhãn version. Lỗi ngoài phạm vi không tự mở tính năng. | Claude → Codex review độc lập |
 | **M4 — Đóng băng candidate MVP / SNAPSHOT KỸ THUẬT ĐÃ CHUẨN BỊ** | Chuẩn bị source/phiên bản/tài liệu và phạm vi hỗ trợ theo M2; dùng owner đóng gói/projection hiện có để có artifact cố định. Kiểm package/HTML/integrity và chạy/mở UI cùng case nâng cấp bắt buộc trên bản đó; ghi hash, source snapshot, môi trường, gate thực chạy và giới hạn. | Có artifact cố định dùng cho nghiệm thu MVP, hash/baseline rõ và các kiểm kỹ thuật bắt buộc đạt; không thay bytes khi đang thử. Candidate nội bộ chưa đáp ứng Git/CI/RC chính thức phải ghi đúng như vậy, không gọi release hay CI xanh. Gate RC chính thức giữ ở M6; người/lịch pilot sau MVP không chặn mốc này. | Claude chuẩn bị → Codex review độ sẵn sàng pilot |
 | **M5 — Pilot C-02 / DEFERRED_POST_MVP theo operator,21/10** | Sau MVP thu phản hồi người dùng thực; kit C-02 hiện có dùng khi tổ chức pilot có cấu trúc. Diễn tập mock đã xong tại0.9. | Không chặn MVP. T37/T38 và trải nghiệm người mới giữ NOT_RUN, không giả PASS hoặc tuyên LAW hiệu quả hơn native. Khi chạy pilot thật vẫn ghi nguồn/artifact/hỗ trợ/nhiễm context đúng kit. | Người dùng/observer sau MVP → Codex tổng hợp, operator ưu tiên cải tiến |
-| **M6 — RC, bàn giao MVP và nghiệm thu / E07-A ĐÃ NHẬN; E07-B ĐÃ CẤP QUYỀN** | Sau M1–M4 và disposition M5 theo0.10, trong quyền đã cấp, làm D-02 theo toàn checklist RELEASING: phiên bản/changelog, Git sạch, CI đúng ô công bố, các gate, RC và nghiệm thu giải nén/verify/nâng cấp bản thử, rồi mới bản chính thức. Lưu ZIP/gate/SHA-256/support matrix/giới hạn/hướng dẫn nâng cấp-phục hồi. Rà bảng mục10 theo bằng chứng đúng source/commit. | Các gate bắt buộc passed, git.dirty=false, CI có proof đúng commit cho ô công bố; RC verify=0 và nghiệm thu nâng cấp/phục hồi đạt. Không còn blocker bắt buộc; phạm vi công bố khớp bằng chứng, dữ liệu đọc được ngoài LAW trong case yêu cầu; operator xác nhận nhận bản bàn giao. Chỉ lúc đó nhận MVP; ghi pilot/feedback là phần sau MVP, không đánh dấu toàn roadmap gốc/T37–T38 đã đạt. | Claude chuẩn bị gói → Codex review → operator cấp quyền cần thiết và nghiệm thu cuối |
+| **M6 — Bàn giao MVP / OPERATOR CHỐT NGUỒN MVP ĐỂ PUSH GITHUB; RC1 ĐÃ REVIEW** | MVP nội bộ: giao RC1/ZIP/gate/giới hạn đã review tại0.11, giữ baseline để dùng và lấy feedback sau MVP. Phát hành chính thức: phần D-02 còn lại theo RELEASING khi có quyền. | MVP nội bộ: operator chốt baseline nguồn và push GitHub, RC1 đã review; không cần pilot người mới hoặc CI trước khi dùng nội bộ, chưa có claim usability mới. Official: vẫn cần gate đúng source/commit, Gitclean, CI cho ô công bố, RC verify/nghiệm thu và quyền phát hành; chưa đạt thì không tuyên official/toàn roadmap xong. | Codex bàn giao → operator nhận/dùng; Claude sửa theo feedback đã chốt; official theo quyền riêng |
 
 Đường đi trước MVP: candidate cố định → E07 kiểm nguồn/tích hợp → RC và nghiệm thu
 kỹ thuật → operator nhận MVP trong quyền đã cấp. M5/pilot chuyển sau MVP theo0.10,
@@ -404,7 +404,7 @@ Worker do operator giao Claude/chọn model-effort; Codex điều phối/review 
 Sau khi nguồn sẵn sàng và có quyền thao tác tương ứng mới tạo RC, nghiệm thu gói và
 bàn giao MVP. Quyết định ưu tiên MVP không tự cấp quyền Git/phát hành đã bị giới hạn.
 Pilot có cấu trúc và cải tiến từ feedback làm sau MVP; không tuyên roadmap gốc hoàn tất
-hoặc hiệu quả người mới đã được chứng minh chỉ từ các kiểm kỹ thuật.
+hoặc hiệu quả người mới đã được chứng minh chỉ từ các kiểm kỹ thuật. MVP nội bộ được bàn giao theo0.11; CI/official là phần phát hành chính thức riêng, không gắn ngược thành điều kiện dùng RC1 nội bộ.
 
 ## 0.11. E07-A đã nhận — sẵn sàng chuẩn bị RC,21/10/2026
 
@@ -420,7 +420,7 @@ Không có blocker sản phẩm mới xác định, không giao lại tranche ha
 | Timeout900s |43.015s headroom là rủi ro, không blocker bắt buộc đổi; giữ gate hiện hành, xử lý nếu RC thật timeout |
 | Support |Windows11/Python3.11.9 đã đo local; officialsupport/CI chưa xác nhận, không nhận toàn host |
 
-**E07-B — ĐÃ CẤP QUYỀN, GIAO CLAUDE: nguồn đóng băng → RC nội bộ → nghiệm thu.**
+**E07-B — ACCEPTED_WITH_LIMITS: RC1 sẵn sàng bàn giao dùng thử MVP nội bộ.**
 Sau câu hỏi nêu rõ stage/commit phần bảo trì hiện tại và dựng RC nội bộ, operator
 trả lời “vậy thì tiếp”; quyền này áp dụng đúng E07-B, không hỏi lại. Phạm vi gồm
 phần bảo trì LAW hiện có ở chính repo này (inventory review:426path khi mở toàn
@@ -432,7 +432,7 @@ clean/ẩn dirty hay cấp quyền mới cho profile. Nhóm file/scope ghi ở �
 Khi thi công: ghi commit/hash, gate JSON và SHA ZIP; nghiệm thu giải nén/verify,
 tạo project, UI, nâng cấp giữ dữ liệu và khôi phục trên bản sao. Resume chỉ tiếp giao
 dịch dở; rollback phục hồi giao dịch dở; nâng cấp hoàn tất thì khôi phục từ bản sao
-lưu đã giữ trước nâng cấp. Các bước RC này chưa chạy. Toàn gate kỹ thuật, supportlimits
+lưu đã giữ trước nâng cấp. Đây là brief trước thi công; kết quả RC1 hiện hành ở kết luận bên dưới. Toàn gate kỹ thuật, supportlimits
 và quyền phát hành chính thức giữ; C-02/người mới sau MVP không chặn E07-B.
 
 **Brief E07-B hữu hạn:** xác nhận Git root/scope và không gộp staged ngoài quyền;
@@ -448,6 +448,46 @@ của gói/gate trước khi cập nhật HANDOFF/STATE sau build; metadata mớ
 dirty, không được che bằng reset. Lỗi chặn thì ghi nguyên nhân cụ thể, không tự mở
 feature hoặc thay gate. Bàn giao IMPLEMENTED_PENDING_REVIEW — E07B_INTERNAL_RC;
 Codex nhận gói sau review, Worker không tự tuyên official hoặc MVP đã nghiệm thu.
+
+### Kết luận review E07-B/RC1 —21/10/2026
+
+Codex nhận **E07B_INTERNAL_RC / ACCEPTED_WITH_LIMITS** sau reviewer độc lập
+Sol6.1Medium và kiểm Main trên artifact thật. Không còn blocker sản phẩm xác định
+trong scope RC1; sẵn sàng bàn giao MVP nội bộ, chưa USER_ACCEPTED/official/CI.
+
+| Đối tượng | Bằng chứng / giới hạn |
+|---|---|
+| Source/gate/ZIP |commit6f39c60b77d368793612541f546ca92688289518; gate4passed/dirtyfalse; ZIP261file/1177698byte, SHA3b0ea0888496a653b9c1ece77d1a13fdd13d5996ffdc2bc5f212775026c703f4 |
+| Main verify |ZIP khớp owner-normalized source projection; giải nén mới verify0đổi/0thiếu |
+| Repeatability archive |từ git archive commit bất biến,2stage mới qua owner projection/manifest và nguyên AST ZIPwriter; cả2SHA bằng RC1. Không CLIbuild/fullsuite/gatepatch/gateJSON mới hoặc đổi timeout |
+| Hai full rebuild |build2/build3 thật sự failed behaviour timeout900s trước tạoZIP; giữfailed. Archiveprobe không chứng minh fullbuild ổn định thời gian; không mở tranche hiệu năng khi chưa có nguyên nhân cụ thể |
+| Upgrade/restore |Main so fixture thật:7file riêng giữbytes, package rawbytes khớpRC trừ1file chủ ý sửa và.new đúng; restored229file khớp preupgrade. Profileprojectmới0grant; logUI0errors, không chứng minh từngpage/visual |
+
+Đủ đóng yêu cầu repeatability bằng kiểm riêng đúng bước tạoarchive của nguồn đã
+qua gateRC1; không cần thêm fullsuite để so cùng ZIP. Mọi lệnh CLIbuild_release tương
+lai vẫn chạy đầy đủ gate; không nhận failed thànhpassed hoặc waive gate. Phép kiểm,
+fullhash, lỗi harness đã sửa một lần và limits ghi ở đầu HANDOFF. Không sửa code/gate,
+không ghi đè RC1; currentrepo dirty metadatareview sau commit build là có giải trình.
+
+**Điểm dừng trước feedback:** giao `dist/local-agent-workspace-v1.9.0-rc1.zip` và
+`.gate.json` cho operator dùng thử/nhận MVP nội bộ. Không tự mở feature/pilot hoặc
+vòng build mới. T37/T38 vẫn sauMVP; CI/phát hành chính thức chưa được cấp quyền và
+không được tuyên hoàn tất. Chưa đóng toàn roadmap gốc từ verdict RC1 nội bộ.
+
+**Đường đi sau bàn giao RC1:** operator nhận/dùng MVP nội bộ → ghi feedback thật
+trong quá trình làm việc → Codex phân loại và chốt phạm vi sửa với operator → Claude
+sửa đúng finding được chọn, Codex review. Không có feedback thì giữ baseline, không
+tạo backlog tính năng hoặc tranche code mới. Kit C-02 chỉ dùng khi cần pilot có cấu
+trúc, không áp thêm thủ tục cho mọi phản hồi. CI/official tiếp tục là phần riêng chưa
+thực hiện, không chặn dùng MVP nội bộ và không được tự coi là đã hoàn tất.
+
+**Chốt bàn giao nguồn21/10:** operator đã yêu cầu push lên
+`https://github.com/CVF-Ecosystem/local-agent-workspace.git`. Đích là nhánh đang làm
+`branding-tokens`, fast-forward nguồn6f39c60b và commitreview metadata; không merge
+main/forcepush, không tạo GitHub Release hoặc upload ZIP. RC1 và gate vẫn ở dist
+local theo hash đã review, không đổi hoặc dựng lại. Đây là chốt baseline nguồn MVP
+để bàn giao; tiếp theo feedback sau dùng. Không suy push là CI xanh, official hoặc
+người mới đã kiểm thành công. Ghi quyền/kiểm remote/payload ở đầu HANDOFF.
 
 ## 1. Mục tiêu và quyết định đã chốt
 
@@ -893,7 +933,7 @@ R1a/R2a/R2b được làm mẫu trước khi dựng cây vai lõi; A-00 khắc p
 | **D-01e — P4 entrypoint finish / ACCEPTED_WITH_LIMITS,20/10** | Giữ current, archive pending của AGENTS/CLAUDE/GEMINI và en/ counterparts; FINISH14 tách REPLACE8, UI vào độc lập | Reviewer55scope đạt/0skip gồmChromium,5HTTP+1amendment đạt; harness Host10053 tái hiện5/12 và sau sửa0/12, app.py giữ. Không áp instruction/quyền/Undo; P4/D-01/T39 OPEN | D-01a–d giữ; chốt support matrix/gap còn lại trước việc kế, không release |
 | **D-01f — matrix/gap / ACCEPTED_WITH_LIMITS,21/10** | Matrix nhóm file/owner và guide VI/EN theo evidence a–e; A1 sửa unsupported/daily guide; Reviewer A2 sửa guard có điều kiện, metadata/index, lịch sử So sánh, incoming pack và df_ro, dựng6HTML. Không runtime mới | D01F_SUPPORT_MATRIX_ONLY+A1+A2: source cuối1test chữ UI đạt/0skip, JS chỉ parse,10HTML khớp; UI ngoài2khóa đảo về baseline,5protected+app.py giữ. Chưa visual/fullT39/P4/host support D-02 | D-01a–e giữ verdict; matrix/gap đã chốt đúng subset, phần pending ngoài14/schema migration còn mở; C-02 NOT_RUN, không release |
 | **D-01g — script finish / ACCEPTED_WITH_LIMITS,21/10** | Workorder WORKORDER_D01G_2026-10-21.md: finish-only đúng tools/audit_scripts.py và script spreadsheet-check; REPLACE8 giữ, FINISH14→16, pipeline archive/rename/observe giữ, không áp/chạy code | D01G_SCRIPT_FINISH_ONLY; phải phân allowlist với managed, audit_scripts chưa có MANIFESTrepo, fixture projection quản lý cả2; Reviewer16ca source test cuối đạt/0skip gồm Chromium,8protected khớp; raw inverse lịch sử NOT_VERIFIED, sai lệch --help giữ; Reviewer độc lập nhận subset, M1 đã đóng | D-01a–f/SCRIPT-01 giữ verdict; không pending generic/pack/schema migration/P4 tổng thể/C-02/D-02/release |
-| **D-02 — R7b / E07-A ĐÃ NHẬN; E07-B ĐÃ CẤP QUYỀN/GIAO CLAUDE** | Chốt source/docs/support matrix trong phạm vi đã đo, chạy gate nguồn và nghiệm thu gói/nâng cấp/phục hồi; không thêm host/adapter trước MVP | T40 và release gate của phạm vi công bố: ZIP/checksum, RC verify, dữ liệu/phần riêng được giữ, host có proof đúng app/phiên bản; không dùng mock thay CI hoặc hỗ trợ host chưa đo | D-01 đã nhận đúng subset + gate kỹ thuật E07; C-02 sau MVP theo0.10 |
+| **D-02 — R7b / RC1 NỘI BỘ ACCEPTED_WITH_LIMITS; OFFICIAL/CI CHƯA LÀM** | Chốt source/docs/support matrix trong phạm vi đã đo, chạy gate nguồn và nghiệm thu gói/nâng cấp/phục hồi; không thêm host/adapter trước MVP | T40 và release gate của phạm vi công bố: ZIP/checksum, RC verify, dữ liệu/phần riêng được giữ, host có proof đúng app/phiên bản; không dùng mock thay CI hoặc hỗ trợ host chưa đo | D-01 đã nhận đúng subset + gate kỹ thuật E07; C-02 sau MVP theo0.10 |
 
 Tiến độ lát cắt A: **A-02/A-06/A-07 cooperative Windows, A-08 static, A-09 profile/lifecycle và A-10 core một host đã nhận WITH_LIMITS; A-01/A-03/A-04 có mẫu, A-00/A-05 đã review tĩnh; x14 PARKED.** A-11/B-01/B-02/B-03/C-01 và D-01a–f đã nhận subset ở các hàng tương ứng; bước tiếp theo mục0, không giao lại audit A-11. Profile/projection và core acceptance không thành grant, host enforcement, fullR4 hoặc release.
 
