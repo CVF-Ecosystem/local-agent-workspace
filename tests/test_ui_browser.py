@@ -114,7 +114,7 @@ class Panel(object):
         env.pop(FAULT, None)
         env.update(self.env)
         with open(log, 'wb') as out:
-            self.proc = subprocess.Popen([sys.executable, '-B', 'tools/app.py', '--no-browser', '--port', str(port)],
+            self.proc = subprocess.Popen([sys.executable, '-u', '-B', 'tools/app.py', '--no-browser', '--port', str(port)],
                                          cwd=str(self.pkg), env=env, stdout=out, stderr=subprocess.STDOUT,
                                          stdin=subprocess.DEVNULL)
         text, deadline = '', time.time() + 30
@@ -130,18 +130,26 @@ class Panel(object):
             if self.proc.poll() is not None:
                 break
             time.sleep(0.1)
-        self.stop()
+        try:
+            self.stop()
+        except Exception as exc:
+            raise AssertionError('the panel did not print its address: ' + text +
+                                 '\ncleanup failed: ' + repr(exc)) from exc
         raise AssertionError('the panel did not print its address: ' + text)
 
     def stop(self):
         if self.proc is None:
             return
-        try:
-            req = urllib.request.Request(self.base + '/api/quit', data=b'{}', method='POST',
-                                         headers={'Content-Type': 'application/json', 'X-Panel-Token': self.token})
-            urllib.request.urlopen(req, timeout=10).read()
-        except OSError:
-            pass
+        if self.proc.poll() is None:
+            if self.base is not None and self.token is not None:
+                try:
+                    req = urllib.request.Request(self.base + '/api/quit', data=b'{}', method='POST',
+                                                 headers={'Content-Type': 'application/json', 'X-Panel-Token': self.token})
+                    urllib.request.urlopen(req, timeout=10).read()
+                except OSError:
+                    pass
+            else:
+                self.proc.terminate()
         try:
             self.proc.wait(timeout=15)
         except subprocess.TimeoutExpired:

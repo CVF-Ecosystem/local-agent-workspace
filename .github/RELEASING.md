@@ -14,9 +14,9 @@ Maintainer guide for the source repository. The `.github/` folder is never packa
 | Hệ điều hành | Python | Trạng thái |
 |---|---|---|
 | Windows 11 | 3.11.9 | Đã chạy cục bộ ngày 2026-10-13: kiểm package, bộ kiểm thử hành vi, dựng RC và bản chính thức. Không nằm trong ma trận CI. |
-| Windows (latest) | 3.8, 3.12 | Chỉ có trong CI (`.github/workflows/ci.yml`). Chưa chạy. |
-| Ubuntu (latest) | 3.8, 3.12 | Chỉ có trong CI. Chưa chạy. |
-| macOS (latest, Apple silicon) | 3.12 | Chỉ có trong CI. Chưa chạy. |
+| Windows (latest) | 3.8, 3.12 | Đã chạy CI 39548822713: kiểm hành vi thất bại; chưa xác nhận hỗ trợ. |
+| Ubuntu (latest) | 3.8, 3.12 | Đã chạy CI 39548822713: kiểm hành vi thất bại; chưa xác nhận hỗ trợ. |
+| macOS (latest, Apple silicon) | 3.12 | Đã chạy CI 39548822713: kiểm hành vi thất bại; chưa xác nhận hỗ trợ. |
 | Mọi tổ hợp khác (ví dụ Python 3.9, 3.10, 3.13) | — | Chưa kiểm thử, không phải hỗ trợ chính thức. |
 
 Chỉ coi một ô là hỗ trợ chính thức khi job CI tương ứng đã chạy xanh trên commit sắp phát hành.
@@ -30,12 +30,13 @@ Số phiên bản nằm trong `VERSION` (MAJOR.MINOR.PATCH). Đó là nguồn du
 - **PATCH**: sửa lỗi, sửa tài liệu, cập nhật mẫu mà không đổi định dạng dữ liệu của project.
 - Mỗi bản phát hành phải có mục trong `CHANGELOG.md` với tiêu đề khớp `VERSION` (`check_package` kiểm).
 - Release candidate (`--rc N`) là bản thử để nghiệm thu: không đổi `VERSION`, tên ZIP có hậu tố `-rcN`.
+- Mốc dùng thử hiện tại: `v1.9.0-rc2` (prerelease, chưa final), thay RC1 trong khuyến nghị tải. Giữ tag và asset RC1; tạo tag/asset mới cho RC2, không ghi đè hoặc đổi đích RC1. Stable/latest vẫn là 1.8.0 cho đến một lần phát hành stable riêng.
 
 ## 3. Checklist phát hành (RC -> nghiệm thu -> chính thức)
 
 1. **Nguồn**: nâng `VERSION`, thêm `CHANGELOG.md`, sửa các chuỗi phiên bản còn lại (`check_package` báo chỗ lệch). Chạy `python tools/build_guides_html.py`.
 2. **Kiểm nguồn**: `python tools/check_package.py --release` và `python -B -m unittest discover -s tests -v` đều phải đạt.
-3. **Release candidate**: `python tools/build_release.py --rc 1`. Kết quả nằm trong `dist/`: `local-agent-workspace-v<VERSION>-rc1.zip` và `.gate.json` cạnh nó. Mở báo cáo, kiểm mọi cổng là `passed` và `git.dirty` là `false`.
+3. **Release candidate**: `python tools/build_release.py --rc 2`. Kết quả nằm trong `dist/`: `local-agent-workspace-v<VERSION>-rc2.zip` và `.gate.json` cạnh nó. Mở báo cáo, kiểm mọi cổng là `passed` và `git.dirty` là `false`.
 4. **Nghiệm thu RC**: giải nén RC vào thư mục mới; chạy `python tools/check_package.py --verify` (phải thoát 0); thử nâng cấp một bản sao project theo hướng dẫn ở mục 5; mở bảng điều khiển trên hệ điều hành đã chọn trong ma trận. Sửa lỗi trong nguồn rồi quay lại bước 1 với RC mới.
 5. **Chính thức**: `python tools/build_release.py` (không có `--rc`). Lưu cặp ZIP và `.gate.json`, ghi SHA-256 trong ghi chú phát hành.
 
@@ -64,7 +65,7 @@ Trước khi nâng cấp, giữ một bản sao của project (mục 1 trong `do
 
 ## 6. Giới hạn còn lại
 
-- CI chưa chạy lần nào. Các ô chưa được xác nhận cho đến khi job xanh.
+- CI [39548822713](https://github.com/CVF-Ecosystem/local-agent-workspace/actions/runs/39548822713) trên main `1ca3f0c` đã thất bại ở cả 5 job hành vi. Lượt corrective [39560119618](https://github.com/CVF-Ecosystem/local-agent-workspace/actions/runs/39560119618) trên nguồn `901e1d1` đã có job hành vi Ubuntu/Python 3.12 đạt, nhưng macOS và Python 3.8 còn lỗi fixture kiểm thử; các cổng nền tảng chưa cùng xanh (ghi nhận ngày 2026-10-21). RC2 là prerelease có giới hạn; kết quả CI này chưa xác nhận bản RC2 đã dựng. Các ô chưa được xác nhận cho đến khi job tương ứng xanh trên nguồn phát hành.
 - macOS và Python 3.8 chưa được chạy trên máy phát triển này; không có Python 3.8 trên máy. CI không kiểm Python 3.8 trên macOS (image `macos-13` đã ngừng).
 - Kiểm tương thích 3.8 là heuristic: `ast.parse(feature_version=(3, 8))` và một danh sách regex. Có thể bỏ sót (ví dụ `dict | dict`) hoặc báo nhầm. Kiểm chứng thật là CI chạy trên Python 3.8.
 - Cổng hành vi có kiểm thử giao diện bảng điều khiển bằng trình duyệt khi Playwright và Chromium khả dụng; thiếu điều kiện thì các lớp browser test bị skip. Kết quả trên máy này không chứng minh đã chạy trên mọi host hoặc CI.
@@ -83,9 +84,9 @@ Anything without evidence of a run is listed as unconfirmed. A CI configuration 
 | Operating system | Python | Status |
 |---|---|---|
 | Windows 11 | 3.11.9 | Run locally on 2026-10-13: package check, behaviour test suite, RC and official builds. Not part of the CI matrix. |
-| Windows (latest) | 3.8, 3.12 | CI configuration only (`.github/workflows/ci.yml`). Not run yet. |
-| Ubuntu (latest) | 3.8, 3.12 | CI configuration only. Not run yet. |
-| macOS (latest, Apple silicon) | 3.12 | CI configuration only. Not run yet. |
+| Windows (latest) | 3.8, 3.12 | CI run 39548822713: behaviour tests failed; support unconfirmed. |
+| Ubuntu (latest) | 3.8, 3.12 | CI run 39548822713: behaviour tests failed; support unconfirmed. |
+| macOS (latest, Apple silicon) | 3.12 | CI run 39548822713: behaviour tests failed; support unconfirmed. |
 | Any other combination (for example Python 3.9, 3.10, 3.13) | — | Untested; not officially supported. |
 
 A cell counts as officially supported only when its CI job has passed on the commit being released.
@@ -99,12 +100,13 @@ The version lives in `VERSION` (MAJOR.MINOR.PATCH), which is the single source.
 - **PATCH**: fixes, documentation, or template updates that do not change project data formats.
 - Each release needs a `CHANGELOG.md` entry whose heading matches `VERSION` (checked by `check_package`).
 - A release candidate (`--rc N`) is a trial build: `VERSION` does not change and the ZIP name carries `-rcN`.
+- Current trial target: `v1.9.0-rc2` (prerelease, not final), replacing RC1 as the recommended download. Preserve the RC1 tag and assets; create a new tag and assets for RC2 without overwriting or retargeting RC1. Stable/latest stays at 1.8.0 until a separate stable release.
 
 ## 3. Release checklist (RC, acceptance, official)
 
 1. **Source**: bump `VERSION`, add the `CHANGELOG.md` entry, fix remaining version strings (`check_package` reports mismatches). Run `python tools/build_guides_html.py`.
 2. **Source checks**: `python tools/check_package.py --release` and `python -B -m unittest discover -s tests -v` must both pass.
-3. **Release candidate**: `python tools/build_release.py --rc 1`. Output in `dist/`: `local-agent-workspace-v<VERSION>-rc1.zip` plus `.gate.json` beside it. Open the report; every gate should be `passed` and `git.dirty` should be `false`.
+3. **Release candidate**: `python tools/build_release.py --rc 2`. Output in `dist/`: `local-agent-workspace-v<VERSION>-rc2.zip` plus `.gate.json` beside it. Open the report; every gate should be `passed` and `git.dirty` should be `false`.
 4. **Acceptance of the RC**: unzip the RC into a new folder; run `python tools/check_package.py --verify` (must exit 0); try upgrading a copy of a real project as in section 5; open the control panel on each platform you claim. Fix issues in the source and go back to step 1 with a new RC.
 5. **Official**: `python tools/build_release.py` (no `--rc`). Keep the ZIP and its `.gate.json` together and record the SHA-256 in the release notes.
 
@@ -133,7 +135,7 @@ Before upgrading, keep a copy of the project (section 1 of `docs/en/EXISTING_PRO
 
 ## 6. Remaining limits
 
-- CI has not run yet. Every cell stays unconfirmed until its job passes.
+- CI [39548822713](https://github.com/CVF-Ecosystem/local-agent-workspace/actions/runs/39548822713) on main `1ca3f0c` failed all 5 behaviour jobs. Corrective run [39560119618](https://github.com/CVF-Ecosystem/local-agent-workspace/actions/runs/39560119618) on source `901e1d1` has a passing Ubuntu/Python 3.12 behaviour job, while macOS and Python 3.8 still have test-fixture failures; platform gates are not all green (recorded 2026-10-21). RC2 is a prerelease with limits; these CI results do not establish a completed RC2 build. Each cell remains unconfirmed until its job passes on the release source.
 - macOS and Python 3.8 have not been run on this development machine, which has no Python 3.8. CI does not test Python 3.8 on macOS (the `macos-13` image is retired).
 - The Python 3.8 check is a heuristic: `ast.parse(feature_version=(3, 8))` plus a regex list. It can miss cases (for example `dict | dict`) or report false positives. Real verification is the Python 3.8 CI job.
 - The behaviour gate includes browser tests for the control panel when Playwright and Chromium are available; browser test classes are skipped when those prerequisites are missing. Results on this machine do not establish runs on every host or in CI.

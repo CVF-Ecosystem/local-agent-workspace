@@ -5,9 +5,13 @@ A local workspace for office work with Claude, Codex, Gemini or another assistan
 **Open `START_HERE.en.html` to read the handbook in English (or `START_HERE.html` for the Vietnamese version; every page has a language switch button).** The page opens directly
 in a browser, with no installation, server, online font or network connection.
 
+**Recommended trial: [1.9.0-rc2](https://github.com/CVF-Ecosystem/local-agent-workspace/releases/tag/v1.9.0-rc2) (prerelease), not final.** RC2 replaces RC1 as the recommended download for feedback; RC1 remains available for reference. The current stable release is [1.8.0](https://github.com/CVF-Ecosystem/local-agent-workspace/releases/latest). The RC package keeps `VERSION` at `1.9.0`; include the tag `v1.9.0-rc2` in feedback.
+
+[Send feedback on GitHub](https://github.com/CVF-Ecosystem/local-agent-workspace/issues/new?template=phan-hoi.md) or use the [included feedback form](../docs/FEEDBACK_FORM_VI_EN.md). Include the RC tag, OS, Python version, AI app and steps to reproduce; remove names, figures and confidential information before sending.
+
 ## Getting started
 
-1. **Keep one template:** download the ZIP from [Releases](https://github.com/CVF-Ecosystem/local-agent-workspace/releases/latest) and unzip it once into its own folder. That folder is the template: keep it as is and do not work in it (nor inside the ZIP).
+1. **Keep one template:** download the ZIP from [Releases](https://github.com/CVF-Ecosystem/local-agent-workspace/releases/tag/v1.9.0-rc2) and unzip it once into its own folder. That folder is the template: keep it as is and do not work in it (nor inside the ZIP).
 2. **Make a project for each piece of work:** double-click `APP.bat` (Windows) or `APP.command` (macOS) in the template and type a task name on the "New project" page, press "Preview project creation", then "Apply". A copy is created next to the template, already set up; the template does not change.
 3. **Add sources and give the task:** copy documents into the project's `references/`, open the project folder in your AI app (Claude, Codex, Gemini) and send the message copied from the project's control panel (fill in the part in square brackets first). Results go to `output/`.
 4. **Continue next time:** open `APP` in the project folder; the "Continue the work" box shows where things stand; the "Review unfinished work" message has the AI assistant summarise before carrying on.

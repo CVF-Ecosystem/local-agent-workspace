@@ -70,11 +70,17 @@ def fake_grant(gid='fake-grant-1', callees=('worker',), **over):
     return g
 
 
+def write_exact_text(path, text):
+    """Keep fixture bytes unchanged on Python 3.8 and across newline conventions."""
+    with open(str(path), 'w', encoding='utf-8', newline='') as stream:
+        return stream.write(text)
+
+
 def make_project(parent, name='proj', line=LEGACY_VI, label=ep.PROJECT_LABELS[0], profile='default', roles=True, text=None):
     """A minimal project folder. profile: 'default' (owner PROJECT, no grants) | None (absent) | dict | bytes."""
     root = Path(parent) / name
     (root / '.agent').mkdir(parents=True)
-    (root / 'PROJECT.md').write_text(text if text is not None else project_text(line, label), encoding='utf-8', newline='')
+    write_exact_text(root / 'PROJECT.md', text if text is not None else project_text(line, label))
     if profile == 'default':
         profile = profile_doc('PROJECT')
     if isinstance(profile, dict):
@@ -528,7 +534,7 @@ class MigrationLane(Base):
         root = self.legacy()
         grants = [fake_grant()]
         plan = ep.plan_migration(root, grants)['plan']['plan_sha256']
-        (root / 'PROJECT.md').write_text(project_text(LEGACY_VI + ' (đã sửa tay)'), encoding='utf-8', newline='')
+        write_exact_text(root / 'PROJECT.md', project_text(LEGACY_VI + ' (đã sửa tay)'))
         before = tree(root)
         res = ep.apply_migration(root, grants, plan)
         self.assertEqual((res['status'], res['reasons']), ('CONFLICT', ['PLAN_CHANGED']))
@@ -537,7 +543,7 @@ class MigrationLane(Base):
         plan2 = ep.plan_migration(root, grants)['plan']['plan_sha256']
 
         def edit(point, info):
-            (root / 'PROJECT.md').write_text(project_text('sửa lần hai'), encoding='utf-8', newline='')
+            write_exact_text(root / 'PROJECT.md', project_text('sửa lần hai'))
         before_profile = (root / PROFILE).read_bytes()
         with mock.patch.object(ep, '_HOOK', edit):
             res = ep.apply_migration(root, grants, plan2)
@@ -587,7 +593,7 @@ class MigrationLane(Base):
 
         def edit_before_project_commit(point, path):  # the transaction's own test hook: fires once the folders are held, before the hash check
             if point == 'commit' and os.path.basename(path) == 'PROJECT.md':
-                Path(path).write_text(project_text('người dùng sửa đúng lúc ghi'), encoding='utf-8', newline='')
+                write_exact_text(Path(path), project_text('người dùng sửa đúng lúc ghi'))
         with mock.patch.object(tx, '_HOOK', edit_before_project_commit):
             res = ep.apply_migration(root, grants, plan)
         self.assertEqual((res['status'], res['reasons'][0]), ('PARTIAL', 'PARTIAL_WRITE'), res)
@@ -610,7 +616,7 @@ class MigrationLane(Base):
     def test_interrupt_then_user_edit_conflict_keeps_user_bytes_and_stays_blocked(self):
         root = self.legacy()
         res = self.interrupted(root, [fake_grant()])
-        (root / 'PROJECT.md').write_text(project_text('người dùng sửa tay sau khi gián đoạn'), encoding='utf-8', newline='')
+        write_exact_text(root / 'PROJECT.md', project_text('người dùng sửa tay sau khi gián đoạn'))
         mine = (root / 'PROJECT.md').read_bytes()
         profile_now = (root / PROFILE).read_bytes()
         out = tx.resume(root, res['txid'])
@@ -652,14 +658,13 @@ class SameSnapshot(Base):
         pointer = project_text(ep.POINTERS['vi'])
         return {
             'owner_profile_and_pointer': lambda r: ((r / PROFILE).write_bytes(ep.serialize(profile_doc('PROFILE', grants=[fake_grant('user-new')]))),
-                                                    (r / 'PROJECT.md').write_text(pointer, encoding='utf-8', newline='')),
+                                                    write_exact_text(r / 'PROJECT.md', pointer)),
             'profile_owner_only': lambda r: (r / PROFILE).write_bytes(ep.serialize(profile_doc('PROFILE', grants=[fake_grant('user-new')]))),
             'profile_future': lambda r: (r / PROFILE).write_bytes(future),
             'profile_broken_json': lambda r: (r / PROFILE).write_bytes(b'{broken'),
-            'project_pointer_only': lambda r: (r / 'PROJECT.md').write_text(pointer, encoding='utf-8', newline=''),
-            'project_line_edited': lambda r: (r / 'PROJECT.md').write_text(project_text(LEGACY_VI + ' (sửa tay)'), encoding='utf-8', newline=''),
-            'project_line_ambiguous': lambda r: (r / 'PROJECT.md').write_text(project_text(LEGACY_VI, extra='- %s: z\n' % ep.PROJECT_LABELS[1]),
-                                                                              encoding='utf-8', newline=''),
+            'project_pointer_only': lambda r: write_exact_text(r / 'PROJECT.md', pointer),
+            'project_line_edited': lambda r: write_exact_text(r / 'PROJECT.md', project_text(LEGACY_VI + ' (sửa tay)')),
+            'project_line_ambiguous': lambda r: write_exact_text(r / 'PROJECT.md', project_text(LEGACY_VI, extra='- %s: z\n' % ep.PROJECT_LABELS[1])),
         }
 
     def after_capture(self, root, mutate):
@@ -715,7 +720,7 @@ class SameSnapshot(Base):
 
         def mutate(r):
             (r / PROFILE).write_bytes(new)
-            (r / 'PROJECT.md').write_text(project_text(ep.POINTERS['vi']), encoding='utf-8', newline='')
+            write_exact_text(r / 'PROJECT.md', project_text(ep.POINTERS['vi']))
         with self.after_capture(root, mutate):
             res = ep.plan_migration(root, [fake_grant('migration-input')])
         self.assertEqual(res['status'], 'PREVIEW', res)
@@ -758,7 +763,7 @@ class SameSnapshot(Base):
         project0 = (root / 'PROJECT.md').read_bytes()
         choices = {'host': 'claude-code'}
         edited = project_text(ep.POINTERS['vi'])  # PROJECT.md changes owner meaning after the capture
-        with self.after_capture(root, lambda r: (r / 'PROJECT.md').write_text(edited, encoding='utf-8', newline='')):
+        with self.after_capture(root, lambda r: write_exact_text(r / 'PROJECT.md', edited)):
             out = ep.apply_config(root, choices)
         self.assertEqual((out['status'], out['reasons']), ('CONFLICT', ['EXPECTED_BEFORE_MISMATCH']), out)
         self.assertEqual((root / 'PROJECT.md').read_bytes(), edited.encode('utf-8'))  # user bytes kept
@@ -766,7 +771,7 @@ class SameSnapshot(Base):
         self.assertEqual(ep.plan_config(self.project(name='bound'), choices)['plan']['project_before_sha256'], ep.sha256(project0))  # PROJECT.md is bound in the plan
         root2 = self.project(name='plan_bound')  # an optional expect-plan from the preview also binds PROJECT.md
         digest = ep.plan_config(root2, choices)['plan']['plan_sha256']
-        (root2 / 'PROJECT.md').write_text(project_text(LEGACY_VI + ' (sửa tay)'), encoding='utf-8', newline='')
+        write_exact_text(root2 / 'PROJECT.md', project_text(LEGACY_VI + ' (sửa tay)'))
         before = tree(root2)
         self.assertEqual(ep.apply_config(root2, choices, digest)['reasons'], ['PLAN_CHANGED'])
         self.assertUnchanged(root2, before)
@@ -903,7 +908,7 @@ class Delivery(SourceTree):
             with self.subTest(name):
                 proj = self.new(ROOT, 'Boot-' + name)
                 (proj / PROFILE).unlink()
-                (proj / 'PROJECT.md').write_text(text, encoding='utf-8', newline='')
+                write_exact_text(proj / 'PROJECT.md', text)
                 r = run(proj, 'init_project.py', '--name', 'Boot', '--force')
                 self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
                 if state is None:
@@ -928,7 +933,7 @@ class Delivery(SourceTree):
         # an existing PROJECT.md with a legacy line: bootstrap owner PROJECT, never prose -> grants
         legacy = self.work / 'adopt-legacy'
         legacy.mkdir()
-        (legacy / 'PROJECT.md').write_text(project_text(LEGACY_VI), encoding='utf-8', newline='')
+        write_exact_text(legacy / 'PROJECT.md', project_text(LEGACY_VI))
         r = run(ROOT, 'adopt_project.py', '--project', legacy, '--name', 'Legacy', '--apply')
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
         rep = ep.inspect(legacy)
@@ -946,7 +951,7 @@ class Delivery(SourceTree):
         # an ambiguous PROJECT.md: nothing is guessed
         amb = self.work / 'adopt-amb'
         amb.mkdir()
-        (amb / 'PROJECT.md').write_text(project_text('a', extra='- %s: b\n' % ep.PROJECT_LABELS[1]), encoding='utf-8', newline='')
+        write_exact_text(amb / 'PROJECT.md', project_text('a', extra='- %s: b\n' % ep.PROJECT_LABELS[1]))
         r = run(ROOT, 'adopt_project.py', '--project', amb, '--name', 'Amb', '--apply')
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
         self.assertFalse((amb / PROFILE).exists())
@@ -957,7 +962,7 @@ class Delivery(SourceTree):
         proj = self.new(pkg, 'Up')
         # a project made before A-09: no profile, legacy prose
         (proj / PROFILE).unlink()
-        (proj / 'PROJECT.md').write_text(project_text(LEGACY_VI), encoding='utf-8', newline='')
+        write_exact_text(proj / 'PROJECT.md', project_text(LEGACY_VI))
         r = run(pkg, 'upgrade_package.py', '--project', proj, '--apply')
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
         rep = ep.inspect(proj)
@@ -973,7 +978,7 @@ class Delivery(SourceTree):
         self.assertFalse(list(proj.rglob('EXECUTION_PROFILE*.new')))
         # ambiguous line, no profile: not guessed
         (proj / PROFILE).unlink()
-        (proj / 'PROJECT.md').write_text(project_text('a', extra='- %s: b\n' % ep.PROJECT_LABELS[1]), encoding='utf-8', newline='')
+        write_exact_text(proj / 'PROJECT.md', project_text('a', extra='- %s: b\n' % ep.PROJECT_LABELS[1]))
         r = run(pkg, 'upgrade_package.py', '--project', proj, '--apply')
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
         self.assertFalse((proj / PROFILE).exists())
@@ -993,7 +998,7 @@ class Delivery(SourceTree):
         text = (proj / 'PROJECT.md').read_text(encoding='utf-8')
         kept = [ln for ln in text.split('\n') if not ln.startswith('- %s:' % label)]
         self.assertNotEqual(kept, text.split('\n'))
-        (proj / 'PROJECT.md').write_text('\n'.join(kept), encoding='utf-8', newline='')
+        write_exact_text(proj / 'PROJECT.md', '\n'.join(kept))
         example = '- %s: Không có' % label
         r = run(pkg, 'execution_profile.py', 'status', '--project', proj, '--result-json')
         human, data = result_schema.split_output(r.stdout)

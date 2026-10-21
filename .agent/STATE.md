@@ -8,7 +8,7 @@ Phát triển LAW thành workspace local dùng lâu dài cho công việc văn p
 
 ## Current phase
 
-21/10/2026: Operator giao “sửa đi” sau review L19. Đã sửa diagnostics export và test portability trên nhánh fix/l19-ci-diagnostics; giữ runtime, schema và giá trị pin. Main hoàn tất phần worker CI bị hết dung lượng, reviewer độc lập đã nhận diff, không thấy blocker; 103 test tập trung đạt. Đã push source 901e1d1, CI39560119618 đang chạy 5 job; chưa nhận CI xanh hoặc thay RC1 đã công bố.
+21/10/2026: Operator giao đồng bộ source, gói prerelease và thông tin tải/feedback. Đang chuẩn bị v1.9.0-rc2 chứa L19; giữ tag/asset RC1 nguyên bản và dẫn người dùng sang RC2. Docs VI/EN/form và corrective fixture Python3.8/mac đã review; 68 test liên quan thành công gồm1skip. Chuẩn bị freeze/build đầy đủ. Chưa đóng gói hoặc công bố RC2.
 
 ## Completed
 
@@ -28,7 +28,7 @@ Phát triển LAW thành workspace local dùng lâu dài cho công việc văn p
 - Asset ZIP1177698byte/261file: SHA256 3b0ea0888496a653b9c1ece77d1a13fdd13d5996ffdc2bc5f212775026c703f4; gateJSON64cea39ce6e04cc892ce70705f908ede0488892f58d6bcf09d6caa6dd82165d0; checksumfile f8dcd28e1a25216559b90d22aecd9b76d316b029e389c610b3c6eba90195874a.
 - Bản local ở dist/local-agent-workspace-v1.9.0-rc1*; ZIP/gate đã upload nguyên bytes. Gate4passed/1492test6skip ở source6f39;2fullrebuild sau timeout vẫnfailed,2archiveprobe đúngwriter bằngSHA.
 - Release notes có tải/hướng dẫn/nâng cấp/backup/giới hạn và feedback. docs/FEEDBACK_FORM_VI_EN.md đã có trongZIP; GitHub Issue template phan-hoi.md tồn tại, Issues bật; chưa có feedback mới để ghi.
-- Nhánh sửa fix/l19-ci-diagnostics từ ddd6118; origin/main1ca3f0c đã mergePR6(370ea81). Run39548822713:5jobfailedBehaviour,package/HTMLsuccess,RCbuild/uploadskipped. Corrective source901e1d1 đã push nhánh riêng; CI39560119618 đang chạy đúng SHA này.
+- Nhánh sửa fix/l19-ci-diagnostics từ ddd6118; origin/main1ca3f0c đã mergePR6(370ea81). Run39548822713:5jobfailedBehaviour,package/HTMLsuccess,RCbuild/uploadskipped. Corrective source901e1d1 đã push nhánh riêng; CI39560119618 đúng SHA này: Ubuntu3.12 đã đạt cả job; mac/Python3.8 còn lỗi fixture, Windows đang chạy. Chưa là CI RC2.
 
 ## Open items
 
@@ -42,7 +42,7 @@ Phát triển LAW thành workspace local dùng lâu dài cho công việc văn p
 ## Waiting on user
 
 - Không còn quyết định chặn corrective L19: đã có quyền sửa và quyền GitHub từ phiên trước.
-- RC1 vẫn là prerelease; chưa có yêu cầu stable/final hoặc thay asset/tag RC1.
+- Đã có quyền phát hành prerelease cập nhật và đồng bộ main; không chờ user duyệt lại. Không stable/final, không đổi tag/asset RC1.
 
 ## Decisions
 
@@ -56,4 +56,4 @@ Phát triển LAW thành workspace local dùng lâu dài cho công việc văn p
 
 ## Next milestone
 
-Theo dõi CI39560119618 trên source901e1d1; chỉ xử lý lỗi cụ thể nếu có. Source đã review và push, 103 test tập trung đạt; không claim fullsuite/ma trận xanh khi đang chạy. RC1 vẫn là artifact cũ, chưa chứa corrective; không đổi tag/asset hoặc gọi bản final.
+Review delta → freeze commit sạch gồm origin/main → build RC2 đầy đủ gate → verify/new-project/upgrade fixture → review artifact → push main fast-forward và công bố prerelease/checksum → tải lại xác minh, đồng bộ continuity. CI hiện có là nguồn901e1d1, không gán thành CI RC2; CI main nguồn mới chạy sau push.

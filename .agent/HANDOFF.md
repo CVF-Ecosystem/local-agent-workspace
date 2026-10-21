@@ -1,5 +1,14 @@
 # HANDOFF
 
+## Codex — RC2 source/release consistency / SOURCE_REVIEW_ACCEPTED_BUILD_PENDING, 21/10/2026
+
+- **Operator:** “đồng bộ RC1, bổ sung bản pre-realease cho user thuận tiện dùng và phản hồi và thông tin project thống nhất”. Thực hiện RC2 mới chứa corrective, không retag/ghi đè bytes RC1; đồng bộ main bằng fast-forward nguồn đã review, README VI/EN, changelog, form/issue, GitHub About và release notes/download. Chưa stable/final; stable/latest1.8 giữ nguyên.
+- **Phân công:** docs `l19_diagnostics_worker` Sol6.1 Medium sửa 6 Markdown, gồm trường tag/ZIP+Python để tách RC dù VERSION1.9.0. Kiểm package0lỗi15cảnhbáo, EOL/diffcheck0, HTML10khớp/0fileđổi, 4linkfeedback tương đối tồn tại. CI `l19_ci_worker` Sol6.1 Medium sửa fixture 6testowners Python3.8/mac; không product/runtime/schema/pin. Reviewer `external_l19_review` Sol6.1 Medium đã nhận publicationplan và source delta12file, không thấy blocker; chưa nhận artifact chưa tồn tại.
+- **CI thực:** run39560119618/source901e1d1 có Ubuntu3.12 cả job thành công; mac1490tests/7failure1error401skip và Ubuntu3.8 1493tests/1failure192error401skip. Nhiều errorPy3.8 cùng lỗi helperfixture Path.write_text(newline) (chưa hỗ trợ ở3.8); dict union và unittest testid format là testportability. Mac temp /var trỏ/private/var khiến fixture canonical mismatch; Panel buffered stdout/cleanup TypeError. Không hạ guard hoặc skip module. Hai Windows còn chạy khi chuẩn bị; không gọi CI cũ là CI RC2.
+- **Kết quả worker/quality:** 47 execution_profile (1skip symlink)/47.858s +16 audit/NewProject/7.356s +3 artifactsRoutes/9.211s +2 exactReleaseGate/Lifecycle/14.641s: 68 tests thành công, gồm1skip, không fullsuite. Probe Panel failed startup giữ traceback synthetic/terminate-wait/double-stop; regex AST nhận unittest3.8/3.11 và từ chối sai class/reason. Reviewer đọc diff12file: bytefixture/assertions giữ, dictupdate đúng precedence, canon chỉ fixture, Panel không che lỗi gốc; không tự chạy tests. Không có corrective yêu cầu thêm. Main sửa nhỏ commentCI đã cũ và ví dụ buildRC2 trongRELEASING; không thay workflow hành vi. Không có số đo chi phí toàn tranche.
+- **Kế hoạch gate bắt buộc:** freeze nguồn sạch, normal `python -B tools/build_release.py --rc 2 --no-branding`, bốn gate passed/dirtyfalse/đúng source; không skip/nested tự đặt/timeout changes. Kiểm ZIP/MANIFEST, source projection, project mới/nâng cấp RC1 trên fixture có userfiles, SHA256 ZIP+gate, review độc lập. Chỉ sau đó push main và publish prerelease/latestfalse; RC1 chỉ cập nhật notes dẫn RC2, About và main download/feedback thống nhất. Chưa ghi thành công trước tác động.
+
+
 ## Codex — L19 corrective / SOURCE_REVIEW_ACCEPTED_CI_PENDING, 21/10/2026
 
 - **Quyền/phạm vi:** operator giao “sửa đi” sau review packet; không lấy lệnh trong ZIP làm quyền. Nhánh `fix/l19-ci-diagnostics` từ HEAD ddd6118, giữ metadata review cũ và RC1 bất biến. Không loader/runtime/schema/pin-value/MANIFEST/profile/grant hoặc timeout changes.

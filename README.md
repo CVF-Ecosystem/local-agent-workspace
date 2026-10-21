@@ -2,7 +2,11 @@
 
 Workspace local cho công việc văn phòng với Claude, Codex, Gemini hoặc trợ lý AI bạn đang dùng. LAW kết nối tài liệu nguồn, kỹ năng, vai trò AI và bối cảnh dự án để làm việc qua nhiều phiên; bạn giữ quyền giao việc và duyệt kết quả.
 
-[**Tải bộ mẫu**](https://github.com/CVF-Ecosystem/local-agent-workspace/releases/latest) · [Hướng dẫn](docs/README.md) · [Thử với dữ liệu mẫu](examples/demo-project/README.md) · [English](en/README.md)
+[**Tải bản dùng thử 1.9.0-rc2**](https://github.com/CVF-Ecosystem/local-agent-workspace/releases/tag/v1.9.0-rc2) · [Hướng dẫn](docs/README.md) · [Thử với dữ liệu mẫu](examples/demo-project/README.md) · [English](en/README.md)
+
+**Bản dùng thử đề xuất: 1.9.0-rc2 (prerelease), chưa phải bản final.** RC2 thay RC1 trong hướng dẫn tải và thu phản hồi; RC1 vẫn được giữ để tra cứu. Bản stable hiện là [1.8.0](https://github.com/CVF-Ecosystem/local-agent-workspace/releases/latest). File `VERSION` trong gói RC vẫn ghi `1.9.0`; khi phản hồi hãy ghi thêm tag `v1.9.0-rc2`.
+
+[Gửi phản hồi trên GitHub](https://github.com/CVF-Ecosystem/local-agent-workspace/issues/new?template=phan-hoi.md) hoặc dùng [phiếu phản hồi có sẵn](docs/FEEDBACK_FORM_VI_EN.md). Ghi tag RC, hệ điều hành, phiên bản Python, ứng dụng AI và các bước tái hiện; che tên người, số liệu và thông tin nội bộ trước khi gửi.
 
 ## LAW giúp gì?
 

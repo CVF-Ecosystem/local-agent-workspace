@@ -396,8 +396,9 @@ class Lifecycle(Rc):
         before = tree(proj)
         r = self.upgrade(proj, None, '--apply')
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
-        self.assertEqual({k: v for k, v in tree(proj).items() if not k.startswith('.agent/runtime/')},
-                         {k: v for k, v in before.items() if not k.startswith('.agent/runtime/')} | {'.agent/PACKAGE_INFO.json': (proj / '.agent/PACKAGE_INFO.json').read_bytes(), 'MANIFEST.sha256': before['MANIFEST.sha256']})
+        expected = {k: v for k, v in before.items() if not k.startswith('.agent/runtime/')}
+        expected.update({'.agent/PACKAGE_INFO.json': (proj / '.agent/PACKAGE_INFO.json').read_bytes(), 'MANIFEST.sha256': before['MANIFEST.sha256']})
+        self.assertEqual({k: v for k, v in tree(proj).items() if not k.startswith('.agent/runtime/')}, expected)
         newer = self.copy_pkg('newer')
         rules = newer / '.cvf/rules/v3/CONTROL_RULES.md'
         rules.write_bytes(rules.read_bytes() + '\nGhi chú bản mới.\n'.encode('utf-8'))

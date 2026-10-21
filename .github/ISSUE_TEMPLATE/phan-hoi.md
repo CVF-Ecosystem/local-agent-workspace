@@ -10,6 +10,8 @@ Che dữ liệu thật trước khi gửi. / Mask real data before submitting. B
 ## 1. Thông tin của bạn / About your setup
 
 - Phiên bản package / Package version (file `VERSION`):
+- Tag phát hành hoặc tên ZIP / Release tag or ZIP filename (ví dụ / e.g. `v1.9.0-rc2`; `VERSION` vẫn / stays `1.9.0`):
+- Phiên bản Python / Python version:
 - Ứng dụng và mô hình / App and model (ví dụ Claude Desktop, Gemini trong Antigravity, Codex):
 - Hệ điều hành / Operating system:
 - Bạn đã đi đến đâu / How far you got (tích tất cả mục đúng / tick all that apply):

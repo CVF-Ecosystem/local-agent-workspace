@@ -328,7 +328,7 @@ class NewProject(StructuredBase):
         result, _, data = self.structured('new_project.py', '--name', 'Biên bản họp: tổ A/B')
         self.assertEqual((result.returncode, data['status']), (0, 'preview'))
         target = dest / 'Biên bản họp tổ A B'
-        self.assertEqual(Path(data['target']), target)
+        self.assertEqual(Path(data['target']).resolve(), target.resolve())
         self.assertFalse(target.exists(), 'preview must write nothing')
         result, _, data = self.structured('new_project.py', '--name', 'Biên bản họp: tổ A/B', '--apply')
         self.assertEqual((result.returncode, data['status'], data['changes']), (0, 'success', True), data)

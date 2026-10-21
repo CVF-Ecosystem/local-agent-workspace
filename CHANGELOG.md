@@ -3,10 +3,13 @@
 Định dạng phiên bản: `MAJOR.MINOR.PATCH`. Số phiên bản nằm trong `VERSION`; hướng dẫn nâng cấp ở
 `docs/HUONG_DAN_CHUYEN_DOI_PROJECT_CO_SAN_VI.md`.
 
-## v1.9.0 — 2026-10-21
+## v1.9.0 — 2026-10-21 — RC2 (prerelease)
 
-Bản chuẩn bị, chưa phát hành: nhãn đã tăng để project 1.8.0 nâng lên một đích có thật; chưa qua bản đóng băng, chưa chạy gate phát hành cuối.
+Bản dùng thử 1.9.0-rc2 để thu phản hồi, chưa phải bản final; thay RC1 trong khuyến nghị tải. Giữ `VERSION` là `1.9.0` theo chính sách RC. Xem [bản RC2](https://github.com/CVF-Ecosystem/local-agent-workspace/releases/tag/v1.9.0-rc2) và [phiếu phản hồi](docs/FEEDBACK_FORM_VI_EN.md).
 MINOR vì thêm công cụ, thư mục và metadata, còn định dạng nguồn, sổ `references/_INDEX.xlsx` và phong bì kết quả của 1.8.0 vẫn đọc được. Nếu phát hiện đổi định dạng không tương thích thì phải chốt lại số MAJOR trước khi phát hành, không giữ MINOR cho tiện.
+
+- Sửa quyền riêng tư ZIP chẩn đoán: chỉ xuất metadata thành phần theo danh sách cho phép, loại đường dẫn Python và trường lạ; trạng thái cục bộ vẫn giữ đường dẫn để kiểm tra.
+- Sửa fixture EOL và khôi phục byte lịch sử đúng pin; chỉ chạy các ca dương tính phụ thuộc Windows trên Windows, giữ kiểm tra từ chối trên hệ điều hành khác.
 
 - Thêm `.cvf/` (quy tắc điều phối vai và quyền tác động, hợp đồng, kiểm tra) tự đủ trong LAW, và `roles/` (Scout, Worker, Reviewer). Quyền gọi vai nằm ở `.agent/EXECUTION_PROFILE.json` (xem `tools/execution_profile.py status`); mẫu mới bắt đầu không có quyền nào.
 - Thêm `tools/library_sync.py` (`python tools/library.py sync`): ghi nhận file trong `references/` vào sổ theo ID và revision. Sổ cũ giữ nguyên ID và các cột sẵn có, chỉ thêm cột `LAW *` và sheet `LAW history`.

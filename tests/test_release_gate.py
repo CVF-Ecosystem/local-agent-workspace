@@ -8,6 +8,7 @@ import json
 import os
 from pathlib import Path
 import platform
+import re
 import shutil
 import subprocess
 import sys
@@ -156,8 +157,9 @@ class ReleaseGateTests(unittest.TestCase):
         self.assertEqual(gate['status'], 'passed')
         self.assertIn('OK (skipped=3)', gate['detail'])
         for name, reason in (('test_first', 'first reason'), ('test_second', 'second reason'), ('test_documented', 'documented reason')):
-            self.assertIn(name + ' (test_synthetic_skips.Synthetic.' + name + ')', gate['detail'])
-            self.assertIn(reason, gate['detail'])
+            # unittest 3.8 prints the class in parentheses; newer versions include the method.
+            self.assertRegex(gate['detail'], re.escape(name + ' (test_synthetic_skips.Synthetic') +
+                             r'(?:\.' + re.escape(name) + r')?\)[^\n]*skipped ' + re.escape(repr(reason)))
 
     def test_gate_report_platform_python_hash_and_reproducible_zip(self):
         out1, out2 = self.base / 'report-1', self.base / 'report-2'

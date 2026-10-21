@@ -1,5 +1,5 @@
 # Kiểm package, hướng dẫn HTML, bộ kiểm thử hành vi và bản release candidate trên ma trận chính thức.
-# Chưa được chạy trên GitHub Actions tại thời điểm viết; xem .github/RELEASING.md (mục giới hạn còn lại).
+# Trạng thái các lần chạy thực tế nằm ở .github/RELEASING.md; cấu hình không tự chứng minh hỗ trợ.
 # Thư mục .github/ là của người bảo trì và không bao giờ vào gói phát hành.
 #
 # Ghi chú ma trận / matrix notes:

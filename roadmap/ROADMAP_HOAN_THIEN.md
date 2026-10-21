@@ -1,6 +1,6 @@
 # Roadmap LAW — Workspace cá nhân dùng lâu dài
 
-Cập nhật: **21/10/2026**. Trạng thái: **D-01a–f và SCRIPT-01 đã nhận đúng phạm vi; D-01g đã nhận ACCEPTED_WITH_LIMITS, M1 đóng; M2 đã chốt danh sách nghiệm thu, M3 đã nhận ACCEPTED_WITH_LIMITS sau M3-C1+A1; snapshot M4 1.9.0 đã chuẩn bị/kiểm; diễn tập mock ba việc đã xong, operator là observer (mục0.9). Operator đã hoãn pilot người mới tới sau MVP; M5 không chặn MVP. E07-B/RC1 nội bộ đã nhận ACCEPTED_WITH_LIMITS tại mục0.11; prerelease v1.9.0-rc1 đã công bố; đã nhận reviewL19/CI main1ca3đỏ và diagnostics conditionalpathleak, corrective L19 source đã review/push, CI mới đang chạy tại0.11, không mở tính năng. Từ đây theo lộ trình đóng tại mục 0, không tự mở thêm tính năng. C-02 chưa pilot; D-02/phát hành còn chờ.** Các verdict WITH_LIMITS và gate dữ liệu/phát hành giữ nguyên.
+Cập nhật: **21/10/2026**. Trạng thái: **D-01a–f và SCRIPT-01 đã nhận đúng phạm vi; D-01g đã nhận ACCEPTED_WITH_LIMITS, M1 đóng; M2 đã chốt danh sách nghiệm thu, M3 đã nhận ACCEPTED_WITH_LIMITS sau M3-C1+A1; snapshot M4 1.9.0 đã chuẩn bị/kiểm; diễn tập mock ba việc đã xong, operator là observer (mục0.9). Operator đã hoãn pilot người mới tới sau MVP; M5 không chặn MVP. E07-B/RC1 nội bộ đã nhận ACCEPTED_WITH_LIMITS tại mục0.11; prerelease v1.9.0-rc1 đã công bố; đã nhận reviewL19/CI main1ca3đỏ và diagnostics conditionalpathleak, corrective L19 source đã review/push; operator giao RC2 đồng bộ source/tải/feedback, đang chuẩn bị tại0.11, không mở tính năng. Từ đây theo lộ trình đóng tại mục 0, không tự mở thêm tính năng. C-02 chưa pilot; D-02/phát hành còn chờ.** Các verdict WITH_LIMITS và gate dữ liệu/phát hành giữ nguyên.
 
 Đây là roadmap duy nhất dẫn việc tiếp theo của Local Agent Workspace (LAW), hợp nhất định hướng operator, đề xuất external agent R2, phản biện Claude và đối chiếu Local. [Roadmap trước](archive/ROADMAP_HOAN_THIEN_TRUOC_LAW_R2_2026-10-17.md) được giữ nguyên; kết quả lịch sử chỉ có giá trị trong phạm vi đã kiểm.
 
@@ -508,6 +508,16 @@ chưa CI/officialsupport1.9.0; T37/T38 vẫn sauMVP. Các fullbuild timeout trư
 failed, không sửa gate/timeout hoặc tuyên toàn roadmapgốc đã đạt. Giữ baseline cho
 đến khi có finding cụ thể được operator chốt ưu tiên; final là quyết định sau feedback.
 Fullhash/lệnh/quyền và review độc lập publication ở đầu HANDOFF.
+
+### Đồng bộ prerelease RC2 —21/10/2026, PREPARING
+
+Operator giao đồng bộ mã nguồn, bản dùng thử và thông tin project. Phạm vi đóng: đưa
+L19 vào RC2, sửa fixture Python3.8/mac đã lộ từ CI, thống nhất README VI/EN,
+changelog, form/issue, GitHub About và link tải/feedback. Giữ VERSION1.9.0;
+giữ nguyên tag/asset RC1, chỉ dẫn người dùng sang RC2. Không thêm feature/pilot.
+Nghiệm thu: nguồn sạch/review → bốn gate RC2 passed → verify/create/upgrade fixture
+→ review artifact → main fast-forward + prerelease/latestfalse + checksum tải lại.
+Chưa có RC2 hoặc CI của nguồn RC2; kết quả nguồn901e1d1 giữ riêng, không gọi official.
 
 ### Corrective review ex-agent L19-01–03 —21/10/2026, SOURCE_REVIEW_ACCEPTED_CI_PENDING
 
