@@ -8,7 +8,7 @@ Phát triển LAW thành workspace local dùng lâu dài cho công việc văn p
 
 ## Current phase
 
-21/10/2026: RC1/MVP nội bộ đã qua review ACCEPTED_WITH_LIMITS. Operator chốt đẩy nguồn lên GitHub CVF-Ecosystem/local-agent-workspace; nhánh bàn giao branding-tokens. Commit nguồn RC1 vẫn6f39c60b; commit review/roadmap sau đó chỉ metadata, không đổi ZIP/code hoặc dựng lại. Chốt baseline để dùng và lấy feedback; chưa official/CI.
+21/10/2026: Đã công bố GitHub Pre-release v1.9.0-rc1 theo yêu cầu operator phát hành để thu feedback, chưa final. Tag trỏ source6f39c60b, ZIP/gate giữ đúng bản đã review;3asset tải lại từ GitHub khớp checksum. Stable latest vẫnv1.8.0; CI/supportofficial chưa xác nhận. MVP dùng thử đã bàn giao; tiếp feedback thật, không tự mở tính năng.
 
 ## Completed
 
@@ -24,11 +24,11 @@ Phát triển LAW thành workspace local dùng lâu dài cho công việc văn p
 
 ## Current artifact
 
-- RC1: dist/local-agent-workspace-v1.9.0-rc1.zip,1177698byte/261file; SHA256 3b0ea0888496a653b9c1ece77d1a13fdd13d5996ffdc2bc5f212775026c703f4. Gate cùng tên+.gate.json:4passed, commit6f39c60b77d368793612541f546ca92688289518/dirty=false lúc build.
-- Verdict/lệnh/hash/phạm vi ở đầu HANDOFF và roadmap0.11. Buildstdout1/2/3 giữ ở dist;2/3 timeout trước đóng ZIP, không chuyển failed thànhpassed.
-- Main đã verify giải nén mới0đổi/0thiếu; archive probe từ git archive HEAD,2stage độc lập bằng owner projection/manifest+nguyên ZIPwriter đều trùng RC1. Không fullsuite/gate patch/newgateJSON hay thay RC1.
-- Worker nghiệm thu UI headless/newproject/upgrade/restore; Main so log và filesystem: profile0grant, rawbytes gói khớp trừ tools/check_output.py chủ ý sửa, incoming.new đúng;7file riêng giữ,229file restored khớp.
-- Source RC1 commit6f39c60b; review/roadmap/STATE được commit bổ sung để bàn giao GitHub. Remote origin=https://github.com/CVF-Ecosystem/local-agent-workspace.git; nhánh branding-tokens. dist vẫn gitignored, không upload ZIP/Release. Maintainerprofile thật vắng, không sửa global/native grants.
+- Release: https://github.com/CVF-Ecosystem/local-agent-workspace/releases/tag/v1.9.0-rc1 ; published2026-10-21T05:22:38Z, prerelease=true/draft=false, target6f39c60b77d368793612541f546ca92688289518.
+- Asset ZIP1177698byte/261file: SHA256 3b0ea0888496a653b9c1ece77d1a13fdd13d5996ffdc2bc5f212775026c703f4; gateJSON64cea39ce6e04cc892ce70705f908ede0488892f58d6bcf09d6caa6dd82165d0; checksumfile f8dcd28e1a25216559b90d22aecd9b76d316b029e389c610b3c6eba90195874a.
+- Bản local ở dist/local-agent-workspace-v1.9.0-rc1*; ZIP/gate đã upload nguyên bytes. Gate4passed/1492test6skip ở source6f39;2fullrebuild sau timeout vẫnfailed,2archiveprobe đúngwriter bằngSHA.
+- Release notes có tải/hướng dẫn/nâng cấp/backup/giới hạn và feedback. docs/FEEDBACK_FORM_VI_EN.md đã có trongZIP; GitHub Issue template phan-hoi.md tồn tại, Issues bật; chưa có feedback mới để ghi.
+- Nguồn ở origin/branding-tokens, review đã push370ea81; ghi nhận phát hành cập nhật metadata sau đó. Main không đổi VERSION/CHANGELOG/tag source, code/gate hoặc ZIP; không merge main/global/profile.
 
 ## Open items
 
@@ -41,8 +41,8 @@ Phát triển LAW thành workspace local dùng lâu dài cho công việc văn p
 
 ## Waiting on user
 
-- Operator đã chốt baseline và cho push nguồn MVP lên repo chỉ định; không chờ xác nhận lại quyền này. Feedback trải nghiệm thật được ghi sau khi dùng, chưa có bằng chứng usability mới.
-- Chưa cấp official-release/upload ZIP, merge main hoặc host-global-admin/CVF cha; không tự mở scope. CI chưa có kết quả cho nguồn1.9.0, không suy push thành CI xanh.
+- Không chờ xác nhận phát hành prerelease: operator đã yêu cầu và đã công bố v1.9.0-rc1 để dùng/thu feedback. Chưa có kết quả usability hoặc phản hồi người dùng mới.
+- Chưa cấp stable/final release, merge main hoặc host-global-admin/CVF cha. Không suy release candidate thành official support/CI xanh; stable latest1.8.0 giữ nguyên.
 
 ## Decisions
 
@@ -56,4 +56,4 @@ Phát triển LAW thành workspace local dùng lâu dài cho công việc văn p
 
 ## Next milestone
 
-Giữ baseline RC1 và nguồn bàn giao GitHub trên branding-tokens; nhận feedback thật khi dùng MVP nội bộ. Codex chốt finding cần sửa, Claude thi công/Codex review; chưa có finding thì không mở tranche hoặc build mới. Official/merge main là công việc riêng khi được giao.
+Thu feedback thật bằng form/Issues đã có trong quá trình dùng prerelease. Codex chốt finding cần sửa với operator, Claude thi công/Codex review; chưa có finding thì giữ baseline, không dựng lại hoặc tự mở feature/pilot. Bản stable/final là quyết định sau feedback, không phải đầu ra lần này.
