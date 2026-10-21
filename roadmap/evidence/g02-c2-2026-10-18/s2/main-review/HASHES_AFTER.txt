@@ -1,0 +1,10 @@
+3912d420ffc7cec991e9e90f491cffde8f355ba99e6c132254feb9a91ef054b2  .cvf/checks/v2/refs.py
+68b89f09db934465c27ad996ca975e134c0aa121d73222c53b772ddce6678a93  .cvf/checks/v2/binding.py
+a03c56f26c5fc52956b4af639ec4482d87551d45795980d2c9e311913599b2b5  .cvf/checks/v2/README.md
+6d449aa72411b490496b3c4bf467092c84969d5993440aff1aa2795048c6c04d  tests/test_control_check_v2_s2.py
+a1216b35eba1ff4ffa24668bf8cce63e5d73bb012f6b1cdc828af794f1a0bf67  .cvf/checks/v2/loader.py
+5179e7091579c048dc0fb352ea7d210e40ad5901cb815860d17cf417a0cc40b9  .cvf/checks/control_check_v2.py
+c593c6d070ccdf673ff346dcd7e440ca07f8fcf13fc37162c0b704ad14ef4a77  .cvf/checks/v2/canon.py
+f95bfc367bb7f4700f611fcc8cd7e9f892672da3763df2b8464e72d628614c6c  .cvf/checks/control_check.py
+4c6dd3dae50596b506287e81a4b81099e1ba2a76c4d6580ce5e6a1c642f88cd3  .cvf/contracts/v2/control.schema.json
+20cff567afe4fa0f1ce5bb97c75129a90e3409c64836bf4538d8e8c378fa303e  .cvf/rules/v2/ROUTING_POLICY.json

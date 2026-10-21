@@ -1,0 +1,40 @@
+[
+  {
+    "width": 1280,
+    "viewport_w": 1280,
+    "sheet": {
+      "x": 640,
+      "y": 0,
+      "width": 640,
+      "height": 860
+    },
+    "close_btn": {
+      "x": 1228,
+      "y": 16,
+      "width": 32,
+      "height": 32
+    },
+    "sheet_right_edge_inside_viewport": true,
+    "close_btn_inside_viewport": true,
+    "horizontal_scroll": false
+  },
+  {
+    "width": 390,
+    "viewport_w": 390,
+    "sheet": {
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 860
+    },
+    "close_btn": {
+      "x": 338,
+      "y": 16,
+      "width": 32,
+      "height": 32
+    },
+    "sheet_right_edge_inside_viewport": true,
+    "close_btn_inside_viewport": true,
+    "horizontal_scroll": false
+  }
+]

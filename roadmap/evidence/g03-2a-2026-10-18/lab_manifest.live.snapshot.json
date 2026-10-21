@@ -1,0 +1,12 @@
+{
+  "lab": "C:\\Users\\DELL\\AppData\\Local\\Temp\\LAW-G03-2a-20261018-001903",
+  "python": "C:\\Users\\DELL\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+  "created": "2026-10-18T00:19:03",
+  "sha256": {
+    "fixture/input.txt": "0cde402ef2ca561cb4f01f4661b46fe80fa234bb22b8d2bc1e45414b601bdb31",
+    "allowed/T6-edit.txt": "b5f10fd86b164329ec5d493c52aa347ba7cd2ff0b28ac1209e3be06b3b8fd50c",
+    "denied/canary.txt": "e311b7937cd9d8796763461bd6e3e65fd16eac7da41aaf4c178b527ea1129370",
+    "hooks/gate.py": "deab9c13fe047abbaf65afce55a56f0d21393b89096a54895c480bf1751e3e3f",
+    ".claude/settings.json": "c386b82a8d7e3f7869950a7370025d152a288743c07ac3cbc0321b94b000ad6c"
+  }
+}

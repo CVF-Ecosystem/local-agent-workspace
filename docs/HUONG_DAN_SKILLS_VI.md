@@ -197,3 +197,35 @@ nhập nguyên bản. Không có global rules, hook, installer hoặc kỹ năng
 được đóng gói lại.
 
 Ghi nhận nguồn, kết quả audit và lý do nằm trong `NGUON_THAM_KHAO_VI.md` cùng thư mục.
+
+## 11. Dùng lại kinh nghiệm từ dự án này cho dự án khác (mẫu cá nhân)
+
+Dự án A (dự án bạn đang làm) có một cách làm hữu ích và bạn muốn dự án B (tạo sau) cũng có. Đừng chép cả A:
+chỉ chuyển phần dùng lại được, qua bộ mẫu cá nhân của bạn (bản giải nén ZIP chưa dùng để làm việc). Không có
+công cụ đồng bộ tự động; mỗi bước do bạn hoặc trợ lý AI làm khi bạn yêu cầu. Tiêu chí nhận vẫn chỉ nằm ở
+`skills/README.md`, mục "Tiếp nhận skill và gói".
+
+- **Bước 1, giữ ở A.** Nguồn, quyết định và kỹ năng riêng (`skills/local/project/`, của bạn, không vào bản giao) ở lại A. Chỉ rút phần thật sự tăng thêm; trợ lý AI làm được rồi thì không tạo kỹ năng trùng.
+- **Bước 2, làm bản dẫn xuất.** Tạo kỹ năng mới **khác ID** trong một thư mục nháp ngoài A và ngoài bộ mẫu. Chọn rõ `SKILL.md` và tài nguyên cần. Bỏ tên và số liệu riêng, đường dẫn của A, SourceID/revision/biên nhận, prompt và quyền đã cấp, STATE/HANDOFF, cấu hình provider, nguồn chưa được phép chia sẻ. Chỗ cần dữ liệu thì viết "lấy nguồn của dự án đang dùng". Giữ xuất xứ có thể công khai, không giả nguồn đã xác minh. **Dừng nếu** file được chọn đi qua symlink/junction, thoát thư mục nháp, hoặc còn liên kết ra ngoài hay phụ thuộc về A; quét chuỗi không chứng minh đã làm sạch mọi dữ liệu riêng, bạn đọc lại bản này.
+- **Bước 3, tiếp nhận.** Theo chuẩn ở `skills/README.md`: bạn xem đúng bản dẫn xuất và danh sách file sẽ vào bộ mẫu rồi xác nhận (đã có quyền cấp sẵn đúng phạm vi thì dùng, không hỏi lại từng file). Kết luận "dùng chung được" và quyền ghi vào bộ mẫu là hai việc riêng; quyền phải gắn đúng ID, bản đã xem và đúng bộ mẫu đích. **Dừng nếu** kết luận là `REVIEW`, `PROJECT_ONLY`, `DEFER`, hoặc chưa có quyền ghi bộ mẫu. Nhãn `AVAILABLE` gõ tay không phải xác nhận của bạn; bản sửa sau khi bạn đã xem thì xác nhận cũ hết hiệu lực.
+- **Bước 4, cập nhật bộ mẫu cá nhân.** Chỉ trên bộ mẫu cá nhân sạch, cách ly (chưa khởi tạo thành dự án, `python tools/check_package.py --verify` đạt và xem trước `new_project.py --name "Kiem tra mau"` với tên chưa tồn tại cũng đạt trước khi sửa; chỉ xem trước, không thêm `--apply`). Thêm đúng file đã chọn vào `skills/local/shared/<id>/` và một dòng vào `.agent/SKILL_INDEX.md`; bản tiếng Anh vào `en/skills/local/shared/<id>/` và `en/.agent/SKILL_INDEX.md`. **Dừng trước khi ghi, giữ nguyên bộ mẫu** nếu ID hoặc đường dẫn trùng kỹ năng có sẵn, hoặc bộ mẫu không còn khớp MANIFEST trước khi sửa; báo phần còn thiếu. Sau khi ghi, so mọi thay đổi của bộ mẫu với danh sách đã nhận, cả đường dẫn lẫn bytes của payload và toàn bộ index sau phép chèn dự kiến; có gì ngoài danh sách thì dừng tại đó, không sang bước 5 và báo cho bạn phần khác danh sách (MANIFEST chưa dựng lại nên máy cũng chưa cho tạo B).
+- **Bước 5, dựng lại manifest.** Sau khi thay đổi đã khớp danh sách, chạy `python tools/check_package.py --write-manifest` rồi `--verify` **trong bộ mẫu cá nhân đó**. Manifest chỉ là dấu toàn vẹn, không phải bằng chứng đã tiếp nhận: chạy khi chưa so danh sách sẽ hợp thức hóa luôn cả file thừa. Không chạy lệnh này trong dự án A hay trong kho nguồn của người bảo trì. `--verify` không đạt thì dừng, không sửa mã băm tay.
+- **Bước 6, tạo B.** Trong bộ mẫu: `python tools/new_project.py --name "B"` để xem trước, thêm `--apply` để tạo (`--lang en` cho bản tiếng Anh). Bộ mẫu giữ nguyên. B có kỹ năng dùng lại và dòng index tương ứng, nguồn và quyết định của riêng B, không có nguồn, quyền, STATE hay đầu ra đã nhận của A. Không tạo B bằng cách chép A rồi đổi tên: `new_project.py` từ chối thư mục đã là dự án.
+- **Bước 7, dùng ở B.** Trợ lý AI chỉ dùng kỹ năng khi hợp việc. Kỹ năng đã được nhận vào thư viện không có nghĩa đầu ra của B đã được nhận. Chép sang menu ứng dụng là quyết định khác (`install_skills.py`), không thuộc luồng này.
+
+```text
+Từ kỹ năng riêng <tên> của dự án này, làm bản dẫn xuất tên <id-mới> để dùng cho các dự án khác của tôi:
+bỏ dữ liệu riêng, đường dẫn và nguồn của dự án này. Cho tôi xem bản đó và danh sách file sẽ vào bộ mẫu cá nhân
+trước khi ghi; chưa ghi gì vào bộ mẫu khi tôi chưa xác nhận.
+```
+
+Sau bước 6, A, bộ mẫu và B độc lập: sửa nguồn hay kỹ năng riêng ở A không đổi B; sửa B không đổi A hay bộ mẫu; kết quả
+bạn đã nhận ở A không truyền sang B. Bộ mẫu cá nhân đổi cũng không làm dự án đã tạo trước đó đổi theo (xem mục 8). Kỹ năng
+dẫn xuất khi đã vào bộ mẫu thuộc phần dùng chung của bộ công cụ, khác kỹ năng riêng ở A; giữ nó qua mọi lần nâng cấp hay hạ
+cấp bộ công cụ chưa được bảo đảm ở đây. Muốn giữ bản bộ mẫu trước khi sửa thì bạn tự chép hoặc nhờ trợ lý AI; trợ lý AI không tự
+tạo bản sao lưu ngoài yêu cầu.
+
+Điều máy kiểm và điều chỉ là quy ước hợp tác: luồng tạo dự án từ chối khi file thuộc package/shared trong tập giao lệch MANIFEST. `--verify` riêng lẻ chỉ kiểm file đã ghi trong manifest; bước xem trước còn kiểm tập file giao, nên không bỏ qua nó khi có file thừa. Manifest không xác nhận dữ liệu riêng đã sạch. Máy
+từ chối lấy dự án đã khởi tạo làm bộ mẫu, và `install_skills.py` không bao giờ chép `skills/local/project/`. Việc tách dữ liệu
+riêng, tiếp nhận, quyền ghi bộ mẫu và so danh sách (bước 2 đến 5) là thỏa thuận giữa bạn và trợ lý AI; không có công cụ chặn nếu
+bạn chép tay, và công cụ cũng không đánh giá chất lượng kỹ năng.

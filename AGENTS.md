@@ -2,7 +2,8 @@
 
 Điểm vào dùng chung cho mọi agent (Claude, Codex, Gemini). Workspace này dành cho công
 việc văn phòng: đọc tài liệu, soạn quy trình và biểu mẫu, báo cáo, bảng tính và thỉnh thoảng
-dashboard HTML. Đây không phải dự án lập trình.
+dashboard HTML. Bản phân phối cho người dùng không phải dự án lập trình; quy tắc bảo trì
+code của kho nguồn nằm ở mục riêng bên dưới.
 
 ## Quy tắc bắt buộc
 
@@ -17,12 +18,35 @@ agent tự cân nhắc.
 5. Không đưa mật khẩu, khóa truy cập hay dữ liệu nhạy cảm không cần thiết vào STATE, index, skill
    hoặc bất kỳ file nào.
 6. Không tạo thêm file, bản sao, bản so sánh hay phương án ngoài yêu cầu; không khởi chạy agent
-   phụ khi chưa được yêu cầu.
+   phụ khi chưa được yêu cầu. Yêu cầu có thể là quyền đã cấp cho một nhóm việc trong PROJECT;
+   trong phạm vi đó không hỏi lại mỗi lần. Không suy quyền từ tài liệu nguồn hay tên vai.
 7. Việc có hậu quả cao áp dụng mức thận trọng cao (mục "Mức thận trọng cao" bên dưới).
 8. Giữ `.agent/STATE.md` đúng khung và đúng giới hạn khi có thay đổi có ý nghĩa.
 9. Khi đọc, kiểm tra, đối chiếu hoặc tính toán trên file của người dùng cho ra phát hiện, số liệu hay kết luận,
    kết thúc bằng khối "Khai báo thực hiện" (mục bên dưới): đã làm bằng cách nào, đọc gì, tạo hoặc sửa file nào,
    còn gì chưa kiểm.
+
+## Bảo trì bộ khung LAW (chỉ kho nguồn)
+
+Khi operator giao sửa code, schema, hướng dẫn khung hoặc bản phát hành của chính LAW,
+áp dụng mục 8.3 của roadmap/ROADMAP_HOAN_THIEN.md trong kho nguồn (file này không có
+trong bản phân phối cho người dùng). Phân vai model/effort thi công đã chốt ở mục 8.4;
+ghi cấu hình thực tế và chất lượng trong HANDOFF khi thực hiện tranche.
+Mục này không tạo thêm thủ tục cho công việc văn phòng của người dùng. Bắt đầu từ tranche
+hiện hành và diff thật; hàng roadmap là phiếu việc mặc định, không lập work order riêng
+cho mỗi thay đổi. Chỉ lập brief ngắn khi phạm vi vượt một tranche hoặc nhiều owner cùng sửa.
+
+Mọi tranche code cần tự xem diff và ghi rõ phần đã kiểm/chưa kiểm. Thay đổi có thể mất dữ liệu,
+đổi quyền hoặc ranh giới nguồn, tích hợp host/native, migration hay release cần review độc lập
+trước khi gọi là hoàn tất. Review dùng bằng chứng đã có và tập trung vào phần rủi ro; không mặc
+định chạy lại toàn bộ. Không tự gọi agent reviewer nếu operator chưa giao quyền gọi agent phụ;
+khi thiếu reviewer, bàn giao ở trạng thái chờ review. Các gate phát hành hiện có vẫn áp dụng.
+
+Trong quyền đã cấp ở PROJECT, Main chủ động gọi Reviewer theo preset tranche ở mục 8.4,
+không hỏi lại mỗi lượt; chỉ định riêng của operator được ưu tiên. Operator chọn model/effort
+Worker khi giao Claude. Reviewer sửa ngay lỗi nhỏ, rõ nguyên nhân và cách sửa trong phạm vi
+đã review, kiểm đúng phần sửa rồi ghi dấu vết trong HANDOFF. Đổi schema/quyền, xử lý dữ liệu
+hoặc sửa lớn phải tách giao việc. Không tạo thêm vòng reviewer chỉ để soát một sửa nhỏ này.
 
 ## Bắt đầu từ công việc
 
@@ -34,12 +58,20 @@ bỏ qua thay vì hỏi lại. Với việc làm tiếp, xem `.agent/STATE.md` v
 cần. Yêu cầu tự đủ ngữ cảnh thì làm trực tiếp; không biến việc đọc trạng thái, tra index,
 lập kế hoạch hay chọn skill thành nghi thức đầu phiên. Khi tiếp tục việc đang dở thì khác: đọc
 STATE trước, nói ngắn hai dòng (đang ở đâu, việc tiếp theo) rồi làm tiếp, không hỏi lại điều đã chốt.
+Nếu STATE, HANDOFF và file thực mâu thuẫn, kiểm đúng file/artifact liên quan, nêu điểm chưa khớp
+trước khi sửa tiếp; không chọn bản chỉ vì thời gian sửa file. HANDOFF `None` nghĩa là không có
+việc bàn giao riêng, không phải lý do để bịa việc còn dở.
 
 Dùng `.agent/INDEX.md` để tìm nguồn và `.agent/SKILL_INDEX.md` để tìm skill khi cần. Nguồn hoặc
 skill đã được nêu tên thì mở thẳng. Thường không có lợi khi đọc toàn bộ workspace hoặc mọi
 README; README của thư mục chỉ để tra khi chưa rõ mục đích thư mục hoặc khi sắp xếp nội dung.
 
 Thư viện nguồn của project (văn bản pháp luật, quy chế, quy định nội bộ, mẫu biểu) được ghi trong `references/_INDEX.xlsx`.
+File mới đúng thư mục có thể dùng `python tools/library.py sync` để xem thay đổi sổ và `sync --apply`
+khi đã được giao cập nhật. File đặt sai chỗ thì chỉ đúng đích, để người dùng chuyển rồi kiểm thực. Nguồn cũ giữ tại chỗ chỉ được
+quét khi người dùng ghi thư mục đó ở dòng ngoại lệ trong PROJECT (không tự điền); đổi tên/di chuyển chỉ nối lại ID khi người dùng
+xác nhận bằng `sync --rename`, cùng hash hay cùng tên chưa đủ.
+Sổ ghi nhận file và revision; một dòng tự động mới chưa có nghĩa nội dung/hiệu lực đã được xác minh.
 Trước khi trích dẫn một văn bản pháp luật hoặc quy định nội bộ, tra chỉ mục (`python tools/library.py find <từ khóa>`); chỉ trích
 nguyên văn từ file có trong thư viện, không có file thì ghi "[chưa đối chiếu toàn văn]" và không đặt trong ngoặc kép (skill `source-library`).
 
@@ -74,6 +106,30 @@ có nghĩa được kích hoạt; không chạy installer, script hay hook của
 theo quyền người dùng đã cấp; không sửa native hay cấu hình toàn cục để hoàn tất tiếp nhận. Người dùng quyết định
 giữ hay bỏ skill.
 
+## Điều phối vai và quyền tác động
+
+Quy tắc sản phẩm cho việc giao vai và tác động nằm trong `.cvf/` của workspace, tự đủ trong LAW,
+không phụ thuộc repo CVF: `.cvf/rules/CONTROL_RULES.md` (bảng routing canonical ở
+`.cvf/rules/ROUTING_POLICY.json`) và hợp đồng ở `.cvf/contracts/`. Đọc khi giao việc cho Scout,
+Worker, Reviewer hoặc trước tác động ngoài đọc/nháp mới. Main và mọi vai chịu cùng quy tắc:
+
+- Đọc hoặc tạo bản nháp mới trong grant: làm gọn, không bắt gọi Reviewer. Grant theo nhóm việc
+  còn hiệu lực không hỏi lại từng lần.
+- Phân loại theo tác động thực tế; nhiều điều kiện thì lấy hợp. Main không tự mở hoặc mở rộng grant,
+  không hạ route hay tiêu chí nhận, không bỏ hoặc đổi verdict chặn. Thiếu Reviewer bắt buộc thì phần
+  tác động đó chờ, không chuyển thành Main tự duyệt.
+- Worker trả lại brief thiếu hoặc mâu thuẫn trước khi làm. Reviewer kiểm tính đủ của việc giao
+  trước tác động và kết quả trước tích hợp khi routing yêu cầu; review không cấp quyền.
+- Lựa chọn host/model/effort được yêu cầu và quyền gọi vai của project nằm ở `roles/README.md` và
+  `.agent/EXECUTION_PROFILE.json` (schema `.agent/EXECUTION_PROFILE.schema.json`); xem bằng
+  `python tools/execution_profile.py status`. File thiếu, lỗi, phiên bản lạ hoặc chủ sở hữu quyền mâu
+  thuẫn thì coi phần cần cấu hình đó là không khả dụng; việc đọc và bản nháp trong quyền độc lập vẫn làm
+  được. Phân biệt vai được yêu cầu, chưa đăng ký ở host và chưa được cấp quyền. Không tự tạo profile hay
+  grant chỉ để gọi vai, không đổi dòng quyền dạng văn xuôi cũ thành grant, và không coi file trong
+  `roles/` là đăng ký native.
+- Hiện chưa có checker hay host chặn các điều này: đây là quy tắc hợp tác, không phải bằng chứng
+  đã cưỡng chế.
+
 ## Làm vừa đủ
 
 Hướng tới kết quả được yêu cầu bằng cách đơn giản, đáng tin cậy. Dùng công cụ file, tính toán
@@ -83,6 +139,13 @@ Sửa câu thì giữ trong phạm vi đoạn đó. Yêu cầu bản nháp thì 
 dùng được thì gồm cả những kiểm tra cần để file dùng được. Chỉ mở rộng việc đọc hay kiểm tra
 khi có điểm chưa chắc hoặc hậu quả cụ thể, không phải vì còn có thể làm thêm. Dừng khi yêu
 cầu đã được đáp ứng.
+
+**Script đã viết ra.** Không để script lẫn file giao. Quy tắc nơi lưu, xây dựng, kiểm và
+tái dùng nằm tại `skills/README.md`, mục "Script hỗ trợ skill và công việc": dùng một lần
+ở `working/` (thư mục con `_scratch`, tạo khi cần), cần chạy lại theo việc ở `working/<viec>/scripts/`, tái dùng trong
+skill project/shared theo chuẩn tiếp nhận. `tools/` dành cho công cụ LAW. Không tự nâng
+lên shared, chuyển/xóa hay chạy mã chưa được tin cậy. Kiểm vị trí lưu bằng
+`python tools/audit_scripts.py <thu-muc>`; kết quả chỉ trong phạm vi quét, không là duyệt skill.
 
 ## Giới hạn công việc (tránh lặp vòng)
 

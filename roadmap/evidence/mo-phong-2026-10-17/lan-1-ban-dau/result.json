@@ -1,0 +1,75 @@
+{
+  "steps": [
+    {
+      "step": "t1_preview",
+      "tag": "Đã xem trước",
+      "msg": "Mới xem trước, chưa ghi gì. Đọc kết quả rồi bấm Thực hiện.",
+      "out": "[XEM TRƯỚC, chưa tạo gì] Dự án mới từ bộ mẫu:\n  Tên công việc: Du an thu 01\n  Thư mục sẽ được tạo: C:\\Users\\DELL\\AppData\\Local\\Temp\\claude\\d--UNG-DUNG-AI-TOOL-AI-2026-Controlled-Vibe-Framework-CVF\\c10e50f7-d8b3-4ff6-9cec-4f49b976eb5e\\scratchpad\\ui\\tpl\\Du an thu 01\n  Sẽ chép 230 file của bộ công cụ vào thư mục này rồi thiết lập dự án; bộ mẫu không bị thay đổi."
+    },
+    {
+      "step": "t1_apply",
+      "tag": "Thành công",
+      "msg": "Đã ghi thay đổi. Bước tiếp: kiểm lại kết quả ở trang tương ứng.",
+      "out": "Đã tạo dự án \"Du an thu 01\" tại C:\\Users\\DELL\\AppData\\Local\\Temp\\claude\\d--UNG-DUNG-AI-TOOL-AI-2026-Controlled-Vibe-Framework-CVF\\c10e50f7-d8b3-4ff6-9cec-4f49b976eb5e\\scratchpad\\ui\\tpl\\Du an thu 01. Bộ mẫu gốc giữ nguyên.\n  - Chép tài liệu nguồn vào thư mục references/ của dự án mới.\n  - Mở thư mục dự án mới bằng ứng dụng AI bạn dùng (Claude, Codex, Gemini) và giao việc."
+    },
+    {
+      "step": "t1_done_text",
+      "text": "Đã tạo dự án: Du an thu 01\nC:\\Users\\DELL\\AppData\\Local\\Temp\\claude\\d--UNG-DUNG-AI-TOOL-AI-2026-Controlled-Vibe-Framework-CVF\\c10e50f7-d8b3-4ff6-9cec-4f49b976eb5e\\scratchpad\\ui\\tpl\\Du an thu 01\n\nBộ mẫu gốc không thay đổi. Từ giờ làm việc trong thư mục dự án mới này. Mở thư mục để chép tài liệu nguồn "
+    },
+    {
+      "step": "t1_project_files",
+      "PACKAGE_INFO": true,
+      "template_untouched": true
+    },
+    {
+      "step": "t1_error_duplicate_name",
+      "tag": "Chưa thể thực hiện",
+      "msg": "Chưa ghi gì. Bước tiếp: sửa thông tin đã nêu ở trên, rồi xem trước lại.",
+      "out": "Nơi lưu đã có thư mục \"Du an thu 01\"; thư mục đó được giữ nguyên, không ghi đè. Đặt tên công việc khác hoặc chọn nơi lưu khác. Chưa tạo gì."
+    },
+    {
+      "step": "t2_check",
+      "tag": "Cần xem xét",
+      "msg": "Đã kiểm xong và có điểm cần xem ở các dòng phía trên. Chỉ đọc: Không file nào bị sửa. Bước tiếp: xử lý từng điểm rồi kiểm lại.",
+      "out": "== C:\\Users\\DELL\\AppData\\Local\\Temp\\claude\\d--UNG-DUNG-AI-TOOL-AI-2026-Controlled-Vibe-Framework-CVF\\c10e50f7-d8b3-4ff6-9cec-4f49b976eb5e\\scratchpad\\ktnd\\du-lieu-gia\\bien-ban-thu.txt ==\n  CẦN SỬA: còn 1 chỗ có vẻ chưa điền, ví dụ: [Tên khách hàng]\n  CẦN SỬA: còn nhãn \"mẫu/dữ liệu minh họa/giả\" trong nội dung\n  ĐÃ KIỂM — CÓ VẤN ĐỀ / CẦN XEM XÉT.\n\nKiểm tra cơ học, chưa thay việc đọc lại và đối chiếu số liệu với nguồn (xem delivery-checklist).\nTổng kết: 0 đạt; 1 cần xem xét; 0 chưa kiểm được."
+    },
+    {
+      "step": "t3_report",
+      "tag": "Cần hợp nhất",
+      "msg": "Mới xem trước, chưa ghi gì. Đọc kết quả rồi bấm Thực hiện.",
+      "out": "[BÁO CÁO, chưa ghi gì] Nâng cấp project: v1.8.0 -> v1.8.0 (ngôn ngữ vi)\n\nXUNG ĐỘT: bạn đã sửa và package cũng đổi; lưu bản mới thành <tên>.new để hợp nhất (1):\n  - .agent/README.md\n\nThêm --apply để thực hiện."
+    },
+    {
+      "step": "t3_apply",
+      "tag": "Cần hợp nhất",
+      "msg": "Còn file cần hợp nhất: bản hiện có được giữ nguyên, bản mới nằm cạnh với đuôi .new. Bước tiếp: mở Chờ hợp nhất để so sánh và xử lý từng file.",
+      "out": "Nâng cấp project: v1.8.0 -> v1.8.0 (ngôn ngữ vi)\n\nXUNG ĐỘT: bạn đã sửa và package cũng đổi; lưu bản mới thành <tên>.new để hợp nhất (1):\n  - .agent/README.md\n\nĐã ghi. MANIFEST.sha256 đã theo bản mới.\nViệc cần làm: mở từng file có <tên>.new, hợp nhất phần bạn muốn giữ, rồi xóa file .new.\nNếu dùng gói lĩnh vực: chạy \"python tools/pack.py list\" để xem gói nào có bản mới."
+    },
+    {
+      "step": "t3_merges_before",
+      "rows": ".agent/README.md\n.agent/README.md.new\n\tBộ công cụ\tChưa xem\t\nSo sánh\nMở bản hiện hành\nMở bản mới\nBắt đầu xem"
+    },
+    {
+      "step": "t3_diff",
+      "added": "16\n+\nDòng mới từ gói phát hành (dữ liệu giả).",
+      "removed": "16\n-\nGhi chú của người thử: dòng này do tôi tự viết (dữ liệu giả)."
+    },
+    {
+      "step": "t3_manual_merge",
+      "merged_has_pkg_line": true,
+      "merged_has_observer_line": true,
+      "new_file_left": false
+    },
+    {
+      "step": "t3_final_report",
+      "tag": "Đã xem trước",
+      "msg": "Không có gì cần thay đổi.",
+      "out": "[BÁO CÁO, chưa ghi gì] Nâng cấp project: v1.8.0 -> v1.8.0 (ngôn ngữ vi)\n\nGiữ nguyên (bạn đã sửa, package không đổi) (1):\n  - .agent/README.md\n\nKhông có gì cần cập nhật.\n\nThêm --apply để thực hiện."
+    },
+    {
+      "step": "t3_merges_after",
+      "rows": "Không có file bộ công cụ nào đang chờ hợp nhất."
+    }
+  ],
+  "console_errors": []
+}

@@ -274,6 +274,81 @@ class Transactions(unittest.TestCase):
         self.assertEqual((proj / 'a.txt').read_text(encoding='utf-8'), 'orig')
         self.assertFalse((proj / '.agent' / 'runtime').exists())
 
+    def seed_journals(self, proj, count):
+        base = proj / '.agent' / 'runtime' / 'transactions'
+        for i in range(count):
+            d = base / ('20260101-0000%02d-aaaa%04d' % (i, i))
+            d.mkdir(parents=True)
+            (d / 'journal.json').write_text(json.dumps({'schema': tx.SCHEMA, 'id': d.name, 'status': 'committed',
+                                                        'created': '2026-01-01T00:00:%02d' % i, 'ops': []}), encoding='utf-8')
+        return base
+
+    def test_prune_false_keeps_other_journals_on_success_and_default_still_prunes(self):
+        for prune, expected in ((False, 26), (True, 20)):
+            proj = self.root / ('prune-%s' % prune)
+            write(proj, 'a.txt', 'orig')
+            base = self.seed_journals(proj, 25)
+            before = {p.name: (p / 'journal.json').read_bytes() for p in base.iterdir()}
+            t = tx.Transaction(str(proj), 'context-update', prune=prune)
+            t.add('a.txt', b'new')
+            t.run()
+            self.assertEqual((proj / 'a.txt').read_text(encoding='utf-8'), 'new')
+            after = {p.name: (p / 'journal.json').read_bytes() for p in base.iterdir() if (p / 'journal.json').exists()}
+            self.assertEqual(len(after), expected, prune)
+            if not prune:
+                self.assertEqual({k: v for k, v in after.items() if k in before}, before)  # byte identical, none removed
+            self.assertFalse((base / t.txid / 'staging').exists() or (base / t.txid / 'backup').exists())  # own private files go either way
+
+    def test_prune_false_keeps_runtime_folders_when_preflight_fails_default_removes_the_empty_ones(self):
+        Usage = collections.namedtuple('Usage', 'total used free')
+        for prune in (False, True):
+            proj = self.root / ('pre-%s' % prune)
+            write(proj, 'a.txt', 'orig')
+            (proj / '.agent' / 'runtime').mkdir(parents=True)
+            t = tx.Transaction(str(proj), 'context-update', prune=prune)
+            t.add('a.txt', b'new')
+            with patch('shutil.disk_usage', return_value=Usage(10 ** 9, 10 ** 9, 0)):
+                with self.assertRaises(tx.TransactionError):
+                    t.run()
+            self.assertEqual((proj / 'a.txt').read_text(encoding='utf-8'), 'orig')
+            self.assertEqual((proj / '.agent' / 'runtime').exists(), not prune)  # default: pruned as before; prune=False: parents stay
+
+    def test_prune_false_keeps_other_journals_when_stage_fails(self):
+        proj = self.root / 'stage-fail'
+        write(proj, 'a.txt', 'orig')
+        base = self.seed_journals(proj, 3)
+        before = {p.name: (p / 'journal.json').read_bytes() for p in base.iterdir()}
+        t = tx.Transaction(str(proj), 'context-update', prune=False)
+        t.add('a.txt', b'new')
+        with patch.dict(os.environ, {FAULT: 'stage:1'}):
+            with self.assertRaises(tx.TransactionError):
+                t.run()
+        self.assertEqual((proj / 'a.txt').read_text(encoding='utf-8'), 'orig')
+        after = {p.name: (p / 'journal.json').read_bytes() for p in base.iterdir()}
+        self.assertEqual({k: v for k, v in after.items() if k in before}, before)
+        self.assertEqual(tx.incomplete(str(proj)), [])
+
+    def test_prune_is_keyword_only_and_default_true(self):
+        t = tx.Transaction(str(self.root), 'x')
+        self.assertTrue(t._prune)
+        with self.assertRaises(TypeError):
+            tx.Transaction(str(self.root), 'x', None, False)
+
+    def test_strict_incomplete_refuses_bad_journal_default_still_skips_it(self):
+        proj = self.root / 'strict-scan'
+        base = proj / '.agent' / 'runtime' / 'transactions'
+        self.assertEqual(tx.incomplete(str(proj), strict=True), [])
+        journal = base / '20260101-000000-aaaa0000' / 'journal.json'
+        journal.parent.mkdir(parents=True)
+        journal.write_bytes(b'{broken')
+        self.assertEqual(tx.incomplete(str(proj)), [])
+        with self.assertRaises(tx.TransactionError):
+            tx.incomplete(str(proj), strict=True)
+        self.assertEqual(journal.read_bytes(), b'{broken')
+        with patch.object(tx.os, 'lstat', side_effect=PermissionError('cannot inspect journal directory')):
+            with self.assertRaises(PermissionError):
+                tx.incomplete(str(proj), strict=True)
+
     def test_missing_package_file_blocks_before_any_write(self):
         old, new = self.upgrade_pair('miss')
         (new / 'added.txt').unlink()
@@ -477,6 +552,362 @@ class Transactions(unittest.TestCase):
         self.assertEqual((res['status'], res['code']), ('success', 0))
         self.assertEqual((project / 'existing.txt').read_text(encoding='utf-8'), 'REPLACED')
         self.assertEqual(tx.incomplete(str(project)), [])
+
+
+
+def make_dir_link(link, target):
+    """A directory symlink, or a junction on Windows. False when this machine can create neither (e.g. Windows error 1314)."""
+    try:
+        os.symlink(str(target), str(link), target_is_directory=True)
+        return True
+    except (OSError, NotImplementedError):
+        pass
+    if os.name == 'nt':
+        result = subprocess.run(['cmd', '/c', 'mklink', '/J', str(link), str(target)], capture_output=True)
+        return result.returncode == 0 and os.path.isdir(str(link))
+    return False
+
+
+def drop_dir_link(link):
+    """Remove a directory link without touching its target; a link the code under test already removed is fine."""
+    try:
+        os.rmdir(str(link))
+    except FileNotFoundError:
+        return
+    except OSError:
+        os.unlink(str(link))
+
+
+def tree(folder):
+    return {str(p.relative_to(folder)): p.read_bytes() for p in sorted(Path(folder).rglob('*')) if p.is_file()}
+
+
+class RuntimeLinks(unittest.TestCase):
+    """A-06: the runtime folder and every write target must stay inside the project. Temp dirs; real junctions where possible."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory(prefix='tx-links-')
+        self.root = Path(self.tmp.name)
+        self.addCleanup(self.tmp.cleanup)
+        self.count = 0
+
+    def project(self):
+        self.count += 1
+        proj = self.root / ('proj%d' % self.count)
+        write(proj, 'a.txt', 'orig')
+        return proj
+
+    def outside(self):
+        folder = self.root / ('outside%d' % self.count)
+        write(folder, 'sentinel.txt', 'keep')
+        return folder
+
+    def link(self, where, target):
+        where.parent.mkdir(parents=True, exist_ok=True)
+        if not make_dir_link(where, target):
+            self.skipTest('this machine cannot create a directory symlink or junction')
+        self.addCleanup(drop_dir_link, where)
+
+    def test_runtime_components_that_are_links_stop_the_transaction_before_any_write(self):
+        cases = {'.agent': ('.agent',), '.agent/runtime': ('.agent', 'runtime'),
+                 '.agent/runtime/transactions': ('.agent', 'runtime', 'transactions'),
+                 'transaction folder': ('.agent', 'runtime', 'transactions', 'fixed'),
+                 'staging': ('.agent', 'runtime', 'transactions', 'fixed', 'staging'),
+                 'backup': ('.agent', 'runtime', 'transactions', 'fixed', 'backup')}
+        for name, parts in cases.items():
+            with self.subTest(link=name):
+                proj, out = self.project(), None
+                out = self.outside()
+                self.link(proj.joinpath(*parts), out)
+                before = tree(out)
+                t = tx.Transaction(str(proj), 'upgrade', txid='fixed')
+                t.add('a.txt', b'new')
+                with self.assertRaises((tx.TransactionError, OSError)):
+                    t.run()
+                self.assertEqual(tree(out), before, 'nothing was created, written or deleted outside the project')
+                self.assertEqual((proj / 'a.txt').read_text(encoding='utf-8'), 'orig')
+
+    def test_a_target_that_passes_through_a_link_is_refused_when_planned(self):
+        proj, out = self.project(), None
+        out = self.outside()
+        self.link(proj / 'docs', out)
+        before = tree(out)
+        t = tx.Transaction(str(proj), 'upgrade')
+        with self.assertRaises(tx.TransactionError):
+            t.add('docs/x.txt', b'data')
+        self.assertEqual(tree(out), before)
+
+    def test_a_journal_outside_the_project_is_never_read_resumed_or_rolled_back(self):
+        proj = self.project()
+        out = self.root / 'outside-runtime'
+        evil = out / 'transactions' / 'evil'
+        write(evil, 'staging/a.txt', 'pwned')
+        journal = {'schema': tx.SCHEMA, 'id': 'evil', 'operation': 'upgrade', 'status': 'committing', 'created': 'x', 'updated': 'x',
+                   'ops': [{'path': 'a.txt', 'action': 'write', 'before': tx.sha_bytes(b'orig'), 'after': tx.sha_bytes(b'pwned'),
+                            'size': 5, 'state': 'pending'}]}
+        write(evil, 'journal.json', json.dumps(journal))
+        self.link(proj / '.agent' / 'runtime', out)
+        before = tree(out)
+        self.assertEqual(tx.incomplete(str(proj)), [], 'an outside journal is not listed as unfinished work')
+        for call in (tx.resume, tx.rollback):
+            with self.assertRaises(tx.TransactionError):
+                call(str(proj), 'evil')
+        status = run('transaction.py', 'status', '--project', proj)
+        self.assertEqual(status.returncode, 2, status.stdout)
+        self.assertEqual((proj / 'a.txt').read_text(encoding='utf-8'), 'orig', 'the outside staged file was not applied')
+        self.assertEqual(tree(out), before)
+
+    def test_prune_never_deletes_through_a_link(self):
+        proj = self.project()
+        out = self.root / 'outside-runtime'
+        for n in range(tx.KEEP_JOURNALS + 5):
+            journal = {'schema': tx.SCHEMA, 'id': 'old%02d' % n, 'status': 'committed', 'created': '2026-01-%02d' % (n + 1), 'ops': []}
+            write(out, 'transactions/old%02d/journal.json' % n, json.dumps(journal))
+        self.link(proj / '.agent' / 'runtime', out)
+        before = tree(out)
+        tx.prune(str(proj))
+        self.assertEqual(tree(out), before, 'older journals outside the project were not removed')
+
+    def test_folders_are_released_after_success_and_after_failure(self):
+        proj = self.project()
+        t = tx.Transaction(str(proj), 'upgrade')
+        t.add('sub/b.txt', b'one')
+        t.run()
+        os.rename(str(proj / 'sub'), str(proj / 'sub2'))  # fails on Windows if a folder handle leaked
+        t2 = tx.Transaction(str(proj), 'upgrade')
+        t2.add('a.txt', b'new')
+        write(proj, 'a.txt', 'user edit')
+        with self.assertRaises(tx.TransactionError):
+            t2.run()
+        os.rename(str(proj / '.agent'), str(proj / '.agent2'))
+        self.assertEqual((proj / 'a.txt').read_text(encoding='utf-8'), 'user edit')
+
+    def test_held_folder_cannot_be_swapped_but_can_be_written(self):
+        if os.name != 'nt':
+            self.skipTest('folder handles that block renaming are implemented for Windows only')
+        proj = self.project()
+        folder = proj / 'held'
+        folder.mkdir()
+        with tx.Pins() as pins:
+            self.assertTrue(pins.hold(str(folder)))
+            with self.assertRaises(PermissionError):
+                os.rename(str(folder), str(proj / 'moved'))
+            with self.assertRaises(PermissionError):
+                os.rename(str(proj), str(self.root / 'renamed-parent'))
+            (folder / 'x.txt').write_text('ok', encoding='utf-8')
+        os.rename(str(folder), str(proj / 'moved'))
+        self.assertEqual((proj / 'moved' / 'x.txt').read_text(encoding='utf-8'), 'ok')
+
+    # ---- A-06 review fixes: the paths actually used (nested staging/backup, journal leaf), recovery, protection ----
+    def prepared(self, proj, ops, txid='fixed'):
+        """A transaction stopped after begin/stage/backup, before commit (what a crash in that window leaves behind)."""
+        t = tx.Transaction(str(proj), 'upgrade', txid=txid)
+        for rel, data in ops:
+            t.add(rel, data)
+        t.begin()
+        t.stage()
+        t.backup()
+        t.close()
+        return t
+
+    def crashed_after_first_commit(self, proj, ops, txid='fixed'):
+        t = tx.Transaction(str(proj), 'upgrade', txid=txid)
+        for rel, data in ops:
+            t.add(rel, data)
+        with patch.dict(os.environ, {FAULT: 'commit:1'}):
+            with self.assertRaises(OSError):
+                t.run()
+        return t
+
+    def read(self, path):
+        return Path(path).read_text(encoding='utf-8')
+
+    def save_as_user_once(self, proj, name, text='USER SAVED'):
+        state = {'done': False}
+
+        def hook(point, path):
+            if point in ('resume', 'rollback', 'commit') and os.path.basename(path) == name and not state['done']:
+                state['done'] = True
+                write(proj, os.path.relpath(path, proj).replace(os.sep, '/'), text)
+        return hook, state
+
+    def test_nested_staging_folder_that_is_a_link_stops_the_run(self):
+        proj, out = self.project(), None
+        out = self.outside()
+        self.link(proj / '.agent' / 'runtime' / 'transactions' / 'fixed' / 'staging' / 'sub', out)
+        before = tree(out)
+        t = tx.Transaction(str(proj), 'upgrade', txid='fixed')
+        t.add('sub/a.txt', b'data')
+        with self.assertRaises((tx.TransactionError, OSError)):
+            t.run()
+        self.assertEqual(tree(out), before, 'nothing was written to, moved from or deleted in the outside folder')
+        self.assertFalse((proj / 'sub' / 'a.txt').exists())
+
+    def test_nested_backup_folder_that_is_a_link_stops_the_run(self):
+        proj, out = self.project(), None
+        out = self.outside()
+        write(proj, 'sub/a.txt', 'orig')
+        self.link(proj / '.agent' / 'runtime' / 'transactions' / 'fixed' / 'backup' / 'sub', out)
+        before = tree(out)
+        t = tx.Transaction(str(proj), 'upgrade', txid='fixed')
+        t.add('sub/a.txt', b'new')
+        with self.assertRaises((tx.TransactionError, OSError)):
+            t.run()
+        self.assertEqual(tree(out), before)
+        self.assertEqual(self.read(proj / 'sub' / 'a.txt'), 'orig')
+
+    def test_resume_refuses_a_staging_folder_that_became_a_link(self):
+        proj, out = self.project(), None
+        out = self.outside()
+        write(proj, 'sub/a.txt', 'orig')
+        t = self.prepared(proj, [('sub/a.txt', b'data')])
+        write(out, 'a.txt', 'data')  # outside holds bytes whose hash equals the planned result
+        staged = Path(t.stage_dir) / 'sub'
+        shutil.rmtree(staged)
+        self.link(staged, out)
+        before = tree(out)
+        with self.assertRaises(tx.TransactionError):
+            tx.resume(str(proj), 'fixed')
+        self.assertEqual(tree(out), before, 'the outside file was not moved into the project')
+        self.assertEqual(self.read(proj / 'sub' / 'a.txt'), 'orig')
+
+    def test_rollback_refuses_a_backup_folder_that_became_a_link(self):
+        proj, out = self.project(), None
+        out = self.outside()
+        write(proj, 'sub/a.txt', 'orig')
+        t = self.crashed_after_first_commit(proj, [('sub/a.txt', b'new')])
+        self.assertEqual(self.read(proj / 'sub' / 'a.txt'), 'new')
+        write(out, 'a.txt', 'orig')  # outside holds bytes whose hash equals the original
+        backup = Path(t.backup_dir) / 'sub'
+        shutil.rmtree(backup)
+        self.link(backup, out)
+        before = tree(out)
+        with self.assertRaises(tx.TransactionError):
+            tx.rollback(str(proj), 'fixed')
+        self.assertEqual(tree(out), before)
+        self.assertEqual(self.read(proj / 'sub' / 'a.txt'), 'new', 'nothing was restored from outside the project')
+
+    def swap_with_link_hook(self, folder, out, name='a.txt'):
+        state = {'done': False, 'blocked': None, 'swapped': False}
+
+        def hook(point, path):
+            if point != 'commit' or os.path.basename(path) != name or state['done']:
+                return
+            state['done'] = True
+            try:
+                os.rename(str(folder), str(folder) + '.real')
+            except OSError as e:
+                state['blocked'] = e
+                return
+            if not make_dir_link(folder, out):
+                os.rename(str(folder) + '.real', str(folder))
+                state['blocked'] = OSError('could not create the link')
+                return
+            state['swapped'] = True
+            self.addCleanup(lambda: drop_dir_link(folder) if os.path.isdir(str(folder) + '.real') else None)
+        return hook, state
+
+    def test_swapping_the_staging_folder_at_commit_is_blocked_while_it_is_held(self):
+        if os.name != 'nt':
+            self.skipTest('held folders are implemented for Windows only')
+        proj, out = self.project(), None
+        out = self.outside()
+        write(out, 'a.txt', 'data')
+        before = tree(out)
+        t = tx.Transaction(str(proj), 'upgrade', txid='fixed')
+        t.add('sub/a.txt', b'data')
+        hook, state = self.swap_with_link_hook(Path(t.stage_dir) / 'sub', out)
+        with patch.object(tx, '_HOOK', hook):
+            t.run()
+        self.assertIsInstance(state['blocked'], PermissionError)
+        self.assertEqual(self.read(proj / 'sub' / 'a.txt'), 'data')
+        self.assertEqual(tree(out), before, 'the outside file was not moved away')
+
+    def test_swapping_the_staging_folder_is_refused_when_nothing_can_be_held(self):
+        proj, out = self.project(), None
+        out = self.outside()
+        write(out, 'a.txt', 'data')
+        before = tree(out)
+        t = tx.Transaction(str(proj), 'upgrade', txid='fixed')
+        t.add('sub/a.txt', b'data')
+        hook, state = self.swap_with_link_hook(Path(t.stage_dir) / 'sub', out)
+        with patch.object(tx, 'PIN_ENABLED', False), patch.object(tx, '_HOOK', hook):
+            with self.assertRaises(OSError):
+                t.run()
+        self.assertTrue(state['swapped'])
+        self.assertEqual(tree(out), before, 'recheck-only mode still refuses before moving the outside file')
+        self.assertFalse((proj / 'sub' / 'a.txt').exists())
+
+    def test_resume_keeps_a_file_the_user_saved_after_the_first_check(self):
+        proj = self.project()
+        self.prepared(proj, [('a.txt', b'data')])
+        hook, state = self.save_as_user_once(proj, 'a.txt')
+        with patch.object(tx, '_HOOK', hook):
+            res = tx.resume(str(proj), 'fixed')
+        self.assertTrue(state['done'])
+        self.assertEqual(self.read(proj / 'a.txt'), 'USER SAVED')
+        self.assertEqual((res['status'], res['code']), ('partial', 1), 'not reported as success')
+        self.assertIn('skipped_conflict', [f['action'] for f in res['files']])
+
+    def test_rollback_keeps_a_file_the_user_saved_after_the_first_check(self):
+        proj = self.project()
+        t = self.crashed_after_first_commit(proj, [('a.txt', b'data')])
+        self.assertEqual(self.read(proj / 'a.txt'), 'data')
+        hook, state = self.save_as_user_once(proj, 'a.txt')
+        with patch.object(tx, '_HOOK', hook):
+            res = tx.rollback(str(proj), 'fixed')
+        self.assertTrue(state['done'])
+        self.assertEqual(self.read(proj / 'a.txt'), 'USER SAVED')
+        self.assertEqual((res['status'], res['code']), ('partial', 1), 'not reported as success')
+        self.assertTrue((Path(t.backup_dir) / 'a.txt').exists(), 'the original stays in backup for manual recovery')
+
+    def test_recovery_and_idempotence_still_work_on_plain_paths(self):
+        proj = self.project()
+        self.prepared(proj, [('sub/b.txt', b'one'), ('a.txt', b'two')])
+        res = tx.resume(str(proj), 'fixed')
+        self.assertEqual(res['code'], 0)
+        self.assertEqual((self.read(proj / 'sub' / 'b.txt'), self.read(proj / 'a.txt')), ('one', 'two'))
+        self.assertEqual(tx.resume(str(proj), 'fixed')['code'], 0, 'idempotent')
+        proj2 = self.project()
+        self.crashed_after_first_commit(proj2, [('a.txt', b'two')])
+        self.assertEqual(tx.rollback(str(proj2), 'fixed')['code'], 0)
+        self.assertEqual(self.read(proj2 / 'a.txt'), 'orig')
+        self.assertEqual(tx.rollback(str(proj2), 'fixed')['code'], 0, 'idempotent')
+
+    def test_journal_leaf_that_is_a_link_is_not_followed(self):
+        proj, out = self.project(), None
+        out = self.outside()
+        tmp_target = out / 'stolen.txt'
+        write(out, 'stolen.txt', 'keep')
+        txd = proj / '.agent' / 'runtime' / 'transactions' / 'fixed'
+        txd.mkdir(parents=True)
+        try:
+            os.symlink(str(tmp_target), str(txd / 'journal.json.tmp'))
+        except (OSError, NotImplementedError):
+            self.skipTest('this machine cannot create a file symlink (Windows error 1314); no junction can stand in for a file')
+        self.addCleanup(lambda: os.unlink(str(txd / 'journal.json.tmp')) if os.path.islink(str(txd / 'journal.json.tmp')) else None)
+        before = tree(out)
+        t = tx.Transaction(str(proj), 'upgrade', txid='fixed')
+        t.add('a.txt', b'new')
+        with self.assertRaises((tx.TransactionError, OSError)):
+            t.run()
+        self.assertEqual(tree(out), before)
+
+    def test_protection_level_is_recorded_and_the_fallback_is_named(self):
+        proj = self.project()
+        t = tx.Transaction(str(proj), 'upgrade')
+        t.add('a.txt', b'one')
+        t.run()
+        expected = 'held' if os.name == 'nt' else 'recheck_only'
+        self.assertEqual(t.protection, expected)
+        proj2 = self.project()
+        t2 = tx.Transaction(str(proj2), 'upgrade')
+        t2.add('a.txt', b'one')
+        with patch.object(tx, 'PIN_ENABLED', False):
+            t2.run()
+        self.assertEqual(t2.protection, 'recheck_only', 'no handle means no claim of the Windows level of protection')
+        journal = json.loads((proj2 / '.agent' / 'runtime' / 'transactions' / t2.txid / 'journal.json').read_text(encoding='utf-8'))
+        self.assertEqual(journal['protection'], 'recheck_only')
 
 
 if __name__ == '__main__':

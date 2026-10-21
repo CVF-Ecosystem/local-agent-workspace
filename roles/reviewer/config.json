@@ -1,0 +1,30 @@
+{
+  "role": "reviewer",
+  "status": "PENDING_R4",
+  "host_presets": {
+    "claude-code": {
+      "status": "CANDIDATE",
+      "model": "claude-sonnet-5-5",
+      "tier": null,
+      "effort": null,
+      "quality_status": "NOT_EVALUATED_ON_LAW_PRODUCT",
+      "observed": null,
+      "note": "Factory candidate for the claude-code core adapter. Not applied, not written to any profile, not authority; the user chooses it through the execution profile. Effort and tier are not mapped (UNSUPPORTED)."
+    }
+  },
+  "implementation_trial": {
+    "scope": "LAW_SOURCE_IMPLEMENTATION",
+    "original_baseline_on": "2026-10-17",
+    "information_checked_on": "2026-10-17",
+    "revision": 2,
+    "quality_status": "NOT_EVALUATED_ON_LAW",
+    "codex": {
+      "default": { "model": "gpt-6.1-sol", "effort": "high" },
+      "light_tranche": { "model": "gpt-6.1-sol", "effort": "medium" }
+    },
+    "claude": {
+      "default": { "model": "claude-opus-5-5", "effort": "high" },
+      "light_tranche": { "model": "claude-opus-5-5", "effort": "medium" }
+    }
+  }
+}

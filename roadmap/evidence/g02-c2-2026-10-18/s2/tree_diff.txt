@@ -1,0 +1,27 @@
+# thay đổi so với tree_hashes_before.txt (sha256 16 ký tự)
+12c12
+< *.cvf/checks/v2/README.md ecbd27910d8ca162
+---
+> *.cvf/checks/v2/README.md 16280013c3600f2d
+13a14
+> *.cvf/checks/v2/binding.py 60326b37f24d8144
+15c16,17
+< *.cvf/checks/v2/loader.py b9a9439d5b5cfea5
+---
+> *.cvf/checks/v2/loader.py a1216b35eba1ff4f
+> *.cvf/checks/v2/refs.py dcc080ed25e020ef
+296c298,304
+< *roadmap/evidence/g02-c2-2026-10-18/s2/tree_hashes_before.txt e3b0c44298fc1c14
+---
+> *roadmap/evidence/g02-c2-2026-10-18/s2/cvf_hashes_before.txt 08aad6d7c1c3fa8e
+> *roadmap/evidence/g02-c2-2026-10-18/s2/green.log be66ae61d2e19686
+> *roadmap/evidence/g02-c2-2026-10-18/s2/mutation_probe.log 6e3867615f344397
+> *roadmap/evidence/g02-c2-2026-10-18/s2/py38_syntax.log e4e45bf8080e86df
+> *roadmap/evidence/g02-c2-2026-10-18/s2/red_scaffold.log 0af0c6021af33db3
+> *roadmap/evidence/g02-c2-2026-10-18/s2/tree_hashes_after.txt e3b0c44298fc1c14
+> *roadmap/evidence/g02-c2-2026-10-18/s2/tree_hashes_before.txt 1da99a33c38a6d92
+434c442,443
+< *tests/test_control_check_v2.py 93101be37f7121c2
+---
+> *tests/test_control_check_v2.py a5daf2e48c402323
+> *tests/test_control_check_v2_s2.py eae2e979f807ce1c

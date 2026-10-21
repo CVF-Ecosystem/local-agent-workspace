@@ -168,6 +168,13 @@ td{padding:11px 18px;border-bottom:1px solid var(--line-2);vertical-align:top;co
 tr:last-child td{border-bottom:0}
 tbody tr:hover td{background:var(--panel-2)}
 td.id{font-family:var(--mono);font-size:12.5px;color:var(--ink);white-space:nowrap}
+.lb-sub{display:block;font-size:12px;color:var(--muted);margin-top:3px}
+.lb-hint{margin:8px 0 0;font-size:12.5px;color:var(--muted)}
+.lb-bar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;border-top:1px solid var(--line-2)}
+.lb-det td{background:var(--panel-2)}
+.lb-dl{display:grid;grid-template-columns:minmax(120px,max-content) minmax(0,1fr);gap:4px 14px;margin:0;font-size:12.5px}
+.lb-dl dt{color:var(--muted)}.lb-dl dd{margin:0;overflow-wrap:anywhere}
+.lb-lk{margin:4px 0 0;padding-left:18px;font-size:12.5px}.lb-lk li{margin:6px 0;overflow-wrap:anywhere}
 .tw{overflow-x:auto}
 
 /* forms */
@@ -412,6 +419,7 @@ textarea{min-height:68px;resize:vertical}
         <div>
         <div class="card mb"><div class="card-h"><span data-ico="activity"></span><h2 data-t="cont_t"></h2><div class="r"><span class="tag" id="st-time" hidden></span></div></div><div class="card-b" id="st-box"></div>
           <div class="formfoot"><button class="btn ghost" data-open=".agent/STATE.md"><span data-ico="file"></span><span data-t="st_full"></span></button></div></div>
+        <div class="card mb" id="cd-card"><div class="card-h"><span data-ico="file"></span><h2 data-t="cd_t"></h2><div class="r"><span class="tag" id="cd-tag" hidden></span></div></div><div class="card-b" id="cd-box" aria-live="polite"></div></div>
         <div class="card mb"><div class="card-h"><span data-ico="library"></span><h2 data-t="src_t"></h2><span class="sub" id="src-n"></span><div class="r"><button class="btn" data-open="references" data-tt="src_open"><span data-ico="folder"></span><span data-t="open_dir"></span></button></div></div><div class="flist" id="src-list"></div></div>
         <div class="card mb"><div class="card-h"><span data-ico="inbox"></span><h2 data-t="out_t"></h2><span class="sub" id="out-n"></span><div class="r"><button class="btn" data-open="output" data-tt="out_open"><span data-ico="folder"></span><span data-t="open_dir"></span></button></div></div><div class="flist" id="out-list"></div></div>
         </div>
@@ -443,9 +451,13 @@ textarea{min-height:68px;resize:vertical}
       <div class="chips" id="lb-grp" data-tt="lb_group"></div>
       <button class="btn" data-open="references/_INDEX.xlsx"><span data-ico="file"></span><span data-t="lb_open_idx"></span></button>
       <button class="btn" data-open="references"><span data-ico="folder"></span>references</button>
-      <button class="btn" id="lb-check"><span data-ico="shield"></span><span data-t="lb_check"></span></button></div></div>
-      <div class="card-b"><div class="inline"><label class="sr" for="lb-q" data-t="lb_q_label"></label><input type="text" id="lb-q"><button class="btn pri" id="lb-go"><span data-ico="search"></span><span data-t="lb_go"></span></button></div></div>
-      <div class="tw"><table><thead><tr><th style="width:190px" data-t="lb_c1"></th><th data-t="lb_c2"></th><th style="width:150px" data-t="lb_c3"></th><th style="width:170px" data-t="lb_c4"></th><th style="width:120px" data-t="lb_c5"></th></tr></thead><tbody id="lb-rows-t"></tbody></table></div>
+      <button class="btn" id="lb-check"><span data-ico="shield"></span><span data-t="lb_check"></span></button>
+      <button class="btn" id="lb-sync" data-tt="lb_sync_tt"><span data-ico="refresh"></span><span data-t="lb_sync"></span></button></div></div>
+      <div class="card-b"><div class="inline"><label class="sr" for="lb-q" data-t="lb_q_label"></label><input type="text" id="lb-q"><button class="btn pri" id="lb-go"><span data-ico="search"></span><span data-t="lb_go"></span></button></div>
+        <p class="lb-hint" id="lb-hint"></p></div>
+      <div class="note mb lb-msg" id="lb-msg" role="status" hidden></div>
+      <div class="tw"><table><thead><tr><th style="width:34px"><span class="sr" data-t="lb_c0"></span></th><th style="width:170px" data-t="lb_c1"></th><th data-t="lb_c2"></th><th style="width:170px" data-t="lb_c3"></th><th style="width:210px" data-t="lb_c4"></th><th style="width:150px" data-t="lb_c5"></th></tr></thead><tbody id="lb-rows-t"></tbody></table></div>
+      <div class="card-b lb-bar"><span class="sub" id="lb-selN"></span><button class="btn pri" id="lb-copy" disabled><span data-ico="copy"></span><span data-t="lb_copy"></span></button><button class="btn ghost" id="lb-clear" data-t="lb_clear" disabled></button><span class="sub" data-t="lb_copy_note"></span></div>
     </div>
   </section>
 
@@ -635,6 +647,26 @@ var ICONS={
 };
 function ico(n,c){return'<svg class="i'+(c?' '+c:'')+'" viewBox="0 0 24 24" aria-hidden="true">'+(ICONS[n]||'')+'</svg>';}
 var D={
+ cd_t:['Nháp hiện tại','Current draft'],cd_load:['Đang kiểm…','Checking…'],
+ cd_unavail:['Chưa đối chiếu được: thành phần kiểm bản nháp không dùng được trên máy này (cần Windows, ổ NTFS cục bộ và thành phần kiểm đi kèm). File của bạn vẫn nguyên; mở từ thư mục kết quả như thường.','Cannot compare: the draft check component is not usable on this computer (needs Windows, a local NTFS drive and the bundled check component). Your files are untouched; open them from the results folder as usual.'],
+ cd_unres:['Ghi chú chọn nháp trong STATE chưa rõ (trùng, hỏng hoặc sai mục). Công cụ không tự sửa. Nhờ trợ lý AI sửa STATE theo quyền bạn đã cấp rồi mở lại trang.','The current-draft note in STATE is unclear (duplicate, damaged or in the wrong section). The tool does not repair it. Ask the AI assistant to fix STATE under the permission you gave, then reload.'],
+ cd_none:['Chưa chọn nháp hiện tại. Chọn một bản đã tạo để mở nhanh và xem các bản liên quan.','No current draft chosen yet. Choose a created revision to open it quickly and see related revisions.'],
+ cd_pick:['Chọn nháp','Choose a draft'],cd_other:['Chọn bản khác','Choose another'],cd_cont:['Tiếp tục sửa','Keep editing'],
+ cd_s_matched:['Khớp bản ghi nhận','Matches the record'],cd_s_changed:['Đã thay đổi','Changed'],cd_s_unverified:['Chưa đối chiếu được','Cannot compare'],cd_s_unopenable:['Không mở được','Cannot open'],
+ cd_open:['Mở','Open'],cd_open_warn:['Vẫn mở','Open anyway'],cd_select:['Chọn','Select'],cd_hist:['Các bản liên quan','Related revisions'],cd_none_hist:['Chưa có bản liên quan khác.','No other related revisions.'],
+ cd_more:['Còn %d bản liên quan nữa trong thư mục.','%d more related revisions are in the folder.'],cd_incomplete:['Danh sách có thể chưa đầy đủ (quá nhiều bản hoặc có bản không đọc được).','The list may be incomplete (too many revisions or some could not be read).'],
+ cd_note:['Chọn và mở chỉ để điều hướng, không phải nghiệm thu. Nếu bạn sửa file sau khi tạo, nhãn sẽ báo đã thay đổi.','Choosing and opening are navigation only, not acceptance. If you edit the file after it was created, the label shows it changed.'],
+ cd_pick_empty:['Chưa có bản nào có bằng chứng tạo hợp lệ để chọn.','No revision has valid creation evidence to choose yet.'],cd_pick_h:['Chọn một bản làm Nháp hiện tại','Choose a revision as the current draft'],
+ cd_sel_t:['Chọn làm Nháp hiện tại','Make this the current draft'],
+ cd_sel_preview:['Xem trước: chỉ cập nhật một dòng ghi chú trong STATE. Chọn không có nghĩa là đã nghiệm thu. Bấm Thực hiện để ghi.','Preview: only one note line in STATE changes. Choosing is not acceptance. Press Apply to write.'],
+ cd_sel_same:['Bản này đã là Nháp hiện tại; chưa ghi gì.','This revision is already the current draft; nothing was written.'],
+ cd_sel_done:['Đã cập nhật ghi chú Nháp hiện tại.','The current-draft note was updated.'],
+ cd_sel_conflict:['Có thay đổi sau lần xem trước nên chưa ghi gì. Hãy chọn lại.','Something changed after the preview, so nothing was written. Choose again.'],
+ cd_sel_unknown:['Chưa xác định được kết quả ghi. Mở lại trang để xem trước khi chọn lại.','The outcome of the write is not established. Reload the page and look before choosing again.'],
+ cd_sel_fail:['Chưa chọn được. File của bạn không bị đổi.','Not chosen. Your files were not changed.'],
+ cd_opened:['Đã gửi lệnh mở file.','Asked the app to open the file.'],cd_refused:['Không mở được file này.','This file cannot be opened.'],
+ cd_ack_changed:['File đã khác bản ghi nhận lúc tạo. Vẫn mở?','The file differs from what was recorded when it was created. Open anyway?'],cd_ack_unverified:['Chưa đối chiếu được file này với bản ghi nhận. Vẫn mở?','This file cannot be compared with the record. Open anyway?'],
+ cd_prompt:['Tiếp tục sửa bản nháp hiện tại: "%p" (mã bản %r). Giữ nguyên bản cũ, không ghi đè file này. Tạo một bản mới bằng tools/publish_new.py (P-CN1) với request_id mới, cùng work_id. Sau khi tạo xong, chọn bản mới làm Nháp hiện tại bằng: python tools/current_draft.py select --rid <mã bản mới> (xem trước, rồi --apply). Nếu chọn thất bại, nói rõ file đã tạo nhưng chưa cập nhật lựa chọn; không xóa hay tạo lại.','Keep editing the current draft: "%p" (revision id %r). Keep the old revision and do not overwrite this file. Create a new revision with tools/publish_new.py (P-CN1) using a new request_id and the same work_id. Then make it the current draft with: python tools/current_draft.py select --rid <new revision id> (preview, then --apply). If selecting fails, say clearly that the file was created but the choice was not updated; do not delete or recreate it.'],
  g_manage:['Quản lý và bảo trì','Manage and maintain'],nav_new:['Tạo dự án mới','New project'],nav_start:['Bắt đầu','Start'],
  mk_p:['Trợ lý AI tự dùng khả năng sẵn có của ứng dụng hoặc một kỹ năng bổ sung dưới đây khi việc cần; bạn không phải nêu tên kỹ năng khi giao việc. Trang này để xem các kỹ năng và quản lý gói bổ sung theo lĩnh vực.','The AI assistant uses the app’s own abilities or an add-on skill below when the task needs it; you never have to name a skill. This page is for reviewing skills and managing domain packs.'],
  pk_h:['Gói bổ sung theo lĩnh vực','Domain packs'],
@@ -674,10 +706,30 @@ var D={
  nav_setup:['Thiết lập thư mục này','Set up this folder'],nav_library:['Thư viện nguồn','Source library'],
  lb_p:['Văn bản pháp luật, quy chế nội bộ, mẫu biểu của dự án trong references/, ghi trong một chỉ mục references/_INDEX.xlsx. Trợ lý AI tra ở đây trước khi trích dẫn; không có toàn văn thì không trích nguyên văn.','The project\u2019s legal documents, internal rules and templates in references/, recorded in one index references/_INDEX.xlsx. The assistant looks here before quoting; without full text there are no verbatim quotes.'],
  lb_none_t:['Chưa có chỉ mục thư viện','No library index yet'],lb_none_p:['Tạo khung thư mục (legal, policies, templates, source-documents) và file chỉ mục mẫu. Không ghi đè gì đã có.','Create the folders (legal, policies, templates, source-documents) and the index template. Nothing existing is overwritten.'],lb_init:['Tạo khung thư viện','Create the library'],
- lb_k1:['Văn bản trong chỉ mục','Documents in the index'],lb_k2:['File trong references/','Files in references/'],lb_k3:['Chưa có toàn văn','Without full text'],lb_k4:['Cần đối chiếu','Need checking'],
+ lb_k1:['Dòng trong sổ','Rows in the index'],lb_k2:['Sổ ghi có toàn văn','Index says full text'],lb_k3:['Sổ không ghi toàn văn','Index has no full text'],lb_k4:['Ghi “Cần đối chiếu”','Marked “needs checking”'],
+ lb_hint:['Số liệu và danh sách lấy từ sổ đã lưu; không quét thư mục và không đọc nội dung file nguồn. Trạng thái file là giá trị đã ghi ở lần đồng bộ trước, chưa phải kiểm tra lúc này.','Figures and the list come from the saved index; no folder is scanned and no source file is read. File state is the value recorded at the last sync, not a check made now.'],
+ lb_c0:['Chọn','Select'],lb_pick:['Chọn nguồn %s','Select source %s'],lb_noid:['chưa có ID','no ID'],lb_norev:['chưa ghi revision','no revision recorded'],lb_rev:['revision %s','revision %s'],
+ lb_id_no_id:['Thiếu ID: xem được, không dùng làm nguồn đã định danh','No ID: viewable, not usable as an identified source'],lb_id_dup_id:['ID trùng trong sổ','Duplicate ID in the index'],lb_id_no_revision:['Chưa ghi revision','No revision recorded'],
+ lb_declared:['Sổ ghi: có toàn văn','Index: full text'],lb_undeclared:['Sổ không ghi toàn văn','Index: no full text'],lb_nopath:['chưa ghi đường dẫn','no path recorded'],
+ lb_state_PRESENT:['Đã ghi: có mặt','Recorded: present'],lb_state_MISSING:['Đã ghi: không thấy file','Recorded: file missing'],lb_state_NEEDS_REVIEW:['Đã ghi: file đã đổi, cần đối chiếu','Recorded: file changed, needs review'],lb_state_OUT_OF_SCOPE:['Đã ghi: ngoài phạm vi','Recorded: out of scope'],lb_state_none:['Chưa ghi nhận trạng thái file','File state not recorded'],lb_state_other:['Đã ghi: %s','Recorded: %s'],
+ lb_detail:['Chi tiết','Details'],lb_detail_hide:['Ẩn chi tiết','Hide details'],lb_dx_h:['Thông tin có trong sổ (chưa xác minh nội dung)','Recorded in the index (content not verified)'],
+ lb_f_group:['Nhóm','Group'],lb_f_domain:['Lĩnh vực','Domain'],lb_f_issuer:['Cơ quan ban hành','Issuer'],lb_f_number:['Số, ký hiệu','Number'],lb_f_type:['Loại văn bản','Type'],lb_f_issued:['Ngày ban hành','Issued'],lb_f_effective:['Ngày có hiệu lực','Effective'],lb_f_replaces:['Thay thế','Replaces'],lb_f_replaced_by:['Bị thay thế bởi','Replaced by'],lb_f_checked:['Ngày kiểm tình trạng','Status checked'],lb_f_articles:['Điều hay dùng','Key articles'],lb_f_sensitivity:['Mức nhạy cảm','Sensitivity'],lb_f_used_by:['Gói, skill dùng','Used by'],lb_f_url:['Nguồn tra cứu','Source URL'],lb_f_notes:['Ghi chú','Notes'],lb_f_file:['Đường dẫn','Path'],lb_f_observed:['Ghi nhận lần đồng bộ','Recorded at sync'],lb_f_sha:['SHA-256 đã ghi (12 ký tự đầu)','Recorded SHA-256 (first 12)'],lb_f_row:['Dòng trong sổ','Index row'],lb_none_rec:['chưa ghi nhận','not recorded'],
+ lb_sel_n:['Đã chọn %d nguồn','%d source(s) selected'],lb_sel_hidden:[' (%d nguồn đang ẩn theo bộ lọc)',' (%d source(s) hidden by the filter)'],lb_clear:['Bỏ chọn tất cả','Clear selection'],lb_copy:['Sao chép nguồn đã chọn','Copy selected sources'],lb_copy_note:['Chỉ sao chép văn bản; không gửi, không giao việc, không duyệt.','Copies text only; nothing is sent, assigned or approved.'],
+ lb_copied:['Đã sao chép %d nguồn vào clipboard. Chưa gửi hay giao việc gì.','Copied %d source(s) to the clipboard. Nothing was sent or assigned.'],lb_copy_failed:['Chưa sao chép được vào clipboard. Chưa có gì được gửi.','Could not copy to the clipboard. Nothing was sent.'],
+ lb_copy_rows:['Không sao chép: có dòng chưa đủ điều kiện làm nguồn đã định danh.','Not copied: some rows cannot be used as identified sources.'],lb_row_n:['dòng %s','row %s'],
+ lb_why_no_id:['thiếu ID','no ID'],lb_why_dup_id:['ID trùng','duplicate ID'],lb_why_no_revision:['chưa ghi revision','no revision recorded'],lb_why_stale:['sổ đã đổi, tải lại','the index changed, reload'],lb_why_changed:['dòng đã đổi, tải lại','the row changed, reload'],lb_why_bad_selection:['lựa chọn không hợp lệ','invalid selection'],
+ lb_open_ok:['Đã giao cho ứng dụng mặc định của máy mở file.','Handed to the default application to open.'],lb_open_stale:['Sổ đã đổi từ lúc tải bảng; bấm Tìm để tải lại rồi mở lại.','The index changed since the table loaded; press Search to reload, then open again.'],lb_open_changed:['Dòng này đã đổi từ lúc tải bảng; tải lại rồi mở lại.','This row changed since the table loaded; reload, then open again.'],lb_open_bad_selection:['Lựa chọn không hợp lệ; tải lại bảng.','Invalid selection; reload the table.'],
+ lb_open_no_locator:['Dòng này chưa ghi đường dẫn file.','This row has no file path recorded.'],lb_open_bad_locator:['Đường dẫn ghi trong sổ không hợp lệ; không mở.','The path recorded in the index is not valid; not opened.'],lb_open_out_of_scope:['Đường dẫn nằm ngoài references/ và ngoài thư mục nguồn cũ đã khai trong PROJECT.md; không mở.','The path is outside references/ and outside the old-source folders listed in PROJECT.md; not opened.'],
+ lb_open_link:['Đường dẫn là hoặc đi qua liên kết (symlink/junction); không mở.','The path is, or passes through, a link (symlink/junction); not opened.'],lb_open_unsupported_type:['Định dạng này không thuộc các loại tài liệu nguồn được hỗ trợ; không mở.','This format is not a supported source document type; not opened.'],lb_open_missing:['Không thấy file tại đường dẫn đã ghi.','No file at the recorded path.'],lb_open_denied:['Không có quyền truy cập file này.','No permission to access this file.'],lb_open_not_regular:['Đường dẫn không phải file thường; không mở.','The path is not a regular file; not opened.'],lb_open_unreadable:['Không kiểm tra được file (lỗi hệ thống).','The file could not be checked (system error).'],lb_open_launch_failed:['Hệ điều hành không mở được file.','The operating system could not open the file.'],
+ lb_open_transport:['Không nhận được trả lời từ bảng điều khiển; chưa biết file có mở hay không.','No reply from the panel; it is not known whether the file opened.'],
+ lb_err_denied:['Không có quyền đọc chỉ mục','No permission to read the index'],lb_err_unreadable:['Không đọc được chỉ mục','The index cannot be read'],lb_err_missing_sheet:['Chỉ mục thiếu sheet “Danh mục”','The index has no “Danh mục” sheet'],lb_err_no_header:['Chỉ mục không có dòng tiêu đề','The index has no header row'],lb_err_missing_columns:['Chỉ mục thiếu cột bắt buộc','The index is missing required columns'],lb_err_transport:['Không đọc được trả lời của bảng điều khiển','The panel’s reply could not be read'],
+ lb_err_note:['Đây không phải sổ trống: chưa biết sổ có dòng nào hay không. Sửa hoặc khôi phục sổ rồi tải lại; nút “Tạo khung thư viện” không sửa được lỗi này và không bị gọi tự động.','This is not an empty index: it is not known whether it has any rows. Fix or restore the index, then reload; “Create the library” does not repair this and is never run automatically.'],lb_err_tr_note:['Chưa biết sổ ở trạng thái nào (có thể là lỗi kết nối hoặc lỗi nội bộ). Không phải “chưa có sổ”.','The state of the index is unknown (possibly a connection or internal error). It does not mean “no index”.'],
+ lb_loaded_empty:['Sổ hợp lệ nhưng chưa có dòng nào. Thêm dòng vào sheet “Danh mục” hoặc chạy cập nhật sổ.','The index is valid but has no rows yet. Add rows to the “Danh mục” sheet or run the index update.'],lb_trunc:['Chỉ hiện %d trong %d dòng khớp; thu hẹp từ khóa hoặc nhóm.','Showing %d of %d matching rows; narrow the keyword or group.'],lb_matched:['%d dòng khớp.','%d matching row(s).'],
+ lb_sync:['Cập nhật sổ','Update the index'],lb_sync_tt:['Xem trước việc cập nhật sổ theo file trong references/ (chưa ghi gì)','Preview updating the index from the files in references/ (writes nothing)'],lb_t_sync:['Cập nhật sổ nguồn','Update the source index'],lb_sync_blocked:['Đã xem trước. Chưa thể ghi an toàn vì sổ có x14 hoặc chưa kiểm xong x14; đọc lưu ý phía trên.','Preview complete. Applying is unsafe because x14 is present or its check is incomplete; read the notice above.'],
+ lb_lk_h:['Phụ lục và kết quả liên quan (khai báo trong sổ, chưa xác minh nội dung)','Related appendices and results (declared in the index, content not verified)'],lb_lk_loading:['Đang đọc quan hệ từ sổ…','Reading the relations from the index…'],lb_lk_err:['Không đọc được quan hệ từ sổ.','The relations could not be read from the index.'],lb_lk_stale:['Sổ đã đổi từ lúc tải bảng; bấm Tìm để tải lại.','The index changed since the table loaded; press Search to reload.'],lb_lk_rel_h:['Nguồn và phụ lục liên quan','Related sources and appendices'],lb_lk_res_h:['Kết quả dùng nguồn này','Results that use this source'],lb_lk_none_rel:['Chưa ghi nguồn liên quan.','No related source recorded.'],lb_lk_none_res:['Chưa đăng ký kết quả nào dùng nguồn này.','No result registered for this source.'],lb_lk_in_cat_no:['không còn trong sổ','no longer in the index'],lb_lk_direct:['trực tiếp','direct'],lb_lk_indirect:['qua kết quả khác','through another result'],lb_lk_state_CURRENT_CATALOG_BASIS:['Căn cứ đã khai còn khớp sổ (chưa kiểm bytes)','Declared basis still matches the index (bytes not checked)'],lb_lk_state_NEEDS_REVIEW:['Nguồn đã đổi, cần xem lại','A source changed; review needed'],lb_lk_state_BASIS_CONFLICT:['Căn cứ xung đột với sổ','The basis conflicts with the index'],lb_lk_state_MISSING_SOURCE:['Có nguồn không còn trong sổ','A source is no longer in the index'],lb_lk_state_MISSING_BASIS:['Thiếu căn cứ trong sổ','Basis missing in the index'],lb_lk_state_NO_DECLARED_BASIS:['Chưa khai căn cứ','No declared basis'],lb_lk_superseded:['Đã có bản mới (revision %s)','A newer revision exists (%s)'],lb_lk_unknown:['Có phần chưa khai căn cứ: %s','Part without a declared basis: %s'],lb_lk_inf:['Mang nhãn INFERENCE (suy luận)','Carries INFERENCE labels'],lb_lk_open:['Mở bản này','Open this version'],lb_lk_copy:['Sao chép làm đầu vào','Copy as input'],lb_lk_copied:['Đã sao chép thông tin đầu vào; chạy prepare ngay trước khi dùng.','Input details copied; run prepare right before use.'],lb_lk_open_ok:['Đã giao cho ứng dụng mặc định của máy mở file (chưa phải kiểm tra nội dung).','Handed to the default application (this is not a content check).'],lb_lk_open_stale:['Sổ đã đổi từ lúc tải danh sách; tải lại rồi mở lại.','The index changed since the list loaded; reload and try again.'],lb_lk_open_changed:['Phiên bản đã đổi so với lúc chọn; tải lại.','The version differs from what was selected; reload.'],lb_lk_open_file_changed:['File không còn đúng bản đã đăng ký; không mở.','The file no longer matches the registered version; not opened.'],lb_lk_open_missing:['Không thấy file; không mở.','The file is missing; not opened.'],lb_lk_open_link:['File hoặc thư mục đi qua liên kết; không mở.','The file or a folder is a link; not opened.'],lb_lk_open_identity_conflict:['Định danh file khác lúc xuất bản; không mở.','The file identity differs from the publish record; not opened.'],lb_lk_open_unsupported_type:['Loại file này không mở từ bảng điều khiển.','This file type is not opened from the panel.'],lb_lk_open_fail:['Không mở được phiên bản này (file, bằng chứng hoặc quyền truy cập).','This version could not be opened (file, evidence or access).'],lb_lk_transport:['Không nhận được trả lời từ bảng điều khiển.','No reply from the panel.'],
  lb_find:['Tra cứu','Search'],lb_open_idx:['Mở chỉ mục','Open index'],lb_check:['Kiểm tra','Check'],lb_go:['Tìm','Search'],lb_ph:['Số hiệu hoặc từ khóa, ví dụ 30/2020 hoặc noi quy lao dong','Number or keyword, e.g. 30/2020 or noi quy lao dong'],
- lb_c1:['Số, ký hiệu','Number'],lb_c2:['Trích yếu','Title'],lb_c3:['Tình trạng','Status'],lb_c4:['Xác minh','Verification'],lb_c5:['Toàn văn','Full text'],
- lb_empty:['Nhập từ khóa để tìm trong chỉ mục.','Type a keyword to search the index.'],lb_nohit:['Không thấy văn bản khớp. Chưa có trong thư viện thì không trích nguyên văn.','No matching document. Not in the library means no verbatim quotes.'],
+ lb_c1:['Mã nguồn (ID)','Source ID'],lb_c2:['Số, ký hiệu và trích yếu','Number and title'],lb_c3:['Tình trạng, xác minh','Status, verification'],lb_c4:['Toàn văn, file đã ghi','Full text, recorded file'],lb_c5:['Thao tác','Actions'],
+ lb_empty:['Chưa có dòng nào trong sổ.','No rows in the index yet.'],lb_nohit:['Không thấy văn bản khớp. Chưa có trong thư viện thì không trích nguyên văn.','No matching document. Not in the library means no verbatim quotes.'],
  lb_open:['Mở','Open'],lb_noft:['Không có','None'],lb_t_check:['Kiểm tra thư viện nguồn','Check the source library'],lb_t_init:['Tạo khung thư viện','Create the library'],nav_upgrade:['Cập nhật bộ công cụ','Update package'],nav_maintain:['Bảo trì','Maintenance'],
  theme:['Đổi nền sáng/tối','Toggle light/dark'],quit:['Tắt bảng điều khiển','Stop the panel'],open_folder:['Mở thư mục','Open folder'],guide:['Hướng dẫn','Guide'],open_output:['Mở output','Open output'],copy_path:['Bấm để chép đường dẫn','Click to copy the path'],
  st_ready:['Đã khởi tạo','Set up'],st_notinit:['Chưa khởi tạo','Not set up'],
@@ -686,9 +738,92 @@ var D={
  check_pass:['Đã kiểm — đạt trong phạm vi hỗ trợ','Checked — passed within supported scope'],check_issues:['Đã kiểm — cần xem xét','Checked — needs review'],check_not_checked:['Chưa kiểm được đầy đủ','Not fully checked'],merge_required:['Cần hợp nhất','Merge needed'],merge_msg:['Còn file cần hợp nhất: bản hiện có được giữ nguyên, bản mới nằm cạnh với đuôi .new. Bước tiếp: mở Chờ hợp nhất để so sánh và xử lý từng file.','Some files need merging: the current versions are kept and the new ones sit beside them with a .new ending. Next step: open Pending merges to compare and handle each file.'],
  result_success:['Thành công','Succeeded'],result_preview:['Đã xem trước','Preview ready'],result_issues:['Cần xem xét','Needs review'],result_not_checked:['Chưa kiểm được','Not checked'],result_blocked:['Chưa thể thực hiện','Not carried out'],result_partial:['Chưa hoàn tất','Incomplete'],result_error:['Lỗi công cụ','Tool error'],
  mg_p:['Các bản `.new` do bộ công cụ hoặc gói lĩnh vực tạo khi cần giữ cả file hiện hành và bản mới.','Package or domain-pack `.new` files created when both the current and new versions must be preserved.'],
- mg_safe:['Ứng dụng chỉ theo dõi file do bộ công cụ quản lý, không tự hợp nhất và không ghi đè file hiện hành. Mục sẽ tự biến mất sau khi bạn xử lý và bỏ file `.new`.','The panel tracks only package-managed files. It never merges automatically or overwrites the current file. An item disappears after you handle and remove its `.new` file.'],
+ mg_safe:['Ứng dụng chỉ theo dõi file do bộ công cụ quản lý và không tự hợp nhất. Với tám tài liệu hướng dẫn Markdown được hỗ trợ, bản hiện hành chỉ bị thay khi bạn xem so sánh rồi bấm “Dùng bản mới”; cả hai bản được lưu trước và bản `.new` vẫn còn. Mục chỉ biến mất sau khi bạn xử lý và bỏ file `.new`.','The panel tracks only package-managed files and never merges automatically. For the eight supported Markdown guides, the current file is replaced only after you look at the comparison and press “Use the new copy”; both versions are stored first and the `.new` copy stays. An item disappears only after you handle it and remove its `.new` file.'],
  mg_title:['Danh sách cần xử lý','Items to resolve'],mg_file:['File','File'],mg_origin:['Nguồn','Origin'],mg_state:['Trạng thái','Status'],mg_actions:['Thao tác','Actions'],mg_none:['Không có file bộ công cụ nào đang chờ hợp nhất.','No package-managed files are waiting to be merged.'],
- mg_package:['Bộ công cụ','Package'],mg_domain_pack:['Gói lĩnh vực','Domain pack'],mg_unseen:['Chưa xem','Not reviewed'],mg_reviewing:['Đang xem','Reviewing'],mg_ready:['Đã xem, chờ xử lý','Reviewed; awaiting merge'],mg_open_current:['Mở bản hiện hành','Open current'],mg_open_new:['Mở bản mới','Open new'],mg_start:['Bắt đầu xem','Start review'],mg_ready_b:['Đánh dấu đã xem','Mark reviewed'],mg_reopen:['Xem lại','Review again'],
+ mg_package:['Bộ công cụ','Package'],mg_domain_pack:['Gói lĩnh vực','Domain pack'],mg_unseen:['Chưa xem','Not reviewed'],mg_reviewing:['Đang xem','Reviewing'],mg_ready:['Đã xem, chờ xử lý','Reviewed; awaiting merge'],mg_cp_current:['Chép đường dẫn bản hiện hành','Copy current path'],mg_cp_new:['Chép đường dẫn bản mới','Copy new path'],mg_start:['Bắt đầu xem','Start review'],mg_ready_b:['Đánh dấu đã xem','Mark reviewed'],mg_reopen:['Xem lại','Review again'],
+ mp_h:['Thay bằng bản mới','Replace with the new copy'],
+ mp_pv_fail:['Chưa xem trước được việc thay. Không có gì bị thay đổi. Bước tiếp: đóng cửa sổ rồi mở so sánh lại, hoặc tự sửa file.','The replace preview could not be loaded. Nothing was changed. Next step: close this window and open the comparison again, or edit the file yourself.'],
+ mp_unsupported:['Ứng dụng không thay bản hiện hành của file này. Hãy so sánh hai bản rồi xử lý theo nút có ở hàng: nếu hàng của file có nút “Giữ bản hiện hành, lưu .new” thì dùng nút đó; file không có nút thì tự đối chiếu và xử lý thủ công theo người phụ trách file đó. Không xóa .new hay sửa MANIFEST chỉ để qua kiểm tra.','The app does not replace the current copy of this file. Compare the two copies, then handle it by what the row offers: if the row of the file has a "Keep current, store .new" button, use that button; for a file without one, compare and handle it by hand with whoever owns that file. Do not delete the .new or edit MANIFEST just to pass a check.'],
+ mp_r_identical:['Hai bản giống hệt nhau nên không có gì để thay. Bản .new vẫn nằm trong danh sách chờ.','The two versions are identical, so there is nothing to replace. The .new copy stays in the pending list.'],
+ mp_r_current_missing:['Chưa có bản hiện hành nên không có bản cũ để lưu; ứng dụng không thay tự động. Không có gì bị thay đổi.','There is no current file, so there is no old version to store; the app does not replace it. Nothing was changed.'],
+ mp_r_candidate_missing:['Không còn bản .new để dùng. Không có gì bị thay đổi.','The .new copy is gone. Nothing was changed.'],
+ mp_r_binary:['File không phải văn bản UTF-8 thuần nên ứng dụng không thay tự động. Không có gì bị thay đổi.','The file is not plain UTF-8 text, so the app does not replace it. Nothing was changed.'],
+ mp_r_too_large:['File lớn hơn giới hạn so sánh nên ứng dụng không thay tự động. Không có gì bị thay đổi.','The file is larger than the comparison limit, so the app does not replace it. Nothing was changed.'],
+ mp_r_truncated:['Phần khác biệt quá dài để xem hết nên ứng dụng không thay tự động. Không có gì bị thay đổi.','The differences are too long to review in full, so the app does not replace it. Nothing was changed.'],
+ mp_r_unsafe:['Không kiểm được an toàn của đường dẫn hoặc không đọc được file (liên kết, thư mục lạ hoặc lỗi đọc), nên không thay. Không có gì bị thay đổi.','The path could not be checked as safe or the file could not be read (a link, an unexpected folder or a read error), so it is not replaced. Nothing was changed.'],
+ mp_r_pending:['Đang có giao dịch lưu file chưa hoàn tất nên chưa thay. Bước tiếp: mở trang Tình trạng ứng dụng, chọn Tiếp tục hoặc Phục hồi, rồi so sánh lại.','An unfinished file transaction exists, so nothing is replaced. Next step: open App status, choose Resume or Roll back, then compare again.'],
+ mp_r_other:['Ứng dụng không thay tự động mục này. Không có gì bị thay đổi.','The app does not replace this item automatically. Nothing was changed.'],
+ mp_will_cur:['Bản hiện hành sẽ bị thay bằng đúng nội dung bản .new bạn vừa xem ở dưới.','The current file will be replaced with exactly the .new content you are looking at below.'],
+ mp_will_save:['Trước khi thay, cả hai bản được lưu vào thư mục sao lưu của dự án; bản .new vẫn ở nguyên chỗ cũ.','Before the replacement, both versions are stored in the project backup folder; the .new copy stays where it is.'],
+ mp_will_pend:['Mục vẫn nằm trong danh sách chờ hợp nhất; thay file chưa phải là xử lý xong mục này.','The item stays in the pending list; replacing the file does not settle it.'],
+ mp_will_html:['Bản HTML của hướng dẫn chưa được dựng lại từ nội dung mới.','The HTML version of the guide is not rebuilt from the new content.'],
+ mp_use:['Dùng bản mới (giữ .new)','Use the new copy (keep .new)'],mp_keep:['Giữ bản của tôi','Keep mine'],mp_manual:['Tự sửa','Edit it myself'],
+ mp_kept:['Đã giữ nguyên cả hai file; không có gì thay đổi.','Both files were left as they are; nothing changed.'],
+ mp_man_h:['Tự sửa bằng trình soạn thảo của bạn','Edit it in your own editor'],
+ mp_man_p:['Ứng dụng không mở file hộ bạn. Chép đường dẫn, mở bằng trình soạn thảo, sửa rồi lưu; xong thì bỏ bản .new.','The app does not open files for you. Copy the path, open it in your editor, edit and save; remove the .new copy when done.'],
+ mp_cur_lbl:['Bản hiện hành','Current file'],mp_new_lbl:['Bản mới (.new)','New copy (.new)'],
+ mp_done:['Đã thay bản hiện hành bằng bản mới. Cả hai bản đã được lưu; bản .new vẫn chờ trong danh sách.','The current file was replaced with the new copy. Both versions were stored; the .new copy is still waiting in the list.'],
+ mp_done_rec:['Lấy lại bản cũ: mở file current.txt dưới đây bằng trình soạn thảo rồi lưu thành một file mới. Ứng dụng không có nút hoàn tác.','To get the old version back: open the current.txt file below in an editor and save it as a new file. The app has no undo button.'],
+ mp_arc_cur:['Bản cũ (current.txt)','Old version (current.txt)'],mp_arc_new:['Bản mới đã chọn (incoming.txt)','Chosen new version (incoming.txt)'],
+ mp_live_changed:['Lưu ý: file .new đã đổi sau khi bạn xem. Bản đã thay và bản lưu là bản bạn đã xem; file .new hiện tại được giữ nguyên.','Note: the .new file changed after you looked at it. The replacement and the stored copy are what you previewed; the current .new file is left as it is.'],
+ mp_noop:['Hai bản giống hệt nhau; không có gì được thay hoặc lưu.','The two versions are identical; nothing was replaced or stored.'],
+ mp_stale:['File đã đổi sau khi bạn xem trước nên chưa ghi gì. Bước tiếp: mở so sánh lại để xem bản mới nhất.','A file changed after your preview, so nothing was written. Next step: open the comparison again to see the latest.'],
+ mp_collision:['Thư mục sao lưu bị trùng tên nên chưa ghi gì. Bước tiếp: thử lại.','The backup folder name was already taken, so nothing was written. Next step: try again.'],
+ mp_blocked:['Chưa thay được và chưa ghi gì. Bước tiếp: so sánh lại; nếu vẫn bị chặn, tạo gói chẩn đoán.','It could not be replaced and nothing was written. Next step: compare again; if it is still blocked, create a diagnostics bundle.'],
+ mp_partial:['Việc thay bị dừng giữa chừng: một số file có thể đã được ghi, nên chưa thể coi là hoàn tất. Mã giao dịch: %s. Bước tiếp: mở trang Tình trạng ứng dụng; Tiếp tục để hoàn tất việc thay, hoặc Phục hồi để đưa file về như trước (phần sao lưu vừa ghi sẽ bị bỏ). Đừng sửa file này trong lúc đó.','The replacement stopped midway: some files may have been written, so it is not complete. Transaction: %s. Next step: open App status; Resume to finish the replacement, or Roll back to restore the previous state (the backup just written is dropped). Do not edit this file meanwhile.'],
+ mp_unproven:['Chưa xác minh được kết quả cuối. Mã giao dịch: %s. Bước tiếp: kiểm tra bản hiện hành và các bản lưu trước khi thao tác tiếp; Tiếp tục/Phục hồi chỉ dùng nếu giao dịch còn dở.','The final outcome could not be verified. Transaction: %s. Next step: inspect the current file and stored copies before proceeding; Resume/Roll back only apply to an unfinished transaction.'],
+ mp_err:['Chưa thay được. Không có file nào bị thay đổi. Bước tiếp: thử lại; nếu vẫn lỗi, tạo gói chẩn đoán.','It could not be replaced. No file was changed. Next step: try again; if it still fails, create a diagnostics bundle.'],
+ mp_unknown:['Chưa biết kết quả vì mất kết nối với ứng dụng. Bước tiếp: mở trang Tình trạng ứng dụng để xem có giao dịch dở không, và kiểm tra file trước khi thử lại.','The outcome is not known because the connection to the app was lost. Next step: open App status to look for an unfinished transaction, and check the file before trying again.'],
+ mf_intro:['Muốn giữ nguyên bản hiện hành và không chờ bản .new nữa? Lưu .new vào thư mục lưu trữ để mục này rời danh sách chờ. Chưa có gì được ghi cho đến khi bạn xem trước và xác nhận.','Want to keep the current file and stop waiting on the .new copy? Store the .new in the archive folder so this item leaves the pending list. Nothing is written until you preview and confirm.'],
+ mf_entry:['Giữ bản hiện hành, lưu .new','Keep current, store .new'],
+ mf_entry_note:['Đây là file hướng dẫn cho agent. Công cụ chỉ lưu bản .new vào thư mục lưu trữ; nội dung .new không được áp vào bản hiện hành. Muốn dùng nội dung mới, tự sửa bản hiện hành bằng trình soạn thảo rồi xem trước lại.','This is an instruction file for agents. The tool only stores the .new copy in the archive folder; its content is not applied to the current file. To use the new content, edit the current file yourself in an editor and preview again.'],
+ mf_btn:['Lưu .new và kết thúc chờ','Save .new and end the pending item'],mf_back:['Quay lại','Go back'],mf_recheck:['Kiểm lại kết quả','Check the result again'],
+ mf_pv_fail:['Chưa xem trước được việc lưu .new. Không có gì bị thay đổi. Bước tiếp: quay lại rồi mở so sánh lại.','The save preview could not be loaded. Nothing was changed. Next step: go back and open the comparison again.'],
+ mf_h:['Lưu .new và kết thúc chờ','Save .new and end the pending item'],
+ mf_will_cur:['Bản hiện hành được giữ nguyên, không bị ghi hay thay.','The current file is kept exactly as it is; it is not written or replaced.'],
+ mf_will_save:['Trước hết, bản hiện hành và bản .new bạn vừa xem được lưu vào thư mục lưu trữ của dự án (.agent/merge-backups).','First, the current file and the .new copy you just looked at are stored in the project archive folder (.agent/merge-backups).'],
+ mf_will_move:['Chỉ khi việc lưu đã hoàn tất và được kiểm lại, file .new mới được chuyển (không xóa) vào cùng thư mục đó, nên mục này không còn nằm trong danh sách chờ.','Only once the storing is complete and verified is the .new file moved (not deleted) into that same folder, so this item leaves the pending list.'],
+ mf_will_get:['Vẫn lấy lại được bằng tay: mở file trong thư mục lưu trữ bằng trình soạn thảo rồi lưu thành một file mới. Ứng dụng không có nút hoàn tác.','You can still get it back by hand: open the file in the archive folder in an editor and save it as a new file. The app has no undo button.'],
+ mf_will_html:['MANIFEST và bản HTML của hướng dẫn không được cập nhật. Việc này không xác nhận bản hiện hành là đúng hay mới nhất.','MANIFEST and the guide HTML are not updated. This does not confirm that the current file is correct or the latest.'],
+ mf_will_two:['Đây là hai bước tách rời và có thể bị gián đoạn; nếu gián đoạn, ứng dụng báo đúng bước đang dở.','These are two separate steps and can be interrupted; if so, the app reports exactly which step is unfinished.'],
+ mf_same:['Hai bản đang giống hệt nhau.','The two versions are identical.'],
+ mf_differ:['Hai bản khác nhau: xem phần so sánh bên dưới. Bản hiện hành được giữ; các thay đổi trong .new sẽ không được dùng.','The two versions differ: see the comparison below. The current file is kept; the changes in the .new will not be used.'],
+ mf_confirm:['Xác nhận: lưu .new và kết thúc chờ','Confirm: save .new and end the pending item'],
+ mf_arc_lbl:['Thư mục lưu trữ','Archive folder'],mf_arc_cur:['Bản hiện hành đã lưu (current.txt)','Stored current file (current.txt)'],
+ mf_arc_new:['Bản .new đã lưu (incoming.txt)','Stored .new copy (incoming.txt)'],mf_arc_ret:['Bản .new đã chuyển vào (pending-retired.txt)','Moved .new file (pending-retired.txt)'],
+ mf_done:['Đã lưu .new vào thư mục lưu trữ và chuyển nó khỏi danh sách chờ. Bản hiện hành giữ nguyên.','The .new was stored in the archive folder and moved out of the pending list. The current file is unchanged.'],
+ mf_done_note:['Lấy lại bản .new: mở pending-retired.txt bằng trình soạn thảo rồi lưu thành một file mới. MANIFEST và HTML không đổi; việc này không xác nhận nội dung bản hiện hành. Nếu sau này có file .new mới, nó sẽ hiện lại trong danh sách.','To get the .new back: open pending-retired.txt in an editor and save it as a new file. MANIFEST and HTML are unchanged; this does not confirm the current content. If a new .new file appears later, it will show in the list again.'],
+ mf_still:['Bản sao lưu đã được lưu, nhưng file .new CHƯA được chuyển; nó vẫn nằm trong danh sách chờ. Bản hiện hành không đổi. Bước tiếp: xem lý do bên dưới, rồi xem trước và thử lại, hoặc bấm Kiểm lại kết quả.','The backup copies were stored, but the .new file was NOT moved; it is still in the pending list. The current file is unchanged. Next step: read the reason below, then preview and try again, or press Check the result again.'],
+ mf_no_rollback:['Không dùng Phục hồi ở trang Tình trạng cho trường hợp này: giao dịch lưu đã hoàn tất và Phục hồi không hoàn tác việc chuyển file.','Do not use Roll back on App status here: the storing transaction is complete and Roll back does not reverse a file move.'],
+ mf_not_started:['Chưa lưu gì: file .new vẫn đang chờ và chưa có bản sao lưu đầy đủ. Bước tiếp: xem trước và thử lại nếu vẫn muốn.','Nothing was stored: the .new file is still waiting and there is no complete backup. Next step: preview and try again if you still want to.'],
+ mf_partial:['Việc lưu bản sao lưu bị dở (mã giao dịch: %s). File .new CHƯA được chuyển và vẫn nằm trong danh sách chờ; bản hiện hành không đổi. Bước tiếp: mở trang Tình trạng ứng dụng, chọn Tiếp tục (chỉ hoàn tất phần lưu, không tự chuyển .new) hoặc Phục hồi (gỡ phần sao lưu vừa ghi).','Storing the backup copies was interrupted (transaction: %s). The .new file was NOT moved and is still in the pending list; the current file is unchanged. Next step: open App status and choose Resume (it only finishes the storing, it does not move the .new) or Roll back (it removes the backup copies just written).'],
+ mf_w_archive_error:['Đã kiểm đủ bản lưu nhưng giao dịch báo lỗi sau commit; chưa thử chuyển .new. Không dùng Phục hồi cho giao dịch đã commit.','The stored copies were verified, but the transaction reported an error after commit; moving the .new was not attempted. Do not roll back a committed transaction.'],
+ mf_unproven:['Chưa xác minh được việc lưu bản sao lưu (mã giao dịch: %s) nên .new chưa được chuyển. Bước tiếp: kiểm tra thư mục lưu trữ bên dưới và bản hiện hành; chỉ dùng Tiếp tục/Phục hồi ở trang Tình trạng ứng dụng nếu giao dịch còn dở.','The stored backup copies could not be verified (transaction: %s), so the .new was not moved. Next step: inspect the archive folder below and the current file; use Resume/Roll back on App status only if a transaction is unfinished.'],
+ mf_conflict:['Các file không khớp kết quả dự kiến nên không coi là đã kết thúc. Ứng dụng không xóa hay chuyển ngược file nào. Bước tiếp: kiểm tay các file ở thư mục lưu trữ bên dưới và vị trí .new cũ rồi quyết định.','The files do not match the expected result, so this is not treated as finished. The app deletes nothing and moves nothing back. Next step: check the files in the archive folder below and the old .new location by hand, then decide.'],
+ mf_unknown_state:['Chưa xác định được kết quả. Ứng dụng không xóa hay chuyển thêm file nào. Bước tiếp: kiểm tay thư mục lưu trữ và vị trí .new cũ, rồi bấm Kiểm lại kết quả.','The outcome could not be determined. The app deletes and moves nothing more. Next step: check the archive folder and the old .new location by hand, then press Check the result again.'],
+ mf_net:['Chưa biết kết quả vì mất kết nối với ứng dụng. Ứng dụng không gửi lại lệnh. Bước tiếp: bấm Kiểm lại kết quả để xem tình trạng thật của các file.','The outcome is not known because the connection to the app was lost. The command is not sent again. Next step: press Check the result again to see the real state of the files.'],
+ mf_stale:['File đã đổi sau khi bạn xem trước nên chưa ghi gì. Bước tiếp: quay lại, mở so sánh rồi xem trước lại.','A file changed after your preview, so nothing was written. Next step: go back, open the comparison and preview again.'],
+ mf_collision:['Thư mục lưu trữ bị trùng tên nên chưa ghi gì. Bước tiếp: xem trước lại để nhận mã mới.','The archive folder name was already taken, so nothing was written. Next step: preview again to get a new id.'],
+ mf_err:['Chưa lưu được. Không có file nào bị thay đổi. Bước tiếp: thử lại; nếu vẫn lỗi, tạo gói chẩn đoán.','It could not be stored. No file was changed. Next step: try again; if it still fails, create a diagnostics bundle.'],
+ mf_r_missing:['Thiếu bản hiện hành hoặc bản .new nên chưa lưu được. Không có gì bị thay đổi.','The current file or the .new copy is missing, so nothing can be stored. Nothing was changed.'],
+ mf_r_content:['File không phải văn bản UTF-8 thuần, quá lớn hoặc phần khác biệt quá dài để xem hết, nên ứng dụng không tự lưu. Không có gì bị thay đổi.','The file is not plain UTF-8 text, is too large, or the differences are too long to review in full, so the app does not store it. Nothing was changed.'],
+ mf_r_unsafe:['Không kiểm được an toàn của đường dẫn hoặc không đọc được file (liên kết, thư mục lạ hoặc lỗi đọc), nên chưa lưu. Không có gì bị thay đổi.','The path could not be checked as safe or the file could not be read (a link, an unexpected folder or a read error), so nothing is stored. Nothing was changed.'],
+ mf_r_pending:['Đang có giao dịch lưu file chưa hoàn tất nên chưa lưu. Bước tiếp: mở trang Tình trạng ứng dụng, chọn Tiếp tục hoặc Phục hồi, rồi so sánh lại. Không có gì bị thay đổi.','An unfinished file transaction exists, so nothing is stored. Next step: open App status, choose Resume or Roll back, then compare again. Nothing was changed.'],
+ mf_r_os:['Chỉ Windows mới tự chuyển file .new; hệ điều hành này không được hỗ trợ nên ứng dụng không làm gì. Bạn vẫn có thể chép đường dẫn và tự xử lý. Không có gì bị thay đổi.','Only Windows moves the .new file automatically; this system is not supported, so the app does nothing. You can still copy the paths and handle it yourself. Nothing was changed.'],
+ mf_r_fs:['Không chứng minh được thư mục lưu trữ cùng ổ đĩa với file .new nên chưa lưu. Không có gì bị thay đổi.','The archive folder could not be shown to be on the same drive as the .new file, so nothing is stored. Nothing was changed.'],
+ mf_r_other:['Ứng dụng không tự lưu mục này. Không có gì bị thay đổi.','The app does not store this item automatically. Nothing was changed.'],
+ mf_w_slot:['Ô lưu pending-retired.txt đã có sẵn nên ứng dụng không chuyển đè lên.','The pending-retired.txt slot already exists, so the app does not move over it.'],
+ mf_w_rename:['Hệ điều hành không cho chuyển file .new (có thể đang mở trong ứng dụng khác hoặc bị khóa).','The system did not allow the .new file to be moved (it may be open in another application or locked).'],
+ mf_w_cand:['File .new đã đổi so với bản bạn xem trước.','The .new file changed since your preview.'],
+ mf_w_cur:['Bản hiện hành đã đổi hoặc không còn so với lúc bạn xem trước.','The current file changed or is gone since your preview.'],
+ mf_w_both:['Có cả file .new ở vị trí cũ lẫn file ở ô lưu trữ. Danh sách chờ chỉ theo file .new đang có thật.','There is both a .new file at the old place and a file in the archive slot. The pending list only follows the .new file that exists.'],
+ mf_w_moved:['File ở ô lưu trữ khác bản .new bạn đã xem. Ứng dụng giữ nguyên, không xóa hay chuyển ngược.','The file in the archive slot differs from the .new you looked at. The app leaves it as it is and does not delete or move it back.'],
+ mf_w_absent:['Không thấy .new ở vị trí cũ lẫn ở ô lưu trữ.','The .new is found neither at the old place nor in the archive slot.'],
+ mf_w_arch:['Bản sao lưu chưa được xác minh đầy đủ (nhật ký hoặc file đã lưu chưa khớp).','The backup copies are not fully verified (the journal or the stored files do not match).'],
+ mf_w_unsafe:['Có file không đọc được, hoặc là liên kết hay thư mục lạ.','A file could not be read, or is a link or an unexpected folder.'],
+ mf_w_platform:['Hệ điều hành hoặc ổ đĩa này không được hỗ trợ cho việc chuyển file tự động.','This system or drive is not supported for the automatic move.'],
+ mf_w_after_error:['Hệ thống báo lỗi nhưng khi kiểm lại thì file đã được chuyển đúng.','The system reported an error, but on checking the file had been moved correctly.'],
+ mf_w_other:['Có điểm chưa khớp; xem các file bên dưới.','Something does not match; see the files below.'],
  bn_init_t:['Thư mục này chưa là dự án','This folder is not a project yet'],bn_init_p:['Khởi tạo để điền PROJECT.md, đặt STATE sạch và bật các chức năng cài gói, cập nhật.','Set it up to fill PROJECT.md, start a clean STATE and enable packs and upgrades.'],bn_init_b:['Khởi tạo','Set up'],
  k_skills:['Kỹ năng trong chỉ mục','Skills in the index'],k_packs:['Gói lĩnh vực đã cài','Domain packs installed'],k_out:['File trong output','Files in output'],k_ref:['File nguồn (references)','Source files (references)'],
  state_t:['Trạng thái công việc','Work status'],quick_t:['Lối tắt','Shortcuts'],state_empty:['Chưa có trạng thái','No status yet'],state_empty_p:['Trợ lý AI ghi vào .agent/STATE.md khi làm việc: mục tiêu, giai đoạn, việc chờ bạn.','The assistant writes .agent/STATE.md while working: goal, phase, what waits on you.'],
@@ -741,8 +876,15 @@ var D={
  h_app:['Ứng dụng','Application'],h_version:['Phiên bản bộ công cụ','Package version'],h_kind:['Loại workspace','Workspace type'],h_evidence:['Căn cứ nhận diện','Basis of identification'],h_python:['Python','Python'],h_platform:['Hệ điều hành','Operating system'],
  h_comp:['Chức năng tùy chọn','Optional features'],h_comp_p:['Chức năng cần thư viện hoặc thành phần thêm. Phần còn lại của ứng dụng vẫn dùng được.','Features that need an extra library or component. The rest of the app still works.'],
  usable:['Dùng được','Usable'],not_usable:['Chưa dùng được','Not usable'],why_label:['Vì sao','Why'],fix_label:['Cách khắc phục','How to fix'],
- f_python:['Python 3.8 trở lên','Python 3.8 or newer'],f_library:['Thư viện nguồn: tra cứu và kiểm chỉ mục','Source library: search and index check'],f_xlsx:['Kiểm tra file .xlsx','Check .xlsx files'],f_picker:['Hộp chọn file và thư mục','File and folder picker'],
- why_opx:['Chưa cài thư viện openpyxl','The openpyxl library is not installed'],why_tk:['Python này không có tkinter','This Python has no tkinter'],why_py:['Python quá cũ','Python is too old'],
+ f_controlled:['Nháp hiện tại có kiểm soát (Windows, NTFS, jsonschema 4.18+)','Controlled current draft (Windows, NTFS, jsonschema 4.18+)'],f_python:['Python 3.8 trở lên','Python 3.8 or newer'],f_library:['Thư viện nguồn: tra cứu và kiểm chỉ mục','Source library: search and index check'],f_xlsx:['Kiểm tra file .xlsx','Check .xlsx files'],f_picker:['Hộp chọn file và thư mục','File and folder picker'],
+ why_opx:['Chưa cài thư viện openpyxl','The openpyxl library is not installed'],
+ cw_PLATFORM_UNSUPPORTED:['Chỉ chạy trên Windows','Runs on Windows only'],cw_DEPENDENCY_MISSING:['Python này thiếu thư viện jsonschema 4.18 trở lên (Draft 2020-12), hoặc bản quá cũ','This Python lacks the jsonschema library 4.18 or newer (Draft 2020-12), or it is too old'],
+ cw_FS_UNSUPPORTED:['Thư mục này không nằm trên ổ NTFS cục bộ (ổ mạng, đồng bộ đám mây hoặc ổ rời không được hỗ trợ)','This folder is not on a local NTFS drive (network, cloud-synced and removable drives are not supported)'],
+ cw_CONTEXT_OWNER_PIN_MISMATCH:['Một công cụ lõi không khớp bản đã ghi nhận (đã sửa tay hoặc đổi dòng kết thúc)','A core tool does not match the recorded version (hand-edited or line endings changed)'],
+ cw_OTHER:['Thành phần kiểm không nạp được đúng bản đã ghi nhận','The check component could not be loaded as recorded'],
+ fix_cw_dep:['Cài vào đúng Python hoặc venv mà bảng điều khiển đang dùng (đường dẫn ở dưới), rồi mở lại bảng điều khiển. Ứng dụng không tự cài. Các chức năng khác không bị ảnh hưởng.','Install it into the exact Python or venv this panel runs on (path below), then reopen the panel. The app never installs anything. Other features are not affected.'],
+ fix_cw_other:['Các chức năng khác không bị ảnh hưởng. Thẻ Nháp hiện tại sẽ không chọn hay mở bản nào cho tới khi điều kiện này đạt.','Other features are not affected. The Current draft card will not select or open anything until this is met.'],
+why_tk:['Python này không có tkinter','This Python has no tkinter'],why_py:['Python quá cũ','Python is too old'],
  fix_opx:['Chạy lệnh sau trong cửa sổ terminal. Ứng dụng không tự cài.','Run this in a terminal window. The app never installs anything by itself.'],fix_tk:['Dùng nút dán đường dẫn, hoặc cài Python từ python.org và bật Tcl/Tk. Các chức năng khác không bị ảnh hưởng.','Paste the path instead, or install Python from python.org with Tcl/Tk enabled. Other features are not affected.'],fix_py:['Cài Python 3.8 trở lên.','Install Python 3.8 or newer.'],
  hl_merges:['Chờ hợp nhất','Pending merges'],hl_merge_go:['Mở trang chờ hợp nhất','Open pending merges'],hl_merge_count:['file đang chờ hợp nhất','file(s) waiting to be merged'],hl_none_merge:['Không có file nào đang chờ hợp nhất.','No files are waiting to be merged.'],
  h_tx:['Thao tác lưu file bị gián đoạn','Interrupted file saves'],h_tx_p:['Thao tác ghi nhiều file bị gián đoạn. Tiếp tục để hoàn tất, hoặc phục hồi để đưa file về trạng thái trước khi ghi.','A multi-file write that was interrupted. Resume to finish it, or roll back to return the files to their state before the write.'],h_tx_none:['Không có thao tác lưu file nào bị gián đoạn.','No interrupted file saves.'],
@@ -764,7 +906,7 @@ var D={
  mg_compare:['So sánh','Compare'],df_title:['So sánh bản hiện hành với bản .new','Current version compared with the .new copy'],df_same:['Giống nhau','Identical'],df_identical:['Hai bản giống hệt nhau; không cần hợp nhất nội dung.','The two versions are identical; no content needs merging.'],
  df_cannot:['Không so sánh được','Cannot compare'],df_binary:['File nhị phân hoặc không phải UTF-8: không hiển thị nội dung. Mở hai bản bằng ứng dụng gốc để xem.','Binary file or not UTF-8: content is not shown. Open both versions in their own app.'],df_large:['File lớn hơn %d KB: không so sánh trong giao diện. Mở hai bản bằng ứng dụng gốc để xem.','File larger than %d KB: not compared in the panel. Open both versions in their own app.'],
  df_new:['Bản mới','New file'],df_missing:['Chưa có file hiện hành; toàn bộ bản .new là phần thêm.','The current file is missing; the whole .new copy is additions.'],df_diff:['+%d thêm · -%d bỏ','+%d added · -%d removed'],df_trunc:['Kết quả dài: chỉ hiện phần đầu.','The result is long: only the first part is shown.'],
- df_ro:['Chỉ đọc, không lưu và không hợp nhất tự động. Tự sửa file rồi xóa bản .new khi xong.','Read only, nothing is saved or merged automatically. Edit the file yourself, then remove the .new copy when done.'],
+ df_ro:['So sánh không sửa nội dung hai file hay hợp nhất tự động; thao tác có thể được ghi vào lịch sử. Xử lý .new theo loại file và lựa chọn được hỗ trợ; không xóa chỉ để hết cảnh báo.','Compare does not change either file or merge automatically; the action may be recorded in the operations history. Handle .new by file type and supported options; do not delete it just to clear the warning.'],
  act_init:['Khởi tạo dự án','Set up project'],act_adopt:['Đưa vào dự án đã có','Bring into existing project'],act_upgrade:['Cập nhật bộ công cụ','Upgrade package'],act_upgrade_other:['Cập nhật dự án khác','Upgrade another project'],
  act_pack_list:['Danh sách gói','Pack list'],act_pack_add:['Cài gói','Install pack'],act_pack_remove:['Gỡ gói','Remove pack'],act_pack_update:['Cập nhật gói','Update pack'],act_pack_confirm:['Cho phép dùng gói','Allow a pack'],act_check_output:['Kiểm tra trước khi giao','Check before delivery'],act_install_skills:['Cài kỹ năng vào ứng dụng','Install skills'],
  act_library_init:['Tạo khung thư viện','Create the library'],act_library_check:['Kiểm tra thư viện','Check the library'],act_library_stats:['Thống kê thư viện','Library statistics'],act_library_find:['Tra cứu thư viện','Library search'],
@@ -821,12 +963,13 @@ function paint(){
   $('nav2').hidden=!open;$('nav-more').setAttribute('aria-expanded',open?'true':'false');
   var att=S?((S.transactions||[]).length+(lists[1].indexOf('merges')>=0?(S.merges||[]).length:0)):0;$('nav-more-b').hidden=!att||open;$('nav-more-b').textContent=att;
   $('cr-page').textContent=NAV_ALL[page]?navLabel(page):'';
+  if(LB){lbChips();lbDraw();}
   if(S)render();
 }
 document.querySelectorAll('[data-ico]').forEach(function(el){el.insertAdjacentHTML('afterbegin',ico(el.dataset.ico));});
 $('b-quit').innerHTML=ico('power');$('sh-x').innerHTML=ico('x');$('sh-cc').innerHTML=ico('copy');
 function themeIcon(){var d=document.documentElement.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');$('b-theme').innerHTML=ico(d==='dark'?'sun':'moon');}
-function go(p){if(p==='library'){setTimeout(function(){lbStats();lbChips();if(!$('lb-rows-t').innerHTML)lbFind();},0);}if(p==='health')setTimeout(refresh,0);page=p;document.querySelectorAll('.page').forEach(function(x){x.classList.toggle('on',x.id==='pg-'+p);});store('panel.page',p);paint();window.scrollTo(0,0);}
+function go(p){if(p==='library'){setTimeout(function(){lbLoad();},0);}if(p==='health')setTimeout(refresh,0);page=p;document.querySelectorAll('.page').forEach(function(x){x.classList.toggle('on',x.id==='pg-'+p);});store('panel.page',p);paint();window.scrollTo(0,0);}
 document.addEventListener('click',function(e){var g=e.target.closest('[data-goto]');if(g){e.preventDefault();go(g.dataset.goto);}var o=e.target.closest('[data-open]');if(o)openPath(o.dataset.open);});
 function openPath(p){api('/api/open',{path:p}).then(function(r){if(r.input_error)toast(r.out);});}
 $('b-guide').addEventListener('click',function(){openPath(lang==='en'?'START_HERE.en.html':'START_HERE.html');});
@@ -865,7 +1008,7 @@ function setInert(on){var a=document.querySelector('.app');if(a){if(on)a.setAttr
 function setBusy(on,btn){busy=on;if(btn)btn.disabled=on;$('sh-apply').disabled=on;$('sheet').setAttribute('aria-busy',on?'true':'false');}
 function focusable(root){return Array.prototype.filter.call(root.querySelectorAll('button,[href],input,select,textarea,[tabindex]'),function(el){return!el.disabled&&el.getAttribute('tabindex')!=='-1'&&el.getClientRects().length>0;});}
 // focus returns to the control that opened the sheet, or to the current page link when that control is gone
-function closeSheet(){$('sheet').classList.remove('on');$('scrim').classList.remove('on');pending=null;setInert(false);
+function closeSheet(){$('sheet').classList.remove('on');$('scrim').classList.remove('on');pending=null;mpReset();setInert(false);
   var back=lastFocus&&document.body.contains(lastFocus)&&!$('sheet').contains(lastFocus)&&!lastFocus.disabled&&lastFocus.getClientRects().length>0?lastFocus:document.querySelector('.nav button[aria-current="page"]');
   if(back)back.focus();}
 $('sh-x').addEventListener('click',closeSheet);$('sh-close').addEventListener('click',closeSheet);$('scrim').addEventListener('click',closeSheet);
@@ -901,6 +1044,7 @@ function run(title,icon,act,params,opts){opts=opts||{};if(busy){toast(t('busy_wa
     else if(params&&params.apply)msg=t(res.merge_required?'merge_msg':'m_done');
     else if(opts.preview){
       if(res.changes===false){msg=t('m_nothing');}
+      else if(act==='library_sync'&&(res.notices||[]).some(function(n){return n==='x14_data_validation'||n==='x14_scan_incomplete';})){msg=t('lb_sync_blocked');}
       else{msg=t('m_preview');var a=$('sh-apply');a.innerHTML=ico('check')+esc(t('apply'));a.hidden=false;
         pending=function(){run(title,icon,act,Object.assign({},params,{apply:true}),{preview:true,after:opts.after,always:opts.always});};}}
     else if(opts.ro){msg=t(res.status==='not_checked'?'ck_not_checked_next':'m_ro');}
@@ -966,29 +1110,115 @@ $('m-guides').addEventListener('click',function(){run(t('mt3'),'book','build_gui
 $('m-release').addEventListener('click',function(){run(t('mt4'),'package','build_release',{},{btn:$('m-release')});});
 $('dg-run').addEventListener('click',function(){run(t('dg_title'),'package','diagnostics',{},{done:'dg_done',openDir:'.agent/runtime/diagnostics',always:refresh,btn:$('dg-run')});});
 $('hist-clear').addEventListener('click',function(){if(!confirm(t('hist_clear_confirm')))return;run(t('hist_clear'),'trash','history_clear',{},{done:'hist_cleared',always:refresh,btn:$('hist-clear')});});
-var lbGroup='';
+// Source library (A-07): list, search and group filter come from the saved index only (one read, no folder scan, no log).
+// Selection and open are bound to the exact snapshot + row + ID/revision + path that was shown; the server re-checks them.
+var lbGroup='',LB=null,lbSel={},lbOpenRows={},lbSeq=0,lbLinks={};
+function tf(k){var a=[].slice.call(arguments,1),i=0;return t(k).replace(/%[sd]/g,function(){return String(a[i++]);});}
 // a library result that was not checked (for example openpyxl missing): show why and the next step, never "no index"
-function libNote(r){var acts=(r.result&&r.result.next_actions)||[];return'<div class="note warn">'+ico('alert')+'<span><b>'+esc(t('lb_nochk_t'))+'</b> '+esc((r.result&&r.result.message)||r.out||'')+' '+esc(t('lb_nochk_safe'))
+function libNote(r){var acts=(r.result&&r.result.next_actions)||[];return'<div class="note warn">'+ico('alert')+'<span><b>'+esc(t('lb_nochk_t'))+'</b> '+esc((r.result&&r.result.message)||'')+' '+esc(t('lb_nochk_safe'))
   +acts.map(function(x){return'<br>'+esc(x);}).join('')+'</span></div>';}
-function lbStats(){api('/api/run',{action:'library_stats',params:{}}).then(function(r){var st=r.result&&r.result.status,d=null;
-  $('lb-warn').hidden=st!=='not_checked';if(st==='not_checked')$('lb-warn').innerHTML=libNote(r);
-  if(st==='success'){try{d=JSON.parse(r.out);}catch(e){}}
-  var none=!d||!d.index;$('lb-none').hidden=!none||st==='not_checked';
-  $('lb-rows').textContent=d&&d.index?d.rows:'–';$('lb-files').textContent=d?d.files:'–';$('lb-noft').textContent=d&&d.index?d.no_fulltext:'–';$('lb-chk').textContent=d&&d.index?d.needs_check:'–';});}
-function lbTag(st){var f=(st||'').toLowerCase();var c=f.indexOf('còn')===0?'ok':(f.indexOf('hết hiệu lực một')===0?'warn':(f.indexOf('hết')===0?'err':(f.indexOf('sắp')===0?'info':'')));return'<span class="tag '+c+'">'+esc(st||'?')+'</span>';}
-function lbFind(){var q=$('lb-q').value.trim();if(!q){$('lb-rows-t').innerHTML='<tr><td colspan="5"><div class="empty" style="padding:14px">'+esc(t('lb_empty'))+'</div></td></tr>';return;}
-  api('/api/run',{action:'library_find',params:{query:q,group:lbGroup}}).then(function(r){var st=r.result&&r.result.status,d=null;
-    if(st==='not_checked'){$('lb-rows-t').innerHTML='<tr><td colspan="5">'+libNote(r)+'</td></tr>';return;}
-    if(st==='success'){try{d=JSON.parse(r.out);}catch(e){}}
-    if(!d){$('lb-rows-t').innerHTML='<tr><td colspan="5"><div class="empty" style="padding:14px">'+esc(r.out||'')+'</div></td></tr>';return;}
-    $('lb-rows-t').innerHTML=d.hits.length?d.hits.map(function(h){var vc=/toàn văn/i.test(h.verify)?'ok':(/chính thống/i.test(h.verify)?'info':(/tóm tắt/i.test(h.verify)?'warn':'err'));
-      return'<tr><td class="id">'+esc(h.number||h.id)+'<div style="font-family:var(--font);color:var(--muted);font-size:12px">'+esc([h.type,h.group].filter(Boolean).join(' · '))+'</div></td><td>'+esc(h.title)+(h.replaced_by?'<div style="color:var(--muted);font-size:12px">↳ '+esc(h.replaced_by)+'</div>':'')+(h.articles?'<div style="color:var(--muted);font-size:12px">'+esc(h.articles)+'</div>':'')+'</td><td>'+lbTag(h.status)+(h.checked?'<div style="color:var(--muted);font-size:12px;margin-top:3px">'+esc(h.checked)+'</div>':'')+'</td><td><span class="tag '+vc+'">'+esc(h.verify||'?')+'</span></td><td>'+(h.fulltext?'<button class="btn" data-open="'+esc(h.file)+'">'+ico('file')+esc(t('lb_open'))+'</button>':'<span class="tag warn">'+esc(t('lb_noft'))+'</span>')+'</td></tr>';}).join('')
-      :'<tr><td colspan="5"><div class="empty" style="padding:14px">'+esc(t('lb_nohit'))+'</div></td></tr>';});}
-$('lb-go').addEventListener('click',lbFind);$('lb-q').addEventListener('keydown',function(e){if(e.key==='Enter')lbFind();});
+function lbMsg(txt,warn){var e=$('lb-msg');e.hidden=!txt;e.className='note mb lb-msg'+(warn?' warn':'');e.innerHTML=txt?ico(warn?'alert':'check')+'<span>'+esc(txt)+'</span>':'';}
+function lbTag(st){var f=(st||'').toLowerCase();var c=f.indexOf('còn')===0?'ok':(f.indexOf('hết hiệu lực một')===0?'warn':(f.indexOf('hết')===0?'err':(f.indexOf('sắp')===0?'info':'')));return'<span class="tag '+c+'">'+esc(st||t('lb_none_rec'))+'</span>';}
+function lbStateTag(s){if(!s)return'<span class="tag">'+esc(t('lb_state_none'))+'</span>';var k='lb_state_'+s,c=s==='PRESENT'?'ok':(s==='MISSING'?'err':'warn');return'<span class="tag '+c+'">'+esc(D[k]?t(k):tf('lb_state_other',s))+'</span>';}
+function lbPick(r){return{snapshot:LB.snapshot,row:r.row,id:r.id,revision:r.revision,locator:r.locator};}
+// a failure is told apart from "no rows": no index, an index that cannot be read, a structure problem, a transport failure
+function lbFail(r,kind){var none=kind==='no_index';$('lb-none').hidden=!none;
+  var w=$('lb-warn');w.hidden=none;
+  if(!none){if(kind==='openpyxl_missing'){w.innerHTML=libNote({result:{message:r&&r.message,next_actions:r&&r.next_actions}});}
+    else{var title=t(kind==='transport'?'lb_err_transport':'lb_err_'+kind);w.innerHTML=ico('alert')+'<span><b>'+esc(title)+'</b> '+esc((r&&r.message)||'')+'<br>'+esc(t(kind==='transport'?'lb_err_tr_note':'lb_err_note'))+'</span>';}}
+  LB=null;lbSel={};lbOpenRows={};lbLinks={};['lb-rows','lb-files','lb-noft','lb-chk'].forEach(function(i){$(i).textContent='–';});
+  $('lb-rows-t').innerHTML='';lbBar();}
+function lbLoad(keep){var seq=++lbSeq,q=$('lb-q').value.trim();
+  return api('/api/library/browse',{query:q,group:lbGroup}).then(function(r){if(seq!==lbSeq)return;
+    if(!r||typeof r.ok!=='boolean'){lbFail(r&&r.result?{message:r.result.message}:null,'transport');return;}
+    if(!r.ok){lbFail(r,r.kind);return;}
+    $('lb-none').hidden=true;$('lb-warn').hidden=true;
+    if(LB&&LB.snapshot!==r.snapshot){lbSel={};lbOpenRows={};lbLinks={};}
+    LB=r;var s=r.summary;$('lb-rows').textContent=s.rows;$('lb-files').textContent=s.declared_fulltext;$('lb-noft').textContent=s.not_declared;$('lb-chk').textContent=s.needs_check;
+    if(!keep)lbMsg('');lbChips();lbDraw();
+  }).catch(function(e){if(String(e).indexOf('forbidden')>=0){$('off').classList.add('on');return;}if(seq===lbSeq)lbFail(null,'transport');});}
+function lbDraw(){if(!LB)return;var h='';
+  LB.rows.forEach(function(r){var id=r.id||'',label=id||r.number||r.title||('#'+r.row),open=!!lbOpenRows[r.row];
+    var idc=r.id?esc(r.id):'<span class="tag warn">'+esc(t('lb_noid'))+'</span>';
+    var rev=r.revision!==null&&r.revision!==''?esc(tf('lb_rev',r.revision)):esc(t('lb_norev'));
+    var warn=r.identity==='dup_id'||r.identity==='no_id'||r.identity==='no_revision'?'<span class="lb-sub" style="color:var(--warn)">'+esc(t('lb_id_'+r.identity))+'</span>':'';
+    var vc=/toàn văn/i.test(r.verify)?'ok':(/chính thống/i.test(r.verify)?'info':(/tóm tắt/i.test(r.verify)?'warn':(r.verify?'err':'')));
+    h+='<tr><td><input type="checkbox" data-lbs="'+r.row+'" aria-label="'+esc(tf('lb_pick',label))+'"'+(lbSel[r.row]?' checked':'')+'></td>'
+      +'<td class="id">'+idc+'<span class="lb-sub" style="font-family:var(--font)">'+rev+'</span>'+warn+'</td>'
+      +'<td>'+esc(r.title||r.number||'')+'<span class="lb-sub">'+esc([r.number,r.type,r.group].filter(Boolean).join(' · '))+'</span></td>'
+      +'<td>'+lbTag(r.status)+(r.checked?'<span class="lb-sub">'+esc(r.checked)+'</span>':'')+'<span class="tag '+vc+'" style="margin-top:4px">'+esc(r.verify||t('lb_none_rec'))+'</span></td>'
+      +'<td><span class="tag '+(r.fulltext_declared?'acc':'')+'">'+esc(t(r.fulltext_declared?'lb_declared':'lb_undeclared'))+'</span><span class="lb-sub">'+lbStateTag(r.file_state)+'</span>'
+      +'<span class="lb-sub mono">'+esc(r.file||t('lb_nopath'))+'</span></td>'
+      +'<td><div class="hact">'+(r.locator?'<button class="btn" data-lbo="'+r.row+'" aria-label="'+esc(t('lb_open')+' '+label)+'">'+ico('file')+esc(t('lb_open'))+'</button>':'')
+      +'<button class="btn ghost" data-lbd="'+r.row+'" aria-expanded="'+open+'" aria-label="'+esc(t(open?'lb_detail_hide':'lb_detail')+' '+label)+'">'+esc(t(open?'lb_detail_hide':'lb_detail'))+'</button></div></td></tr>';
+    if(open)h+='<tr class="lb-det"><td></td><td colspan="5"><b class="lb-sub" style="margin:0 0 6px">'+esc(t('lb_dx_h'))+'</b>'+lbDetail(r)+lbLinksBox(r)+'</td></tr>';});
+  if(!LB.rows.length)h='<tr><td colspan="6"><div class="empty" style="padding:14px">'+esc(t(LB.total?'lb_nohit':'lb_loaded_empty'))+'</div></td></tr>';
+  $('lb-rows-t').innerHTML=h;lbLinksLoad();
+  var hint=t('lb_hint');if(LB.rows.length)hint=tf('lb_matched',LB.matched)+' '+hint;if(LB.truncated)hint=tf('lb_trunc',LB.rows.length,LB.matched)+' '+hint;
+  $('lb-hint').textContent=hint;lbBar();}
+function lbDetail(r){var f=[['lb_f_group',r.group],['lb_f_domain',r.domain],['lb_f_issuer',r.issuer],['lb_f_number',r.number],['lb_f_type',r.type],['lb_f_issued',r.issued],['lb_f_effective',r.effective],['lb_f_replaces',r.replaces],['lb_f_replaced_by',r.replaced_by],['lb_f_checked',r.checked],['lb_f_articles',r.articles],['lb_f_sensitivity',r.sensitivity],['lb_f_used_by',r.used_by],['lb_f_url',r.url],['lb_f_notes',r.notes],['lb_f_file',r.file],['lb_f_observed',r.observed],['lb_f_sha',r.sha12],['lb_f_row',String(r.row)]];
+  return'<dl class="lb-dl">'+f.map(function(x){return'<dt>'+esc(t(x[0]))+'</dt><dd>'+esc(x[1]||t('lb_none_rec'))+'</dd>';}).join('')+'</dl>';}
+// B-02: relations of one source (related sources/appendices, results derived from it). Read from the saved index; Open/Copy re-bind the exact version.
+function lbLinksBox(r){var x=lbLinks[r.row],h='<b class="lb-sub" style="margin:10px 0 6px">'+esc(t('lb_lk_h'))+'</b>';
+  if(!x||x.loading)return h+'<div class="lb-sub">'+esc(t('lb_lk_loading'))+'</div>';
+  if(x.error)return h+'<div class="lb-sub" style="color:var(--warn)">'+esc(t(x.error))+'</div>';
+  var d=x.data;h+='<div class="lb-sub"><b>'+esc(t('lb_lk_rel_h'))+'</b></div>';
+  h+=d.related.length?'<ul class="lb-lk">'+d.related.map(function(o){return'<li><span class="mono">'+esc(o.id)+'</span> '+esc(o.title||'')+(o.in_catalog?'':' <span class="tag warn">'+esc(t('lb_lk_in_cat_no'))+'</span>')+'</li>';}).join('')+'</ul>':'<div class="lb-sub">'+esc(t('lb_lk_none_rel'))+'</div>';
+  h+='<div class="lb-sub" style="margin-top:8px"><b>'+esc(t('lb_lk_res_h'))+'</b></div>';
+  h+=d.results.length?'<ul class="lb-lk">'+d.results.map(function(o,i){var sk='lb_lk_state_'+o.dependency_state,tag=o.dependency_state==='CURRENT_CATALOG_BASIS'?'ok':(o.dependency_state==='NO_DECLARED_BASIS'?'':'warn');
+    return'<li><span class="mono">'+esc(o.artifact_id+'@'+o.revision)+'</span> '+esc(o.title)+' <span class="tag">'+esc(o.kind)+'</span> <span class="tag">'+esc(o.origin)+'</span> <span class="tag">'+esc(t(o.via_direct?'lb_lk_direct':'lb_lk_indirect'))+'</span>'
+      +' <span class="tag '+tag+'">'+esc(D[sk]?t(sk):o.dependency_state)+'</span>'+(o.superseded_by?' <span class="tag warn">'+esc(tf('lb_lk_superseded',o.superseded_by))+'</span>':'')
+      +(o.inference.length?' <span class="tag warn">'+esc(t('lb_lk_inf'))+'</span>':'')+(o.unknown_basis.length?'<div class="lb-sub">'+esc(tf('lb_lk_unknown',o.unknown_basis.join(', ')))+'</div>':'')
+      +'<div class="lb-sub mono">'+esc(o.path)+'</div><div class="hact">'+(o.openable?'<button class="btn" data-lba="'+r.row+':'+i+'">'+ico('file')+esc(t('lb_lk_open'))+'</button>':'')
+      +'<button class="btn ghost" data-lbk="'+r.row+':'+i+'">'+esc(t('lb_lk_copy'))+'</button></div></li>';}).join('')+'</ul>':'<div class="lb-sub">'+esc(t('lb_lk_none_res'))+'</div>';
+  return h;}
+function lbLinksLoad(){if(!LB)return;Object.keys(lbOpenRows).forEach(function(k){var row=+k,r=lbRowOf(row);if(!r||lbLinks[row])return;
+  var snap=LB.snapshot;lbLinks[row]={loading:true};
+  api('/api/library/links',{selection:lbPick(r)}).then(function(x){if(!LB||LB.snapshot!==snap)return;
+    if(!x||typeof x.ok!=='boolean')lbLinks[row]={error:'lb_lk_transport'};else if(!x.ok)lbLinks[row]={error:x.reason==='stale'?'lb_lk_stale':'lb_lk_err'};else lbLinks[row]={data:x};
+    lbDraw();}).catch(function(){if(LB&&LB.snapshot===snap){lbLinks[row]={error:'lb_lk_transport'};lbDraw();}});});}
+function lbLinkPick(v){var p=String(v).split(':'),x=lbLinks[+p[0]];return x&&x.data&&x.data.results[+p[1]]?x.data.results[+p[1]].pick:null;}
+$('lb-rows-t').addEventListener('click',function(e){var o=e.target.closest('[data-lba]'),c=e.target.closest('[data-lbk]');if(!o&&!c)return;
+  var pk=lbLinkPick((o||c).dataset[o?'lba':'lbk']);if(!pk)return;var btn=o||c;btn.disabled=true;
+  if(o){api('/api/library/artifact-open',{selection:pk}).then(function(x){btn.disabled=false;
+      if(!x||typeof x.ok!=='boolean'){lbMsg(t('lb_lk_transport'),true);return;}
+      if(x.ok){lbMsg(t('lb_lk_open_ok'));return;}
+      lbMsg(D['lb_lk_open_'+x.reason]?t('lb_lk_open_'+x.reason):t('lb_lk_open_fail'),true);
+    }).catch(function(){btn.disabled=false;lbMsg(t('lb_lk_transport'),true);});return;}
+  api('/api/library/artifact-copy',{selection:pk,lang:lang==='en'?'en':'vi'}).then(function(x){btn.disabled=false;
+    if(!x||typeof x.ok!=='boolean'||!x.ok){lbMsg(D['lb_lk_open_'+(x&&x.reason)]?t('lb_lk_open_'+x.reason):t('lb_copy_failed'),true);return;}
+    var w=navigator.clipboard?navigator.clipboard.writeText(x.text):Promise.reject();
+    w.then(function(){lbMsg(t('lb_lk_copied'));},function(){lbMsg(t('lb_copy_failed'),true);});
+  }).catch(function(){btn.disabled=false;lbMsg(t('lb_lk_transport'),true);});});
+function lbBar(){var keys=Object.keys(lbSel),n=keys.length,hidden=keys.filter(function(k){return!lbRowOf(+k);}).length;
+  $('lb-selN').textContent=n?tf('lb_sel_n',n)+(hidden?tf('lb_sel_hidden',hidden):''):'';$('lb-copy').disabled=!n;$('lb-clear').disabled=!n;}
+function lbRowOf(row){return LB&&LB.rows.filter(function(r){return r.row===row;})[0]||null;}
+$('lb-clear').addEventListener('click',function(){lbSel={};lbDraw();});
+$('lb-rows-t').addEventListener('change',function(e){var c=e.target.closest('[data-lbs]');if(!c||!LB)return;var r=lbRowOf(+c.dataset.lbs);if(!r)return;if(c.checked)lbSel[r.row]=lbPick(r);else delete lbSel[r.row];lbBar();});
+$('lb-rows-t').addEventListener('click',function(e){var d=e.target.closest('[data-lbd]');if(d){var n=+d.dataset.lbd;if(lbOpenRows[n])delete lbOpenRows[n];else lbOpenRows[n]=1;lbDraw();var again=document.querySelector('[data-lbd="'+n+'"]');if(again)again.focus();return;}
+  var o=e.target.closest('[data-lbo]');if(!o||!LB)return;var r=lbRowOf(+o.dataset.lbo);if(!r)return;
+  o.disabled=true;api('/api/library/open',{selection:lbPick(r)}).then(function(x){o.disabled=false;
+    if(!x||typeof x.ok!=='boolean'){lbMsg(t('lb_open_transport'),true);return;}
+    if(x.ok){lbMsg(t('lb_open_ok'));return;}
+    lbMsg(D['lb_open_'+x.reason]?t('lb_open_'+x.reason):(x.reason&&x.reason.indexOf('index:')===0&&D['lb_err_'+x.reason.slice(6)]?t('lb_err_'+x.reason.slice(6)):t('lb_open_unreadable')),true);
+  }).catch(function(){o.disabled=false;lbMsg(t('lb_open_transport'),true);});});
+$('lb-copy').addEventListener('click',function(){var sels=Object.keys(lbSel).map(function(k){return lbSel[k];});if(!sels.length||!LB)return;
+  var btn=$('lb-copy');btn.disabled=true;
+  api('/api/library/select',{selections:sels,lang:lang==='en'?'en':'vi'}).then(function(x){btn.disabled=false;
+    if(!x||typeof x.ok!=='boolean'){lbMsg(t('lb_copy_failed'),true);return;}
+    if(!x.ok){var why=(x.items||[]).map(function(i){var k='lb_why_'+String(i.reason).replace('index:','');return tf('lb_row_n',i.row)+': '+(D[k]?t(k):i.reason);}).join('; ');lbMsg(t('lb_copy_rows')+(why?' ('+why+')':''),true);lbBar();return;}
+    var w=navigator.clipboard?navigator.clipboard.writeText(x.text):Promise.reject();
+    w.then(function(){lbMsg(tf('lb_copied',x.count));},function(){lbMsg(t('lb_copy_failed'),true);});
+  }).catch(function(){btn.disabled=false;lbMsg(t('lb_copy_failed'),true);lbBar();});});
+$('lb-go').addEventListener('click',function(){lbLoad();});$('lb-q').addEventListener('keydown',function(e){if(e.key==='Enter')lbLoad();});
 $('lb-check').addEventListener('click',function(){run(t('lb_t_check'),'shield','library_check',{},{ro:true,btn:$('lb-check')});});
-$('lb-init').addEventListener('click',function(){run(t('lb_t_init'),'library','library_init',{},{after:lbStats,btn:$('lb-init')});});
-function lbChips(){$('lb-grp').innerHTML=[['','all'],['Pháp luật','Pháp luật'],['Nội bộ','Nội bộ'],['Mẫu biểu','Mẫu biểu']].map(function(g){return'<button data-g="'+esc(g[0])+'" aria-pressed="'+(lbGroup===g[0])+'">'+esc(g[1]==='all'?t('all'):g[1])+'</button>';}).join('');
-  $('lb-grp').querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){lbGroup=b.dataset.g;lbChips();if($('lb-q').value.trim())lbFind();});});
+$('lb-init').addEventListener('click',function(){run(t('lb_t_init'),'library','library_init',{},{after:lbLoad,btn:$('lb-init')});});
+// preview first; Apply sends back the expected_preview of exactly what was shown, and the server refuses a stale one
+$('lb-sync').addEventListener('click',function(){var p={lang:lang==='en'?'en':'vi'};
+  run(t('lb_t_sync'),'refresh','library_sync',p,{preview:true,btn:$('lb-sync'),after:function(res){if(res.expected_preview)p.expected_preview=res.expected_preview;if(res.status==='success'&&res.changes)lbLoad(true);}});});
+function lbChips(){var gs=[['','all']].concat(((LB&&LB.groups)||[]).map(function(g){return[g,g];}));
+  $('lb-grp').innerHTML=gs.map(function(g){return'<button data-g="'+esc(g[0])+'" aria-pressed="'+(lbGroup===g[0])+'">'+esc(g[1]==='all'?t('all'):g[1])+'</button>';}).join('');
+  $('lb-grp').querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){lbGroup=b.dataset.g;lbLoad();});});
   $('lb-q').placeholder=t('lb_ph');}
 // render dynamic parts
 function fmtDate(sec){var d=new Date(sec*1000);function z(n){return(n<10?'0':'')+n;}return z(d.getDate())+'/'+z(d.getMonth()+1)+'/'+d.getFullYear()+' '+z(d.getHours())+':'+z(d.getMinutes());}
@@ -998,6 +1228,63 @@ function fitBrand(){/* tên đơn vị dài: thu nhỏ chữ cho vừa một dò
   while(el.scrollWidth>el.clientWidth&&f>11){f-=.5;el.style.fontSize=f+'px';}
 }
 window.addEventListener('resize',function(){if($('sb-title'))fitBrand();});
+var CD=null;
+// Nháp hiện tại: nhãn lấy từ mã trạng thái của helper; không có "đã nghiệm thu"/PASS. Dữ liệu động luôn qua esc().
+function cdTag(st){var tone=st==='matched'?'ok':(st==='unopenable'?'err':'warn');return'<span class="tag '+tone+'">'+ico(st==='matched'?'check':'alert')+esc(t('cd_s_'+st))+'</span>';}
+function cdRow(x,opts){var dir=x.path.split('/').slice(0,-1).join('/'),warn=x.state!=='matched';
+  var open=x.state==='unopenable'?'':'<button class="btn ghost" data-cdo="'+esc(x.rid)+'" data-cds="'+esc(x.state)+'" aria-label="'+esc(t(warn?'cd_open_warn':'cd_open')+': '+x.name)+'">'+ico('eye')+'<span>'+esc(t(warn?'cd_open_warn':'cd_open'))+'</span></button>';
+  var sel=opts&&opts.select&&x.state==='matched'?'<button class="btn" data-cdp="'+esc(x.rid)+'" aria-label="'+esc(t('cd_select')+': '+x.name)+'">'+esc(t('cd_select'))+'</button>':'';
+  return'<div class="fr"><span class="ic">'+ico('file')+'</span><div class="nm"><b title="'+esc(x.path)+'">'+esc(x.name)+'</b><span>'+esc(dir+'/')+(x.at?' · '+esc(fmtIso(x.at)):'')+'</span></div>'+cdTag(x.state)+open+sel+'</div>';}
+function cdDraw(){var box=$('cd-box'),tag=$('cd-tag');if(!box)return;tag.hidden=true;
+  var note='<p class="hint">'+esc(t('cd_note'))+'</p>';
+  if(!CD){box.innerHTML='<p class="hint">'+esc(t('cd_load'))+'</p>';return;}
+  if(CD.result!=='OK'){box.innerHTML='<div class="note warn">'+ico('alert')+'<span>'+esc(t('cd_unavail'))+' <span class="mono">'+esc(CD.reason||'')+'</span></span></div>';return;}
+  var ptr=CD.pointer||{},h='';
+  if(ptr.state==='UNRESOLVED'){h='<div class="note warn">'+ico('alert')+'<span>'+esc(t('cd_unres'))+' <span class="mono">'+esc(ptr.reason||'')+'</span></span></div>';}
+  else if(ptr.state==='NONE'||!CD.selected){h='<p>'+esc(t('cd_none'))+'</p><div class="hact"><button class="btn pri" id="cd-pick">'+ico('file')+esc(t('cd_pick'))+'</button></div>';}
+  else{var s=CD.selected;tag.hidden=false;tag.className='tag '+(s.state==='matched'?'ok':s.state==='unopenable'?'err':'warn');tag.textContent=t('cd_s_'+s.state);
+    h='<div class="flist">'+cdRow(s)+'</div><div class="hact"><button class="btn" id="cd-cont">'+ico('copy')+esc(t('cd_cont'))+'</button><button class="btn ghost" id="cd-pick">'+esc(t('cd_other'))+'</button></div>';
+    if(s.work_id){h+='<h3 class="hint" style="margin:14px 0 4px">'+esc(t('cd_hist'))+'</h3>';
+      h+=(CD.history||[]).length?'<div class="flist">'+CD.history.map(function(x){return cdRow(x,{select:true});}).join('')+'</div>':'<p class="hint">'+esc(t('cd_none_hist'))+'</p>';
+      if(CD.more>0)h+='<div class="more">'+esc(t('cd_more').replace('%d',CD.more))+'</div>';}
+    if(CD.incomplete)h+='<div class="note warn">'+ico('alert')+'<span>'+esc(t('cd_incomplete'))+'</span></div>';}
+  box.innerHTML=h+'<div id="cd-list"></div>'+note;}
+function cdLoad(){if(!S||S.workspace_kind!=='project')return;api('/api/draft/status',{}).then(function(r){CD=r;cdDraw();}).catch(function(e){if(String(e).indexOf('forbidden')>=0)$('off').classList.add('on');});}
+function cdOpen(rid,ack){api('/api/draft/open',{rid:rid,ack:ack||undefined}).then(function(r){
+  if(r.result==='OPENED'){toast(t('cd_opened'));return;}
+  if(r.result==='ACK_REQUIRED'&&r.draft_state&&confirm(t('cd_ack_'+r.draft_state))){cdOpen(rid,r.draft_state);return;}
+  if(r.result!=='ACK_REQUIRED')toast(t('cd_refused'));cdLoad();});}
+function cdShowList(){api('/api/draft/list',{}).then(function(r){var el=$('cd-list');if(!el)return;
+  if(r.result!=='OK'){el.innerHTML='';return;}
+  el.innerHTML='<h3 class="hint" style="margin:14px 0 4px">'+esc(t('cd_pick_h'))+'</h3>'+((r.items||[]).length?'<div class="flist">'+r.items.map(function(x){return'<div class="fr"><span class="ic">'+ico('file')+'</span><div class="nm"><b title="'+esc(x.path)+'">'+esc(x.name)+'</b><span>'+esc(x.work_id)+' · '+esc(fmtIso(x.at))+'</span></div>'+(x.selected?'':'<button class="btn" data-cdp="'+esc(x.rid)+'" aria-label="'+esc(t('cd_select')+': '+x.name)+'">'+esc(t('cd_select'))+'</button>')+'</div>';}).join('')+'</div>':'<p class="hint">'+esc(t('cd_pick_empty'))+'</p>')
+    +(r.incomplete?'<div class="note warn">'+ico('alert')+'<span>'+esc(t('cd_incomplete'))+'</span></div>':'');});}
+// chọn = xem trước (chỉ đọc) rồi mới Thực hiện; apply mang đúng hash STATE và selection_fingerprint của bản xem trước
+function cdSelect(rid,btn){if(busy){toast(t('busy_wait'));return;}
+  openSheet(t('cd_sel_t'),'file',true);setBusy(true,btn);
+  api('/api/draft/select',{rid:rid}).then(function(r){setBusy(false,btn);
+    var ok=r.result==='PREVIEW'||r.result==='UNCHANGED',tone=ok?'ok':'warn';
+    $('sh-tag').innerHTML='<span class="tag '+tone+'">'+ico(ok?'check':'alert')+esc(t('result_'+(r.status||'error')))+'</span>';
+    $('sh-out').textContent=(r.name||'')+(r.reason?'\n'+r.reason:'');
+    if(r.result==='PREVIEW'){$('sh-msg').textContent=t('cd_sel_preview');var a=$('sh-apply');a.innerHTML=ico('check')+esc(t('apply'));a.hidden=false;
+      pending=function(){cdApply(rid,r);};}
+    else if(r.result==='UNCHANGED')$('sh-msg').textContent=t('cd_sel_same');
+    else $('sh-msg').textContent=t('cd_sel_fail');
+    sheetExtra({next_actions:r.next_actions},{},ok,'cd');
+  }).catch(function(e){setBusy(false,btn);$('sh-tag').innerHTML='<span class="tag err">'+ico('alert')+esc(t('fail'))+'</span>';$('sh-msg').textContent=t('err_conn');$('sh-out').textContent=String(e);});}
+function cdApply(rid,pv){if(busy)return;openSheet(t('cd_sel_t'),'file',true);$('sh-s2').classList.add('on');setBusy(true,null);
+  api('/api/draft/select',{rid:rid,apply:true,expected_state:pv.state_sha256,expected_selection:pv.selection_fingerprint}).then(function(r){setBusy(false,null);
+    var tone=r.result==='WRITTEN'||r.result==='UNCHANGED'?'ok':(r.result==='ERROR'?'err':'warn');
+    $('sh-tag').innerHTML='<span class="tag '+tone+'">'+ico(tone==='ok'?'check':'alert')+esc(t('result_'+(r.status||'error')))+'</span>';
+    $('sh-out').textContent=(r.name||'')+(r.reason?'\n'+r.reason:'');
+    $('sh-msg').textContent=t(r.result==='WRITTEN'?'cd_sel_done':r.result==='UNCHANGED'?'cd_sel_same':r.result==='CONFLICT'?'cd_sel_conflict':r.result==='UNKNOWN'?'cd_sel_unknown':'cd_sel_fail');
+    sheetExtra({next_actions:r.next_actions},{},tone==='ok','cd');
+    cdLoad();
+  }).catch(function(e){setBusy(false,null);$('sh-tag').innerHTML='<span class="tag err">'+ico('alert')+esc(t('fail'))+'</span>';$('sh-msg').textContent=t('err_conn');$('sh-out').textContent=String(e);});}
+document.addEventListener('click',function(e){var b;
+  if((b=e.target.closest('[data-cdo]'))){cdOpen(b.dataset.cdo,b.dataset.cds&&b.dataset.cds!=='matched'?b.dataset.cds:null);return;}
+  if((b=e.target.closest('[data-cdp]'))){cdSelect(b.dataset.cdp,b);return;}
+  if(e.target.closest('#cd-pick')){cdShowList();return;}
+  if(e.target.closest('#cd-cont')&&CD&&CD.selected){copyText(t('cd_prompt').replace('%p',CD.selected.path).replace('%r',CD.selected.rid));}});
 function render(){
   var s=S,name=s.project_name||s.folder,inst=(s.packs.items||[]).filter(function(p){return p.installed;}).length;
   document.title=name+' · Workspace';
@@ -1049,6 +1336,7 @@ function render(){
       :'<div class="empty"><div class="ic">'+ico('activity')+'</div><b style="color:var(--ink)">'+esc(t('cont_empty_t'))+'</b><span>'+esc(t('cont_empty_p'))+'</span></div>';
     if(s.state.mtime&&!fresh){$('st-time').hidden=false;$('st-time').textContent=t('upd')+' '+fmtDate(s.state.mtime);}else $('st-time').hidden=true;
     drawAgent();
+    cdDraw();
     drawList('src',s.sources,'src_empty','file');
     drawList('out',s.outputs,'out_empty','inbox',s.drafts);}
   $('sk-filter').innerHTML=[['all','all'],['SHARED','f_shared'],['PACK','f_pack'],['PROJECT','f_proj']].map(function(f){return'<button data-f="'+f[0]+'" aria-pressed="'+(skFilter===f[0])+'">'+esc(t(f[1]))+'</button>';}).join('');
@@ -1108,17 +1396,19 @@ function drawAgent(){var s=S,name=s.project_name||s.folder,n=(s.sources||{}).tot
   $('ag-verify').textContent=t('ag_verify').replace('%s',name);}
 function drawMerges(){var rows=S.merges||[];$('mg-count').textContent=rows.length;
   $('mg-rows').innerHTML=rows.length?rows.map(function(m,i){var state='mg_'+m.state,btn=m.state==='unseen'?'<button class="btn pri" data-ms="reviewing" data-mp="'+esc(m.pending)+'">'+esc(t('mg_start'))+'</button>':m.state==='reviewing'?'<button class="btn pri" data-ms="ready" data-mp="'+esc(m.pending)+'">'+esc(t('mg_ready_b'))+'</button>':'<button class="btn" data-ms="reviewing" data-mp="'+esc(m.pending)+'">'+esc(t('mg_reopen'))+'</button>';
-    return'<tr><td class="id">'+esc(m.path)+'<div style="color:var(--muted);font-size:11.5px">'+esc(m.pending)+'</div></td><td><span class="tag">'+esc(t(m.origin==='domain_pack'?'mg_domain_pack':'mg_package'))+'</span></td><td><span class="tag '+(m.state==='ready'?'ok':m.state==='reviewing'?'info':'warn')+'">'+esc(t(state))+'</span></td><td><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn" data-md="'+i+'">'+esc(t('mg_compare'))+'</button>'+(m.current_exists?'<button class="btn" data-open="'+esc(m.path)+'">'+esc(t('mg_open_current'))+'</button>':'')+'<button class="btn" data-open="'+esc(m.pending)+'">'+esc(t('mg_open_new'))+'</button>'+btn+'</div></td></tr>';}).join('')
+    return'<tr><td class="id">'+esc(m.path)+'<div style="color:var(--muted);font-size:11.5px">'+esc(m.pending)+'</div></td><td><span class="tag">'+esc(t(m.origin==='domain_pack'?'mg_domain_pack':'mg_package'))+'</span></td><td><span class="tag '+(m.state==='ready'?'ok':m.state==='reviewing'?'info':'warn')+'">'+esc(t(state))+'</span></td><td><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn" data-md="'+i+'">'+esc(t('mg_compare'))+'</button>'+(m.finish_supported===true?'<button class="btn" data-mfe="'+i+'">'+esc(t('mf_entry'))+'</button>':'')+(m.current_exists?'<button class="btn" data-cp="'+esc(m.path)+'">'+ico('copy')+esc(t('mg_cp_current'))+'</button>':'')+'<button class="btn" data-cp="'+esc(m.pending)+'">'+ico('copy')+esc(t('mg_cp_new'))+'</button>'+btn+'</div></td></tr>';}).join('')
     :'<tr><td colspan="4"><div class="empty">'+ico('check')+'<span>'+esc(t('mg_none'))+'</span></div></td></tr>';
+  $('mg-rows').querySelectorAll('[data-cp]').forEach(function(b){b.addEventListener('click',function(){copyText(b.dataset.cp);});});
   $('mg-rows').querySelectorAll('[data-md]').forEach(function(b){b.addEventListener('click',function(){var m=rows[+b.dataset.md];openDiff(m.pending,m.path);});});
+  $('mg-rows').querySelectorAll('[data-mfe]').forEach(function(b){b.addEventListener('click',function(){var m=rows[+b.dataset.mfe];if(m&&m.finish_supported===true)mfEntry(m.pending,m.path);});});
   $('mg-rows').querySelectorAll('[data-ms]').forEach(function(b){b.addEventListener('click',function(){api('/api/run',{action:'merge_state',params:{path:b.dataset.mp,state:b.dataset.ms}}).then(function(r){if(r.code===0)refresh();else toast(t('merge_state_fail'));}).catch(function(){toast(t('merge_state_fail'));});});});}
 // merge comparison: read only, nothing stored; unified view with line numbers
-function openDiff(pending,rel){openSheet(t('mg_compare')+' · '+rel,'merge');$('sh-out').hidden=true;var box=$('sh-diff');box.hidden=false;box.setAttribute('aria-label',t('df_title'));
+function openDiff(pending,rel){openSheet(t('mg_compare')+' · '+rel,'merge');mpReset();var seq=MPSEQ;$('sh-out').hidden=true;var box=$('sh-diff');box.hidden=false;box.setAttribute('aria-label',t('df_title'));
   box.innerHTML='<div class="empty"><span class="spin"></span></div>';
-  function fail(detail){box.hidden=true;$('sh-out').hidden=false;$('sh-out').textContent=detail||'';$('sh-tag').innerHTML='<span class="tag err">'+ico('alert')+esc(t('fail'))+'</span>';$('sh-msg').textContent=t('diff_fail');}
-  api('/api/run',{action:'merge_diff',params:{path:pending}}).then(function(r){var d=r.result&&r.result.diff;
+  function fail(detail){if(seq!==MPSEQ)return;box.hidden=true;$('sh-out').hidden=false;$('sh-out').textContent=detail||'';$('sh-tag').innerHTML='<span class="tag err">'+ico('alert')+esc(t('fail'))+'</span>';$('sh-msg').textContent=t('diff_fail');}
+  return api('/api/run',{action:'merge_diff',params:{path:pending}}).then(function(r){if(seq!==MPSEQ)return;var d=r.result&&r.result.diff;
     if(!d){fail(r.out);return;}
-    drawDiff(d);}).catch(function(e){fail(String(e));});}
+    drawDiff(d);mpLoad(pending,rel);}).catch(function(e){fail(String(e));});}
 function drawDiff(d){var box=$('sh-diff'),tone='info',label,body='';
   if(d.identical){tone='ok';label=t('df_same');body=t('df_identical');}
   else if(d.binary){tone='warn';label=t('df_cannot');body=t('df_binary');}
@@ -1132,6 +1422,151 @@ function drawDiff(d){var box=$('sh-diff'),tone='info',label,body='';
   box.innerHTML=(body?'<div class="note">'+ico('info')+'<span>'+esc(body)+'</span></div>':'')
     +(rows?'<div class="dfx">'+rows+'</div>':'')
     +(d.truncated?'<div class="note warn">'+ico('alert')+'<span>'+esc(t('df_trunc'))+'</span></div>':'');}
+// D01B-BEGIN: preview then replace one guide with its .new copy. The apply click needs a preview (MP); nothing applies on its own.
+var MP=null,MPCTX=null,MPSEQ=0,MPBUSY=false;
+function mpReset(){MP=null;MPCTX=null;MPSEQ++;MPBUSY=false;}
+function mpBox(){var d=$('sh-diff'),b=d.querySelector('#mp-box');if(!b){d.insertAdjacentHTML('afterbegin','<div id="mp-box" class="mp" aria-live="polite"></div>');b=d.querySelector('#mp-box');}return b;}
+function mpShow(html){mpBox().innerHTML=html;}
+function mpNote(kind,key,extra){return'<div class="note'+(kind?' '+kind:'')+'">'+ico(kind==='warn'?'alert':'info')+'<span>'+esc(extra?t(key).replace('%s',extra):t(key))+'</span></div>';}
+function mpPaths(ctx){return[['mp_cur_lbl',ctx.path],['mp_new_lbl',ctx.pending]].map(function(x){return'<div class="hrow"><div class="hmain"><b>'+esc(t(x[0]))+'</b><code class="mono">'+esc(x[1])+'</code></div><div class="hact"><button class="btn" data-mp="copy" data-v="'+esc(x[1])+'">'+ico('copy')+esc(t('copy'))+'</button></div></div>';}).join('');}
+function mpReasonKey(r){
+  if(r==='identical'||r==='current_missing'||r==='candidate_missing'||r==='binary'||r==='too_large'||r==='truncated')return'mp_r_'+r;
+  if(r==='transaction_pending')return'mp_r_pending';
+  if(r==='unsafe_link'||r==='not_regular'||r==='read_error'||r==='runtime_unsafe'||r==='archive_unsafe'||r==='journal_unreadable'||r==='unsafe_boundary')return'mp_r_unsafe';
+  return'mp_r_other';}
+function mpButtons(eligible){return'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">'+(eligible?'<button class="btn pri" data-mp="use">'+esc(t('mp_use'))+'</button>':'')+'<button class="btn" data-mp="keep">'+esc(t('mp_keep'))+'</button><button class="btn" data-mp="manual">'+esc(t('mp_manual'))+'</button></div>';}
+function mpDecision(pv){
+  if(!pv)return mpNote('warn','mp_pv_fail')+mpButtons(false);
+  if(pv.reason==='unsupported')return mpNote('','mp_unsupported')+mpButtons(false);
+  if(!pv.eligible)return mpNote(pv.reason==='identical'?'':'warn',mpReasonKey(pv.reason))+mpButtons(false);
+  return'<div class="note warn">'+ico('alert')+'<span><b>'+esc(t('mp_h'))+'</b><br>'+['mp_will_cur','mp_will_save','mp_will_pend','mp_will_html'].map(function(k){return esc(t(k));}).join('<br>')+'</span></div>'+mpButtons(true);}
+function mpLoad(pending,rel){mpReset();var seq=MPSEQ;MPCTX={path:rel,pending:pending};mpShow('<div class="empty"><span class="spin"></span></div>');
+  return api('/api/merge/preview',{path:pending}).then(function(r){if(seq!==MPSEQ)return null;var pv=r&&r.replace_preview;
+    if(pv&&pv.schema==='local-agent-workspace/merge-replace-preview-v1'&&pv.eligible===true&&pv.pending===pending){MP=pv;if(pv.diff)drawDiff(pv.diff);}
+    mpShow(mpDecision(pv&&pv.schema?pv:null));if(typeof mfAttach==='function')mfAttach(pending,rel,seq,pv);return pv;}).catch(function(){if(seq===MPSEQ)mpShow(mpDecision(null));return null;});}
+function mpResult(res){
+  if(!res)return{tone:'err',status:'error',html:mpNote('warn','mp_unknown')};
+  var o=res.outcome;
+  if(o==='replaced'){var a=res.archive||{};
+    return{tone:'ok',status:'success',html:mpNote('','mp_done')+(res.candidate_live_changed?mpNote('warn','mp_live_changed'):'')+mpNote('','mp_will_html')+mpNote('','mp_done_rec')
+      +[['mp_arc_cur',a.current],['mp_arc_new',a.incoming]].map(function(x){return'<div class="hrow"><div class="hmain"><b>'+esc(t(x[0]))+'</b><code class="mono">'+esc(x[1]||'')+'</code></div><div class="hact"><button class="btn" data-mp="copy" data-v="'+esc(x[1]||'')+'">'+ico('copy')+esc(t('copy'))+'</button></div></div>';}).join('')};}
+  if(o==='noop')return{tone:'ok',status:'success',html:mpNote('','mp_noop')};
+  if(o==='stale')return{tone:'warn',status:'blocked',html:mpNote('warn','mp_stale')};
+  if(o==='blocked')return{tone:'warn',status:'blocked',html:mpNote('warn',res.reason==='archive_collision'?'mp_collision':(res.reason==='bad_request'||res.reason==='plan_failed'||res.reason==='unsafe_boundary'?'mp_blocked':mpReasonKey(res.reason)))};
+  if(o==='partial')return{tone:'warn',status:'partial',html:mpNote('warn',res.reason==='transaction_unfinished'?'mp_partial':'mp_unproven',res.txid||'?')};
+  return{tone:'err',status:'error',html:mpNote('warn','mp_err')};}
+function mpApply(){var pv=MP;
+  if(!pv||pv.eligible!==true||!pv.current_sha256||!pv.candidate_sha256||MPBUSY)return Promise.resolve(null);
+  MP=null;MPBUSY=true;var seq=MPSEQ;mpShow('<div class="empty"><span class="spin"></span></div>');
+  function done(res){var wrote=!res||res.outcome==='replaced'||res.outcome==='partial'||res.outcome==='error';
+    if(seq!==MPSEQ){if(wrote)refresh();return res;}
+    MPBUSY=false;var v=mpResult(res);mpShow(v.html);
+    $('sh-tag').innerHTML='<span class="tag '+v.tone+'">'+esc(t('result_'+v.status))+'</span>';$('sh-msg').textContent='';
+    if(wrote)refresh();return res;}
+  return api('/api/merge/replace',{path:pv.pending,current_sha256:pv.current_sha256,candidate_sha256:pv.candidate_sha256})
+    .then(function(r){return done(r&&r.replace);},function(){return done(null);});}
+function mpAct(kind,v){
+  if(kind==='use')return mpApply();
+  if(kind==='copy'){if(v)copyText(v);return Promise.resolve('copied');}
+  if(kind==='keep'){closeSheet();toast(t('mp_kept'));return Promise.resolve('kept');}
+  if(kind==='manual'){MP=null;if(MPCTX)mpShow('<div class="note">'+ico('info')+'<span><b>'+esc(t('mp_man_h'))+'</b><br>'+esc(t('mp_man_p'))+'</span></div>'+mpPaths(MPCTX));return Promise.resolve('manual');}
+  return Promise.resolve(null);}
+$('sh-diff').addEventListener('click',function(e){var b=e.target.closest('[data-mp]');if(b)mpAct(b.dataset.mp,b.dataset.v||'');});
+// D01B-END
+// D01C-BEGIN: preview, then store the .new copy and move it out of the pending list. The current file is kept. Nothing runs without its own fresh preview and click.
+var MF=null,MFSEQ=-1,MFCTX=null,MFREQ=0,MFBUSY=false,MFOBS=false,MFLAST=null;
+var MF_PREVIEW_SCHEMA='local-agent-workspace/merge-finish-preview-v1',MF_OBSERVE_SCHEMA='local-agent-workspace/merge-finish-observe-v1';
+function mfBox(){var d=$('sh-diff'),b=d.querySelector('#mf-box'),m;if(!b){m=d.querySelector('#mp-box');
+  if(m)m.insertAdjacentHTML('afterend','<div id="mf-box" class="mp" aria-live="polite"></div>');else d.insertAdjacentHTML('afterbegin','<div id="mf-box" class="mp" aria-live="polite"></div>');
+  b=d.querySelector('#mf-box');}return b;}
+function mfShow(html){mfBox().innerHTML=html;}
+function mfRow(label,value){return'<div class="hrow"><div class="hmain"><b>'+esc(t(label))+'</b><code class="mono">'+esc(value||'')+'</code></div><div class="hact"><button class="btn" data-mf="copy" data-v="'+esc(value||'')+'">'+ico('copy')+esc(t('copy'))+'</button></div></div>';}
+function mfRows(a,keys){var lbl={dir:'mf_arc_lbl',current:'mf_arc_cur',incoming:'mf_arc_new',retired:'mf_arc_ret'};
+  return keys.filter(function(k){return a&&a[k];}).map(function(k){return mfRow(lbl[k],a[k]);}).join('');}
+function mfButtons(list){return'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">'+list.map(function(x){return'<button class="btn'+(x[2]?' pri':'')+'" data-mf="'+x[0]+'">'+esc(t(x[1]))+'</button>';}).join('')+'</div>';}
+function mfReasonKey(r){
+  if(r==='current_missing'||r==='candidate_missing')return'mf_r_missing';
+  if(r==='binary'||r==='too_large'||r==='truncated')return'mf_r_content';
+  if(r==='unsafe_link'||r==='not_regular'||r==='read_error'||r==='runtime_unsafe'||r==='archive_unsafe'||r==='journal_unreadable'||r==='unsafe_boundary')return'mf_r_unsafe';
+  if(r==='transaction_pending')return'mf_r_pending';
+  if(r==='os_unsupported')return'mf_r_os';
+  if(r==='filesystem_unsupported')return'mf_r_fs';
+  if(r==='archive_collision')return'mf_collision';
+  return'mf_r_other';}
+function mfWhyKey(r){
+  var m={slot_occupied:'mf_w_slot',rename_failed:'mf_w_rename',rename_not_observed:'mf_w_rename',candidate_changed:'mf_w_cand',current_changed:'mf_w_cur',current_missing:'mf_w_cur',
+    both_present:'mf_w_both',moved_bytes_differ:'mf_w_moved',both_absent:'mf_w_absent',archive_unverified:'mf_w_arch',archive_changed:'mf_w_arch',unreadable_or_unsafe:'mf_w_unsafe',
+    os_unsupported:'mf_w_platform',filesystem_unsupported:'mf_w_platform',observed_after_error:'mf_w_after_error',archive_committed_after_error:'mf_w_archive_error'};
+  return m[r]||'mf_w_other';}
+function mfView(res){
+  if(!res||res.state==='refused')return{tone:'err',status:'error',html:mpNote('warn',res?mfReasonKey(res.reason):'mf_net')};
+  var o=res.outcome||res.state,a=res.archive||{},why=res.reason?mpNote('warn',mfWhyKey(res.reason)):'';
+  if(o==='finished')return{tone:'ok',status:'success',html:mpNote('','mf_done')+(res.reason==='observed_after_error'?mpNote('warn','mf_w_after_error'):'')+mpNote('','mf_done_note')+mfRows(a,['current','incoming','retired'])};
+  if(o==='still_pending')return{tone:'warn',status:'partial',html:mpNote('warn','mf_still')+why+mpNote('','mf_no_rollback')+mfRows(a,['dir'])};
+  if(o==='not_started')return{tone:'warn',status:'partial',html:mpNote('warn','mf_not_started')+mfRows(a,['dir'])};
+  if(o==='partial')return{tone:'warn',status:'partial',html:mpNote('warn',res.reason==='transaction_unfinished'?'mf_partial':'mf_unproven',res.txid||(res.unfinished&&res.unfinished.length?res.unfinished.join(', '):'?'))+mfRows(a,['dir'])};
+  if(o==='conflict')return{tone:'warn',status:'partial',html:mpNote('warn','mf_conflict')+why+mfRows(a,['dir','retired'])};
+  if(o==='unknown')return{tone:'warn',status:'partial',html:mpNote('warn','mf_unknown_state')+why+mfRows(a,['dir','retired'])};
+  if(o==='stale')return{tone:'warn',status:'blocked',html:mpNote('warn','mf_stale')};
+  if(o==='blocked')return{tone:'warn',status:'blocked',html:mpNote('warn',mfReasonKey(res.reason))};
+  return{tone:'err',status:'error',html:mpNote('warn','mf_err')};}
+function mfCanObserve(res){return!res||['still_pending','not_started','partial','conflict','unknown'].indexOf(res.outcome||res.state)>=0;}
+function mfAttach(pending,rel,seq,pv){
+  MF=null;MFCTX=null;
+  if(seq!==MPSEQ||!(pv&&pv.schema==='local-agent-workspace/merge-replace-preview-v1'&&pv.pending===pending)||pv.reason==='unsupported'||pv.reason==='invalid_path')return;
+  MFCTX={seq:seq,pending:pending,path:rel};
+  mfShow(mpNote('','mf_intro')+mfButtons([['preview','mf_btn',false]]));}
+function mfConfirmHtml(pv){
+  return'<div class="note warn">'+ico('alert')+'<span><b>'+esc(t('mf_h'))+'</b><br>'+['mf_will_cur','mf_will_save','mf_will_move','mf_will_get','mf_will_html','mf_will_two'].map(function(k){return esc(t(k));}).join('<br>')+'</span></div>'
+    +mpNote('',pv.identical?'mf_same':'mf_differ')+(MFCTX&&MFCTX.direct?mpNote('','mf_entry_note'):'')+mfRows(pv.archive,['dir'])+mfButtons([['confirm','mf_confirm',true],['back','mf_back',false]]);}
+function mfPreview(){var ctx=MFCTX;
+  if(!ctx||ctx.seq!==MPSEQ||MFBUSY||MPBUSY)return Promise.resolve(null);
+  MF=null;var seq=MPSEQ,req=++MFREQ;mfShow('<div class="empty"><span class="spin"></span></div>');
+  return api('/api/merge/finish-preview',{path:ctx.pending}).then(function(r){if(seq!==MPSEQ||req!==MFREQ)return null;
+    var pv=r&&r.finish_preview,mb=$('sh-diff').querySelector('#mp-box');
+    if(!(pv&&pv.schema===MF_PREVIEW_SCHEMA&&pv.pending===ctx.pending&&pv.path===ctx.path)){mfShow(mpNote('warn','mf_pv_fail')+mfButtons([['back','mf_back',false]]));return null;}
+    if(mb)mb.innerHTML='';
+    if(pv.diff)drawDiff(pv.diff);
+    if(pv.eligible===true&&/^finish-[0-9a-f]{32}$/.test(String(pv.finish_id))&&pv.current_sha256&&pv.candidate_sha256){MF=pv;MFSEQ=seq;mfShow(mfConfirmHtml(pv));return pv;}
+    mfShow(mpNote('warn',mfReasonKey(pv.reason))+mfButtons([['back','mf_back',false]]));return pv;
+  }).catch(function(){if(seq===MPSEQ&&req===MFREQ)mfShow(mpNote('warn','mf_pv_fail')+mfButtons([['back','mf_back',false]]));return null;});}
+function mfSettle(res){var v=mfView(res);
+  mfShow(v.html+(mfCanObserve(res)?mfButtons([['observe','mf_recheck',false]]):''));
+  $('sh-tag').innerHTML='<span class="tag '+v.tone+'">'+esc(t('result_'+v.status))+'</span>';$('sh-msg').textContent='';}
+function mfConfirm(){var pv=MF;
+  if(!pv||MFSEQ!==MPSEQ||pv.eligible!==true||!pv.finish_id||MFBUSY||MPBUSY)return Promise.resolve(null);
+  MF=null;MFBUSY=true;var seq=MPSEQ;
+  MFLAST={path:pv.pending,current_sha256:pv.current_sha256,candidate_sha256:pv.candidate_sha256,finish_id:pv.finish_id};
+  var last=MFLAST;mfShow('<div class="empty"><span class="spin"></span></div>');
+  function done(res){MFBUSY=false;var wrote=!res||(res.outcome!=='stale'&&res.outcome!=='blocked');
+    if(seq===MPSEQ)mfSettle(res);
+    if(wrote)refresh();return res;}
+  return api('/api/merge/finish',last).then(function(r){return done(r&&r.finish);},function(){return done(null);});}
+function mfObserve(){var last=MFLAST;
+  if(!last||MFOBS)return Promise.resolve(null);
+  MFOBS=true;var seq=MPSEQ;mfShow('<div class="empty"><span class="spin"></span></div>');
+  function done(obs){MFOBS=false;var ok=!!obs&&obs.schema===MF_OBSERVE_SCHEMA&&obs.finish_id===last.finish_id,res=ok?obs:null;
+    if(seq===MPSEQ)mfSettle(res);
+    if(res&&res.state==='finished')refresh();return res;}
+  return api('/api/merge/finish-observe',last).then(function(r){return done(r&&r.finish_observation);},function(){return done(null);});}
+function mfBack(){var ctx=MFCTX;MF=null;
+  if(!ctx||ctx.seq!==MPSEQ||MFBUSY)return Promise.resolve(null);
+  if(ctx.direct){MFREQ++;mfShow(mpNote('','mf_intro')+mfButtons([['preview','mf_btn',false]]));return Promise.resolve(null);}
+  return mpLoad(ctx.pending,ctx.path);}
+// D-01e: entry from a row whose scan says finish_supported. It does not need a replace preview; mpReset drops any replace pair and bumps the sequence.
+// The flag only decides which button is drawn: the server checks its own allowlist on every finish-preview, finish and finish-observe call.
+function mfEntry(pending,rel){openSheet(t('mf_entry')+' · '+rel,'merge');mpReset();MF=null;MFREQ++;
+  var box=$('sh-diff');$('sh-out').hidden=true;box.hidden=false;box.setAttribute('aria-label',t('df_title'));
+  MFCTX={seq:MPSEQ,pending:pending,path:rel,direct:true};mfShow(mpNote('','mf_intro')+mfButtons([['preview','mf_btn',false]]));return mfPreview();}
+function mfAct(kind,v){
+  if(kind==='preview')return mfPreview();
+  if(kind==='confirm')return mfConfirm();
+  if(kind==='observe')return mfObserve();
+  if(kind==='back')return mfBack();
+  if(kind==='copy'){if(v)copyText(v);return Promise.resolve('copied');}
+  return Promise.resolve(null);}
+$('sh-diff').addEventListener('click',function(e){var b=e.target.closest('[data-mf]');if(b)mfAct(b.dataset.mf,b.dataset.v||'');});
+// D01C-END
 // status page (read only apart from the buttons that act on purpose)
 function actLabel(a){return t(D['act_'+a]?'act_'+a:'act_unknown');}
 function fmtIso(s){var d=new Date(s);return isNaN(d.getTime())?String(s||''):fmtDate(d.getTime()/1000);}
@@ -1142,12 +1577,14 @@ function drawHealth(){var s=S,kind=s.workspace_kind||'unknown';
     [t('h_kind'),'<span class="tag '+(s.initialized?'ok':'warn')+'">'+esc(t(kind==='project'?'st_ready':kind==='template'?'st_template':'st_unknown'))+'</span>'],
     [t('h_evidence'),esc(t('evidence_'+kind))],[t('h_python'),esc(s.python)],[t('h_platform'),esc(s.platform||'')]
   ].map(function(x){return'<div class="it"><dt>'+esc(x[0])+'</dt><dd>'+x[1]+'</dd></div>';}).join('');
-  var FEAT={python:'f_python',library:'f_library',xlsx:'f_xlsx',picker:'f_picker'};
+  var FEAT={python:'f_python',library:'f_library',xlsx:'f_xlsx',picker:'f_picker',controlled:'f_controlled'};
   $('hl-comp').innerHTML=(s.components||[]).map(function(c){var ok=!!c.usable,fix='',why=esc(t('why_label')),how=esc(t('fix_label'));
     if(!ok&&c.feature==='python')fix='<div class="hfix"><b>'+why+':</b> '+esc(t('why_py'))+'<br><b>'+how+':</b> '+esc(t('fix_py'))+'</div>';
     else if(!ok&&c.feature==='picker')fix='<div class="hfix"><b>'+why+':</b> '+esc(t('why_tk'))+'<br><b>'+how+':</b> '+esc(t('fix_tk'))+'</div>';
+    else if(!ok&&c.feature==='controlled'){var rc=c.reason||'',msg=D['cw_'+rc]?t('cw_'+rc):t('cw_OTHER'),cmd=rc==='DEPENDENCY_MISSING'?'<br><code class="mono">'+esc(c.python_path||'python')+' -m pip install "jsonschema>=4.18"</code>':'';
+      fix='<div class="hfix"><b>'+why+':</b> '+esc(msg)+' <span class="mono">'+esc(rc)+'</span><br><b>'+how+':</b> '+esc(t(rc==='DEPENDENCY_MISSING'?'fix_cw_dep':'fix_cw_other'))+cmd+'</div>';}
     else if(!ok)fix='<div class="hfix"><b>'+why+':</b> '+esc(t('why_opx'))+'<br><b>'+how+':</b> <code class="mono">python -m pip install openpyxl</code><br>'+esc(t('fix_opx'))+'</div>';
-    var sub=c.feature==='python'?'Python '+esc(c.version):'<span class="mono">'+esc(c.needs)+'</span>';
+    var sub=c.feature==='python'?'Python '+esc(c.version):(c.feature==='controlled'?'<span class="mono">Python '+esc(c.version)+(c.jsonschema?' · jsonschema '+esc(c.jsonschema):'')+(c.fs?' · '+esc(c.fs):'')+'</span>':'<span class="mono">'+esc(c.needs)+'</span>');
     return'<div class="hrow"><div class="hmain"><b>'+esc(t(FEAT[c.feature]||c.feature))+'</b><span class="hsub">'+sub+'</span>'+fix+'</div><span class="tag '+(ok?'ok':'warn')+'">'+ico(ok?'check':'alert')+esc(t(ok?'usable':'not_usable'))+'</span></div>';}).join('');
   var tx=s.transactions||[];
   // one row per unfinished transaction; the buttons wrap below the details on narrow screens
@@ -1172,7 +1609,7 @@ function drawSkills(){var q=($('sk-q').value||'').toLowerCase(),rows=S.skills.fi
     return'<tr><td class="id">'+esc(r.id)+st+'</td><td><span class="tag '+c+'">'+esc(r.scope==='SHARED'?t('f_shared'):r.scope==='PACK'?t('f_pack'):r.scope==='PROJECT'?t('f_proj'):r.scope)+'</span></td><td>'+esc(r.use)+'</td></tr>';}).join('')
     :'<tr><td colspan="3"><div class="empty" style="padding:14px">'+esc(t('no_match'))+'</div></td></tr>';}
 $('sk-q').addEventListener('input',function(){if(S)drawSkills();});
-function refresh(){return api('/api/status').then(function(s){S=s;paint();}).catch(function(e){if(String(e).indexOf('forbidden')>=0)$('off').classList.add('on');});}
+function refresh(){return api('/api/status').then(function(s){S=s;paint();cdLoad();}).catch(function(e){if(String(e).indexOf('forbidden')>=0)$('off').classList.add('on');});}
 function setTheme(v){if(v)document.documentElement.setAttribute('data-theme',v);else document.documentElement.removeAttribute('data-theme');themeIcon();}
 setTheme(store('panel.theme'));
 $('b-theme').addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');var n=c==='dark'?'light':'dark';setTheme(n);store('panel.theme',n);});

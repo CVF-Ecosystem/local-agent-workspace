@@ -1,0 +1,88 @@
+# smoke thủ công từ thư mục tạm ngoài repo bằng python -I (cwd=/tmp/tmp.ZTUyBTRvzQ) / manual smoke from a scratch dir outside the repo
+python: 3.11.9
+
+$ python -I <repo>/.cvf/checks/control_check_v2.py --contract v2 --phase effect bundle.json
+{
+  "check_version": "law.cvf.check/2",
+  "contract": "v2",
+  "selection": "CLI_EXPLICIT",
+  "candidate_status": "CANDIDATE_NOT_ACTIVE",
+  "implementation_stage": "S1_FOUNDATION_ONLY",
+  "evaluation_basis": "COOPERATIVE_WORKFLOW",
+  "phase": "effect",
+  "disposition": "BLOCKED",
+  "effect_authorized": false,
+  "assurance_level": "UNVERIFIED",
+  "init_error": false,
+  "reasons": [
+    "CANDIDATE_EVALUATION_NOT_IMPLEMENTED"
+  ],
+  "details": [],
+  "owners": {
+    "schema_sha256": "4c6dd3dae50596b506287e81a4b81099e1ba2a76c4d6580ce5e6a1c642f88cd3",
+    "policy_sha256": "20cff567afe4fa0f1ce5bb97c75129a90e3409c64836bf4538d8e8c378fa303e"
+  },
+  "coverage": {
+    "record_structure_checked": true,
+    "binding_evaluated": false,
+    "routing_evaluated": false,
+    "gates_evaluated": false,
+    "artifact_bytes_observed": false,
+    "actual_operation_observed": false,
+    "requirements_semantic_verified": false,
+    "owner_protection": "NOT_PROVEN"
+  },
+  "objects": [],
+  "gates": []
+}
+[exit=1]
+
+$ ... --contract v2 --phase accept --format text bundle.json
+law.cvf.check/2 contract=v2 selection=CLI_EXPLICIT stage=S1_FOUNDATION_ONLY candidate=CANDIDATE_NOT_ACTIVE phase=accept disposition=BLOCKED effect_authorized=false assurance=UNVERIFIED init_error=false basis=COOPERATIVE_WORKFLOW
+reasons: CANDIDATE_EVALUATION_NOT_IMPLEMENTED
+owners: schema_sha256=4c6dd3dae50596b506287e81a4b81099e1ba2a76c4d6580ce5e6a1c642f88cd3 policy_sha256=20cff567afe4fa0f1ce5bb97c75129a90e3409c64836bf4538d8e8c378fa303e
+coverage: record_structure_checked=true binding_evaluated=false routing_evaluated=false gates_evaluated=false artifact_bytes_observed=false actual_operation_observed=false requirements_semantic_verified=false owner_protection=NOT_PROVEN
+objects=0 gates=0
+[exit=1]
+
+$ ... --contract v2 --phase effect v1bundle.json   (bundle v1 hợp lệ không được thử ở v2)
+law.cvf.check/2 contract=v2 selection=CLI_EXPLICIT stage=S1_FOUNDATION_ONLY candidate=CANDIDATE_NOT_ACTIVE phase=effect disposition=UNSUPPORTED effect_authorized=false assurance=UNVERIFIED init_error=false basis=null
+reasons: SCHEMA_VERSION_UNKNOWN
+detail: unsupported schema_version in: top-level, records[0] (grant), records[1] (task), records[2] (effect)
+detail: input is law.cvf.control/1: choose --contract v1 explicitly; v2 neither tries v1 nor reinterprets it
+owners: schema_sha256=4c6dd3dae50596b506287e81a4b81099e1ba2a76c4d6580ce5e6a1c642f88cd3 policy_sha256=20cff567afe4fa0f1ce5bb97c75129a90e3409c64836bf4538d8e8c378fa303e
+coverage: record_structure_checked=false binding_evaluated=false routing_evaluated=false gates_evaluated=false artifact_bytes_observed=false actual_operation_observed=false requirements_semantic_verified=false owner_protection=NOT_PROVEN
+objects=0 gates=0
+[exit=1]
+
+$ ... --contract v1 --phase effect v1bundle.json  vs  control_check.py trực tiếp
+routed exit=1
+direct exit=1
+stdout/stderr identical
+{
+  "check_version": "law.cvf.check/1",
+  "phase": "effect",
+  "disposition": "BLOCKED",
+  "effect_authorized": false,
+  "assurance_level": "UNVERIFIED",
+  "reasons": [],
+  "objects": [
+    {
+      "object": {
+        "kind": "effect",
+        "id": "EXAMPLE-effect-1",
+        "phase": "
+
+$ ... (no --contract)
+usage: control_check_v2.py --contract {v1,v2} --phase {dispatch,effect,accept} [--format {json,text}] bundle
+control_check_v2.py: error: --contract {v1,v2} is required; there is no default and the contract is never inferred from the input
+[exit=2]
+
+$ ... --contract v2 --phase effect missing.json
+law.cvf.check/2 contract=v2 selection=CLI_EXPLICIT stage=S1_FOUNDATION_ONLY candidate=CANDIDATE_NOT_ACTIVE phase=effect disposition=UNSUPPORTED effect_authorized=false assurance=UNVERIFIED init_error=true basis=null
+reasons: BUNDLE_UNREADABLE
+detail: cannot read bundle (FileNotFoundError, errno 2)
+owners: schema_sha256=null policy_sha256=null
+coverage: record_structure_checked=false binding_evaluated=false routing_evaluated=false gates_evaluated=false artifact_bytes_observed=false actual_operation_observed=false requirements_semantic_verified=false owner_protection=NOT_PROVEN
+objects=0 gates=0
+[exit=2]

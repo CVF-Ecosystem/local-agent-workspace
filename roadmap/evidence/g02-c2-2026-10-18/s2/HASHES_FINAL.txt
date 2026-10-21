@@ -1,0 +1,20 @@
+# sha256 (16) sau khi hoàn tất bàn giao S2
+25d7f4f3503c9603 *.agent/HANDOFF.md
+ffac63dc2ce59fbd *.agent/STATE.md
+5179e7091579c048 *.cvf/checks/control_check_v2.py
+83ba965d6a3ac57a *.cvf/checks/v2/__init__.py
+c593c6d070ccdf67 *.cvf/checks/v2/canon.py
+a1216b35eba1ff4f *.cvf/checks/v2/loader.py
+dcc080ed25e020ef *.cvf/checks/v2/refs.py
+60326b37f24d8144 *.cvf/checks/v2/binding.py
+16280013c3600f2d *.cvf/checks/v2/README.md
+a5daf2e48c402323 *tests/test_control_check_v2.py
+eae2e979f807ce1c *tests/test_control_check_v2_s2.py
+f95bfc367bb7f470 *.cvf/checks/control_check.py
+454e3f4944825809 *tests/test_control_check.py
+b32d7b3ff0e8a014 *tests/test_control_v2_candidate.py
+4c6dd3dae50596b5 *.cvf/contracts/v2/control.schema.json
+20cff567afe4fa0f *.cvf/rules/v2/ROUTING_POLICY.json
+8d59d60ccd3af136 *.cvf/contracts/v2/vectors.json
+3b463f654d51a9ec *.cvf/contracts/v2/examples/EXPECTED.json
+8ec0b5b0f816a050 *roadmap/evidence/g02-c2-2026-10-18/s2/README.md

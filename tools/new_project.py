@@ -23,15 +23,7 @@ ROOT = cp.ROOT
 LANG = 'vi'
 LAST = {'result': None}
 BAD_CHARS = re.compile(r'[<>:"/\\|?*\x00-\x1f]')
-TEMPLATE_OVERLAYS = {  # kho nguồn: thay file người bảo trì bằng mẫu sạch / source repo: clean templates for maintainer files
-    'PROJECT.md': 'release_templates/PROJECT.md',
-    '.agent/STATE.md': 'release_templates/.agent/STATE.md',
-    '.agent/HANDOFF.md': 'release_templates/.agent/HANDOFF.md',
-    'en/PROJECT.md': 'release_templates/en/PROJECT.md',
-    'en/.agent/STATE.md': 'release_templates/en/.agent/STATE.md',
-    'en/.agent/HANDOFF.md': 'release_templates/en/.agent/HANDOFF.md',
-}
-
+TEMPLATE_OVERLAYS = cp.TEMPLATE_OVERLAYS  # một nguồn sự thật trong check_package / one source of truth in check_package
 
 def L(vi, en):
     return en if LANG == 'en' else vi
@@ -53,23 +45,9 @@ def folder_name(name):
 
 
 def template_role():
-    """'template' (bộ mẫu nguyên vẹn hoặc kho nguồn), 'project' (đã khởi tạo) hoặc 'unknown'.
+    """'template' (bộ mẫu nguyên vẹn hoặc kho nguồn có mẫu sạch), 'project' (đã khởi tạo) hoặc 'unknown'.
     Dựa vào nội dung file, không dựa vào tên thư mục. / From file evidence, never from the folder name."""
-    if os.path.exists(cp.P('.agent/PACKAGE_INFO.json')):
-        return 'project'
-    if os.path.isdir(cp.P('release_templates')) and all(os.path.isfile(cp.P(s)) for s in TEMPLATE_OVERLAYS.values()):
-        return 'template'
-    m = cp.read_manifest() or {}
-    if os.path.isfile(cp.P('PROJECT.md')) and (m.get('PROJECT.md') == cp.sha('PROJECT.md') or m.get('en/PROJECT.md') == cp.sha('PROJECT.md')):
-        return 'template'
-    return 'unknown'
-
-
-def package_files():
-    brand = set(cp.branding_files())
-    files = [f for f in cp.all_files() if f not in ('.agent/PACKAGE_INFO.json', '.agent/MERGE_STATUS.json', 'setup_answers.json')
-             and (cp.in_manifest(f) or f in cp.USER_FILES or f == 'MANIFEST.sha256' or f in brand)]  # logo, tên đơn vị, font của bộ mẫu đi theo dự án mới / template branding and fonts carry over
-    return sorted(set(files))
+    return {'initialized': 'project', 'maintainer': 'template', 'clean': 'template'}.get(cp.source_state(), 'unknown')
 
 
 def main(argv):
@@ -111,7 +89,11 @@ def main(argv):
         return finish('blocked', 1, L('Nơi lưu đã có thư mục "%s"; thư mục đó được giữ nguyên, không ghi đè. Đặt tên công việc khác hoặc chọn nơi lưu khác. Chưa tạo gì.',
                                       'A folder "%s" already exists there; it is never overwritten. Pick another name or place. Nothing written.') % folder,
                       changes=False, **info)
-    files = package_files()
+    problems = cp.delivery_problems()  # projection chung với build/adopt; bất thường thì chưa tạo gì, cả khi xem trước / shared with build/adopt; refused before anything is created
+    if problems:
+        return finish('blocked', 1, L('Bộ mẫu chưa giao được thành dự án mới: %s Chưa tạo gì.', 'The template cannot be delivered as a new project: %s Nothing was created.') % problems[0],
+                      changes=False, findings=[{'severity': 'error', 'message': x} for x in problems], **info)
+    files = cp.delivery_selection() + ['MANIFEST.sha256']
     if not a.apply:
         print(L('[XEM TRƯỚC, chưa tạo gì] Dự án mới từ bộ mẫu:', '[PREVIEW, nothing created yet] New project from the template:'))
         print('  ' + L('Tên công việc', 'Task name') + ': ' + name)
@@ -122,17 +104,11 @@ def main(argv):
         return 0
     tmp = os.path.join(dest, '.%s.creating-%s' % (folder, uuid.uuid4().hex[:8]))
     try:
-        for rel in files:
-            src = cp.P(TEMPLATE_OVERLAYS[rel]) if (rel in TEMPLATE_OVERLAYS and os.path.isfile(cp.P(TEMPLATE_OVERLAYS[rel]))) else cp.P(rel)
-            dst = os.path.join(tmp, *rel.split('/'))
-            os.makedirs(os.path.dirname(dst), exist_ok=True)
-            shutil.copyfile(src, dst)
-            if os.access(src, os.X_OK) and rel.endswith(('.command', '.sh')):
-                os.chmod(dst, 0o755)
+        cp.materialize(tmp)  # đúng bytes và MANIFEST của bản giao, không chép MANIFEST kho nguồn / the shipped bytes and MANIFEST, not the source MANIFEST
         if os.path.lexists(target):  # xuất hiện trong lúc chép / appeared while copying
             raise FileExistsError(target)
         os.rename(tmp, target)
-    except OSError as e:
+    except (OSError, cp.ProjectionError) as e:
         shutil.rmtree(tmp, ignore_errors=True)
         return finish('blocked' if isinstance(e, FileExistsError) else 'error', 1,
                       L('Không tạo được dự án (%s). Phần đã chép dở đã được xóa; bộ mẫu không bị thay đổi.', 'Could not create the project (%s). The partly copied files were removed; the template is unchanged.') % e,

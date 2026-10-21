@@ -1,0 +1,19 @@
+{
+  "retire": [
+    {
+      "role": "worker",
+      "retire_status": "RETIRED",
+      "disk_status": "RETIRED"
+    },
+    {
+      "role": "reviewer",
+      "retire_status": "RETIRED",
+      "disk_status": "RETIRED"
+    }
+  ],
+  "listing_exit": 0,
+  "listing": "4 active agents\n\nBuilt-in agents:\n  Explore · haiku\n  general-purpose · inherit\n  Plan · inherit\n  statusline-setup · sonnet\n",
+  "no_project_roles": true,
+  "candidate_sha256": "12606146a806bc0d269fe26684f7ff61f63843bce262a38094d39b4d16a1d890",
+  "driver_note": "First driver stopped after successful worker retirement because status RETIRED intentionally exits 1; parsed saved outcome and continued reviewer without re-running worker rename or AI."
+}

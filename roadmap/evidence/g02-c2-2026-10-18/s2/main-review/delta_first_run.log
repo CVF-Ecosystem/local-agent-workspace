@@ -1,0 +1,72 @@
+test_argument_errors (tests.test_control_check_v2_s2.GrantLinkTests.test_argument_errors) ... ok
+test_claim_conflict_is_the_primary_state_and_candidates_are_preserved (tests.test_control_check_v2_s2.GrantLinkTests.test_claim_conflict_is_the_primary_state_and_candidates_are_preserved) ... ok
+test_claim_table_must_belong_to_the_current_index (tests.test_control_check_v2_s2.GrantLinkTests.test_claim_table_must_belong_to_the_current_index) ... ok
+test_effect_reference_outside_the_task_refs_is_a_conflict (tests.test_control_check_v2_s2.GrantLinkTests.test_effect_reference_outside_the_task_refs_is_a_conflict) ... ok
+test_effect_without_a_resolvable_task_is_incomplete_and_ambiguous_task_is_ambiguous (tests.test_control_check_v2_s2.GrantLinkTests.test_effect_without_a_resolvable_task_is_incomplete_and_ambiguous_task_is_ambiguous) ... ok
+test_empty_or_absent_refs_and_other_record_types_give_empty_tuple (tests.test_control_check_v2_s2.GrantLinkTests.test_empty_or_absent_refs_and_other_record_types_give_empty_tuple) ... ok
+test_ex02_task_and_effect_link_although_ref_id_differs_from_grant_id (tests.test_control_check_v2_s2.GrantLinkTests.test_ex02_task_and_effect_link_although_ref_id_differs_from_grant_id) ... ok
+test_group_kind_other_than_grant_is_a_conflict_even_when_claims_agree (tests.test_control_check_v2_s2.GrantLinkTests.test_group_kind_other_than_grant_is_a_conflict_even_when_claims_agree) ... ok
+test_missing_task_and_no_candidate_reports_both (tests.test_control_check_v2_s2.GrantLinkTests.test_missing_task_and_no_candidate_reports_both) ... ok
+test_no_issuer_ref_means_no_grant_record (tests.test_control_check_v2_s2.GrantLinkTests.test_no_issuer_ref_means_no_grant_record) ... ok
+test_ref_id_is_never_matched_against_grant_id (tests.test_control_check_v2_s2.GrantLinkTests.test_ref_id_is_never_matched_against_grant_id) ... ok
+test_repeated_task_ref_gives_one_link_per_element_and_malformed_element_is_unsupported (tests.test_control_check_v2_s2.GrantLinkTests.test_repeated_task_ref_gives_one_link_per_element_and_malformed_element_is_unsupported) ... ok
+test_two_candidates_are_ambiguous_including_revisions_and_none_is_latest (tests.test_control_check_v2_s2.GrantLinkTests.test_two_candidates_are_ambiguous_including_revisions_and_none_is_latest) ... ok
+test_absent_sides (tests.test_control_check_v2_s2.ObjectSetTests.test_absent_sides) ... ok
+test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator (tests.test_control_check_v2_s2.ObjectSetTests.test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator) ... ok
+test_cover_requires_path_digest_and_supplied_qualifiers_both_ways (tests.test_control_check_v2_s2.ObjectSetTests.test_cover_requires_path_digest_and_supplied_qualifiers_both_ways) ... ok
+test_duplicates_and_out_of_domain_are_unsupported_not_deduped (tests.test_control_check_v2_s2.ObjectSetTests.test_duplicates_and_out_of_domain_are_unsupported_not_deduped) ... ok
+test_exact_qualified (tests.test_control_check_v2_s2.ObjectSetTests.test_exact_qualified) ... ok
+test_mode_and_type_errors (tests.test_control_check_v2_s2.ObjectSetTests.test_mode_and_type_errors) ... ok
+test_pre_effect_scope_is_only_a_declared_set_and_never_mapped_to_the_task_digest (tests.test_control_check_v2_s2.ObjectSetTests.test_pre_effect_scope_is_only_a_declared_set_and_never_mapped_to_the_task_digest) ... ok
+test_action_relations_optional_present_and_subset_only (tests.test_control_check_v2_s2.BindingTests.test_action_relations_optional_present_and_subset_only) ... ok
+test_argument_errors (tests.test_control_check_v2_s2.BindingTests.test_argument_errors) ... ok
+test_constant_non_observation_flags_on_every_relation (tests.test_control_check_v2_s2.BindingTests.test_constant_non_observation_flags_on_every_relation) ... ok
+test_edit_after_binding_flags_exactly_the_dependent_relations (tests.test_control_check_v2_s2.BindingTests.test_edit_after_binding_flags_exactly_the_dependent_relations) ... ok
+test_effect_action_is_compared_by_whole_projection_not_by_operation_tool_targets (tests.test_control_check_v2_s2.BindingTests.test_effect_action_is_compared_by_whole_projection_not_by_operation_tool_targets) ... ok
+test_ex02_relations_are_listed_per_record_not_blanket_match (tests.test_control_check_v2_s2.BindingTests.test_ex02_relations_are_listed_per_record_not_blanket_match) ... ok
+test_ex08_stale_group_is_the_one_that_disagrees_with_the_task (tests.test_control_check_v2_s2.BindingTests.test_ex08_stale_group_is_the_one_that_disagrees_with_the_task) ... ok
+test_garbage_bindings_never_raise (tests.test_control_check_v2_s2.BindingTests.test_garbage_bindings_never_raise) ... ok
+test_inputs_duplicate_order_and_qualifiers (tests.test_control_check_v2_s2.BindingTests.test_inputs_duplicate_order_and_qualifiers) ... ok
+test_missing_or_ambiguous_task_is_incomplete_even_when_peers_agree (tests.test_control_check_v2_s2.BindingTests.test_missing_or_ambiguous_task_is_incomplete_even_when_peers_agree) ... ok
+test_outputs_on_review_or_effect_are_not_derived_from_anything (tests.test_control_check_v2_s2.BindingTests.test_outputs_on_review_or_effect_are_not_derived_from_anything) ... ok
+test_peer_equality_is_not_recomputation (tests.test_control_check_v2_s2.BindingTests.test_peer_equality_is_not_recomputation) ... ok
+test_peer_one_sided_and_not_bound (tests.test_control_check_v2_s2.BindingTests.test_peer_one_sided_and_not_bound) ... ok
+test_policy_change_and_literal_mismatch (tests.test_control_check_v2_s2.BindingTests.test_policy_change_and_literal_mismatch) ... ok
+test_present_null_sets_in_records_are_malformed_not_absent (tests.test_control_check_v2_s2.BindingTests.test_present_null_sets_in_records_are_malformed_not_absent) ... ok
+test_result_outputs_vs_artifacts (tests.test_control_check_v2_s2.BindingTests.test_result_outputs_vs_artifacts) ... ok
+test_unsupported_parts_and_unsupported_policy_are_not_complete (tests.test_control_check_v2_s2.BindingTests.test_unsupported_parts_and_unsupported_policy_are_not_complete) ... ok
+test_vacuous_complete_is_false (tests.test_control_check_v2_s2.BindingTests.test_vacuous_complete_is_false) ... ok
+test_ambiguous_parent_or_child (tests.test_control_check_v2_s2.PointerTests.test_ambiguous_parent_or_child) ... ok
+test_child_basis_records_peer_claims_and_inputs (tests.test_control_check_v2_s2.PointerTests.test_child_basis_records_peer_claims_and_inputs) ... ok
+test_child_resolves_and_recomputes (tests.test_control_check_v2_s2.PointerTests.test_child_resolves_and_recomputes) ... ok
+test_effect_pointer_vs_effect_binding_and_self (tests.test_control_check_v2_s2.PointerTests.test_effect_pointer_vs_effect_binding_and_self) ... ok
+test_effect_whose_binding_task_is_not_the_pointer_parent_mismatches_p_self (tests.test_control_check_v2_s2.PointerTests.test_effect_whose_binding_task_is_not_the_pointer_parent_mismatches_p_self) ... ok
+test_ex09_as_shipped_child_missing_is_incomplete_not_mismatch (tests.test_control_check_v2_s2.PointerTests.test_ex09_as_shipped_child_missing_is_incomplete_not_mismatch) ... ok
+test_malformed_delegation_never_raises (tests.test_control_check_v2_s2.PointerTests.test_malformed_delegation_never_raises) ... ok
+test_parent_digest_off_by_one_character_mismatches_alone (tests.test_control_check_v2_s2.PointerTests.test_parent_digest_off_by_one_character_mismatches_alone) ... ok
+test_parent_other_than_the_containing_task_mismatches_p_self (tests.test_control_check_v2_s2.PointerTests.test_parent_other_than_the_containing_task_mismatches_p_self) ... ok
+test_records_without_delegation_give_empty_tuple_and_errors (tests.test_control_check_v2_s2.PointerTests.test_records_without_delegation_give_empty_tuple_and_errors) ... ok
+test_as_dict_is_json_safe_and_closed_vocabulary (tests.test_control_check_v2_s2.PurityTests.test_as_dict_is_json_safe_and_closed_vocabulary) ... ok
+test_dataclasses_are_frozen (tests.test_control_check_v2_s2.PurityTests.test_dataclasses_are_frozen) ... ok
+test_inputs_are_not_mutated_by_any_helper (tests.test_control_check_v2_s2.PurityTests.test_inputs_are_not_mutated_by_any_helper) ... ok
+test_no_io_no_network_and_no_state_between_calls (tests.test_control_check_v2_s2.PurityTests.test_no_io_no_network_and_no_state_between_calls) ... ok
+test_no_value_echo_in_any_result (tests.test_control_check_v2_s2.PurityTests.test_no_value_echo_in_any_result) ... ok
+test_record_order_changes_positions_but_not_the_relation_set (tests.test_control_check_v2_s2.PurityTests.test_record_order_changes_positions_but_not_the_relation_set) ... ERROR
+test_results_hold_no_mutable_alias_of_the_input (tests.test_control_check_v2_s2.PurityTests.test_results_hold_no_mutable_alias_of_the_input) ... ok
+test_s1_public_surface_unchanged (tests.test_control_check_v2_s2.PurityTests.test_s1_public_surface_unchanged) ... ok
+
+======================================================================
+ERROR: test_record_order_changes_positions_but_not_the_relation_set (tests.test_control_check_v2_s2.PurityTests.test_record_order_changes_positions_but_not_the_relation_set)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check_v2_s2.py", line 1471, in test_record_order_changes_positions_but_not_the_relation_set
+    self.assertEqual(self.refs.link_grants(self.index(rev), self.refs.collect_claims(self.index(rev)), 0)[0].candidate_positions, (4,))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\.cvf\checks\v2\refs.py", line 482, in link_grants
+    raise ValueError('claims must be collected from this RecordIndex snapshot')
+ValueError: claims must be collected from this RecordIndex snapshot
+
+----------------------------------------------------------------------
+Ran 56 tests in 0.544s
+
+FAILED (errors=1)

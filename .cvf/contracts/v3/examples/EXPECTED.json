@@ -1,0 +1,535 @@
+{
+  "example_only": true,
+  "note": "Expectation index for inactive EXAMPLE bundles (candidate v3, A0 narrow: one create_new action by owner protocol P-CN1). schema_valid is a Draft 2020-12 structure expectation. binding_stale_or_mismatched compares declared digests with law.cvf.bind/3 reference recomputation, and acceptance_consistency compares the user_acceptance fields with the current task and result; neither is a workflow outcome and neither is a checker. expected_design describes a counterfactual scenario, NEVER the required verdict for the shipped bundle. No evaluator exists; every workflow remains NOT_RUN. No example carries authority; attribution is a claim.",
+  "expected_design_basis": "COUNTERFACTUAL_SCENARIO_NOT_AS_SHIPPED",
+  "scenario_precondition": "Only in a separately authored test fixture may the example-only markers be replaced and the inactive example grant be represented as an eligible active cooperative grant for the stated scenario. Preserve every other defect and check it independently. Do not activate, rewrite, migrate or use the shipped examples as grants. Even a scenario PASS needs all applicable current source, scope, binding, owner-protocol and observation conditions; this file supplies no evidence for them.",
+  "as_shipped_expectation": {
+    "workflow_status": "NOT_RUN",
+    "schema_invalid_cases": "Reject structure; do not evaluate as a workflow PASS.",
+    "grant_dependent_cases": "BLOCKED with GRANT_INACTIVE; other applicable failures may also be reported. No shipped example can authorize an effect."
+  },
+  "workflow_status": "NOT_RUN",
+  "schema": "../control.schema.json",
+  "policy": "../../../rules/v3/ROUTING_POLICY.json",
+  "cases": [
+    {
+      "file": "ex01_pcn1_working_request.json",
+      "scenario": "One new draft in working/, owner P-CN1, dispatch/effect (no receipt yet)",
+      "schema_valid": true,
+      "workflow_tested": false,
+      "route_rows": [
+        "R-READ_DRAFT"
+      ],
+      "required_review_phases": [],
+      "binding_stale_or_mismatched": false,
+      "acceptance_consistency": "ABSENT",
+      "expected_design": {
+        "disposition": "PASS",
+        "assurance_level": "ADVISORY",
+        "reasons": [],
+        "phase_scope": "dispatch|effect",
+        "gates": {
+          "ACTUAL_OUTCOME": "NOT_YET_DUE",
+          "REQUIREMENTS": "NOT_YET_DUE",
+          "BINDING": "MET at effect"
+        },
+        "conditions_not_in_bundle": [
+          "Eligible ACTIVE cooperative grant covering tools, create_new+delete and both path scopes (the shipped grant is EXAMPLE_INACTIVE)",
+          "S4 observer, in the same evaluation, sees the entrypoint hash equal to the pin and the target absent (A-NEW_TARGET closed, observation-at-time only)",
+          "No review phase required by the matched rows"
+        ],
+        "why": "Counterfactual only. With every listed condition true the request is PASS inside phase dispatch/effect; PASS authorizes nothing and says nothing about accept. As shipped GRANT_INACTIVE blocks, and with the A-NEW_TARGET assumption open the route is CONDITIONAL and therefore BLOCKED."
+      }
+    },
+    {
+      "file": "ex02_pcn1_output_internal_request.json",
+      "scenario": "One internal draft under output/ with content_use internal_draft",
+      "schema_valid": true,
+      "workflow_tested": false,
+      "route_rows": [
+        "R-READ_DRAFT"
+      ],
+      "required_review_phases": [],
+      "binding_stale_or_mismatched": false,
+      "acceptance_consistency": "ABSENT",
+      "expected_design": {
+        "disposition": "PASS",
+        "assurance_level": "ADVISORY",
+        "reasons": [],
+        "phase_scope": "dispatch|effect",
+        "gates": {
+          "ACTUAL_OUTCOME": "NOT_YET_DUE",
+          "REQUIREMENTS": "NOT_YET_DUE"
+        },
+        "conditions_not_in_bundle": [
+          "Eligible ACTIVE cooperative grant covering tools, create_new+delete and both path scopes (the shipped grant is EXAMPLE_INACTIVE)",
+          "S4 observer, in the same evaluation, sees the entrypoint hash equal to the pin and the target absent (A-NEW_TARGET closed, observation-at-time only)",
+          "No review phase required by the matched rows"
+        ],
+        "why": "Counterfactual only, as ex01; CONTENT_USE_INTERNAL_ONLY is true because content_use is exactly [internal_draft]."
+      }
+    },
+    {
+      "file": "ex03_pcn1_published_candidate.json",
+      "scenario": "Published with receipt; result is CANDIDATE and EFFECT_APPLIED, no user acceptance",
+      "schema_valid": true,
+      "workflow_tested": false,
+      "route_rows": [
+        "R-READ_DRAFT"
+      ],
+      "required_review_phases": [],
+      "binding_stale_or_mismatched": false,
+      "acceptance_consistency": "ABSENT",
+      "expected_design": {
+        "disposition": "BLOCKED",
+        "assurance_level": "ADVISORY",
+        "reasons": [],
+        "phase_scope": "accept",
+        "reasons_checker_owned": [
+          "EVIDENCE_NOT_VERIFIED"
+        ],
+        "gates": {
+          "ACTUAL_OUTCOME": "MET only with S4 current bytes",
+          "REQUIREMENTS": "NOT_CHECKED(EVIDENCE_NOT_VERIFIED)"
+        },
+        "conditions_not_in_bundle": [
+          "Eligible ACTIVE cooperative grant covering tools, create_new+delete and both path scopes (the shipped grant is EXAMPLE_INACTIVE)",
+          "S4 observer, in the same evaluation, sees the entrypoint hash equal to the pin and the target absent (A-NEW_TARGET closed, observation-at-time only)",
+          "No review phase required by the matched rows",
+          "S4 observer reads the current target bytes and they equal the published content",
+          "The published evidence for the rid resolves, is unique, and receipt_ref.digest equals the digest of its raw bytes"
+        ],
+        "why": "Accept needs REQUIREMENTS: no review phase applies, so USER_ACCEPTED_DECLARED needs a complete D4 acceptance and there is none. A CANDIDATE claim never turns a gate off."
+      }
+    },
+    {
+      "file": "ex04_pcn1_accepted_d4_complete.json",
+      "scenario": "Published with receipt and a complete D4 user acceptance",
+      "schema_valid": true,
+      "workflow_tested": false,
+      "route_rows": [
+        "R-READ_DRAFT"
+      ],
+      "required_review_phases": [],
+      "binding_stale_or_mismatched": false,
+      "acceptance_consistency": "MATCHES_CURRENT_TASK_AND_RESULT",
+      "expected_design": {
+        "disposition": "PASS",
+        "assurance_level": "ADVISORY",
+        "reasons": [],
+        "phase_scope": "accept",
+        "gates": {
+          "ACTUAL_OUTCOME": "MET",
+          "REQUIREMENTS": "USER_ACCEPTED_DECLARED"
+        },
+        "conditions_not_in_bundle": [
+          "Eligible ACTIVE cooperative grant covering tools, create_new+delete and both path scopes (the shipped grant is EXAMPLE_INACTIVE)",
+          "S4 observer, in the same evaluation, sees the entrypoint hash equal to the pin and the target absent (A-NEW_TARGET closed, observation-at-time only)",
+          "No review phase required by the matched rows",
+          "S4 observer reads the current target bytes and they equal the published content",
+          "The published evidence for the rid resolves, is unique, and receipt_ref.digest equals the digest of its raw bytes"
+        ],
+        "why": "Counterfactual only. All accept conditions listed hold: receipt resolves to the unique PUBLISHED evidence, current bytes equal published content, D4 matches the current task digest, every mandatory requirement and the exact artifact. effect_authorized stays false; semantic correctness is not verified by any tool."
+      }
+    },
+    {
+      "file": "ex05_pcn1_receipt_missing.json",
+      "scenario": "OUTCOME APPLIED without receipt_ref; user acceptance is otherwise complete",
+      "schema_valid": true,
+      "workflow_tested": false,
+      "route_rows": [
+        "R-READ_DRAFT"
+      ],
+      "required_review_phases": [],
+      "binding_stale_or_mismatched": false,
+      "acceptance_consistency": "MATCHES_CURRENT_TASK_AND_RESULT",
+      "expected_design": {
+        "disposition": "BLOCKED",
+        "assurance_level": "ADVISORY",
+        "reasons": [
+          "PRECONDITION_PROOF_MISSING"
+        ],
+        "phase_scope": "accept",
+        "gates": {
+          "ACTUAL_OUTCOME": "UNSUPPORTED(PRECONDITION_PROOF_MISSING)"
+        },
+        "why": "Without receipt_ref there is no historical proof that the target was absent before the link and that these bytes came from the occurrence; S4 read-only observation cannot replace it."
+      }
+    },
+    {
+      "file": "ex06_pcn1_input_changed_since_read.json",
+      "scenario": "The tool refused with INPUT_CHANGED_SINCE_READ; the request record says BLOCKED and no outcome exists",
+      "schema_valid": true,
+      "workflow_tested": false,
+      "route_rows": [
+        "R-READ_DRAFT"
+      ],
+      "required_review_phases": [],
+      "binding_stale_or_mismatched": false,
+      "acceptance_consistency": "ABSENT",
+      "expected_design": {
+        "disposition": "BLOCKED",
+        "assurance_level": "ADVISORY",
+        "reasons": [
+          "INPUT_CHANGED_SINCE_READ"
+        ],
+        "phase_scope": "effect",
+        "why": "The refusal happened before any bytes were published (wrote may still list runtime bootstrap files). Nothing is accepted from this attempt; the draft must be re-created from the new source."
+      }
+    },
+    {
+      "file": "ex07_pcn1_binding_stale.json",
+      "scenario": "Outcome and result carry the accepted_task_digest of an older reading of the task",
+      "schema_valid": true,
+      "workflow_tested": false,
+      "route_rows": [
+        "R-READ_DRAFT"
+      ],
+      "required_review_phases": [],
+      "binding_stale_or_mismatched": true,
+      "acceptance_consistency": "ABSENT",
+      "expected_design": {
+        "disposition": "BLOCKED",
+        "assurance_level": "ADVISORY",
+        "reasons": [
+          "BINDING_MISMATCH"
+        ],
+        "phase_scope": "accept",
+        "why": "accepted_task_digest differs from the digest recomputed from the current task; the receipt of the old binding does not apply."
+      }
+    },
+    {
+      "file": "ex08_pcn1_acceptance_incomplete.json",
+      "scenario": "User acceptance lists REQ-1 only; REQ-2 is mandatory",
+      "schema_valid": true,
+      "workflow_tested": false,
+      "route_rows": [
+        "R-READ_DRAFT"
+      ],
+      "required_review_phases": [],
+      "binding_stale_or_mismatched": false,
+      "acceptance_consistency": "REQUIREMENTS_INCOMPLETE",
+      "expected_design": {
+        "disposition": "BLOCKED",
+        "assurance_level": "ADVISORY",
+        "reasons": [],
+        "phase_scope": "accept",
+        "reasons_checker_owned": [
+          "USER_ACCEPTANCE_INCOMPLETE"
+        ],
+        "why": "The uncovered mandatory requirement stays NOT_CHECKED, so REQUIREMENTS cannot be USER_ACCEPTED_DECLARED."
+      }
+    },
+    {
+      "file": "ex09_pcn1_acceptance_stale_task.json",
+      "scenario": "accepted_task_digest in the acceptance is not the digest of the current task",
+      "schema_valid": true,
+      "workflow_tested": false,
+      "route_rows": [
+        "R-READ_DRAFT"
+      ],
+      "required_review_phases": [],
+      "binding_stale_or_mismatched": false,
+      "acceptance_consistency": "TASK_DIGEST_STALE",
+      "expected_design": {
+        "disposition": "BLOCKED",
+        "assurance_level": "ADVISORY",
+        "reasons": [],
+        "phase_scope": "accept",
+        "reasons_checker_owned": [
+          "USER_ACCEPTANCE_STALE"
+        ],
+        "why": "The acceptance was given for another version of the task."
+      }
+    },
+    {
+      "file": "ex10_pcn1_acceptance_other_artifact.json",
+      "scenario": "accepted_artifacts is not the result artifact",
+      "schema_valid": true,
+      "workflow_tested": false,
+      "route_rows": [
+        "R-READ_DRAFT"
+      ],
+      "required_review_phases": [],
+      "binding_stale_or_mismatched": false,
+      "acceptance_consistency": "ARTIFACTS_DIFFER",
+      "expected_design": {
+        "disposition": "BLOCKED",
+        "assurance_level": "ADVISORY",
+        "reasons": [],
+        "phase_scope": "accept",
+        "reasons_checker_owned": [
+          "USER_ACCEPTANCE_STALE"
+        ],
+        "why": "The acceptance names other bytes than result.artifacts (EXACT comparison)."
+      }
+    },
+    {
+      "file": "ex11_pcn1_direct_runtime_write.json",
+      "scenario": "An agent writes a runtime file itself and only declares tool publish_new",
+      "schema_valid": true,
+      "workflow_tested": false,
+      "route_rows": [
+        "R-MUTATION"
+      ],
+      "required_review_phases": [
+        "PRE_EFFECT",
+        "PRE_INTEGRATION"
+      ],
+      "binding_stale_or_mismatched": false,
+      "acceptance_consistency": "ABSENT",
+      "expected_design": {
+        "disposition": "BLOCKED",
+        "assurance_level": "ADVISORY",
+        "reasons": [
+          "REVIEW_MISSING"
+        ],
+        "phase_scope": "effect",
+        "why": "create_new in agent_runtime matches R-MUTATION. The owner protocol attaches only for its pinned entrypoint, envelope and conditions; a declared tool name or a file location is not enough."
+      }
+    },
+    {
+      "file": "ex12_pcn1_grant_not_covering_envelope.json",
+      "scenario": "Grant covers working/ and create_new but not the runtime path or delete",
+      "schema_valid": true,
+      "workflow_tested": false,
+      "route_rows": [
+        "R-READ_DRAFT"
+      ],
+      "required_review_phases": [],
+      "binding_stale_or_mismatched": false,
+      "acceptance_consistency": "ABSENT",
+      "expected_design": {
+        "disposition": "BLOCKED",
+        "assurance_level": "ADVISORY",
+        "reasons": [
+          "GRANT_OUT_OF_SCOPE"
+        ],
+        "phase_scope": "effect",
+        "why": "The grant must cover every applicable T1..T7 effect, including delete for T7 (staged of the same rid only)."
+      }
+    },
+    {
+      "file": "ex13_pcn1_review_required_unsupported.json",
+      "scenario": "Content to send outside needs a delivery review",
+      "schema_valid": true,
+      "workflow_tested": false,
+      "route_rows": [
+        "R-HIGH_STAKES"
+      ],
+      "required_review_phases": [
+        "PRE_DELIVERY"
+      ],
+      "binding_stale_or_mismatched": false,
+      "acceptance_consistency": "ABSENT",
+      "expected_design": {
+        "disposition": "BLOCKED",
+        "assurance_level": "ADVISORY",
+        "reasons": [
+          "REVIEW_REQUIRED_UNSUPPORTED"
+        ],
+        "phase_scope": "dispatch",
+        "why": "review_phases_supported is empty: the owner protocol cannot attach, nothing is published and then blocked at accept; the review is not silently dropped."
+      }
+    },
+    {
+      "file": "ex14_pcn1_authority_named_target.json",
+      "scenario": "Target file name AGENTS.md",
+      "schema_valid": true,
+      "workflow_tested": false,
+      "route_rows": [
+        "R-UNCLASSIFIED"
+      ],
+      "required_review_phases": [],
+      "binding_stale_or_mismatched": false,
+      "acceptance_consistency": "ABSENT",
+      "expected_design": {
+        "disposition": "BLOCKED",
+        "assurance_level": "ADVISORY",
+        "reasons": [
+          "UNCLASSIFIED_OPERATION"
+        ],
+        "phase_scope": "dispatch",
+        "why": "The name pattern raises the target to framework; this candidate has no row for create_new in framework, so R-UNCLASSIFIED applies."
+      }
+    },
+    {
+      "file": "ex15_pcn1_output_without_content_use.json",
+      "scenario": "output/ target with no content_use",
+      "schema_valid": true,
+      "workflow_tested": false,
+      "route_rows": [
+        "R-UNCLASSIFIED"
+      ],
+      "required_review_phases": [],
+      "binding_stale_or_mismatched": false,
+      "acceptance_consistency": "ABSENT",
+      "expected_design": {
+        "disposition": "BLOCKED",
+        "assurance_level": "ADVISORY",
+        "reasons": [
+          "UNCLASSIFIED_OPERATION"
+        ],
+        "phase_scope": "dispatch",
+        "why": "CONTENT_USE_INTERNAL_ONLY is unresolved when content_use is absent; unresolved conditions count as UNCLASSIFIED."
+      }
+    },
+    {
+      "file": "ex16_pcn1_v2_record_in_v3.json",
+      "scenario": "A law.cvf.control/2 task inside a v3 bundle",
+      "schema_valid": false,
+      "workflow_tested": false,
+      "route_rows": [],
+      "required_review_phases": [],
+      "binding_stale_or_mismatched": false,
+      "acceptance_consistency": "ABSENT",
+      "expected_design": {
+        "disposition": "NOT_EVALUATED",
+        "why": "Structure rejected; not migrated, not evaluated as a workflow."
+      }
+    },
+    {
+      "file": "ex17_pcn1_staged_bytes_role.json",
+      "scenario": "role STAGED_BYTES on an actual artifact",
+      "schema_valid": false,
+      "workflow_tested": false,
+      "route_rows": [],
+      "required_review_phases": [],
+      "binding_stale_or_mismatched": false,
+      "acceptance_consistency": "ABSENT",
+      "expected_design": {
+        "disposition": "NOT_EVALUATED",
+        "why": "STAGED_BYTES and relations are deferred."
+      }
+    },
+    {
+      "file": "ex18_pcn1_receipt_on_request.json",
+      "scenario": "receipt_ref on a REQUEST effect",
+      "schema_valid": false,
+      "workflow_tested": false,
+      "route_rows": [],
+      "required_review_phases": [],
+      "binding_stale_or_mismatched": false,
+      "acceptance_consistency": "ABSENT",
+      "expected_design": {
+        "disposition": "NOT_EVALUATED",
+        "why": "Dispatch and effect never carry or require a future receipt."
+      }
+    },
+    {
+      "file": "ex19_pcn1_acceptance_by_file_channel.json",
+      "scenario": "user_acceptance.ref channel USER_AUTHORED_FILE",
+      "schema_valid": false,
+      "workflow_tested": false,
+      "route_rows": [],
+      "required_review_phases": [],
+      "binding_stale_or_mismatched": false,
+      "acceptance_consistency": "ABSENT",
+      "expected_design": {
+        "disposition": "NOT_EVALUATED",
+        "why": "A file the agent can write is not an acceptance channel for D4."
+      }
+    },
+    {
+      "file": "ex20_pcn1_user_accepted_without_acceptance.json",
+      "scenario": "USER_ACCEPTED state without the user_acceptance object",
+      "schema_valid": false,
+      "workflow_tested": false,
+      "route_rows": [],
+      "required_review_phases": [],
+      "binding_stale_or_mismatched": false,
+      "acceptance_consistency": "ABSENT",
+      "expected_design": {
+        "disposition": "NOT_EVALUATED",
+        "why": "The state needs the full object."
+      }
+    },
+    {
+      "file": "ex21_pcn1_deferred_task_fields.json",
+      "scenario": "completion and extra_review_phases on a v3 task",
+      "schema_valid": false,
+      "workflow_tested": false,
+      "route_rows": [],
+      "required_review_phases": [],
+      "binding_stale_or_mismatched": false,
+      "acceptance_consistency": "ABSENT",
+      "expected_design": {
+        "disposition": "NOT_EVALUATED",
+        "why": "Multi-action occurrence fields are deferred; the single action keeps action_digest."
+      }
+    },
+    {
+      "file": "ex22_pcn1_overlay_record_deferred.json",
+      "scenario": "protection_overlay record",
+      "schema_valid": false,
+      "workflow_tested": false,
+      "route_rows": [],
+      "required_review_phases": [],
+      "binding_stale_or_mismatched": false,
+      "acceptance_consistency": "ABSENT",
+      "expected_design": {
+        "disposition": "NOT_EVALUATED",
+        "why": "Overlay is deferred."
+      }
+    }
+  ],
+  "observation_scenarios": [
+    {
+      "id": "OBS-1",
+      "base": "ex01_pcn1_working_request.json",
+      "observation": "entrypoint hash observed by S4 differs from owner_protocols[0].entrypoint_sha256",
+      "expected_design": {
+        "disposition": "BLOCKED",
+        "why": "The pin is not met: runtime effects follow R-MUTATION and need the reviews that route requires; do not repin to make it pass."
+      }
+    },
+    {
+      "id": "OBS-2",
+      "base": "ex01_pcn1_working_request.json",
+      "observation": "target already exists when S4 observes at dispatch/effect",
+      "expected_design": {
+        "disposition": "BLOCKED",
+        "reasons_checker_owned": [
+          "OPERATION_MISMATCH"
+        ],
+        "why": "A-NEW_TARGET is not closed; the effect re-routes as overwrite. Nothing is written."
+      }
+    },
+    {
+      "id": "OBS-3",
+      "base": "ex04_pcn1_accepted_d4_complete.json",
+      "observation": "current target bytes differ from published.content",
+      "expected_design": {
+        "disposition": "BLOCKED",
+        "reasons": [
+          "CHANGED_AFTER_PUBLISH"
+        ],
+        "why": "ACTUAL_OUTCOME is NOT_MET; the acceptance was for the published bytes."
+      }
+    },
+    {
+      "id": "OBS-4",
+      "base": "ex04_pcn1_accepted_d4_complete.json",
+      "observation": "published evidence missing, unreadable, non-canonical, or more than one terminal exists for the rid",
+      "expected_design": {
+        "disposition": "BLOCKED",
+        "reasons": [
+          "PRECONDITION_PROOF_MISSING"
+        ],
+        "why": "A matching hash does not prove origin."
+      }
+    },
+    {
+      "id": "OBS-5",
+      "base": "ex04_pcn1_accepted_d4_complete.json",
+      "observation": "receipt_ref.digest differs from the digest of the raw published.json bytes",
+      "expected_design": {
+        "disposition": "BLOCKED",
+        "reasons": [
+          "PRECONDITION_PROOF_MISSING"
+        ],
+        "why": "The receipt does not resolve to the evidence."
+      }
+    }
+  ]
+}

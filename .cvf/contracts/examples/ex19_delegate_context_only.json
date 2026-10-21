@@ -1,0 +1,147 @@
+{
+  "schema_version": "law.cvf.control/1",
+  "record_type": "bundle",
+  "example_only": true,
+  "note": "Context-only Reviewer: child has no tool, operation or file permissions. Parent may dispatch using native-subagent; example grant remains inactive.",
+  "bundle_id": "EXAMPLE-ex19",
+  "records": [
+    {
+      "schema_version": "law.cvf.control/1",
+      "record_type": "grant",
+      "example_only": true,
+      "grant_id": "EXAMPLE-grant-2",
+      "grant_revision": 1,
+      "issuer": {
+        "actor_id": "EXAMPLE-user",
+        "role": "user"
+      },
+      "issuer_ref": {
+        "ref_id": "EXAMPLE-grant-ref-2",
+        "kind": "grant",
+        "locator": "EXAMPLE://user-store/grant-2",
+        "revision": "1",
+        "digest": "sha256:404067bd80a8ffe28146748c3739a81be7b0037484d631fe0565d559788fd9c5",
+        "trust_anchor": "USER_CONTROLLED_STORE",
+        "verification": {
+          "status": "VERIFIED",
+          "verifier": {
+            "actor_id": "EXAMPLE-host-verifier",
+            "role": "host"
+          },
+          "method": "EXAMPLE: host-side lookup, not implemented"
+        }
+      },
+      "subject": {
+        "roles": [
+          "main"
+        ]
+      },
+      "scope": {
+        "task_classes": [
+          "EXAMPLE: goi Reviewer cho tranche duoc giao"
+        ],
+        "operations": [
+          "delegate"
+        ],
+        "tools": [
+          "EXAMPLE-native-subagent"
+        ],
+        "paths": [],
+        "delegate_callees": [
+          {
+            "role_class": "core",
+            "role_name": "reviewer"
+          }
+        ]
+      },
+      "limits": {
+        "max_concurrency": 2
+      },
+      "status": "EXAMPLE_INACTIVE"
+    },
+    {
+      "schema_version": "law.cvf.control/1",
+      "record_type": "effect",
+      "example_only": true,
+      "effect_id": "EXAMPLE-effect-delegate-context-only",
+      "stage": "REQUEST",
+      "binding": {
+        "task_id": "EXAMPLE-task-1",
+        "task_revision": 1,
+        "intent_digest": "sha256:1a3b044d79e525460323ad7dfd77a6ba8b1b380bc5fd96c097c930d5f5f3566f",
+        "accepted_task_digest": "sha256:d31d22e7e4b7fcb5a9253c8948456ea5ff052ab3de71b9802872e73094f5b89c",
+        "context_digest": "sha256:097e8405eb7d535d0a85bf55b776d44d8901959c507f0ed29c13d893e8b31ae7",
+        "inputs": [],
+        "policy_version": "law.cvf.routing/1"
+      },
+      "actor": {
+        "actor_id": "EXAMPLE-main",
+        "role": "main",
+        "host": "EXAMPLE-host"
+      },
+      "action": {
+        "operation": "delegate",
+        "tool": "EXAMPLE-native-subagent",
+        "targets": [],
+        "write_zone": "none",
+        "delegation": {
+          "callee": {
+            "role_class": "core",
+            "role_name": "reviewer"
+          },
+          "parent_task": {
+            "task_id": "EXAMPLE-task-1",
+            "task_revision": 1,
+            "accepted_task_digest": "sha256:d31d22e7e4b7fcb5a9253c8948456ea5ff052ab3de71b9802872e73094f5b89c",
+            "context_digest": "sha256:097e8405eb7d535d0a85bf55b776d44d8901959c507f0ed29c13d893e8b31ae7"
+          },
+          "child_task": {
+            "task_id": "EXAMPLE-task-1-review",
+            "task_revision": 1,
+            "accepted_task_digest": "sha256:76e7af27034014959842a83994752fc06e1f59445c54510acfee761cba5ba909",
+            "context_digest": "sha256:e4a4a4d2402677c961a7dcb6e996ee23c669b2b1ab4da6edd4d118f103f7e35d"
+          },
+          "tool_scope": {
+            "tools": [],
+            "operations": [],
+            "paths": []
+          },
+          "requested_envelope": {
+            "role": "reviewer",
+            "model": {
+              "value": "EXAMPLE-reviewer-model",
+              "status": "REQUESTED"
+            },
+            "effort": {
+              "value": "high",
+              "status": "UNKNOWN"
+            },
+            "max_concurrency": {
+              "value": 1,
+              "status": "REQUESTED"
+            }
+          }
+        }
+      },
+      "routing": {
+        "policy_version": "law.cvf.routing/1",
+        "matched_rows": [
+          "R-DELEGATE"
+        ],
+        "required_review_phases": []
+      },
+      "grant_ref_ids": [
+        "EXAMPLE-grant-ref-2"
+      ],
+      "review_ids": [],
+      "assurance_level": "ADVISORY",
+      "disposition": "PENDING",
+      "reasons": [],
+      "decided_by": {
+        "actor_id": "EXAMPLE-main",
+        "role": "main",
+        "host": "EXAMPLE-host"
+      }
+    }
+  ]
+}

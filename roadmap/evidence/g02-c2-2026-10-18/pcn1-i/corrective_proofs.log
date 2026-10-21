@@ -1,0 +1,19 @@
+== delete through the verified handle
+   REQUESTED: delete staged by handle; probe remove/rename while open; wrong identity
+   OBSERVED:  {'different_file_same_name_check': 'CHANGED', 'while_handle_open': {'remove': 'winerror 32', 'rename': 'winerror 32'}, 'delete': 'DELETED', 'staged_exists': False, 'hard_link_kept': True, 'other_file_kept': True}
+   VERDICT:   PASS
+
+== folder pin proves the path is the held folder
+   REQUESTED: pin a folder, try rmdir/rename; pin a junction path
+   OBSERVED:  {'pin': 'OK', 'while_pinned': {'rmdir': 'winerror 32', 'rename': 'winerror 32'}, 'junction_pin': 'UNSAFE', 'junction_is_reparse': True}
+   VERDICT:   PASS
+
+== root junction is detected
+   REQUESTED: junction as project root
+   OBSERVED:  {'root_problem_plain': None, 'root_problem_junction': 'ROOT_LINKED', 'link_free_sees_it': True}
+   VERDICT:   PASS
+
+SUMMARY
+  PASS  delete through the verified handle
+  PASS  folder pin proves the path is the held folder
+  PASS  root junction is detected

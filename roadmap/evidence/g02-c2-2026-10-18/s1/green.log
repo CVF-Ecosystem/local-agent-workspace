@@ -1,0 +1,68 @@
+$ python -B -W error::ResourceWarning -m unittest -v tests.test_control_check_v2
+cwd=repo root; python=3.11.9; jsonschema=4.23.0
+2026-10-17T23:46:45Z
+test_canonical_vectors (tests.test_control_check_v2.Canon.test_canonical_vectors) ... ok
+test_domain_violations (tests.test_control_check_v2.Canon.test_domain_violations) ... ok
+test_duplicate_set_element_is_unsupported (tests.test_control_check_v2.Canon.test_duplicate_set_element_is_unsupported) ... ok
+test_exclusions_inclusions_sets_and_sequences (tests.test_control_check_v2.Canon.test_exclusions_inclusions_sets_and_sequences) ... ok
+test_missing_differs_from_null_and_empty_containers_are_kept (tests.test_control_check_v2.Canon.test_missing_differs_from_null_and_empty_containers_are_kept) ... ok
+test_object_bytes_vectors (tests.test_control_check_v2.Canon.test_object_bytes_vectors) ... ok
+test_parity_with_reference_on_every_valid_example (tests.test_control_check_v2.Canon.test_parity_with_reference_on_every_valid_example) ... ok
+test_parity_with_reference_on_every_vector_input (tests.test_control_check_v2.Canon.test_parity_with_reference_on_every_vector_input) ... ok
+test_product_digests_match_declared_bindings_of_non_stale_examples (tests.test_control_check_v2.Canon.test_product_digests_match_declared_bindings_of_non_stale_examples) ... ok
+test_projection_fixture_and_policy_digest (tests.test_control_check_v2.Canon.test_projection_fixture_and_policy_digest) ... ok
+test_terminal_newline_key_is_rejected_by_fullmatch (tests.test_control_check_v2.Canon.test_terminal_newline_key_is_rejected_by_fullmatch) ... ok
+test_exit_codes (tests.test_control_check_v2.CliV2.test_exit_codes) ... ok
+test_json_and_text_agree (tests.test_control_check_v2.CliV2.test_json_and_text_agree) ... ok
+test_option_errors_are_argparse_exit_2 (tests.test_control_check_v2.CliV2.test_option_errors_are_argparse_exit_2) ... ok
+test_oversized_file_is_denied_not_init_error (tests.test_control_check_v2.CliV2.test_oversized_file_is_denied_not_init_error) ... ok
+test_python_dash_I_from_outside_the_repo_does_not_depend_on_cwd_or_path (tests.test_control_check_v2.CliV2.test_python_dash_I_from_outside_the_repo_does_not_depend_on_cwd_or_path) ... ok
+test_arguments_after_double_dash_are_not_scanned (tests.test_control_check_v2.ContractRouter.test_arguments_after_double_dash_are_not_scanned) ... ok
+test_contract_flag_errors_are_wrapper_errors (tests.test_control_check_v2.ContractRouter.test_contract_flag_errors_are_wrapper_errors) ... ok
+test_flag_position_and_equals_form (tests.test_control_check_v2.ContractRouter.test_flag_position_and_equals_form) ... ok
+test_forwarded_errors_and_help (tests.test_control_check_v2.ContractRouter.test_forwarded_errors_and_help) ... ok
+test_parity_stdout_stderr_exit_json_and_text (tests.test_control_check_v2.ContractRouter.test_parity_stdout_stderr_exit_json_and_text) ... ok
+test_v1_blocked_is_not_retried_as_v2 (tests.test_control_check_v2.ContractRouter.test_v1_blocked_is_not_retried_as_v2) ... ok
+test_v1_branch_imports_no_v2_and_restores_argv (tests.test_control_check_v2.ContractRouter.test_v1_branch_imports_no_v2_and_restores_argv) ... ok
+test_v1_prog_name_in_forwarded_usage (tests.test_control_check_v2.ContractRouter.test_v1_prog_name_in_forwarded_usage) ... ok
+test_v1_records_are_not_given_a_basis (tests.test_control_check_v2.ContractRouter.test_v1_records_are_not_given_a_basis) ... ok
+test_v2_branch_imports_no_v1 (tests.test_control_check_v2.ContractRouter.test_v2_branch_imports_no_v1) ... ok
+test_v2_bundle_through_v1_is_refused_by_v1_itself (tests.test_control_check_v2.ContractRouter.test_v2_bundle_through_v1_is_refused_by_v1_itself) ... ok
+test_wrapper_error_imports_neither (tests.test_control_check_v2.ContractRouter.test_wrapper_error_imports_neither) ... ok
+test_dependency_missing_or_too_old_is_init_error_exit_2 (tests.test_control_check_v2.LoaderInit.test_dependency_missing_or_too_old_is_init_error_exit_2) ... ok
+test_duplicate_key_in_owner (tests.test_control_check_v2.LoaderInit.test_duplicate_key_in_owner) ... ok
+test_invalid_schema_and_policy (tests.test_control_check_v2.LoaderInit.test_invalid_schema_and_policy) ... ok
+test_missing_owner_files (tests.test_control_check_v2.LoaderInit.test_missing_owner_files) ... ok
+test_owner_failure_is_init_error_with_hash_of_what_was_read (tests.test_control_check_v2.LoaderInit.test_owner_failure_is_init_error_with_hash_of_what_was_read) ... ok
+test_owner_literals (tests.test_control_check_v2.LoaderInit.test_owner_literals) ... ok
+test_real_owners_load (tests.test_control_check_v2.LoaderInit.test_real_owners_load) ... ok
+test_remote_ref_is_refused (tests.test_control_check_v2.LoaderInit.test_remote_ref_is_refused) ... ok
+test_valid_bundle_reads_no_artifact_and_uses_no_network (tests.test_control_check_v2.NoObservation.test_valid_bundle_reads_no_artifact_and_uses_no_network) ... ok
+test_api_argument_errors (tests.test_control_check_v2.OutputContract.test_api_argument_errors) ... ok
+test_owner_hashes_are_the_bytes_actually_read (tests.test_control_check_v2.OutputContract.test_owner_hashes_are_the_bytes_actually_read) ... ok
+test_public_surface_has_no_injection_or_check_records (tests.test_control_check_v2.OutputContract.test_public_surface_has_no_injection_or_check_records) ... ok
+test_single_record_input_is_accepted_like_v1 (tests.test_control_check_v2.OutputContract.test_single_record_input_is_accepted_like_v1) ... ok
+test_valid_examples_are_blocked_never_pass (tests.test_control_check_v2.OutputContract.test_valid_examples_are_blocked_never_pass) ... ok
+test_package_tree_is_s1_only (tests.test_control_check_v2.OwnersUntouched.test_package_tree_is_s1_only) ... ok
+test_product_does_not_import_tests_or_touch_sys_path (tests.test_control_check_v2.OwnersUntouched.test_product_does_not_import_tests_or_touch_sys_path) ... ok
+test_v1_and_c1_tests_unchanged (tests.test_control_check_v2.OwnersUntouched.test_v1_and_c1_tests_unchanged) ... ok
+test_v1_owner_hashes_unchanged (tests.test_control_check_v2.OwnersUntouched.test_v1_owner_hashes_unchanged) ... ok
+test_all_v1_bundle_is_refused_with_explicit_hint_and_never_tried (tests.test_control_check_v2.RefusalMatrix.test_all_v1_bundle_is_refused_with_explicit_hint_and_never_tried) ... ok
+test_basis_variants (tests.test_control_check_v2.RefusalMatrix.test_basis_variants) ... ok
+test_binding_literals (tests.test_control_check_v2.RefusalMatrix.test_binding_literals) ... ok
+test_bundle_bom_is_tolerated_like_v1 (tests.test_control_check_v2.RefusalMatrix.test_bundle_bom_is_tolerated_like_v1) ... ok
+test_canonical_domain_is_unsupported_not_guessed (tests.test_control_check_v2.RefusalMatrix.test_canonical_domain_is_unsupported_not_guessed) ... ok
+test_duplicate_key_nested_in_a_valid_bundle (tests.test_control_check_v2.RefusalMatrix.test_duplicate_key_nested_in_a_valid_bundle) ... ok
+test_example_files_from_expected (tests.test_control_check_v2.RefusalMatrix.test_example_files_from_expected) ... ok
+test_malformed_input (tests.test_control_check_v2.RefusalMatrix.test_malformed_input) ... ok
+test_non_string_and_garbage_versions (tests.test_control_check_v2.RefusalMatrix.test_non_string_and_garbage_versions) ... ok
+test_routing_policy_record_is_not_checkable (tests.test_control_check_v2.RefusalMatrix.test_routing_policy_record_is_not_checkable) ... ok
+test_schema_invalid_after_literals_is_deny_and_does_not_echo_values (tests.test_control_check_v2.RefusalMatrix.test_schema_invalid_after_literals_is_deny_and_does_not_echo_values) ... ok
+test_version_missing (tests.test_control_check_v2.RefusalMatrix.test_version_missing) ... ok
+
+----------------------------------------------------------------------
+Ran 58 tests in 27.554s
+
+OK
+exit=0
+2026-10-17T23:47:13Z

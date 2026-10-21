@@ -1,0 +1,6 @@
+M1 snapshot guard always MET                         -> Ran 9 tests in 1.296s | FAILED (failures=10)
+M2 checker ignores runtime parents                   -> Ran 9 tests in 1.571s | FAILED (failures=4)
+M3 writer creates missing parents again              -> Ran 67 tests in 5.013s | FAILED (failures=2, errors=1, skipped=1)
+M5 no rid collision check before prepared open       -> Ran 67 tests in 5.536s | FAILED (failures=2, skipped=1)
+M6 invalid rid accepted                              -> Ran 67 tests in 5.616s | FAILED (failures=19, skipped=1)
+M7 staged orphan ignored under the lock              -> Ran 67 tests in 4.707s | FAILED (failures=1, skipped=1)

@@ -1,0 +1,116 @@
+{
+  "check_version": "law.cvf.check/3",
+  "contract": "v3",
+  "selection": "CLI_EXPLICIT",
+  "candidate_status": "CANDIDATE_NOT_ACTIVE",
+  "implementation_stage": "BINDING_ROUTING_ONLY",
+  "evaluation_basis": "COOPERATIVE_WORKFLOW",
+  "phase": "accept",
+  "phase_scope": "STRUCTURE_BINDING_ROUTING",
+  "disposition": "BLOCKED",
+  "effect_authorized": false,
+  "assurance_level": "UNVERIFIED",
+  "init_error": false,
+  "reasons": [
+    "CANDIDATE_EVALUATION_NOT_IMPLEMENTED",
+    "REVIEW_REQUIRED_UNSUPPORTED",
+    "ROUTE_DECLARED_MISMATCH",
+    "UNCLASSIFIED_OPERATION"
+  ],
+  "details": [
+    "binding position 2: B-REF=MATCH, B-LIT.bind_version=MATCH, B-LIT.evaluation_basis=MATCH, B-LIT.policy_version=MATCH, B-INTENT=MATCH, B-TASK=MATCH, B-CONTEXT=MATCH, B-POLICY=MATCH, B-INPUTS=MATCH, B-ACTION-OWN=MATCH, B-ACTION-IN-TASK=MATCH, B-OUTPUTS=NOT_BOUND",
+    "binding position 3: B-REF=MATCH, B-LIT.bind_version=MATCH, B-LIT.evaluation_basis=MATCH, B-LIT.policy_version=MATCH, B-INTENT=MATCH, B-TASK=MATCH, B-CONTEXT=MATCH, B-POLICY=MATCH, B-INPUTS=MATCH, B-ACTION-OWN=MATCH, B-ACTION-IN-TASK=MATCH, B-OUT-EFFECT=MATCH",
+    "binding position 4: B-REF=MATCH, B-LIT.bind_version=MATCH, B-LIT.evaluation_basis=MATCH, B-LIT.policy_version=MATCH, B-INTENT=MATCH, B-TASK=MATCH, B-CONTEXT=MATCH, B-POLICY=MATCH, B-INPUTS=MATCH, B-ACTION-CLAIM=NOT_BOUND, B-OUT-RESULT=MATCH",
+    "route: status=UNRESOLVED rows=3"
+  ],
+  "owners": {
+    "schema_sha256": "12becc373df364bdec33e7bd5e0533056799044e1f42d28020ee5d969596525c",
+    "policy_sha256": "8c63bd03bbcdb733c7c9810815dafbc039fe0e46303d196e00004337a46fa204"
+  },
+  "route": {
+    "evaluated": true,
+    "rows": [
+      {
+        "row_id": "R-READ_DRAFT",
+        "match_state": "T",
+        "required_gates": [
+          "GRANT_SCOPE",
+          "PATH_SCOPE",
+          "TOOL_SCOPE",
+          "ENVELOPE"
+        ],
+        "required_review_phases": [],
+        "write_zones": [
+          "working"
+        ],
+        "not_evaluated_conditions": [
+          "ENVELOPE_EXCEEDED"
+        ]
+      },
+      {
+        "row_id": "R-EXTERNAL",
+        "match_state": "U",
+        "required_gates": [
+          "GRANT_EXACT_COVERAGE",
+          "ENVELOPE",
+          "ACTUAL_OUTCOME"
+        ],
+        "required_review_phases": [
+          "PRE_EFFECT",
+          "PRE_INTEGRATION"
+        ],
+        "write_zones": [
+          "working"
+        ],
+        "not_evaluated_conditions": [
+          "ENVELOPE_EXCEEDED"
+        ]
+      },
+      {
+        "row_id": "R-UNCLASSIFIED",
+        "match_state": "T",
+        "required_gates": [],
+        "required_review_phases": [],
+        "write_zones": [
+          "working"
+        ],
+        "not_evaluated_conditions": [
+          "ENVELOPE_EXCEEDED"
+        ]
+      }
+    ],
+    "status": "UNRESOLVED",
+    "assumptions": [
+      {
+        "id": "A-NEW_TARGET",
+        "action_index": 0,
+        "status": "NOT_APPLICABLE_IN_PHASE"
+      }
+    ]
+  },
+  "gates": [],
+  "aggregate": {
+    "records_checked_state": "NOT_EVALUATED",
+    "due_gates": 0,
+    "met": 0,
+    "not_required": 0,
+    "not_yet_due": 0,
+    "not_checked": 0,
+    "unsupported": 0,
+    "not_met": 0,
+    "user_accepted_declared": 0,
+    "open_assumptions": [],
+    "conclusion_scope": "RECORD_CONSISTENCY_IN_MEMORY"
+  },
+  "coverage": {
+    "record_structure_checked": true,
+    "binding_evaluated": true,
+    "routing_evaluated": true,
+    "gates_evaluated": false,
+    "artifact_bytes_observed": false,
+    "target_existence_observed": false,
+    "actual_operation_observed": false,
+    "requirements_semantic_verified": false,
+    "owner_protection": "NOT_PROVEN"
+  }
+}

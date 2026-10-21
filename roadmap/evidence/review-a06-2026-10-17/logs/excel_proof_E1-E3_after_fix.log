@@ -1,0 +1,10 @@
+E1 Excel has the workbook open: True
+E1 apply while Excel holds it: SyncError -> Không thay được file references/_INDEX.xlsx (đang mở trong ứng dụng khác, chỉ đọc hoặc bị khóa?): [WinError 5] Access is denied: 'C:\\Users\\DELL\\App
+E1 workbook unchanged: True | open transactions: []
+E1 after Excel closed, same sync: OK, rows: ['SRC-000001']
+E3 real Excel reads the LAW-written workbook: A5=SRC-000001;I5=one.txt;P5=source-documents/team/one.txt
+E2 Excel saved the workbook after LAW read it: True
+E2 LAW write refused: File changed since it was read
+E2 Excel-saved workbook untouched: True
+E2 fresh sync on the Excel-saved file keeps the edit and adds the source: [(None, 'Sua trong Excel that'), ('SRC-000001', 'one.txt')]
+Excel processes started by this script and still running (killed): []

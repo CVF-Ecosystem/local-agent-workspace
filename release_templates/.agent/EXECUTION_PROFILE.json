@@ -1,0 +1,33 @@
+{
+  "schema_version": "law.execution-profile/1",
+  "authority_owner": "PROFILE",
+  "host": null,
+  "roles": {
+    "scout": {
+      "model": null,
+      "tier": null,
+      "effort": null
+    },
+    "worker": {
+      "model": null,
+      "tier": null,
+      "effort": null
+    },
+    "reviewer": {
+      "model": null,
+      "tier": null,
+      "effort": null
+    }
+  },
+  "fallback": {
+    "model": null,
+    "tier": null,
+    "effort": null,
+    "allowed": false
+  },
+  "requested_limits": {
+    "max_concurrency": null,
+    "max_depth": null
+  },
+  "grants": []
+}

@@ -37,9 +37,11 @@ STRUCTURED_TOOLS = {'init_project.py', 'new_project.py', 'adopt_project.py', 'up
                     'check_package.py', 'pack.py', 'install_skills.py', 'library.py', 'build_guides_html.py', 'transaction.py'}
 # tên thao tác được phép ghi vào lịch sử; còn lại ghi là 'unknown' / action names allowed in the history
 ACTION_NAMES = {'init', 'new_project', 'project_open', 'upgrade', 'upgrade_other', 'adopt', 'pack_list', 'pack_add', 'pack_remove', 'pack_update', 'pack_confirm',
-                'check_output', 'install_skills', 'library_init', 'library_check', 'library_stats', 'library_find',
+                'check_output', 'install_skills', 'library_init', 'library_check', 'library_stats', 'library_find', 'library_sync',
                 'check_package', 'build_guides', 'build_release', 'merge_state', 'merge_diff', 'diagnostics',
                 'tx_resume', 'tx_rollback', 'history_clear'}
+# đọc thư viện (tìm, thống kê) không phải tác động: không ghi lịch sử / reading the library (search, stats) is not an effect: never logged
+NO_LOG_ACTIONS = {'library_find', 'library_stats'}
 
 sys.path.insert(0, TOOLS)
 
@@ -208,7 +210,23 @@ def components():
         {'feature': 'library', 'needs': 'openpyxl', 'usable': opx},
         {'feature': 'xlsx', 'needs': 'openpyxl', 'usable': opx},
         {'feature': 'picker', 'needs': 'tkinter', 'usable': tk_available()},
+        controlled_component(),
     ]
+
+
+def controlled_component():
+    """Luồng nháp có kiểm soát (thẻ Nháp hiện tại) chạy được hay không, đo bằng đúng Python đang chạy bảng điều khiển: Windows + NTFS cục bộ,
+    jsonschema>=4.18 (Draft 2020-12) và owner nạp đúng pin. Chỉ đọc; không cài gì, không lưu hồ sơ. Chỉ thẻ này chịu các điều kiện đó.
+    Whether the controlled draft flow can run, measured with the exact Python running this panel. Read only; installs and stores nothing."""
+    out = {'feature': 'controlled', 'needs': 'jsonschema>=4.18', 'usable': False, 'reason': 'READINESS_UNKNOWN',
+           'python_path': sys.executable, 'version': sys.version.split()[0], 'jsonschema': None, 'fs': None}
+    try:
+        import current_draft
+        r = current_draft.readiness(ROOT)
+        out.update(usable=bool(r.get('usable')), reason=r.get('reason'), jsonschema=r.get('jsonschema'), fs=r.get('fs'))
+    except Exception:  # không đo được thì coi là chưa dùng được, không đoán / unmeasured counts as unusable, never guessed
+        pass
+    return out
 
 
 def branding_info():
@@ -428,6 +446,8 @@ def action(name, p):
         if p.get('group'):
             args += ['--group', str(p.get('group'))]
         return run_tool('library.py', args)
+    if name == 'library_sync':
+        return library_sync_action(p, apply)
     if name == 'check_package':
         return run_tool('check_package.py', ['--verify'] if p.get('verify') else [])
     if name == 'build_guides':
@@ -605,13 +625,207 @@ def open_path(rel):
     target = os.path.normpath(os.path.join(ROOT, rel)) if rel else ROOT
     if not (target == ROOT or target.startswith(ROOT + os.sep)) or not os.path.exists(target):
         raise BadInput('Không mở được / Cannot open: %s' % rel)
+    launch(target)
+    return {'ok': True}
+
+
+def launch(target):
+    """Giao đường dẫn cho ứng dụng mặc định của hệ điều hành / hand a path to the operating system's default application."""
     if sys.platform.startswith('win'):
         os.startfile(target)  # noqa
     elif sys.platform == 'darwin':
         subprocess.Popen(['open', target])
     else:
         subprocess.Popen(['xdg-open', target], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    return {'ok': True}
+
+
+# ------------------------------------------------------------------ thư viện nguồn / source library (A-07)
+def library_api(path, body):
+    """Đường đọc của thư viện: route riêng, không qua run_api/_record nên không ghi lịch sử; chỉ đọc sổ đã lưu, không quét nguồn.
+    The library read path: dedicated routes outside run_api/_record (nothing is logged); reads the saved index only, never scans sources.
+    browse: duyệt/tìm/lọc nhóm. select: kiểm lại và tạo văn bản sao chép. open: mở đúng một nguồn sau khi gắn lại dòng và kiểm tiếp cận."""
+    import library
+    action_name = path.rsplit('/', 1)[-1]
+    if action_name == 'browse':
+        res = library.browse(ROOT, str(body.get('query') or '')[:500], str(body.get('group') or '')[:200])
+        if not res['ok'] and res['kind'] == 'openpyxl_missing':
+            res['message'] = 'CHƯA KIỂM ĐƯỢC: thư viện nguồn cần openpyxl. / NOT CHECKED: the source library requires openpyxl.'
+            res['next_actions'] = ['Chạy / Run: python -m pip install openpyxl']
+        return res
+    if action_name == 'select':
+        sels = body.get('selections')
+        if not isinstance(sels, list) or not sels or len(sels) > 200:
+            return {'ok': False, 'reason': 'bad_selection', 'items': []}
+        book = library.read_book(ROOT)
+        bad, recs = [], []
+        for sel in sels:
+            rec, why = library.rebind(ROOT, sel, book)
+            if rec is not None and rec['identity'] != 'ok':
+                why = rec['identity']  # no_id | dup_id | no_revision: không thành input đã định danh / not an identified input
+            if why:
+                bad.append({'row': sel.get('row') if isinstance(sel, dict) else None, 'reason': why})
+            else:
+                recs.append(rec)
+        if bad:
+            return {'ok': False, 'reason': 'rows', 'items': bad}
+        return {'ok': True, 'count': len(recs), 'text': library.select_text(recs, book['snapshot'], 'en' if body.get('lang') == 'en' else 'vi')}
+    if action_name == 'open':
+        rec, why = library.rebind(ROOT, body.get('selection'))
+        if why:
+            return {'ok': False, 'reason': why}
+        full, why = library.locate_source(ROOT, rec['locator'])
+        if why:
+            return {'ok': False, 'reason': why}
+        try:
+            launch(full)
+        except OSError:
+            return {'ok': False, 'reason': 'launch_failed'}
+        return {'ok': True}
+    if action_name in ('links', 'artifact-open', 'artifact-copy'):
+        return artifacts_api(action_name, body)
+    return None
+
+
+def artifacts_api(action_name, body):
+    """B-02: phụ lục/kết quả liên quan, mở đúng bản, sao chép đầu vào. Cùng helper với CLI tools/artifacts.py; đọc sổ đã lưu, không quét, không AI,
+    không ghi sổ hay lịch sử. Registry chỉ ghi qua CLI/API preview→apply. / Same helpers as the CLI; reads the saved index; never writes the registry."""
+    import artifacts, library
+    try:
+        if action_name == 'links':
+            return artifacts.links(ROOT, body.get('selection'))
+        if action_name == 'artifact-open':
+            return artifacts.open_artifact(ROOT, body.get('selection'))
+        return artifacts.copy_input(ROOT, body.get('selection'), 'en' if body.get('lang') == 'en' else 'vi')
+    except (library.ContentError, artifacts.SyncError) as e:
+        return {'ok': False, 'reason': getattr(e, 'code', None) or 'refused', 'message': str(e)}
+    except SystemExit:  # thiếu openpyxl / openpyxl missing
+        return {'ok': False, 'reason': 'index:openpyxl_missing'}
+
+
+def library_sync_action(p, apply):
+    """Xem trước / ghi sổ nguồn qua đúng library_sync.plan/apply (cùng writer với CLI). Ghi chỉ khi có expected_preview của bản đã xem.
+    Preview / apply the source index through the same library_sync.plan/apply as the CLI. Apply needs the expected_preview of what was previewed."""
+    import library, library_sync
+    lang = 'en' if p.get('lang') == 'en' else 'vi'
+    en = lang == 'en'
+    try:
+        if apply:
+            exp = p.get('expected_preview')
+            # thiếu thì bị từ chối: None sẽ là hành vi CLI / missing is refused: None would mean the CLI behaviour
+            result = library_sync.apply(ROOT, (), {} if exp is None else exp)
+        else:
+            result = library_sync.plan(ROOT)
+    except library_sync.PreviewMismatch as e:
+        return {'code': 1, 'out': str(e), 'cmd': '', 'result': make(
+            'blocked', code=1, message=str(e), changes=False, reason='PREVIEW_INVALID' if e.reason == 'invalid' else 'PREVIEW_STALE',
+            next_actions=['Bấm xem trước lại rồi mới ghi. / Preview again before applying.'])}
+    except library_sync.SyncError as e:
+        return {'code': 1, 'out': str(e), 'cmd': '', 'result': make('blocked', code=1, message=str(e), changes=None, next_actions=[
+            'Kiểm nguồn/sổ, giải quyết rồi xem trước lại. / Check the source/index, resolve it, then preview again.'])}
+    except SystemExit:  # thiếu openpyxl: library.need_openpyxl đã thoát mã 2 / openpyxl missing: library.need_openpyxl exited with code 2
+        msg = 'CHƯA KIỂM ĐƯỢC: thư viện nguồn cần openpyxl. / NOT CHECKED: the source library requires openpyxl.'
+        return {'code': 2, 'out': msg, 'cmd': '', 'result': make(
+            'not_checked', code=2, message=msg, changes=False, unchecked=[{'tool': 'library.py', 'reason': 'openpyxl_missing'}],
+            next_actions=['Chạy / Run: python -m pip install openpyxl'])}
+    changed = result['bytes'] is not None
+    if apply:
+        label = (('Source index updated.' if en else 'Đã cập nhật sổ nguồn.') if changed else ('Source index unchanged.' if en else 'Sổ nguồn không đổi.'))
+    else:
+        label = (('Source index preview.' if en else 'Xem trước cập nhật sổ nguồn.') if changed else ('Source index unchanged.' if en else 'Sổ nguồn không đổi.'))
+    extra = dict(planned=len(result['changes']), rows=result['changes'], skipped=result['skipped'], candidates=result['candidates'],
+                 scopes=result['scopes'], notices=result.get('notices') or [], protection=result.get('protection'))
+    if apply:
+        env = make('success', code=0, message=label, changes=changed,
+                   files=[{'path': 'references/_INDEX.xlsx', 'action': 'update'}] if changed else [], **extra)
+    else:
+        env = make('preview' if changed else 'success', code=0, message=label, changes=None if changed else False, **extra)
+        if changed:
+            env['expected_preview'] = library_sync.preview_binding(result)  # client giữ tạm, gửi lại khi Apply / held by the client, sent back on Apply
+    return {'code': 0, 'out': '\n'.join(library.sync_lines(result, label, True, lang)), 'cmd': '', 'result': env}
+
+
+def draft_api(path, body):
+    """Nháp hiện tại: route riêng, không qua run_api/_record nên không ghi lịch sử thao tác. Chỉ select (apply) ghi, và chỉ một marker STATE qua P-CTX1.
+    Current draft: a dedicated route, outside run_api/_record, so the operations log is untouched. Only select/apply writes: one STATE marker via P-CTX1."""
+    try:
+        import current_draft
+    except Exception as e:
+        return make('error', code=4, message='Không nạp được current_draft / current_draft could not load: %s' % type(e).__name__,
+                    changes=False, result='UNAVAILABLE', reason='HELPER_UNAVAILABLE')
+    rid = body.get('rid')
+    action = path.rsplit('/', 1)[-1]
+    if action == 'status':
+        return current_draft.status(ROOT)
+    if action == 'list':
+        return current_draft.list_candidates(ROOT)
+    if action == 'select':
+        if body.get('apply') is True:
+            return current_draft.select_apply(ROOT, rid, body.get('expected_state'), body.get('expected_selection'))
+        return current_draft.select_preview(ROOT, rid)
+    if action == 'open':
+        ack = body.get('ack')
+        if ack not in (None, 'changed', 'unverified'):
+            return make('error', code=4, message='Invalid acknowledgement', changes=False, result='ERROR', reason='ACK_INVALID')
+        return current_draft.open_draft(ROOT, rid, ack)
+    return None
+
+
+_REPLACE_STATUS = {'replaced': ('success', 0, True), 'noop': ('success', 0, False), 'stale': ('blocked', 1, False),
+                   'blocked': ('blocked', 1, False), 'error': ('error', 1, False), 'partial': ('partial', 1, None)}
+# D-01c: changes theo thực tế; snapshot có thể đã ghi dù .new chưa chuyển / changes follow what happened; the snapshot may be written without the move
+_FINISH_STATUS = {'finished': ('success', 0, True), 'still_pending': ('partial', 1, True), 'partial': ('partial', 1, None),
+                  'conflict': ('partial', 1, None), 'unknown': ('partial', 1, None), 'stale': ('blocked', 1, False),
+                  'blocked': ('blocked', 1, False), 'error': ('error', 1, False)}
+
+
+def merge_api(path, body):
+    """D-01b: xem trước và thay MỘT tài liệu hướng dẫn bằng bản .new đã xem (giữ .new, lưu cả hai bản). Route riêng, không qua run_api/_record:
+    không ghi lịch sử thao tác. preview chỉ đọc. replace ghi qua merge_center.apply_replace (một Transaction), phải gửi lại hai hash của preview.
+    Preview and replace of ONE guide with its previewed .new copy (the .new is kept, both versions are stored). Dedicated routes outside
+    run_api/_record, so the operations log is untouched. preview is read-only; replace writes through merge_center.apply_replace (one
+    Transaction) and must send back both hashes from the preview.
+    D-01c: finish-preview / finish / finish-observe giữ nguyên bản hiện hành và đưa .new vào archive; cùng quy tắc: ngoài run_api/_record, preview và observe chỉ đọc.
+    D-01c: finish-preview / finish / finish-observe keep the current file and move the .new into the archive; same rules, outside run_api/_record, preview and observe are read-only."""
+    name = path.rsplit('/', 1)[-1]
+    if name == 'preview':
+        pv = merge_center.preview_replace(ROOT, body.get('path'))
+        bad = pv['reason'] == 'invalid_path'
+        return make('blocked' if bad else 'success', code=2 if bad else 0, changes=False, replace_preview=pv,
+                    message='Đường dẫn không hợp lệ / Invalid path' if bad else 'Preview only; nothing was written / Chỉ xem trước, chưa ghi gì')
+    if name == 'replace':
+        res = merge_center.apply_replace(ROOT, body.get('path'), body.get('current_sha256'), body.get('candidate_sha256'))
+        status_value, code, changes = _REPLACE_STATUS[res['outcome']]
+        files = []
+        if res['outcome'] == 'replaced':
+            files = [{'path': res['path'], 'action': 'replaced'}] + [
+                {'path': res['archive'][k], 'action': 'created'} for k in ('current', 'incoming', 'record')]
+        return make(status_value, code=code, changes=changes, files=files, replace=res, message=res['outcome'],
+                    transaction=res.get('txid') if res['outcome'] == 'partial' else None)
+    if name == 'finish-preview':  # D-01c: chỉ đọc, không tạo file/runtime / read-only
+        pv = merge_center.preview_finish(ROOT, body.get('path'))
+        bad = pv['reason'] == 'invalid_path'
+        return make('blocked' if bad else 'success', code=2 if bad else 0, changes=False, finish_preview=pv,
+                    message='Đường dẫn không hợp lệ / Invalid path' if bad else 'Preview only; nothing was written / Chỉ xem trước, chưa ghi gì')
+    if name == 'finish-observe':  # D-01c: chỉ đọc; không hoàn tất, không retry / read-only; completes nothing, retries nothing
+        obs = merge_center.observe_finish(ROOT, body.get('path'), body.get('current_sha256'), body.get('candidate_sha256'), body.get('finish_id'))
+        refused = obs['state'] == 'refused'
+        return make('blocked' if refused else 'success', code=2 if refused else 0, changes=False, finish_observation=obs,
+                    message='Chỉ quan sát; chưa ghi gì / Observation only; nothing was written')
+    if name == 'finish':
+        res = merge_center.apply_finish(ROOT, body.get('path'), body.get('current_sha256'), body.get('candidate_sha256'), body.get('finish_id'))
+        status_value, code, changes = _FINISH_STATUS[res['outcome']]
+        saved = res.get('snapshot_saved') is True
+        if changes is None and saved:
+            changes = True  # snapshot đã ghi dù chưa chuyển được .new / the snapshot is written even if the .new was not moved
+        files = []
+        if saved:
+            arc = res['archive']
+            files = [{'path': arc[k], 'action': 'created'} for k in ('current', 'incoming', 'record')]
+            if res['outcome'] == 'finished':
+                files.append({'path': arc['retired'], 'action': 'moved_from_' + res['pending']})
+        return make(status_value, code=code, changes=changes, files=files, finish=res, message=res['outcome'],
+                    transaction=res.get('txid') if res['outcome'] not in ('finished', 'stale', 'blocked', 'error') else None)
+    return None
 
 
 def _record(name, res, started):
@@ -654,7 +868,7 @@ def run_api(body):
                'result': make('blocked', code=2, message=str(e), changes=False)}
     except Exception as e:  # lỗi bất ngờ vẫn trả về trang / unexpected errors still reach the page
         res, http_code = {'code': -1, 'out': 'Lỗi / Error: %r' % (e,), 'cmd': '', 'result': unexpected_result(e)}, 500
-    if name != 'history_clear':  # xóa lịch sử thì không ghi thêm dòng nào / clearing the history writes nothing
+    if name != 'history_clear' and name not in NO_LOG_ACTIONS:  # xóa lịch sử, đọc thư viện: không ghi dòng nào / clearing the history and reading the library write no line
         _record(name, res, started)
     return http_code, res
 
@@ -713,6 +927,12 @@ class Handler(http.server.BaseHTTPRequestHandler):
             if path == '/api/run':
                 code, payload = run_api(body)
                 return self._send(code, payload)
+            if path in ('/api/draft/status', '/api/draft/list', '/api/draft/select', '/api/draft/open'):
+                return self._send(200, draft_api(path, body if isinstance(body, dict) else {}))
+            if path in ('/api/merge/preview', '/api/merge/replace', '/api/merge/finish-preview', '/api/merge/finish', '/api/merge/finish-observe'):
+                return self._send(200, merge_api(path, body if isinstance(body, dict) else {}))
+            if path in ('/api/library/browse', '/api/library/select', '/api/library/open', '/api/library/links', '/api/library/artifact-open', '/api/library/artifact-copy'):
+                return self._send(200, library_api(path, body if isinstance(body, dict) else {}))
             if path == '/api/pick':
                 return self._send(200, pick(body.get('kind')))
             if path == '/api/open':

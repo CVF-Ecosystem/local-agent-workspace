@@ -91,7 +91,7 @@ tfoot td{background:var(--head)}
 </main>
 <div class="sign"><div><b>Prepared by</b><i>(Signature, full name)</i></div><div><b>Approved by</b><i>(Signature, full name)</i></div></div>
 <footer class="source"><p><strong>Source:</strong> <span id="source"></span></p><p><strong>Updated:</strong> <span id="updated"></span></p><p>"—" means the rate cannot be calculated because there is no denominator; it is not 0%. Completed numbers may include files from the previous period.</p></footer>
-<div class="foot"><span id="type-label">Reference template · v1.8</span><span>Self-contained HTML · English · Opens offline</span></div>
+<div class="foot"><span id="type-label">Reference template · v1.9</span><span>Self-contained HTML · English · Opens offline</span></div>
 </div>
 <!--
 HTML template newly written for Local Agent Workspace v1.0. It uses no Lieflat Charts resources.
@@ -110,7 +110,7 @@ No network, tracker, outside fonts, server or dependency to install.
   "title": "Activity indicators overview",
   "period": "September 2026 · Illustrative data",
   "subtitle": "Filter by channel and week to see the same set of indicators. All data is stored in the file; there is no connection to outside systems.",
-  "source": "Simulated data in the Local Agent Workspace v1.8 template; not real project figures.",
+  "source": "Simulated data in the Local Agent Workspace v1.9 template; not real project figures.",
   "updated": "2026-10-06 · Template creation date",
   "rows": [
     {
@@ -233,7 +233,7 @@ function setup(data) {
   text('source', data.source || 'Data source not recorded.');
   text('updated', data.updated || 'Update time not recorded.');
   text('demo-banner', data.isDemo ? 'ILLUSTRATIVE TEMPLATE - simulated data. Replace the figures, source and comments before using it for real work.' : '');
-  text('type-label', data.isDemo ? 'Reference template · v1.8' : 'Report');
+  text('type-label', data.isDemo ? 'Reference template · v1.9' : 'Report');
 }
 function notes(targetId, items) {
   const target = byId(targetId); target.replaceChildren();

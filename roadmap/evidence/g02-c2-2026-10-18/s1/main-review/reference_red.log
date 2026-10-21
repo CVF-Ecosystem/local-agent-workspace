@@ -1,0 +1,18 @@
+test_remote_dynamic_ref_is_refused_before_retrieval (tests.test_control_check_v2.LoaderInit.test_remote_dynamic_ref_is_refused_before_retrieval) ... FAIL
+test_reference_registry_denies_rebased_fragment_without_network (tests.test_control_check_v2.LoaderInit.test_reference_registry_denies_rebased_fragment_without_network) ... ok
+
+======================================================================
+FAIL: test_remote_dynamic_ref_is_refused_before_retrieval (tests.test_control_check_v2.LoaderInit.test_remote_dynamic_ref_is_refused_before_retrieval)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check_v2.py", line 433, in test_remote_dynamic_ref_is_refused_before_retrieval
+    retrieval.assert_not_called()
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python311\Lib\unittest\mock.py", line 900, in assert_not_called
+    raise AssertionError(msg)
+AssertionError: Expected 'urlopen' to not have been called. Called 1 times.
+Calls: [call(<urllib.request.Request object at 0x000001D39A7E0FD0>)].
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.407s
+
+FAILED (failures=1)

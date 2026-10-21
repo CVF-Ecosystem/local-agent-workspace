@@ -1,0 +1,36 @@
+test_all_v1_bundle_is_refused_with_explicit_hint_and_never_tried (tests.test_control_check_v2.RefusalMatrix.test_all_v1_bundle_is_refused_with_explicit_hint_and_never_tried) ... ok
+test_basis_variants (tests.test_control_check_v2.RefusalMatrix.test_basis_variants) ... ok
+test_binding_literals (tests.test_control_check_v2.RefusalMatrix.test_binding_literals) ... ok
+test_bundle_bom_is_tolerated_like_v1 (tests.test_control_check_v2.RefusalMatrix.test_bundle_bom_is_tolerated_like_v1) ... ok
+test_canonical_domain_is_unsupported_not_guessed (tests.test_control_check_v2.RefusalMatrix.test_canonical_domain_is_unsupported_not_guessed) ... ok
+test_diagnostic_path_key_requires_full_match (tests.test_control_check_v2.RefusalMatrix.test_diagnostic_path_key_requires_full_match) ... ok
+test_duplicate_key_nested_in_a_valid_bundle (tests.test_control_check_v2.RefusalMatrix.test_duplicate_key_nested_in_a_valid_bundle) ... ok
+test_example_files_from_expected (tests.test_control_check_v2.RefusalMatrix.test_example_files_from_expected) ... ok
+test_malformed_input (tests.test_control_check_v2.RefusalMatrix.test_malformed_input) ... ok
+test_non_string_and_garbage_versions (tests.test_control_check_v2.RefusalMatrix.test_non_string_and_garbage_versions) ... ok
+test_preflight_diagnostics_do_not_echo_record_type_values (tests.test_control_check_v2.RefusalMatrix.test_preflight_diagnostics_do_not_echo_record_type_values) ... ok
+test_routing_policy_record_is_not_checkable (tests.test_control_check_v2.RefusalMatrix.test_routing_policy_record_is_not_checkable) ... ok
+test_schema_invalid_after_literals_is_deny_and_does_not_echo_values (tests.test_control_check_v2.RefusalMatrix.test_schema_invalid_after_literals_is_deny_and_does_not_echo_values) ... ok
+test_version_missing (tests.test_control_check_v2.RefusalMatrix.test_version_missing) ... ok
+test_dependency_missing_or_too_old_is_init_error_exit_2 (tests.test_control_check_v2.LoaderInit.test_dependency_missing_or_too_old_is_init_error_exit_2) ... ok
+test_duplicate_key_in_owner (tests.test_control_check_v2.LoaderInit.test_duplicate_key_in_owner) ... ok
+test_invalid_schema_and_policy (tests.test_control_check_v2.LoaderInit.test_invalid_schema_and_policy) ... ok
+test_missing_owner_files (tests.test_control_check_v2.LoaderInit.test_missing_owner_files) ... ok
+test_owner_failure_is_init_error_with_hash_of_what_was_read (tests.test_control_check_v2.LoaderInit.test_owner_failure_is_init_error_with_hash_of_what_was_read) ... ok
+test_owner_literals (tests.test_control_check_v2.LoaderInit.test_owner_literals) ... ok
+test_real_owners_load (tests.test_control_check_v2.LoaderInit.test_real_owners_load) ... ok
+test_reference_registry_denies_rebased_fragment_without_network (tests.test_control_check_v2.LoaderInit.test_reference_registry_denies_rebased_fragment_without_network) ... ok
+test_reference_registry_denies_retrieval_even_if_scan_misses (tests.test_control_check_v2.LoaderInit.test_reference_registry_denies_retrieval_even_if_scan_misses) ... ok
+test_remote_dynamic_ref_is_refused_before_retrieval (tests.test_control_check_v2.LoaderInit.test_remote_dynamic_ref_is_refused_before_retrieval) ... ok
+test_remote_ref_is_refused (tests.test_control_check_v2.LoaderInit.test_remote_ref_is_refused) ... ok
+test_valid_bundle_reads_no_artifact_and_uses_no_network (tests.test_control_check_v2.NoObservation.test_valid_bundle_reads_no_artifact_and_uses_no_network) ... ok
+test_api_argument_errors (tests.test_control_check_v2.OutputContract.test_api_argument_errors) ... ok
+test_owner_hashes_are_the_bytes_actually_read (tests.test_control_check_v2.OutputContract.test_owner_hashes_are_the_bytes_actually_read) ... ok
+test_public_surface_has_no_injection_or_check_records (tests.test_control_check_v2.OutputContract.test_public_surface_has_no_injection_or_check_records) ... ok
+test_single_record_input_is_accepted_like_v1 (tests.test_control_check_v2.OutputContract.test_single_record_input_is_accepted_like_v1) ... ok
+test_valid_examples_are_blocked_never_pass (tests.test_control_check_v2.OutputContract.test_valid_examples_are_blocked_never_pass) ... ok
+
+----------------------------------------------------------------------
+Ran 31 tests in 2.669s
+
+OK

@@ -1,0 +1,25 @@
+T1 Write allowed/                                    0            DECISION allow
+T1 Write denied/                                     0            DECISION deny
+T1 Write ngoai allowed (.claude/settings.json)       0            DECISION deny
+T1 Write allowed/../denied traversal                 0            DECISION deny
+T1 Write ALLOWED/ doi hoa-thuong                     0            DECISION allow
+T1 Write denied/x:stream (ADS)                       0            DECISION deny
+T1 Write 'denied./' dau cham cuoi                    0            DECISION deny
+T4 Bash literal denied/                              0            DECISION deny
+T4 PowerShell literal denied/                        0            DECISION deny
+T4 PowerShell gian tiep 'den'+'ied'                  0            NO_DECISION -> normal permission flow
+T1 Agent lan 1                                       0            NO_DECISION -> normal permission flow
+T1 Agent lan 2 (vuot ngan sach)                      0            DECISION deny
+T1 Agent de quy (co agent_id)                        0            DECISION deny
+T1 child Write denied/ (agent_id)                    0            DECISION deny
+T2 exception exit!=0,2                               1            BLOCK (failure+onFailure=block)
+T2 malformed JSON exit0                              0            BLOCK (invalid output+onFailure=block)
+T2 timeout (>3s)                                     timeout      BLOCK
+T2 missing executable (Glob hook)                    cannot_start BLOCK
+T2 missing script qua python -I (Grep hook)          2            BLOCK (exit 2)
+T3 exit0 im lang tren denied/                        0            NO_DECISION -> normal permission flow
+T3 plaintext exit0 tren denied/                      0            NO_DECISION (plain text only logged) -> normal permission flow
+T5 ask                                               0            DECISION ask
+T6 Pre (Edit)                                        0            DECISION allow
+T6 Post (Edit) sau 2 lan ghi ngoai hook              0            NO_DECISION -> normal permission flow
+replay lab da don: True

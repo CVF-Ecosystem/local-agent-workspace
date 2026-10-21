@@ -1,0 +1,102 @@
+{
+ "label": "T0 inventory (chi doc, tai may nay; KHONG phai effective policy cua phien lab)",
+ "user_settings": {
+  "exists": true,
+  "top_keys": [
+   "agentPushNotifEnabled",
+   "effortLevel",
+   "model",
+   "modelSettings",
+   "permissions",
+   "skipAutoPermissionPrompt",
+   "switchModelsOnFlag"
+  ],
+  "has_hooks": false,
+  "has_sandbox": false,
+  "permissions_keys": [
+   "additionalDirectories",
+   "allow",
+   "defaultMode"
+  ],
+  "defaultMode": "auto",
+  "allow_count": 117,
+  "deny_count": 0,
+  "disableAllHooks": null,
+  "allowManagedHooksOnly": null
+ },
+ "user_settings_local": {
+  "exists": false
+ },
+ "managed_file_ProgramFiles": false,
+ "managed_dir_ProgramFiles": false,
+ "legacy_ProgramData_dir": false,
+ "registry_HKLM_policy_key": false,
+ "registry_HKCU_policy_key": false,
+ "plugins": {
+  "dir_exists": true,
+  "entries": [
+   ".last_inuse_sweep",
+   ".trash",
+   "blocklist.json",
+   "known_marketplaces.json",
+   "marketplaces",
+   "plugin-directory-cache-v2.json",
+   "synced"
+  ],
+  "hooks_or_plugin_json_files_count": 53,
+  "hooks_json_files": [
+   "marketplaces/claude-plugins-official/plugins/claude-security/hooks/hooks.json",
+   "marketplaces/claude-plugins-official/plugins/code-modernization/hooks/hooks.json",
+   "marketplaces/claude-plugins-official/plugins/explanatory-output-style/hooks/hooks.json",
+   "marketplaces/claude-plugins-official/plugins/hookify/hooks/hooks.json",
+   "marketplaces/claude-plugins-official/plugins/learning-output-style/hooks/hooks.json",
+   "marketplaces/claude-plugins-official/plugins/ralph-loop/hooks/hooks.json",
+   "marketplaces/claude-plugins-official/plugins/security-guidance/hooks/hooks.json"
+  ],
+  "installed_plugins.json": false,
+  "known_marketplaces.json": true,
+  "blocklist.json": true
+ },
+ "claude_dir_entries": [
+  ".credentials.json",
+  ".last-cleanup",
+  ".last-update-result.json",
+  "backups",
+  "cache",
+  "commands",
+  "daemon",
+  "downloads",
+  "file-history",
+  "history.jsonl",
+  "ide",
+  "jobs",
+  "mcp-needs-auth-cache.json",
+  "mcp.json",
+  "paste-cache",
+  "plugins",
+  "projects",
+  "session-env",
+  "sessions",
+  "settings.json",
+  "shell-snapshots",
+  "skills",
+  "state"
+ ],
+ "vscode_claude_extension_dirs": [
+  "anthropic.claude-code-2.1.301-win32-x64"
+ ],
+ "vscode_user_settings_claude_keys": [
+  "claudeCode.hideOnboarding",
+  "claudeCode.preferredLocation"
+ ],
+ "mods_dir_candidates": {
+  "mods": false,
+  "mod": false,
+  "daemon": true,
+  "ide": true,
+  "jobs": true
+ },
+ "limits": [
+  "Khong doc project .claude cua workspace khac; khong doc server-managed/remote settings; plugin/mod hook thuc su trong phien lab chi thay qua /hooks (GUI) -> UNKNOWN cho den khi operator dan."
+ ]
+}

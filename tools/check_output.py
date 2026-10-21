@@ -140,12 +140,13 @@ def main():
         ext = os.path.splitext(f)[1].lower()
         print('== %s ==' % f)
         if not os.path.isfile(f):
-            print('  ' + L('Không thấy file.', 'File not found.')); result(2); continue
+            print('  ' + L('Không thấy file. Chưa kiểm được: kiểm lại đường dẫn hoặc chép file về máy rồi thử lại.',
+                     'File not found. Not checked: check the path, or copy the file to this computer and try again.')); result(2); continue
         if a.declaration:
             try:
                 must, note = check_declaration(io.open(f, encoding='utf-8').read())
             except (OSError, UnicodeError) as e:
-                print('  ' + str(e)); result(2); continue
+                print('  ' + L('Không đọc được file (%s). Chưa kiểm được.', 'Could not read the file (%s). Not checked.') % e); result(2); continue
             for m_ in must: print('  ' + L('CẦN SỬA: ', 'FIX: ') + m_)
             for n_ in note: print('  ' + L('LƯU Ý: ', 'NOTE: ') + n_)
             if not must and not note: print('  ' + L('Khai báo đủ các mục.', 'Declaration has all items.'))
@@ -159,7 +160,7 @@ def main():
             try:
                 r = subprocess.run([sys.executable, sc, f, '--lang', LANG, '--status-exit'], capture_output=True)
             except OSError as e:
-                print('  ' + str(e)); result(2); continue
+                print('  ' + L('Không chạy được công cụ kiểm Excel (%s). Chưa kiểm được file này.', 'Could not run the Excel check tool (%s). This file was not checked.') % e); result(2); continue
             print(r.stdout.decode('utf-8', 'replace').rstrip() or r.stderr.decode('utf-8', 'replace').rstrip())
             if r.returncode not in (0, 1):
                 err = r.stderr.decode('utf-8', 'replace').strip().splitlines()
@@ -176,7 +177,8 @@ def main():
         try:
             must, note = check_text(f, text_of(f), ext)
         except (zipfile.BadZipFile, KeyError, OSError, ET.ParseError, UnicodeError, RuntimeError) as e:
-            print('  ' + L('Không đọc được file (%s).', 'Could not read the file (%s).') % e); result(2); continue
+            print('  ' + L('Không đọc được file (%s). Chưa kiểm được: mở file bằng ứng dụng gốc để xem có hỏng hoặc bị khóa không; nếu có, lưu bản khác rồi kiểm lại.',
+                     'Could not read the file (%s). Not checked: open the file in its own application to see whether it is damaged or locked; if so, save another copy and check that.') % e); result(2); continue
         for m in must: print('  ' + L('CẦN SỬA: ', 'FIX: ') + m)
         for n in note: print('  ' + L('LƯU Ý: ', 'NOTE: ') + n)
         if not must and not note:

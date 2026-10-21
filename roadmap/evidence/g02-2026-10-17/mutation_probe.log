@@ -1,0 +1,14 @@
+mutate_protected                   failing tests: 2
+mutate_trust_claims                failing tests: 5
+mutate_prefix_paths                failing tests: 2
+mutate_default_verifier            failing tests: 4
+mutate_delegation                  failing tests: 23
+mutate_unknown_to_false            failing tests: 9
+mutate_attestation_from_claim      failing tests: 4
+mutate_ignore_actor_ids            failing tests: 2
+mutate_path_digest_only            failing tests: 4
+mutate_action_digest_one_sided     failing tests: 1
+mutate_role_name_equals_group      failing tests: 3
+mutate_any_non_pass_blocks         failing tests: 1
+restored baseline: failures+errors = 0 of 93
+SURVIVING MUTATIONS: 0

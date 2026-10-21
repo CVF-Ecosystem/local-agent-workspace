@@ -1,0 +1,159 @@
+test_claim_table_must_belong_to_the_current_index (tests.test_control_check_v2_s2.GrantLinkTests.test_claim_table_must_belong_to_the_current_index) ... FAIL
+test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator (tests.test_control_check_v2_s2.ObjectSetTests.test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator) ... 
+  test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator (tests.test_control_check_v2_s2.ObjectSetTests.test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator) (basis='RECOMPUTED') ... FAIL
+  test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator (tests.test_control_check_v2_s2.ObjectSetTests.test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator) (basis='LITERAL') ... FAIL
+  test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator (tests.test_control_check_v2_s2.ObjectSetTests.test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator) (basis='UNKNOWN') ... FAIL
+  test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator (tests.test_control_check_v2_s2.ObjectSetTests.test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator) (locator="'law_review_canary\\n'") ... FAIL
+  test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator (tests.test_control_check_v2_s2.ObjectSetTests.test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator) (locator="'records[0].law_private_marker'") ... FAIL
+  test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator (tests.test_control_check_v2_s2.ObjectSetTests.test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator) (locator="'.binding.inputs\\n'") ... FAIL
+test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator (tests.test_control_check_v2_s2.ObjectSetTests.test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator) ... FAIL
+test_present_null_sets_in_records_are_malformed_not_absent (tests.test_control_check_v2_s2.BindingTests.test_present_null_sets_in_records_are_malformed_not_absent) ... 
+  test_present_null_sets_in_records_are_malformed_not_absent (tests.test_control_check_v2_s2.BindingTests.test_present_null_sets_in_records_are_malformed_not_absent) (peer_field='inputs') ... FAIL
+  test_present_null_sets_in_records_are_malformed_not_absent (tests.test_control_check_v2_s2.BindingTests.test_present_null_sets_in_records_are_malformed_not_absent) (peer_field='outputs') ... FAIL
+  test_present_null_sets_in_records_are_malformed_not_absent (tests.test_control_check_v2_s2.BindingTests.test_present_null_sets_in_records_are_malformed_not_absent) (record_type='review', field='inputs') ... FAIL
+  test_present_null_sets_in_records_are_malformed_not_absent (tests.test_control_check_v2_s2.BindingTests.test_present_null_sets_in_records_are_malformed_not_absent) (record_type='review', field='outputs') ... FAIL
+  test_present_null_sets_in_records_are_malformed_not_absent (tests.test_control_check_v2_s2.BindingTests.test_present_null_sets_in_records_are_malformed_not_absent) (record_type='result', field='outputs') ... FAIL
+
+======================================================================
+FAIL: test_claim_table_must_belong_to_the_current_index (tests.test_control_check_v2_s2.GrantLinkTests.test_claim_table_must_belong_to_the_current_index)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check_v2_s2.py", line 599, in test_claim_table_must_belong_to_the_current_index
+    with self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator (tests.test_control_check_v2_s2.ObjectSetTests.test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator) (basis='RECOMPUTED')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check_v2_s2.py", line 869, in test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator
+    with self.subTest(basis=basis), self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator (tests.test_control_check_v2_s2.ObjectSetTests.test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator) (basis='LITERAL')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check_v2_s2.py", line 869, in test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator
+    with self.subTest(basis=basis), self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator (tests.test_control_check_v2_s2.ObjectSetTests.test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator) (basis='UNKNOWN')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check_v2_s2.py", line 869, in test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator
+    with self.subTest(basis=basis), self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator (tests.test_control_check_v2_s2.ObjectSetTests.test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator) (locator="'law_review_canary\\n'")
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check_v2_s2.py", line 872, in test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator
+    with self.subTest(locator=repr(locator)), self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator (tests.test_control_check_v2_s2.ObjectSetTests.test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator) (locator="'records[0].law_private_marker'")
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check_v2_s2.py", line 872, in test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator
+    with self.subTest(locator=repr(locator)), self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator (tests.test_control_check_v2_s2.ObjectSetTests.test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator) (locator="'.binding.inputs\\n'")
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check_v2_s2.py", line 872, in test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator
+    with self.subTest(locator=repr(locator)), self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator (tests.test_control_check_v2_s2.ObjectSetTests.test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check_v2_s2.py", line 877, in test_caller_metadata_cannot_upgrade_basis_or_escape_closed_locator
+    with self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_present_null_sets_in_records_are_malformed_not_absent (tests.test_control_check_v2_s2.BindingTests.test_present_null_sets_in_records_are_malformed_not_absent) (peer_field='inputs')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check_v2_s2.py", line 964, in test_present_null_sets_in_records_are_malformed_not_absent
+    self.assertEqual((relation.state, relation.reason), ('UNSUPPORTED', 'MALFORMED_RECORD'))
+AssertionError: Tuples differ: ('NOT_BOUND', None) != ('UNSUPPORTED', 'MALFORMED_RECORD')
+
+First differing element 0:
+'NOT_BOUND'
+'UNSUPPORTED'
+
+- ('NOT_BOUND', None)
++ ('UNSUPPORTED', 'MALFORMED_RECORD')
+
+======================================================================
+FAIL: test_present_null_sets_in_records_are_malformed_not_absent (tests.test_control_check_v2_s2.BindingTests.test_present_null_sets_in_records_are_malformed_not_absent) (peer_field='outputs')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check_v2_s2.py", line 964, in test_present_null_sets_in_records_are_malformed_not_absent
+    self.assertEqual((relation.state, relation.reason), ('UNSUPPORTED', 'MALFORMED_RECORD'))
+AssertionError: Tuples differ: ('NOT_BOUND', None) != ('UNSUPPORTED', 'MALFORMED_RECORD')
+
+First differing element 0:
+'NOT_BOUND'
+'UNSUPPORTED'
+
+- ('NOT_BOUND', None)
++ ('UNSUPPORTED', 'MALFORMED_RECORD')
+
+======================================================================
+FAIL: test_present_null_sets_in_records_are_malformed_not_absent (tests.test_control_check_v2_s2.BindingTests.test_present_null_sets_in_records_are_malformed_not_absent) (record_type='review', field='inputs')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check_v2_s2.py", line 973, in test_present_null_sets_in_records_are_malformed_not_absent
+    self.assertEqual((relation.state, relation.reason), ('UNSUPPORTED', 'MALFORMED_RECORD'))
+AssertionError: Tuples differ: ('ONE_SIDED', None) != ('UNSUPPORTED', 'MALFORMED_RECORD')
+
+First differing element 0:
+'ONE_SIDED'
+'UNSUPPORTED'
+
+- ('ONE_SIDED', None)
++ ('UNSUPPORTED', 'MALFORMED_RECORD')
+
+======================================================================
+FAIL: test_present_null_sets_in_records_are_malformed_not_absent (tests.test_control_check_v2_s2.BindingTests.test_present_null_sets_in_records_are_malformed_not_absent) (record_type='review', field='outputs')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check_v2_s2.py", line 973, in test_present_null_sets_in_records_are_malformed_not_absent
+    self.assertEqual((relation.state, relation.reason), ('UNSUPPORTED', 'MALFORMED_RECORD'))
+AssertionError: Tuples differ: ('NOT_APPLICABLE', 'NO_COUNTERPART') != ('UNSUPPORTED', 'MALFORMED_RECORD')
+
+First differing element 0:
+'NOT_APPLICABLE'
+'UNSUPPORTED'
+
+- ('NOT_APPLICABLE', 'NO_COUNTERPART')
++ ('UNSUPPORTED', 'MALFORMED_RECORD')
+
+======================================================================
+FAIL: test_present_null_sets_in_records_are_malformed_not_absent (tests.test_control_check_v2_s2.BindingTests.test_present_null_sets_in_records_are_malformed_not_absent) (record_type='result', field='outputs')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check_v2_s2.py", line 973, in test_present_null_sets_in_records_are_malformed_not_absent
+    self.assertEqual((relation.state, relation.reason), ('UNSUPPORTED', 'MALFORMED_RECORD'))
+AssertionError: Tuples differ: ('ONE_SIDED', None) != ('UNSUPPORTED', 'MALFORMED_RECORD')
+
+First differing element 0:
+'ONE_SIDED'
+'UNSUPPORTED'
+
+- ('ONE_SIDED', None)
++ ('UNSUPPORTED', 'MALFORMED_RECORD')
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.053s
+
+FAILED (failures=13)

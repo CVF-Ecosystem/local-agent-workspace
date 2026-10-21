@@ -1,4 +1,4 @@
-# Local Assistant Workspace v1.8
+# Local Assistant Workspace v1.9
 
 A local workspace for office work with Claude, Codex, Gemini or another assistant.
 
@@ -97,6 +97,7 @@ project/
 ├── MANIFEST.sha256          Hashes of the package files, to check integrity
 ├── docs/                    Guides in Markdown + HTML, Vietnamese–English glossary
 ├── examples/demo-project/   Practice exercise (sample data) to try in 10 minutes
+├── roles/                   Scout, Worker, Reviewer contracts; native integration pending
 ├── packs/                   Domain packs (installed on demand with tools/pack.py)
 ├── .agent/                  STATE, HANDOFF, INDEX, SKILL_INDEX, PENDING_LESSONS
 ├── skills/

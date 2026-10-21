@@ -1,0 +1,489 @@
+{
+  "schema_version": "law.cvf.control/2",
+  "record_type": "bundle",
+  "evaluation_basis": "COOPERATIVE_WORKFLOW",
+  "example_only": true,
+  "note": "v1 receipt reuse",
+  "bundle_id": "EXAMPLE-v2-ex19",
+  "records": [
+    {
+      "schema_version": "law.cvf.control/2",
+      "record_type": "task",
+      "evaluation_basis": "COOPERATIVE_WORKFLOW",
+      "example_only": true,
+      "note": "EXAMPLE task",
+      "work_id": "EXAMPLE-work-1",
+      "task_id": "EXAMPLE-task-1",
+      "task_revision": 1,
+      "proposed_by": {
+        "actor_id": "EXAMPLE-main",
+        "role": "main",
+        "host": "EXAMPLE-host"
+      },
+      "intent": {
+        "refs": [
+          {
+            "ref_id": "EXAMPLE-intent-ref-1",
+            "kind": "user_intent",
+            "locator": "EXAMPLE://session/msg-1",
+            "revision": "1",
+            "digest": "sha256:3b01c340b7bac5627c94fd7e4f82d48b9360457159ea9d1f4dbfdf42ea7f3617",
+            "attribution": {
+              "source_class": "USER_CONFIRMATION",
+              "channel": "USER_MESSAGE",
+              "recorded_by": {
+                "actor_id": "EXAMPLE-main",
+                "role": "main",
+                "host": "EXAMPLE-host"
+              },
+              "evidence_locator": "EXAMPLE://session/msg-1"
+            }
+          }
+        ],
+        "main_interpretation": "EXAMPLE: Main's reading of the user request.",
+        "unconfirmed": []
+      },
+      "authority": {
+        "grant_refs": [
+          {
+            "ref_id": "EXAMPLE-grant-ref-1",
+            "kind": "grant",
+            "locator": "EXAMPLE://user-store/grant-1",
+            "revision": "1",
+            "digest": "sha256:585bfd913bcd01b32f1542c3eb6657828187a426e03f9446dbd250bb75c16824",
+            "attribution": {
+              "source_class": "USER_CONFIRMATION",
+              "channel": "USER_MESSAGE",
+              "recorded_by": {
+                "actor_id": "EXAMPLE-main",
+                "role": "main",
+                "host": "EXAMPLE-host"
+              },
+              "evidence_locator": "EXAMPLE://session/msg-grant"
+            }
+          }
+        ],
+        "subject": {
+          "actor_id": "EXAMPLE-worker-1",
+          "role": "worker",
+          "host": "EXAMPLE-host"
+        }
+      },
+      "inputs": [
+        {
+          "path": "references/EXAMPLE-quy-che.docx",
+          "digest": "sha256:abfb409c82355f7b9e544d6b63bc56a2062549c74217553b5571f84623990eed",
+          "source_id": "SRC-EXAMPLE-1",
+          "revision": "1"
+        }
+      ],
+      "effects": {
+        "actions": [
+          {
+            "operation": "provenance_write",
+            "tool": "EXAMPLE-editor",
+            "targets": [
+              "references/_INDEX.xlsx"
+            ],
+            "write_zone": "shared_register"
+          }
+        ],
+        "protected_targets": [
+          "references/"
+        ],
+        "preservation": [
+          {
+            "target": "references/_INDEX.xlsx",
+            "must_keep": "EXAMPLE: data validation, formulas",
+            "known_loss_state": "NONE_KNOWN"
+          }
+        ],
+        "on_missing": "STOP_DEPENDENT_EFFECT"
+      },
+      "acceptance": {
+        "requirements": [
+          {
+            "req_id": "REQ-1",
+            "statement": "EXAMPLE: output covers the requested sections",
+            "mandatory": true,
+            "expected_evidence": [
+              "artifact path + digest"
+            ]
+          }
+        ]
+      },
+      "envelope": {
+        "role": "worker",
+        "model": {
+          "value": "EXAMPLE-model",
+          "status": "REQUESTED"
+        },
+        "effort": {
+          "value": "high",
+          "status": "UNKNOWN"
+        }
+      },
+      "route_proposal": {
+        "policy_version": "law.cvf.routing/2",
+        "proposed_rows": [
+          "R-MUTATION"
+        ]
+      }
+    },
+    {
+      "schema_version": "law.cvf.control/2",
+      "record_type": "grant",
+      "evaluation_basis": "COOPERATIVE_WORKFLOW",
+      "example_only": true,
+      "grant_id": "EXAMPLE-grant-1",
+      "grant_revision": 1,
+      "issuer": {
+        "actor_id": "EXAMPLE-user",
+        "role": "user"
+      },
+      "issuer_ref": {
+        "ref_id": "EXAMPLE-grant-ref-1",
+        "kind": "grant",
+        "locator": "EXAMPLE://user-store/grant-1",
+        "revision": "1",
+        "digest": "sha256:585bfd913bcd01b32f1542c3eb6657828187a426e03f9446dbd250bb75c16824",
+        "attribution": {
+          "source_class": "USER_CONFIRMATION",
+          "channel": "USER_MESSAGE",
+          "recorded_by": {
+            "actor_id": "EXAMPLE-main",
+            "role": "main",
+            "host": "EXAMPLE-host"
+          },
+          "evidence_locator": "EXAMPLE://session/msg-grant"
+        }
+      },
+      "subject": {
+        "roles": [
+          "worker"
+        ],
+        "actor_ids": [
+          "EXAMPLE-worker-1"
+        ]
+      },
+      "scope": {
+        "task_classes": [
+          "EXAMPLE-register-update"
+        ],
+        "operations": [
+          "provenance_write"
+        ],
+        "paths": [
+          "references/_INDEX.xlsx"
+        ],
+        "tools": [
+          "EXAMPLE-editor"
+        ]
+      },
+      "limits": {
+        "expires_at": "2027-01-01T00:00:00Z"
+      },
+      "status": "EXAMPLE_INACTIVE"
+    },
+    {
+      "schema_version": "law.cvf.control/2",
+      "record_type": "review",
+      "evaluation_basis": "COOPERATIVE_WORKFLOW",
+      "example_only": true,
+      "review_id": "EXAMPLE-review-pre",
+      "phase": "PRE_EFFECT",
+      "binding": {
+        "evaluation_basis": "COOPERATIVE_WORKFLOW",
+        "task_id": "EXAMPLE-task-1",
+        "task_revision": 1,
+        "intent_digest": "sha256:159e51014082dba5310459539d7cf72ff2206eaea451244d3b09b57298c29317",
+        "accepted_task_digest": "sha256:6deb9dc2d52274a3c3f520cda7aa73f635852b263ba8fc22cf79e64bf9c219d7",
+        "context_digest": "sha256:5ca56eb8872c8b6e886357451a6bb298ca5744e677c2ef5ad36d509413fae6f1",
+        "policy_version": "law.cvf.routing/1",
+        "inputs": [
+          {
+            "path": "references/EXAMPLE-quy-che.docx",
+            "digest": "sha256:abfb409c82355f7b9e544d6b63bc56a2062549c74217553b5571f84623990eed",
+            "source_id": "SRC-EXAMPLE-1",
+            "revision": "1"
+          }
+        ]
+      },
+      "reviewer": {
+        "actor": {
+          "actor_id": "EXAMPLE-reviewer-1",
+          "role": "reviewer",
+          "host": "EXAMPLE-host"
+        },
+        "eligibility_ref": {
+          "ref_id": "EXAMPLE-elig-ref-1",
+          "kind": "reviewer_eligibility",
+          "locator": "EXAMPLE://host/dispatch/reviewer-1",
+          "revision": "1",
+          "digest": "sha256:f84e52a96d302a91e0812681dc4d16fb992c2e154ca7751b4127e4d909050fff",
+          "attribution": {
+            "source_class": "TOOL_OBSERVATION",
+            "channel": "TOOL_OUTPUT",
+            "recorded_by": {
+              "actor_id": "EXAMPLE-main",
+              "role": "main",
+              "host": "EXAMPLE-host"
+            },
+            "observed_by": {
+              "actor_id": "EXAMPLE-host-tool",
+              "role": "tool",
+              "host": "EXAMPLE-host"
+            },
+            "evidence_locator": "EXAMPLE://host/dispatch/reviewer-1"
+          }
+        },
+        "independence_observed": "OBSERVED_SEPARATE_CONTEXT"
+      },
+      "scope": {
+        "objects": [
+          {
+            "path": "working/EXAMPLE-work-1/task.json",
+            "digest": "sha256:6deb9dc2d52274a3c3f520cda7aa73f635852b263ba8fc22cf79e64bf9c219d7"
+          }
+        ],
+        "requirements_checked": [
+          "REQ-1"
+        ],
+        "not_checked": [
+          "EXAMPLE: semantic correctness outside REQ-1"
+        ],
+        "intent_refs_checked": [
+          "EXAMPLE-intent-ref-1"
+        ]
+      },
+      "verdict": "PASS",
+      "findings": []
+    },
+    {
+      "schema_version": "law.cvf.control/2",
+      "record_type": "review",
+      "evaluation_basis": "COOPERATIVE_WORKFLOW",
+      "example_only": true,
+      "review_id": "EXAMPLE-review-int",
+      "phase": "PRE_INTEGRATION",
+      "binding": {
+        "bind_version": "law.cvf.bind/2",
+        "evaluation_basis": "COOPERATIVE_WORKFLOW",
+        "task_id": "EXAMPLE-task-1",
+        "task_revision": 1,
+        "intent_digest": "sha256:159e51014082dba5310459539d7cf72ff2206eaea451244d3b09b57298c29317",
+        "accepted_task_digest": "sha256:6deb9dc2d52274a3c3f520cda7aa73f635852b263ba8fc22cf79e64bf9c219d7",
+        "context_digest": "sha256:5ca56eb8872c8b6e886357451a6bb298ca5744e677c2ef5ad36d509413fae6f1",
+        "policy_version": "law.cvf.routing/2",
+        "policy_digest": "sha256:ed0c9eba974c8324b4a10d8b0aa6cefe4d80cc251f20299a56edf6fee030e05e",
+        "inputs": [
+          {
+            "path": "references/EXAMPLE-quy-che.docx",
+            "digest": "sha256:abfb409c82355f7b9e544d6b63bc56a2062549c74217553b5571f84623990eed",
+            "source_id": "SRC-EXAMPLE-1",
+            "revision": "1"
+          }
+        ],
+        "outputs": [
+          {
+            "path": "working/EXAMPLE-work-1/_INDEX.proposed.xlsx",
+            "digest": "sha256:6db6b3513bbf02738ebaa3775e99d3b2067b4ecd616981000b8b904283ff09ca"
+          }
+        ]
+      },
+      "reviewer": {
+        "actor": {
+          "actor_id": "EXAMPLE-reviewer-1",
+          "role": "reviewer",
+          "host": "EXAMPLE-host"
+        },
+        "eligibility_ref": {
+          "ref_id": "EXAMPLE-elig-ref-1",
+          "kind": "reviewer_eligibility",
+          "locator": "EXAMPLE://host/dispatch/reviewer-1",
+          "revision": "1",
+          "digest": "sha256:f84e52a96d302a91e0812681dc4d16fb992c2e154ca7751b4127e4d909050fff",
+          "attribution": {
+            "source_class": "TOOL_OBSERVATION",
+            "channel": "TOOL_OUTPUT",
+            "recorded_by": {
+              "actor_id": "EXAMPLE-main",
+              "role": "main",
+              "host": "EXAMPLE-host"
+            },
+            "observed_by": {
+              "actor_id": "EXAMPLE-host-tool",
+              "role": "tool",
+              "host": "EXAMPLE-host"
+            },
+            "evidence_locator": "EXAMPLE://host/dispatch/reviewer-1"
+          }
+        },
+        "independence_observed": "OBSERVED_SEPARATE_CONTEXT"
+      },
+      "scope": {
+        "objects": [
+          {
+            "path": "working/EXAMPLE-work-1/_INDEX.proposed.xlsx",
+            "digest": "sha256:6db6b3513bbf02738ebaa3775e99d3b2067b4ecd616981000b8b904283ff09ca"
+          }
+        ],
+        "requirements_checked": [
+          "REQ-1"
+        ],
+        "not_checked": [
+          "EXAMPLE: semantic correctness outside REQ-1"
+        ],
+        "intent_refs_checked": [
+          "EXAMPLE-intent-ref-1"
+        ]
+      },
+      "verdict": "PASS",
+      "findings": []
+    },
+    {
+      "schema_version": "law.cvf.control/2",
+      "record_type": "result",
+      "evaluation_basis": "COOPERATIVE_WORKFLOW",
+      "example_only": true,
+      "result_id": "EXAMPLE-result-1",
+      "binding": {
+        "bind_version": "law.cvf.bind/2",
+        "evaluation_basis": "COOPERATIVE_WORKFLOW",
+        "task_id": "EXAMPLE-task-1",
+        "task_revision": 1,
+        "intent_digest": "sha256:159e51014082dba5310459539d7cf72ff2206eaea451244d3b09b57298c29317",
+        "accepted_task_digest": "sha256:6deb9dc2d52274a3c3f520cda7aa73f635852b263ba8fc22cf79e64bf9c219d7",
+        "context_digest": "sha256:5ca56eb8872c8b6e886357451a6bb298ca5744e677c2ef5ad36d509413fae6f1",
+        "policy_version": "law.cvf.routing/2",
+        "policy_digest": "sha256:ed0c9eba974c8324b4a10d8b0aa6cefe4d80cc251f20299a56edf6fee030e05e",
+        "inputs": [
+          {
+            "path": "references/EXAMPLE-quy-che.docx",
+            "digest": "sha256:abfb409c82355f7b9e544d6b63bc56a2062549c74217553b5571f84623990eed",
+            "source_id": "SRC-EXAMPLE-1",
+            "revision": "1"
+          }
+        ],
+        "outputs": [
+          {
+            "path": "working/EXAMPLE-work-1/_INDEX.proposed.xlsx",
+            "digest": "sha256:6db6b3513bbf02738ebaa3775e99d3b2067b4ecd616981000b8b904283ff09ca"
+          }
+        ]
+      },
+      "produced_by": {
+        "actor_id": "EXAMPLE-worker-1",
+        "role": "worker",
+        "host": "EXAMPLE-host"
+      },
+      "artifacts": [
+        {
+          "path": "working/EXAMPLE-work-1/_INDEX.proposed.xlsx",
+          "digest": "sha256:6db6b3513bbf02738ebaa3775e99d3b2067b4ecd616981000b8b904283ff09ca"
+        }
+      ],
+      "evidence": [
+        {
+          "evidence_id": "EV-1",
+          "req_id": "REQ-1",
+          "locator": "EXAMPLE://diff/1",
+          "kind": "TOOL_OBSERVED",
+          "scope": "EXAMPLE: rows 2-5"
+        }
+      ],
+      "requirements": [
+        {
+          "req_id": "REQ-1",
+          "mandatory": true,
+          "status": "MET",
+          "evidence_ids": [
+            "EV-1"
+          ]
+        }
+      ],
+      "gaps": [],
+      "acceptance_states": [
+        "REVIEW_PASSED",
+        "ACCEPTED_FOR_INTEGRATION"
+      ],
+      "state_set_by": {
+        "actor_id": "EXAMPLE-main",
+        "role": "main",
+        "host": "EXAMPLE-host"
+      }
+    },
+    {
+      "schema_version": "law.cvf.control/2",
+      "record_type": "effect",
+      "evaluation_basis": "COOPERATIVE_WORKFLOW",
+      "example_only": true,
+      "effect_id": "EXAMPLE-effect-1",
+      "stage": "REQUEST",
+      "binding": {
+        "bind_version": "law.cvf.bind/2",
+        "evaluation_basis": "COOPERATIVE_WORKFLOW",
+        "task_id": "EXAMPLE-task-1",
+        "task_revision": 1,
+        "intent_digest": "sha256:159e51014082dba5310459539d7cf72ff2206eaea451244d3b09b57298c29317",
+        "accepted_task_digest": "sha256:6deb9dc2d52274a3c3f520cda7aa73f635852b263ba8fc22cf79e64bf9c219d7",
+        "context_digest": "sha256:5ca56eb8872c8b6e886357451a6bb298ca5744e677c2ef5ad36d509413fae6f1",
+        "policy_version": "law.cvf.routing/2",
+        "policy_digest": "sha256:ed0c9eba974c8324b4a10d8b0aa6cefe4d80cc251f20299a56edf6fee030e05e",
+        "inputs": [
+          {
+            "path": "references/EXAMPLE-quy-che.docx",
+            "digest": "sha256:abfb409c82355f7b9e544d6b63bc56a2062549c74217553b5571f84623990eed",
+            "source_id": "SRC-EXAMPLE-1",
+            "revision": "1"
+          }
+        ],
+        "outputs": [
+          {
+            "path": "working/EXAMPLE-work-1/_INDEX.proposed.xlsx",
+            "digest": "sha256:6db6b3513bbf02738ebaa3775e99d3b2067b4ecd616981000b8b904283ff09ca"
+          }
+        ],
+        "action_digest": "sha256:27f0ff1028b9d28965bef6fc076e08ee18fb3238e5d10b94a72a182bf5df64f4"
+      },
+      "actor": {
+        "actor_id": "EXAMPLE-worker-1",
+        "role": "worker",
+        "host": "EXAMPLE-host"
+      },
+      "action": {
+        "operation": "provenance_write",
+        "tool": "EXAMPLE-editor",
+        "targets": [
+          "references/_INDEX.xlsx"
+        ],
+        "write_zone": "shared_register"
+      },
+      "routing": {
+        "policy_version": "law.cvf.routing/2",
+        "matched_rows": [
+          "R-MUTATION"
+        ],
+        "required_review_phases": [
+          "PRE_EFFECT",
+          "PRE_INTEGRATION"
+        ]
+      },
+      "grant_ref_ids": [
+        "EXAMPLE-grant-ref-1"
+      ],
+      "review_ids": [
+        "EXAMPLE-review-pre",
+        "EXAMPLE-review-int"
+      ],
+      "assurance_level": "ADVISORY",
+      "disposition": "PENDING",
+      "reasons": [],
+      "decided_by": {
+        "actor_id": "EXAMPLE-main",
+        "role": "main",
+        "host": "EXAMPLE-host"
+      }
+    }
+  ]
+}

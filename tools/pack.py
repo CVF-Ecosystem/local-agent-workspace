@@ -534,7 +534,7 @@ def cmd_update(a):
         DONE.append({'path': index_file, 'action': 'index'})
     set_result('success', 0, L('Đã cập nhật gói %s lên v%s.', 'Updated pack %s to v%s.') % (a.name, meta['version']), changes=True,
                merge_required=bool(conf), files=list(DONE),
-               next_actions=[L('Hợp nhất các file .new rồi xóa chúng.', 'Merge the .new files, then delete them.')] if conf else [], **versions)
+               next_actions=[L('Đối chiếu các file .new với bản hiện hành và xử lý theo hướng dẫn nâng cấp, đúng người phụ trách file. Giữ cả hai bản để đối chiếu và phục hồi; không xóa .new chỉ để tắt cảnh báo.', 'Compare the .new files with the current copies and follow the upgrade guide for the file owner. Preserve both copies for comparison and recovery; do not delete .new files merely to clear the warning.')] if conf else [], **versions)
     print(L('Đã cập nhật.', 'Updated.'))
 
 def cmd_confirm(a):

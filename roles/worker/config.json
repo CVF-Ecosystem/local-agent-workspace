@@ -1,0 +1,33 @@
+{
+  "role": "worker",
+  "status": "PENDING_R4",
+  "host_presets": {
+    "claude-code": {
+      "status": "CANDIDATE",
+      "model": "claude-sonnet-5-5",
+      "tier": null,
+      "effort": null,
+      "quality_status": "NOT_EVALUATED_ON_LAW_PRODUCT",
+      "observed": null,
+      "note": "Factory candidate for the claude-code core adapter. Not applied, not written to any profile, not authority; the user chooses it through the execution profile. Effort and tier are not mapped (UNSUPPORTED)."
+    }
+  },
+  "implementation_trial": {
+    "scope": "LAW_SOURCE_IMPLEMENTATION",
+    "original_baseline_on": "2026-10-17",
+    "information_checked_on": "2026-10-17",
+    "revision": 2,
+    "quality_status": "NOT_EVALUATED_ON_LAW",
+    "codex": {
+      "default": { "model": "gpt-6.1-sol", "effort": "medium" },
+      "high_risk": { "model": "gpt-6.1-sol", "effort": "high" },
+      "bounded_task": { "model": "gpt-6-luna", "effort": "xhigh" }
+    },
+    "claude": {
+      "default": { "model": "claude-sonnet-5-5", "effort": "high" },
+      "escalation_candidate": { "model": "claude-sonnet-5-5", "effort": "xhigh" },
+      "diagnostic_candidate": { "model": "claude-sonnet-5-5", "effort": "max" },
+      "bounded_task_candidate": { "model": "claude-haiku-5-5", "effort": "high" }
+    }
+  }
+}

@@ -13,6 +13,8 @@ Fill in only what is useful and stable. Current progress belongs in STATE.
 - Main sources / approved templates: [Paths or entries in the source index]
 - Important constraints: [Confirmed business constraints or data-handling limits]
 - Data sensitivity: [Public / Internal / Contains personal or confidential data; state how to handle it]
+- Standing scope for sub-agents: See .agent/EXECUTION_PROFILE.json (sub-agent authority is held by the profile; no grant means no permission)
+- Existing source-folder exceptions: [None / folders inside the project, several separated by ; for example: Old-docs; Files-2023]
 
 ## Purpose of this workspace
 

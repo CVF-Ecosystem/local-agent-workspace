@@ -1,0 +1,5 @@
+template                  (classic, x14 ext): (10, 0)
+after real Excel saves   (classic, x14 ext): (0, 10)
+LAW preview notices on the Excel-saved file: ['x14_data_validation']
+after LAW rewrites       (classic, x14 ext): (0, 0) | openpyxl warnings: ['Data Validation extension is not supported and will be remov', 'Data Validation extension is not supported and will be remov', 'Data Validation extension is not supported and will be remov', 'Data Validation extension is not supported and will be remov']
+control: LAW rewrites the template directly (classic, x14 ext): (10, 0)

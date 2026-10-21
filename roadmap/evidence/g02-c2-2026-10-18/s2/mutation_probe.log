@@ -1,0 +1,55 @@
+# mutation probe S2 (thủ công, bản sao tạm; repo thật không bị sửa). Script: scratchpad mut_s2.py; mỗi đột biến chạy: python -B -W error::ResourceWarning -m unittest tests.test_control_check_v2_s2
+## M01 index lookup coerces True==1/float (untyped key)
+   Ran 92 tests in 1.034s FAILED (failures=3) | caught_by=3 | test_malformed_records_are_reported_not_raised; test_typed_lookup_and_namespaces; test_typed_lookup_and_namespaces
+## M02 duplicate key picks first (FOUND)
+   Ran 92 tests in 0.954s FAILED (failures=5) | caught_by=5 | test_missing_or_ambiguous_task_is_incomplete_even_when_peers_agree; test_effect_without_a_resolvable_task_is_incomplete_and_ambiguous_task_is_ambiguous; test_duplicate_standalone_key_is_ambiguous_even_with_different_work_id; test_two_revisions_are_distinct_keys_and_never_latest
+## M03 claim group ignores observed_by
+   Ran 92 tests in 0.953s FAILED (failures=1) | caught_by=1 | test_actor_claims_compare_every_declared_field
+## M04 conflict link primary state skipped (falls through to LINKED)
+   Ran 92 tests in 1.033s FAILED (failures=3) | caught_by=3 | test_claim_conflict_is_the_primary_state_and_candidates_are_preserved; test_effect_reference_outside_the_task_refs_is_a_conflict; test_group_kind_other_than_grant_is_a_conflict_even_when_claims_agree
+## M05 grant also matched by grant_id
+   Ran 92 tests in 0.991s FAILED (failures=1) | caught_by=1 | test_ref_id_is_never_matched_against_grant_id
+## M06 complete is always true
+   Ran 92 tests in 0.994s FAILED (failures=6) | caught_by=6 | test_garbage_bindings_never_raise; test_inputs_duplicate_order_and_qualifiers; test_missing_or_ambiguous_task_is_incomplete_even_when_peers_agree; test_policy_change_and_literal_mismatch
+## M07 complete true for an empty required set
+   Ran 92 tests in 0.936s OK | caught_by=0 | 
+## M08 object sets silently dedupe duplicates
+   Ran 92 tests in 0.869s FAILED (failures=3) | caught_by=3 | test_inputs_duplicate_order_and_qualifiers; test_cover_requires_path_digest_and_supplied_qualifiers_both_ways; test_duplicates_and_out_of_domain_are_unsupported_not_deduped
+## M09 EXACT ignores the source_id qualifier
+   Ran 92 tests in 1.031s FAILED (failures=3) | caught_by=3 | test_inputs_duplicate_order_and_qualifiers; test_result_outputs_vs_artifacts; test_exact_qualified
+## M10 P-SELF always MATCH
+   Ran 92 tests in 1.020s FAILED (failures=2) | caught_by=2 | test_effect_whose_binding_task_is_not_the_pointer_parent_mismatches_p_self; test_parent_other_than_the_containing_task_mismatches_p_self
+## M11 missing child/parent task reported as MISMATCH
+   Ran 92 tests in 1.215s FAILED (failures=2) | caught_by=2 | test_ex09_as_shipped_child_missing_is_incomplete_not_mismatch; test_parent_other_than_the_containing_task_mismatches_p_self
+## M12 recompute_task mutates its input
+   Ran 92 tests in 0.953s FAILED (failures=2) | caught_by=2 | test_schema_valid_metadata_outside_projection_is_not_canonical_rejected; test_inputs_are_not_mutated_by_any_helper
+## M13 locator echoes unknown (payload) key names
+   Ran 92 tests in 0.973s OK | caught_by=0 | 
+## M14 ambiguous task resolved to first in compare_binding
+   Ran 92 tests in 0.837s FAILED (failures=1) | caught_by=1 | test_missing_or_ambiguous_task_is_incomplete_even_when_peers_agree
+## M15 kernel screens the whole task for canonical domain
+   Ran 92 tests in 0.933s FAILED (failures=10) | caught_by=10 | test_unsupported_parts_and_unsupported_policy_are_not_complete; test_float_huge_integer_surrogate_and_duplicate_sets; test_schema_valid_metadata_outside_projection_is_not_canonical_rejected; test_the_same_content_inside_the_projection_is_unsupported_only_for_the_parts_it_feeds
+## M16 policy literal mismatch ignored
+   Ran 92 tests in 1.051s FAILED (failures=2) | caught_by=2 | test_policy_change_and_literal_mismatch; test_malformed_and_wrong_literal_policy_bytes
+## M17 declared digest always accepted (no recomputation compare)
+   Ran 92 tests in 0.998s FAILED (failures=9) | caught_by=9 | test_edit_after_binding_flags_exactly_the_dependent_relations; test_edit_after_binding_flags_exactly_the_dependent_relations; test_edit_after_binding_flags_exactly_the_dependent_relations; test_edit_after_binding_flags_exactly_the_dependent_relations
+## M18 effect.action compared only by operation/tool/targets
+   Ran 92 tests in 1.005s FAILED (failures=1) | caught_by=1 | test_effect_action_is_compared_by_whole_projection_not_by_operation_tool_targets
+## M19 inspect_bundle bypasses validate_structure
+   Ran 92 tests in 0.900s FAILED (failures=1) | caught_by=1 | test_inspect_bundle_delegates_to_the_two_helpers_in_order
+## M20 policy_bytes re-serialized from the mutable cached dict
+   Ran 92 tests in 0.977s FAILED (failures=1) | caught_by=1 | test_owners_carry_immutable_policy_bytes_snapshot
+## M21 ambiguous candidates not reported as AMBIGUOUS
+   Ran 92 tests in 1.039s FAILED (failures=2) | caught_by=2 | test_effect_without_a_resolvable_task_is_incomplete_and_ambiguous_task_is_ambiguous; test_two_candidates_are_ambiguous_including_revisions_and_none_is_latest
+## M22 recorded_by becomes claim-bearing
+   Ran 92 tests in 0.941s FAILED (errors=41) | caught_by=41 | test_actor_claims_compare_every_declared_field; test_each_claim_bearing_field_creates_conflict_and_is_outside_the_task_hash; test_each_claim_bearing_field_creates_conflict_and_is_outside_the_task_hash; test_each_claim_bearing_field_creates_conflict_and_is_outside_the_task_hash
+## M23 outputs derived from artifacts when binding.outputs is absent
+   Ran 92 tests in 1.020s FAILED (failures=1) | caught_by=1 | test_result_outputs_vs_artifacts
+
+## rerun sau khi thêm test locator và đột biến M07b (M07 gốc sống sót vì tập bắt buộc không bao giờ rỗng; M13 sống sót vì chưa có test từ vựng locator):
+
+## rerun sau khi thêm test từ vựng locator và đột biến M07b (M07 gốc sống sót vì tập quan hệ bắt buộc không bao giờ rỗng; M13 sống sót vì chưa có test từ vựng locator; lần chạy đầu của dòng này hỏng cú pháp ở chính script đột biến, không phải kết quả sản phẩm):
+## M13 locator echoes unknown (payload) key names
+   Ran 93 tests in 1.004s FAILED (failures=1) | caught_by=1 | test_locator_vocabulary_is_closed
+## M07b vacuous (non-applicable) report claims complete
+   Ran 93 tests in 0.964s FAILED (failures=3) | caught_by=3 | test_ex02_relations_are_listed_per_record_not_blanket_match; test_garbage_bindings_never_raise; test_vacuous_complete_is_false

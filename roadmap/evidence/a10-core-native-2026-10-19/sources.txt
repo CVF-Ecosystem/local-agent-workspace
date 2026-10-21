@@ -1,0 +1,8 @@
+DU LIEU GIA - LAB LAW, KHONG SU DUNG THUC TE
+SourceID: LAB-SRC-A10B-01
+Revision: lab-r1
+Ma thong bao: LAB-A10B-042
+Nhom: To Van phong thu nghiem A
+Ngay hop: 23/10/2026 (gia lap)
+Gio hop: can xac nhan
+Dia diem: can xac nhan

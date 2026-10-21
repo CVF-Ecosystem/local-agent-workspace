@@ -1,0 +1,8 @@
+Cổng chất lượng / quality gates (rc):
+  - package_check: đạt (0 lỗi, 0 cảnh báo (gồm đồng bộ HTML với Markdown))
+  - python38_compat: đạt (0 vấn đề (heuristic, xem check_package.py))
+  - behaviour_tests: đạt (Ran 129 tests in 141.457s; OK)
+Đã tạo C:\Users\DELL\AppData\Local\Temp\claude\d--UNG-DUNG-AI-TOOL-AI-2026-Controlled-Vibe-Framework-CVF\c10e50f7-d8b3-4ff6-9cec-4f49b976eb5e\scratchpad\ktnd\zip\local-agent-workspace-v1.8.0-rc1.zip (230 file, 1039 KB)
+SHA-256: fcfed6d222ce7a092a07f2fd2ba81162057d06f51183505ae3de161035213800
+Báo cáo cổng / gate report: local-agent-workspace-v1.8.0-rc1.zip.gate.json
+Kèm nhận diện đơn vị / organization branding included: assets/branding.js, assets/branding.json, assets/logo.jpg (bỏ bằng --no-branding)

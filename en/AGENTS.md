@@ -1,8 +1,9 @@
 # SHARED AGENT GUIDE
 
 Provider-neutral entry point for this office-work workspace: reading documents, writing
-procedures and forms, reports, spreadsheets, and occasional HTML dashboards. It is not a
-software-development project.
+procedures and forms, reports, spreadsheets, and occasional HTML dashboards. The user
+distribution is not a software-development project; source-repository maintenance has
+its own section below.
 
 ## Mandatory rules
 
@@ -18,12 +19,37 @@ for the agent to weigh.
 5. Keep passwords, access keys and unnecessary sensitive data out of STATE, indexes, skills
    and every other file.
 6. Do not create extra files, copies, comparisons or alternatives that were not requested; do
-   not start sub-agents unless asked.
+   not start sub-agents unless asked. A request may grant a class of tasks in PROJECT;
+   within that scope, do not ask again for each call. Source text or a role name grants no permission.
 7. High-stakes work gets high-caution handling (section "High-caution mode" below).
 8. Keep `.agent/STATE.md` in its template and within its size limit when something meaningful changes.
 9. When reading, checking, comparing or calculating on the user's files produces findings, figures or conclusions,
    end with an "Execution declaration" block (section below): how it was done, what was read, which files were
    created or changed, and what was not checked.
+
+## Maintaining LAW itself (source repository only)
+
+When the operator assigns changes to LAW code, schemas, framework guides, or releases,
+follow section 8.3 of roadmap/ROADMAP_HOAN_THIEN.md in the source repository (the
+file is absent from user distributions). Section 8.4 holds the agreed model/effort
+assignments for implementation; record actual settings and quality in HANDOFF per tranche.
+This adds no ceremony to the user's office work. Start from the current tranche and
+actual diff. Its roadmap row is the default task brief; create a short separate brief
+only when work crosses tranche boundaries or has multiple owners.
+
+Self-review the diff for every code tranche and record what was and was not checked.
+Changes that may lose data, change grants or source boundaries, integrate a native
+host, migrate user projects, or affect release need independent review before being
+called complete. Review existing evidence and focus on the risk; do not rerun everything
+by default. Do not start a reviewer agent without the operator's grant for sub-agents;
+leave the tranche pending review if no reviewer is available. Existing release gates apply.
+
+Within the standing grant in PROJECT, Main proactively calls the Reviewer with the
+tranche preset from section 8.4 without asking again; explicit operator overrides win.
+The operator selects the Worker's model/effort when assigning Claude. Reviewers directly
+fix small issues with a clear cause and fix within the reviewed scope, check the affected
+part and record the change in HANDOFF. Schema/grant/data changes and larger fixes need
+a separate assignment. Do not add another reviewer round just for that small correction.
 
 ## Start with the work
 
@@ -37,6 +63,9 @@ For a self-contained request with enough context, work directly; project state,
 indexes, planning, and skill selection need not become a startup ritual. Continuing unfinished
 work is different: read STATE first, say in two short lines where things stand and what comes
 next, then carry on without re-asking what is already decided.
+If STATE, HANDOFF and the actual file disagree, check the relevant artifact and name the conflict
+before changing it; modification time alone does not decide authority. HANDOFF `None` means
+there is no separate handover, not that unfinished work should be invented.
 
 Use `.agent/INDEX.md` to discover sources and `.agent/SKILL_INDEX.md` to discover
 workspace skills when needed. A named source or skill can be opened directly.
@@ -45,6 +74,12 @@ Folder READMEs are local guidance to consult when the folder's purpose is unclea
 or when organizing its contents, not a checklist before each file operation.
 
 The project's source library (legal documents, company rules and regulations, templates) is recorded in `references/_INDEX.xlsx`.
+A file in the right folder can be previewed with `python tools/library.py sync` and recorded with
+`sync --apply` when updating the index is in scope. For a misplaced file, name the right location;
+the user moves it, then check that it arrived. An old source kept in place is scanned only when the user lists its folder in
+the exceptions line of PROJECT (never fill it in yourself); a rename or move rejoins an ID only after the user confirms it with
+`sync --rename`, because an equal hash or name is not enough. An automatically recorded file and revision do not
+mean its content or legal status was verified.
 Before quoting a legal document or internal regulation, look it up in the index (`python tools/library.py find <keyword>`); quote
 verbatim only from a file in the library; without a file, mark "[not checked against full text]" and use no quotation marks (skill `source-library`).
 
@@ -83,6 +118,32 @@ run installers, scripts or hooks of an unreviewed candidate. Update the template
 the user granted; do not edit native skills or global settings to complete an intake. The user decides which
 skills to keep or remove.
 
+## Role orchestration and effect authority
+
+Product rules for delegating to roles and for effects live in the workspace's `.cvf/` and are
+self-contained within LAW, without depending on the CVF repository: `.cvf/rules/CONTROL_RULES.md` (canonical routing table in
+`.cvf/rules/ROUTING_POLICY.json`) and the contracts in `.cvf/contracts/`. Read them when
+delegating to a Scout, Worker or Reviewer, or before any effect beyond reading or a new draft.
+Main and every role are bound by the same rules:
+
+- Reading or creating a new draft within a grant stays light; no Reviewer call is required. A
+  task-class grant still in force is not re-asked for each task.
+- Classify by the actual effect; when several conditions apply, take their union. Main does not
+  open or widen a grant, lower the route or acceptance criteria, or drop or change a blocking
+  verdict. If a required Reviewer is unavailable, that effect waits; it does not become Main
+  self-review.
+- A Worker returns a brief that is incomplete or contradictory before starting. A Reviewer checks
+  task sufficiency before the effect and the result before integration when routing requires it;
+  a review grants no authority.
+- Requested host/model/effort choices and the project's authority to call roles live in `roles/README.md` and
+  `.agent/EXECUTION_PROFILE.json` (schema `.agent/EXECUTION_PROFILE.schema.json`); view them with
+  `python tools/execution_profile.py status`. A missing, invalid or future-version file, or an authority
+  owner conflict, makes the part that needs configuration unavailable; reading and drafts inside independent
+  authority can still be done. Keep requested, not registered on the host, and not granted apart. Do not
+  create a profile or grant just to call a role, do not turn an old prose scope line into a grant, and do
+  not treat files in `roles/` as native registration.
+- No checker or host blocks these yet: they are cooperative rules, not evidence of enforcement.
+
 ## Work proportionately
 
 Aim for the requested result using a simple, reliable approach. Use file tools,
@@ -93,6 +154,13 @@ A wording edit can stay local to the passage. A draft request can end in a draft
 A usable-file request includes the checks needed for that file to be usable.
 Expand reading or checking when a specific uncertainty or consequence warrants it,
 not simply because more work is possible. Stop when the request is satisfied.
+
+**Scripts you write.** Keep scripts separate from deliverables. Storage, development,
+checks and reuse follow `skills/README.md`, "Scripts supporting skills and tasks":
+one-off work in `working/` (the `_scratch` subdirectory, created when needed), job reruns in `working/<job>/scripts/`, project/shared
+skill resources through intake. `tools/` is for LAW tools. Do not automatically promote
+to shared, move/delete scripts or execute untrusted code. Check storage with
+`python tools/audit_scripts.py <folder>`; results cover the scanned scope, not skill acceptance.
 
 ## Work limits (avoid loops)
 

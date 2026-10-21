@@ -1,0 +1,9 @@
+law.cvf.check/3 contract=v3 selection=CLI_EXPLICIT stage=BINDING_ROUTING_ONLY candidate=CANDIDATE_NOT_ACTIVE phase=effect phase_scope=STRUCTURE_BINDING_ROUTING disposition=BLOCKED effect_authorized=false assurance=UNVERIFIED init_error=false basis=COOPERATIVE_WORKFLOW
+reasons: CANDIDATE_EVALUATION_NOT_IMPLEMENTED, REVIEW_REQUIRED_UNSUPPORTED
+detail: binding position 2: B-REF=MATCH, B-LIT.bind_version=MATCH, B-LIT.evaluation_basis=MATCH, B-LIT.policy_version=MATCH, B-INTENT=MATCH, B-TASK=MATCH, B-CONTEXT=MATCH, B-POLICY=MATCH, B-INPUTS=MATCH, B-ACTION-OWN=MATCH, B-ACTION-IN-TASK=MATCH, B-OUTPUTS=NOT_BOUND
+detail: route: status=RESOLVED rows=1
+owners: schema_sha256=12becc373df364bdec33e7bd5e0533056799044e1f42d28020ee5d969596525c policy_sha256=8c63bd03bbcdb733c7c9810815dafbc039fe0e46303d196e00004337a46fa204
+coverage: record_structure_checked=true binding_evaluated=true routing_evaluated=true gates_evaluated=false artifact_bytes_observed=false target_existence_observed=false actual_operation_observed=false requirements_semantic_verified=false owner_protection=NOT_PROVEN
+route: evaluated=true rows=1 status=RESOLVED assumptions=0
+aggregate: records_checked_state=NOT_EVALUATED due_gates=0 met=0 not_required=0 not_yet_due=0 not_checked=0 unsupported=0 not_met=0 user_accepted_declared=0 open_assumptions=0 conclusion_scope=RECORD_CONSISTENCY_IN_MEMORY
+gates=0

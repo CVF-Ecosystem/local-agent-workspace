@@ -1,0 +1,63 @@
+# test-first scaffolding RED: entry/package chưa tồn tại (không phải repro hành vi) / entry and package do not exist yet (not a behavioral repro)
+$ python -B -W error::ResourceWarning -m unittest tests.test_control_check_v2
+2026-10-17T23:41:42Z
+
+======================================================================
+ERROR: setUpClass (tests.test_control_check_v2.OutputContract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check_v2.py", line 102, in setUpClass
+    cls.entry = load_module_from(ENTRY, 'law_cvf_entry_under_test')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check_v2.py", line 85, in load_module_from
+    spec.loader.exec_module(mod)
+  File "<frozen importlib._bootstrap_external>", line 936, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1073, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1130, in get_data
+FileNotFoundError: [Errno 2] No such file or directory: 'D:\\UNG DUNG AI\\TOOL AI 2026\\CVF-Workspace\\local-agent-workspace\\.cvf\\checks\\control_check_v2.py'
+
+======================================================================
+ERROR: test_product_does_not_import_tests_or_touch_sys_path (tests.test_control_check_v2.OwnersUntouched.test_product_does_not_import_tests_or_touch_sys_path)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check_v2.py", line 166, in test_product_does_not_import_tests_or_touch_sys_path
+    src = read_bytes(path).decode('utf-8')
+          ^^^^^^^^^^^^^^^^
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check_v2.py", line 73, in read_bytes
+    with open(path, 'rb') as f:
+         ^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'D:\\UNG DUNG AI\\TOOL AI 2026\\CVF-Workspace\\local-agent-workspace\\.cvf\\checks\\control_check_v2.py'
+
+======================================================================
+ERROR: setUpClass (tests.test_control_check_v2.RefusalMatrix)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check_v2.py", line 102, in setUpClass
+    cls.entry = load_module_from(ENTRY, 'law_cvf_entry_under_test')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check_v2.py", line 85, in load_module_from
+    spec.loader.exec_module(mod)
+  File "<frozen importlib._bootstrap_external>", line 936, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1073, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1130, in get_data
+FileNotFoundError: [Errno 2] No such file or directory: 'D:\\UNG DUNG AI\\TOOL AI 2026\\CVF-Workspace\\local-agent-workspace\\.cvf\\checks\\control_check_v2.py'
+
+======================================================================
+FAIL: test_package_tree_is_s1_only (tests.test_control_check_v2.OwnersUntouched.test_package_tree_is_s1_only)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check_v2.py", line 162, in test_package_tree_is_s1_only
+    self.assertEqual(names, ['README.md', '__init__.py', 'canon.py', 'loader.py'])
+AssertionError: Lists differ: ['README.md'] != ['README.md', '__init__.py', 'canon.py', 'loader.py']
+
+Second list contains 3 additional elements.
+First extra element 1:
+'__init__.py'
+
+- ['README.md']
++ ['README.md', '__init__.py', 'canon.py', 'loader.py']
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.005s
+
+FAILED (failures=1, errors=8)

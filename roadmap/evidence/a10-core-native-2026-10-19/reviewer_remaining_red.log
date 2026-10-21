@@ -1,0 +1,130 @@
+test_foreign_sibling_bytes_are_bound_even_with_a_clear_unrelated_name (tests.test_native_agents.RemainingReview.test_foreign_sibling_bytes_are_bound_even_with_a_clear_unrelated_name) ... FAIL
+test_foreign_sibling_filename_never_bypasses_inventory_or_unknown_name_checks (tests.test_native_agents.RemainingReview.test_foreign_sibling_filename_never_bypasses_inventory_or_unknown_name_checks) ... 
+  test_foreign_sibling_filename_never_bypasses_inventory_or_unknown_name_checks (tests.test_native_agents.RemainingReview.test_foreign_sibling_filename_never_bypasses_inventory_or_unknown_name_checks) [absent_receipt] ... FAIL
+  test_foreign_sibling_filename_never_bypasses_inventory_or_unknown_name_checks (tests.test_native_agents.RemainingReview.test_foreign_sibling_filename_never_bypasses_inventory_or_unknown_name_checks) [bad_receipt] ... FAIL
+  test_foreign_sibling_filename_never_bypasses_inventory_or_unknown_name_checks (tests.test_native_agents.RemainingReview.test_foreign_sibling_filename_never_bypasses_inventory_or_unknown_name_checks) [modified_managed] ... FAIL
+test_guard_error_after_move_is_reconciled_instead_of_reporting_no_effect (tests.test_native_agents.RemainingReview.test_guard_error_after_move_is_reconciled_instead_of_reporting_no_effect) ... FAIL
+test_inactive_matching_receipt_without_a_marker_is_not_a_retired_managed_file (tests.test_native_agents.RemainingReview.test_inactive_matching_receipt_without_a_marker_is_not_a_retired_managed_file) ... FAIL
+test_inactive_slot_appearing_after_capture_blocks_normal_apply (tests.test_native_agents.RemainingReview.test_inactive_slot_appearing_after_capture_blocks_normal_apply) ... FAIL
+test_retire_reports_a_changed_active_file_as_conflict (tests.test_native_agents.RemainingReview.test_retire_reports_a_changed_active_file_as_conflict) ... FAIL
+
+======================================================================
+FAIL: test_foreign_sibling_bytes_are_bound_even_with_a_clear_unrelated_name (tests.test_native_agents.RemainingReview.test_foreign_sibling_bytes_are_bound_even_with_a_clear_unrelated_name)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_native_agents.py", line 1379, in test_foreign_sibling_bytes_are_bound_even_with_a_clear_unrelated_name
+    self.assertEqual(na.apply(root, token)['reasons'], ['PLAN_CHANGED'])
+AssertionError: Lists differ: [] != ['PLAN_CHANGED']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'PLAN_CHANGED'
+
+- []
++ ['PLAN_CHANGED']
+
+======================================================================
+FAIL: test_foreign_sibling_filename_never_bypasses_inventory_or_unknown_name_checks (tests.test_native_agents.RemainingReview.test_foreign_sibling_filename_never_bypasses_inventory_or_unknown_name_checks) [absent_receipt]
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_native_agents.py", line 1368, in test_foreign_sibling_filename_never_bypasses_inventory_or_unknown_name_checks
+    self.assertEqual(na.plan(root)['reasons'], ['NATIVE_DEFINITION_UNSUPPORTED'])
+AssertionError: Lists differ: [] != ['NATIVE_DEFINITION_UNSUPPORTED']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'NATIVE_DEFINITION_UNSUPPORTED'
+
+- []
++ ['NATIVE_DEFINITION_UNSUPPORTED']
+
+======================================================================
+FAIL: test_foreign_sibling_filename_never_bypasses_inventory_or_unknown_name_checks (tests.test_native_agents.RemainingReview.test_foreign_sibling_filename_never_bypasses_inventory_or_unknown_name_checks) [bad_receipt]
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_native_agents.py", line 1368, in test_foreign_sibling_filename_never_bypasses_inventory_or_unknown_name_checks
+    self.assertEqual(na.plan(root)['reasons'], ['NATIVE_DEFINITION_UNSUPPORTED'])
+AssertionError: Lists differ: [] != ['NATIVE_DEFINITION_UNSUPPORTED']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'NATIVE_DEFINITION_UNSUPPORTED'
+
+- []
++ ['NATIVE_DEFINITION_UNSUPPORTED']
+
+======================================================================
+FAIL: test_foreign_sibling_filename_never_bypasses_inventory_or_unknown_name_checks (tests.test_native_agents.RemainingReview.test_foreign_sibling_filename_never_bypasses_inventory_or_unknown_name_checks) [modified_managed]
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_native_agents.py", line 1368, in test_foreign_sibling_filename_never_bypasses_inventory_or_unknown_name_checks
+    self.assertEqual(na.plan(root)['reasons'], ['NATIVE_DEFINITION_UNSUPPORTED'])
+AssertionError: Lists differ: [] != ['NATIVE_DEFINITION_UNSUPPORTED']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'NATIVE_DEFINITION_UNSUPPORTED'
+
+- []
++ ['NATIVE_DEFINITION_UNSUPPORTED']
+
+======================================================================
+FAIL: test_guard_error_after_move_is_reconciled_instead_of_reporting_no_effect (tests.test_native_agents.RemainingReview.test_guard_error_after_move_is_reconciled_instead_of_reporting_no_effect)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_native_agents.py", line 1419, in test_guard_error_after_move_is_reconciled_instead_of_reporting_no_effect
+    self.assertEqual((res['status'], res['reasons']), ('RETIRED', ['RETIRE_OBSERVED_AFTER_ERROR']), res)
+AssertionError: Tuples differ: ('REFUSED', ['PATH_UNSAFE']) != ('RETIRED', ['RETIRE_OBSERVED_AFTER_ERROR'])
+
+First differing element 0:
+'REFUSED'
+'RETIRED'
+
+- ('REFUSED', ['PATH_UNSAFE'])
++ ('RETIRED', ['RETIRE_OBSERVED_AFTER_ERROR']) : {'status': 'REFUSED', 'reasons': ['PATH_UNSAFE']}
+
+======================================================================
+FAIL: test_inactive_matching_receipt_without_a_marker_is_not_a_retired_managed_file (tests.test_native_agents.RemainingReview.test_inactive_matching_receipt_without_a_marker_is_not_a_retired_managed_file)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_native_agents.py", line 1434, in test_inactive_matching_receipt_without_a_marker_is_not_a_retired_managed_file
+    self.assertEqual(na.inspect(root)['state'], 'RETIRE_CONFLICT')
+AssertionError: 'RETIRED' != 'RETIRE_CONFLICT'
+- RETIRED
++ RETIRE_CONFLICT
+
+
+======================================================================
+FAIL: test_inactive_slot_appearing_after_capture_blocks_normal_apply (tests.test_native_agents.RemainingReview.test_inactive_slot_appearing_after_capture_blocks_normal_apply)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_native_agents.py", line 1391, in test_inactive_slot_appearing_after_capture_blocks_normal_apply
+    self.assertEqual((res['status'], res['reasons']), ('CONFLICT', ['EXPECTED_BEFORE_MISMATCH']), res)
+AssertionError: Tuples differ: ('WRITTEN', []) != ('CONFLICT', ['EXPECTED_BEFORE_MISMATCH'])
+
+First differing element 0:
+'WRITTEN'
+'CONFLICT'
+
+- ('WRITTEN', [])
++ ('CONFLICT', ['EXPECTED_BEFORE_MISMATCH']) : {'status': 'WRITTEN', 'reasons': [], 'files': [{'path': '.claude/agents/law-scout.md', 'action': 'written'}, {'path': '.agent/runtime/native-agents/claude-code/law-scout.json', 'action': 'written'}], 'txid': '20261019-081402-5332d551', 'plan': {'action': 'create', 'host': 'claude-code', 'role': 'scout', 'requested': {'model': 'claude-haiku-5-5', 'tools': ['Read', 'Grep', 'Glob']}, 'targets': [{'path': '.claude/agents/law-scout.md', 'action': 'create', 'before_sha256': None, 'after_sha256': 'ac7377f692cbe224d9ecf6655d2dba12a7f1cfe02cef3c3e46dd337e1fda0541'}, {'path': '.agent/runtime/native-agents/claude-code/law-scout.json', 'action': 'create', 'before_sha256': None, 'after_sha256': 'd74f7fce52451574874021a00f3f8fcd0727c1884dc5c3a70445f96fbf9213d6'}], 'inputs': {'profile': 'ddd1b9532949c39c4795be85e830548bdbfa99bcbaf5c9a14419bf24ccef6240', 'project': 'eef4c7d924a901362b832d74b228740accb5768fb2db45a09a21c13159d288f8', 'contract': '08d8a32563be5e2e09e80ef80fc10d9b02eb98eba579e2394402912e3a6fd89e', 'checks': '6d78050b4ef895f7e27f69b768228b72617112b48c2a7d6206df817d1ff4a079', 'config': '8f86ce572231dffa140768245ac6782c41ea8c8a8ebc0b2926b81b6dcea6f404', 'profile_schema': 'a550fcdb358a8df4f4bd7905836e3af4df1544b090c1ec93e0e5cafac0169225', 'adapter': 'a4bb58d6d8b746993b73bb2b394824d9ca316b8054632a2a8d26b666ef6512bb', 'package_info': None, 'native_inventory': 'f430e673d93ac3f880c8b552c72b8d1e23c514e35f65d778f856f6f67f1263b8'}, 'conflicts': [], 'host_application': 'NOT_INSPECTED', 'confirmation': 'CLAIM_ONLY', 'consequence': 'Sau khi apply, file chỉ nằm trên đĩa; Claude Code có thể nạp nó ở PHIÊN MỚI (chưa kiểm). Phiên đang chạy không đổi. Không ghi nhận đã nạp hay đã gọi.', 'plan_sha256': 'c1a7a225e900c5803b4ec09759f805f5d3bf7db1239d8d454d996061bfb38837'}}
+
+======================================================================
+FAIL: test_retire_reports_a_changed_active_file_as_conflict (tests.test_native_agents.RemainingReview.test_retire_reports_a_changed_active_file_as_conflict)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_native_agents.py", line 1406, in test_retire_reports_a_changed_active_file_as_conflict
+    self.assertEqual((res['status'], res['reasons']), ('CONFLICT', ['RETIRE_ACTIVE_BYTES_DIFFER']), res)
+AssertionError: Tuples differ: ('REFUSED', ['RETIRE_RENAME_FAILED']) != ('CONFLICT', ['RETIRE_ACTIVE_BYTES_DIFFER'])
+
+First differing element 0:
+'REFUSED'
+'CONFLICT'
+
+- ('REFUSED', ['RETIRE_RENAME_FAILED'])
++ ('CONFLICT', ['RETIRE_ACTIVE_BYTES_DIFFER']) : {'status': 'REFUSED', 'reasons': ['RETIRE_RENAME_FAILED'], 'detail': 'simulated locked source', 'observed': {'active': 'e212f0d641f594d09187f4a5d38a34c482771bb4f3804b0e139752ea5c1eb818', 'retired_slot': 'ABSENT'}, 'dir_pins': True, 'plan': {'action': 'retire', 'host': 'claude-code', 'role': 'scout', 'move': {'from': '.claude/agents/law-scout.md', 'to': '.agent/runtime/native-agents/claude-code/law-scout.retired.md', 'native_sha256': 'ac7377f692cbe224d9ecf6655d2dba12a7f1cfe02cef3c3e46dd337e1fda0541', 'mode': 'os.rename, no replace, same filesystem'}, 'receipt': {'path': '.agent/runtime/native-agents/claude-code/law-scout.json', 'sha256': 'd74f7fce52451574874021a00f3f8fcd0727c1884dc5c3a70445f96fbf9213d6', 'change': 'none (kept as provenance)'}, 'bound': {'project_sha256': 'eef4c7d924a901362b832d74b228740accb5768fb2db45a09a21c13159d288f8', 'profile_sha256': 'ddd1b9532949c39c4795be85e830548bdbfa99bcbaf5c9a14419bf24ccef6240', 'retired_slot': 'ABSENT'}, 'housekeeping': [], 'host_application': 'NOT_INSPECTED', 'consequence': 'Sau retire, file native rời thư mục tự quét; PHIÊN MỚI cần liệt kê lại để xác minh. Phiên đang chạy không bị dừng, không thu hồi quyền; không xóa file, không tự kích hoạt lại.', 'restore': 'Muốn dùng lại: tự chuyển .agent/runtime/native-agents/claude-code/law-scout.retired.md về .claude/agents/law-scout.md (đích phải vắng), rồi chạy status/preview.', 'plan_sha256': '2a4e0f2d71177427648a46379f0316bdd338a6f85f1d127dc80efc8d931573d4'}}
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.631s
+
+FAILED (failures=8)

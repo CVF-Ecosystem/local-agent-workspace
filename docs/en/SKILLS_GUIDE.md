@@ -204,3 +204,35 @@ install or import the originals. No global rules, hooks, installers or proprieta
 are repackaged.
 
 The source record, audit results and reasons are in `SOURCES_AND_REFERENCES.md` in this folder.
+
+## 11. Reusing experience from one project in another (personal template)
+
+Project A (the project you are working in) has a useful way of working and you want project B (created later) to have it
+too. Do not copy all of A: move only the reusable part, through your personal template (an unzipped copy of the package
+that has not been used for work). There is no automatic sync tool; each step is done by you, or by the assistant when you ask.
+The criteria for accepting something still live only in `skills/README.md`, section "Intake of skills and packs".
+
+- **Step 1, keep it in A.** Sources, decisions and private skills (`skills/local/project/`, yours, never shipped) stay in A. Extract only the part that really adds something; if the assistant already does it, do not create a duplicate skill.
+- **Step 2, make a derived version.** Create a new skill with a **different ID** in a draft folder outside A and outside the template. Choose `SKILL.md` and the resources it needs explicitly. Remove names and private figures, A's paths, SourceID/revision/receipts, prompts and granted permissions, STATE/HANDOFF, provider settings, and sources you may not share. Where data is needed, write "take the source from the project in use". Keep provenance that can be public; do not fake a verified source. **Stop if** a selected file crosses a symlink/junction, escapes the draft folder, or retains an external link or dependency on A; a string scan does not prove all private data is gone, so read this version yourself.
+- **Step 3, intake.** Follow the standard in `skills/README.md`: you see the exact derived version and the list of files that will go into the template, then confirm (if a grant already covers exactly this scope, use it without asking per file). A conclusion that it is reusable and the permission to write to the template are two separate things; the permission must cover the exact ID, reviewed version and destination template. **Stop if** the conclusion is `REVIEW`, `PROJECT_ONLY` or `DEFER`, or there is no permission to write to the template. A hand-typed `AVAILABLE` label is not your confirmation; if the version is edited after you saw it, the earlier confirmation lapses.
+- **Step 4, update the personal template.** Only on a clean, isolated personal template (not set up as a project, and `python tools/check_package.py --verify` and a preview using `new_project.py --name "Template check"` with an unused name both pass before you edit; preview only, without `--apply`). Add exactly the chosen files to `skills/local/shared/<id>/` and one row to `.agent/SKILL_INDEX.md`; the English version goes to `en/skills/local/shared/<id>/` and `en/.agent/SKILL_INDEX.md`. **Stop before writing and leave the template as it is** if the ID or a path collides with an existing skill, or the template no longer matches its MANIFEST before you edit; report what is missing. After writing, compare every change in the template with the accepted list, including paths, payload bytes and the complete index after the intended row insertion; if anything is outside it, stop there, do not go on to step 5, and report what differs from the list (the MANIFEST is not rebuilt, so the machine will not create B either).
+- **Step 5, rebuild the manifest.** Once the changes match the list, run `python tools/check_package.py --write-manifest` and then `--verify` **inside that personal template**. The manifest is only an integrity mark, not proof of intake: running it before comparing against the list legitimises stray files too. Do not run it in project A or in a maintainer's source repo. If `--verify` fails, stop; do not edit hashes by hand.
+- **Step 6, create B.** In the template: `python tools/new_project.py --name "B"` to preview, add `--apply` to create (`--lang en` for English). The template stays unchanged. B gets the reused skill and its index row, plus its own sources and decisions, and none of A's sources, permissions, STATE or accepted outputs. Do not create B by copying A and renaming it: `new_project.py` refuses a folder that is already a project.
+- **Step 7, use it in B.** The assistant uses the skill only when it fits the work. A skill accepted into the library does not mean B's outputs are accepted. Copying into an app's menu is a different decision (`install_skills.py`) and is not part of this flow.
+
+```text
+From my private skill <name> in this project, make a derived version called <new-id> for use in my other projects:
+remove this project's private data, paths and sources. Show me that version and the list of files that will go into my
+personal template before writing; write nothing to the template until I confirm.
+```
+
+After step 6, A, the template and B are independent: editing sources or private skills in A does not change B; editing B
+does not change A or the template; results you accepted in A do not pass to B. Changing the personal template does not
+change projects created earlier either (see section 8). Once in the template, the derived skill belongs to the package's shared part,
+unlike the private skill in A; keeping it through every package upgrade or downgrade is not guaranteed here. If you want to keep the
+template as it was before editing, copy it yourself or ask the assistant; the assistant does not make backups beyond what you ask.
+
+What the machine checks and what is only a working agreement: project creation rejects package/shared delivery files that differ from the MANIFEST. `--verify` alone checks listed files; the preview also checks the delivery inventory, so do not skip it when stray files may exist. The manifest does not establish that private data has been removed. The machine refuses to use an already set-up project as the template, and `install_skills.py` never
+copies `skills/local/project/`. Separating private data, intake, permission to write to the template and comparing against the list
+(steps 2 to 5) are an agreement between you and the assistant; no tool blocks you if you copy by hand, and no tool judges the
+skill's quality.

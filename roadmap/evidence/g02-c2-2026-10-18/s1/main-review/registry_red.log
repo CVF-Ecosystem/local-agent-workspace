@@ -1,0 +1,17 @@
+test_reference_registry_denies_retrieval_even_if_scan_misses (tests.test_control_check_v2.LoaderInit.test_reference_registry_denies_retrieval_even_if_scan_misses) ... FAIL
+
+======================================================================
+FAIL: test_reference_registry_denies_retrieval_even_if_scan_misses (tests.test_control_check_v2.LoaderInit.test_reference_registry_denies_retrieval_even_if_scan_misses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check_v2.py", line 453, in test_reference_registry_denies_retrieval_even_if_scan_misses
+    retrieval.assert_not_called()
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python311\Lib\unittest\mock.py", line 900, in assert_not_called
+    raise AssertionError(msg)
+AssertionError: Expected 'urlopen' to not have been called. Called 1 times.
+Calls: [call(<urllib.request.Request object at 0x0000025AE633DAD0>)].
+
+----------------------------------------------------------------------
+Ran 1 test in 0.135s
+
+FAILED (failures=1)

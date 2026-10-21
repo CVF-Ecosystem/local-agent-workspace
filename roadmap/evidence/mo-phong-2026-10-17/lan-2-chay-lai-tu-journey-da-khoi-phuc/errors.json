@@ -1,0 +1,16 @@
+{
+  "steps": [
+    {
+      "step": "e1_upgrade_missing_package",
+      "tag": "Chưa thể thực hiện",
+      "msg": "Chưa ghi gì. Bước tiếp: sửa thông tin đã nêu ở trên, rồi xem trước lại.",
+      "out": "Không thấy thư mục / Folder not found: C:\\Users\\DELL\\AppData\\Local\\Temp\\claude\\d--UNG-DUNG-AI-TOOL-AI-2026-Controlled-Vibe-Framework-CVF\\c10e50f7-d8b3-4ff6-9cec-4f49b976eb5e\\scratchpad\\ui\\khong-co-goi"
+    },
+    {
+      "step": "e2_check_missing_file",
+      "tag": "Chưa kiểm được",
+      "msg": "Chưa kiểm được đầy đủ: không phải kết quả đạt. Bước tiếp: đọc lại file và đối chiếu bằng tay.",
+      "out": "== C:\\Users\\DELL\\AppData\\Local\\Temp\\claude\\d--UNG-DUNG-AI-TOOL-AI-2026-Controlled-Vibe-Framework-CVF\\c10e50f7-d8b3-4ff6-9cec-4f49b976eb5e\\scratchpad\\ui\\khong-co\\bien-ban.txt ==\n  Không thấy file.\n  CHƯA KIỂM ĐƯỢC.\n\nKiểm tra cơ học, chưa thay việc đọc lại và đối chiếu số liệu với nguồn (xem delivery-checklist).\nTổng kết: 0 đạt; 0 cần xem xét; 1 chưa kiểm được."
+    }
+  ]
+}

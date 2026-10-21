@@ -2,3 +2,9 @@
 *.bat text eol=crlf
 *.command text eol=lf
 *.zip binary
+# These accepted runtime files are identified by raw-byte hashes. Preserve their
+# reviewed bytes through Git; this does not change the policy pins or receipts.
+tools/publish_new.py -text
+tools/context_update.py -text
+.cvf/checks/v3/observer.py -text
+.cvf/checks/v3/workflow.py -text

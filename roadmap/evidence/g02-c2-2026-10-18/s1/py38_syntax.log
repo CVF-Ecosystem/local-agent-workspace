@@ -1,0 +1,9 @@
+$ python -I -c "ast.parse(source, feature_version=(3,8))" cho các file mới / syntax-only check for Python 3.8 grammar (NOT a 3.8 run)
+ok-3.8-grammar .cvf/checks/control_check_v2.py
+ok-3.8-grammar .cvf/checks/v2/__init__.py
+ok-3.8-grammar .cvf/checks/v2/canon.py
+ok-3.8-grammar .cvf/checks/v2/loader.py
+ok-3.8-grammar tests/test_control_check_v2.py
+
+$ grep API sau 3.8 / APIs newer than 3.8 (removeprefix, removesuffix, math.lcm, zoneinfo, match, list[...] annotations)
+.cvf/checks/v2/loader.py:81:    match = re.match(r'^(\d+)\.(\d+)', text)

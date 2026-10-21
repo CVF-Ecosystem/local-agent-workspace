@@ -1,0 +1,78 @@
+{
+  "schema_version": "law.cvf.control/1",
+  "record_type": "result",
+  "example_only": true,
+  "result_id": "EXAMPLE-result-1",
+  "binding": {
+    "task_id": "EXAMPLE-task-1",
+    "task_revision": 1,
+    "intent_digest": "sha256:1a3b044d79e525460323ad7dfd77a6ba8b1b380bc5fd96c097c930d5f5f3566f",
+    "accepted_task_digest": "sha256:d31d22e7e4b7fcb5a9253c8948456ea5ff052ab3de71b9802872e73094f5b89c",
+    "context_digest": "sha256:097e8405eb7d535d0a85bf55b776d44d8901959c507f0ed29c13d893e8b31ae7",
+    "inputs": [
+      {
+        "path": "references/EXAMPLE-quy-che.docx",
+        "digest": "sha256:c3405cb3606009ca984e418008967889a095d515b0f469c72074644eab9c981f",
+        "source_id": "SRC-EXAMPLE-1",
+        "revision": "1"
+      }
+    ],
+    "policy_version": "law.cvf.routing/1",
+    "outputs": [
+      {
+        "path": "working/EXAMPLE-work-1/_INDEX.proposed.xlsx",
+        "digest": "sha256:a8ba59d7c279b9e9b4dddc0ef1e73e033219df83fbda0873f5233ebecdb0007a"
+      }
+    ]
+  },
+  "produced_by": {
+    "actor_id": "EXAMPLE-worker-1",
+    "role": "worker",
+    "host": "EXAMPLE-host"
+  },
+  "artifacts": [
+    {
+      "path": "working/EXAMPLE-work-1/_INDEX.proposed.xlsx",
+      "digest": "sha256:a8ba59d7c279b9e9b4dddc0ef1e73e033219df83fbda0873f5233ebecdb0007a"
+    }
+  ],
+  "actions_performed": [
+    {
+      "operation": "provenance_write",
+      "tool": "EXAMPLE-editor",
+      "targets": [
+        "references/_INDEX.xlsx"
+      ],
+      "write_zone": "shared_register"
+    }
+  ],
+  "evidence": [
+    {
+      "evidence_id": "EV-1",
+      "req_id": "REQ-1",
+      "locator": "EXAMPLE://diff/1",
+      "kind": "TOOL_OBSERVED",
+      "scope": "EXAMPLE: rows 2-5"
+    }
+  ],
+  "requirements": [
+    {
+      "req_id": "REQ-1",
+      "mandatory": true,
+      "status": "MET",
+      "evidence_ids": [
+        "EV-1"
+      ]
+    }
+  ],
+  "gaps": [],
+  "acceptance_states": [
+    "REVIEW_PASSED",
+    "ACCEPTED_FOR_INTEGRATION"
+  ],
+  "state_set_by": {
+    "actor_id": "EXAMPLE-worker-1",
+    "role": "worker",
+    "host": "EXAMPLE-host"
+  }
+}

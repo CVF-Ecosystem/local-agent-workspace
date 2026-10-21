@@ -1,0 +1,269 @@
+test_blocking_review_cannot_be_outvoted_by_a_second_pass (tests.test_control_check.AuthorityAndBinding.test_blocking_review_cannot_be_outvoted_by_a_second_pass) ... ok
+test_changed_input_makes_the_old_review_stale (tests.test_control_check.AuthorityAndBinding.test_changed_input_makes_the_old_review_stale) ... ok
+test_default_verifier_never_opens_trusted_rows (tests.test_control_check.AuthorityAndBinding.test_default_verifier_never_opens_trusted_rows) ... ok
+test_duplicate_ids_block_everything (tests.test_control_check.AuthorityAndBinding.test_duplicate_ids_block_everything) ... ok
+test_main_rewritten_intent_is_untrusted_even_with_matching_hashes (tests.test_control_check.AuthorityAndBinding.test_main_rewritten_intent_is_untrusted_even_with_matching_hashes) ... ok
+test_missing_review_never_falls_back_to_main_self_review (tests.test_control_check.AuthorityAndBinding.test_missing_review_never_falls_back_to_main_self_review) ... ok
+test_output_changed_after_review_is_stale (tests.test_control_check.AuthorityAndBinding.test_output_changed_after_review_is_stale) ... ok
+test_records_claiming_verified_do_not_count_as_verified (tests.test_control_check.AuthorityAndBinding.test_records_claiming_verified_do_not_count_as_verified) ... ok
+test_retry_after_unknown_outcome_is_not_reissued (tests.test_control_check.AuthorityAndBinding.test_retry_after_unknown_outcome_is_not_reissued) ... ok
+test_review_that_did_not_check_the_users_intent_is_incomplete (tests.test_control_check.AuthorityAndBinding.test_review_that_did_not_check_the_users_intent_is_incomplete) ... ok
+test_reviewer_who_is_the_proposer_or_wrong_role_is_not_eligible (tests.test_control_check.AuthorityAndBinding.test_reviewer_who_is_the_proposer_or_wrong_role_is_not_eligible) ... ok
+test_self_declared_reviewer_is_not_eligible (tests.test_control_check.AuthorityAndBinding.test_self_declared_reviewer_is_not_eligible) ... ok
+test_simulated_trust_exercises_logic_but_is_capped_and_never_observes (tests.test_control_check.AuthorityAndBinding.test_simulated_trust_exercises_logic_but_is_capped_and_never_observes) ... ok
+test_unresolved_task_reference_is_reported (tests.test_control_check.AuthorityAndBinding.test_unresolved_task_reference_is_reported) ... ok
+test_default_check_reports_the_canonical_bytes_it_loaded_but_does_not_trust_them (tests.test_control_check.CanonicalOwners.test_default_check_reports_the_canonical_bytes_it_loaded_but_does_not_trust_them) ... ok
+test_injected_copy_with_the_same_id_and_version_is_noncanonical (tests.test_control_check.CanonicalOwners.test_injected_copy_with_the_same_id_and_version_is_noncanonical) ... ok
+test_policy_with_weakened_constraints_and_same_version_is_noncanonical (tests.test_control_check.CanonicalOwners.test_policy_with_weakened_constraints_and_same_version_is_noncanonical) ... ok
+test_relaxed_schema_with_the_same_id_cannot_launder_an_invalid_record (tests.test_control_check.CanonicalOwners.test_relaxed_schema_with_the_same_id_cannot_launder_an_invalid_record) ... ok
+test_remote_schema_references_are_refused (tests.test_control_check.CanonicalOwners.test_remote_schema_references_are_refused) ... ok
+test_unknown_policy_version_is_unsupported (tests.test_control_check.CanonicalOwners.test_unknown_policy_version_is_unsupported) ... ok
+test_cli_bad_input_files (tests.test_control_check.CliAndExitCodes.test_cli_bad_input_files) ... ok
+test_cli_blocked_na_and_schema_error_codes (tests.test_control_check.CliAndExitCodes.test_cli_blocked_na_and_schema_error_codes) ... ok
+test_cli_has_no_trust_or_owner_override_flags (tests.test_control_check.CliAndExitCodes.test_cli_has_no_trust_or_owner_override_flags) ... ok
+test_exit_code_mapping (tests.test_control_check.CliAndExitCodes.test_exit_code_mapping) ... ok
+test_script_runs_standalone_and_never_writes (tests.test_control_check.CliAndExitCodes.test_script_runs_standalone_and_never_writes) ... ok
+test_action_digest_dropped_from_one_side_is_a_mismatch (tests.test_control_check.CorrectiveBinding.test_action_digest_dropped_from_one_side_is_a_mismatch) ... FAIL
+test_baseline_binding_is_met (tests.test_control_check.CorrectiveBinding.test_baseline_binding_is_met) ... ok
+test_effect_on_another_source_id_or_revision_differs_from_the_task (tests.test_control_check.CorrectiveBinding.test_effect_on_another_source_id_or_revision_differs_from_the_task) ... FAIL
+test_non_pass_review_on_an_older_binding_is_stale_not_blocking (tests.test_control_check.CorrectiveBinding.test_non_pass_review_on_an_older_binding_is_stale_not_blocking) ... FAIL
+test_non_pass_review_on_the_same_binding_still_blocks_a_pass (tests.test_control_check.CorrectiveBinding.test_non_pass_review_on_the_same_binding_still_blocks_a_pass) ... ok
+test_review_bound_to_another_source_revision_is_stale (tests.test_control_check.CorrectiveBinding.test_review_bound_to_another_source_revision_is_stale) ... FAIL
+test_review_scope_objects_must_keep_the_same_qualifiers (tests.test_control_check.CorrectiveBinding.test_review_scope_objects_must_keep_the_same_qualifiers) ... FAIL
+test_same_action_digest_on_both_sides_is_met (tests.test_control_check.CorrectiveBinding.test_same_action_digest_on_both_sides_is_met) ... ok
+test_child_pointer_needs_a_binding_basis (tests.test_control_check.CorrectiveDelegation.test_child_pointer_needs_a_binding_basis) ... FAIL
+test_child_pointer_that_contradicts_its_basis_is_a_mismatch (tests.test_control_check.CorrectiveDelegation.test_child_pointer_that_contradicts_its_basis_is_a_mismatch) ... FAIL
+test_empty_scope_with_no_child_record_is_not_checked_even_with_every_digest_equal (tests.test_control_check.CorrectiveDelegation.test_empty_scope_with_no_child_record_is_not_checked_even_with_every_digest_equal) ... FAIL
+test_parent_context_digest_must_match_the_effect_binding (tests.test_control_check.CorrectiveDelegation.test_parent_context_digest_must_match_the_effect_binding) ... FAIL
+test_shipped_context_only_example_cannot_reach_met (tests.test_control_check.CorrectiveDelegation.test_shipped_context_only_example_cannot_reach_met) ... ok
+test_accepted_domain_role_uses_the_domain_role_group (tests.test_control_check.CorrectiveRoleNamespace.test_accepted_domain_role_uses_the_domain_role_group) ... FAIL
+test_domain_role_without_a_verifier_is_blocked_on_trust (tests.test_control_check.CorrectiveRoleNamespace.test_domain_role_without_a_verifier_is_blocked_on_trust) ... ok
+test_identity_not_in_the_grant_whitelist_is_refused (tests.test_control_check.CorrectiveRoleNamespace.test_identity_not_in_the_grant_whitelist_is_refused) ... ok
+test_registered_role_may_use_a_functional_group_but_not_an_actor_group (tests.test_control_check.CorrectiveRoleNamespace.test_registered_role_may_use_a_functional_group_but_not_an_actor_group) ... FAIL
+test_verifier_attesting_a_different_role_identity_is_refused (tests.test_control_check.CorrectiveRoleNamespace.test_verifier_attesting_a_different_role_identity_is_refused) ... FAIL
+test_wrong_group_for_a_domain_or_core_role_is_refused (tests.test_control_check.CorrectiveRoleNamespace.test_wrong_group_for_a_domain_or_core_role_is_refused) ... ok
+test_empty_actor_list_means_nobody_not_a_wildcard (tests.test_control_check.CorrectiveSubject.test_empty_actor_list_means_nobody_not_a_wildcard) ... FAIL
+test_named_actor_and_role_only_grants_still_cover (tests.test_control_check.CorrectiveSubject.test_named_actor_and_role_only_grants_still_cover) ... ok
+test_other_actor_with_same_role_does_not_inherit_the_grant (tests.test_control_check.CorrectiveSubject.test_other_actor_with_same_role_does_not_inherit_the_grant) ... FAIL
+test_callee_outside_the_whitelist_is_refused (tests.test_control_check.Delegation.test_callee_outside_the_whitelist_is_refused) ... ok
+test_child_cannot_delegate_again (tests.test_control_check.Delegation.test_child_cannot_delegate_again) ... ok
+test_child_operation_or_tool_beyond_the_grant_is_refused (tests.test_control_check.Delegation.test_child_operation_or_tool_beyond_the_grant_is_refused) ... ok
+test_child_task_asking_beyond_the_delegated_scope_is_refused (tests.test_control_check.Delegation.test_child_task_asking_beyond_the_delegated_scope_is_refused) ... ok
+test_default_verifier_blocks_a_perfect_delegation (tests.test_control_check.Delegation.test_default_verifier_blocks_a_perfect_delegation) ... ok
+test_empty_scope_is_none_not_wildcard (tests.test_control_check.Delegation.test_empty_scope_is_none_not_wildcard) ... ok
+test_empty_scope_still_needs_child_task_and_binding_basis (tests.test_control_check.Delegation.test_empty_scope_still_needs_child_task_and_binding_basis) ... FAIL
+test_input_presence_does_not_grant_a_write (tests.test_control_check.Delegation.test_input_presence_does_not_grant_a_write) ... ok
+test_look_alike_path_is_not_inside_the_grant (tests.test_control_check.Delegation.test_look_alike_path_is_not_inside_the_grant) ... ok
+test_missing_child_or_parent_task_blocks_as_unverified (tests.test_control_check.Delegation.test_missing_child_or_parent_task_blocks_as_unverified) ... ok
+test_native_dispatch_tool_does_not_pass_to_the_child (tests.test_control_check.Delegation.test_native_dispatch_tool_does_not_pass_to_the_child) ... ok
+test_parent_digest_must_match_the_effect_binding (tests.test_control_check.Delegation.test_parent_digest_must_match_the_effect_binding) ... FAIL
+test_read_path_must_be_a_read_source_of_the_parent (tests.test_control_check.Delegation.test_read_path_must_be_a_read_source_of_the_parent) ... ok
+test_requested_envelope_over_the_grant_limit_is_refused (tests.test_control_check.Delegation.test_requested_envelope_over_the_grant_limit_is_refused) ... ok
+test_shipped_example_stays_blocked_for_inactive_grant (tests.test_control_check.Delegation.test_shipped_example_stays_blocked_for_inactive_grant) ... ok
+test_valid_delegation_logic_meets_scope_but_stays_capped (tests.test_control_check.Delegation.test_valid_delegation_logic_meets_scope_but_stays_capped) ... ok
+test_executable_never_reads_the_expected_oracle (tests.test_control_check.Dependencies.test_executable_never_reads_the_expected_oracle) ... ok
+test_missing_validator_is_unsupported_not_a_fallback (tests.test_control_check.Dependencies.test_missing_validator_is_unsupported_not_a_fallback) ... ok
+test_source_stays_python38_syntax (tests.test_control_check.Dependencies.test_source_stays_python38_syntax) ... ok
+test_validator_is_present_and_supports_2020_12 (tests.test_control_check.Dependencies.test_validator_is_present_and_supports_2020_12) ... ok
+test_accept_never_trusts_observed_labels_on_evidence (tests.test_control_check.EnvelopeAndAccept.test_accept_never_trusts_observed_labels_on_evidence) ... ok
+test_accepted_claim_is_not_supported_by_this_checker (tests.test_control_check.EnvelopeAndAccept.test_accepted_claim_is_not_supported_by_this_checker) ... ok
+test_actions_not_approved_by_the_task_are_reported (tests.test_control_check.EnvelopeAndAccept.test_actions_not_approved_by_the_task_are_reported) ... ok
+test_envelope_over_the_grant_limit_is_exceeded (tests.test_control_check.EnvelopeAndAccept.test_envelope_over_the_grant_limit_is_exceeded) ... ok
+test_evidence_pointing_at_the_wrong_requirement_is_invalid (tests.test_control_check.EnvelopeAndAccept.test_evidence_pointing_at_the_wrong_requirement_is_invalid) ... ok
+test_future_gates_are_not_yet_due_but_current_unobserved_gates_block (tests.test_control_check.EnvelopeAndAccept.test_future_gates_are_not_yet_due_but_current_unobserved_gates_block) ... ok
+test_missing_mandatory_requirement_is_not_met (tests.test_control_check.EnvelopeAndAccept.test_missing_mandatory_requirement_is_not_met) ... ok
+test_unmeasured_limit_is_not_treated_as_satisfied (tests.test_control_check.EnvelopeAndAccept.test_unmeasured_limit_is_not_treated_as_satisfied) ... ok
+test_every_output_states_what_was_not_observed (tests.test_control_check.ExamplesOracle.test_every_output_states_what_was_not_observed) ... ok
+test_examples_match_current_expectations (tests.test_control_check.ExamplesOracle.test_examples_match_current_expectations) ... ok
+test_no_object_in_phase_is_not_applicable_and_never_pass (tests.test_control_check.ExamplesOracle.test_no_object_in_phase_is_not_applicable_and_never_pass) ... ok
+test_result_does_not_depend_on_fixture_names_or_ids (tests.test_control_check.ExamplesOracle.test_result_does_not_depend_on_fixture_names_or_ids) ... ok
+test_attested_change_or_version_mismatch_goes_to_mutation (tests.test_control_check.RecipeConditions.test_attested_change_or_version_mismatch_goes_to_mutation) ... ok
+test_claimed_change_goes_heavier (tests.test_control_check.RecipeConditions.test_claimed_change_goes_heavier) ... ok
+test_claimed_no_change_does_not_open_the_recipe_route (tests.test_control_check.RecipeConditions.test_claimed_no_change_does_not_open_the_recipe_route) ... ok
+test_only_a_verifier_attestation_can_make_the_light_recipe_route_true (tests.test_control_check.RecipeConditions.test_only_a_verifier_attestation_can_make_the_light_recipe_route_true) ... ok
+test_recipe_accepted_by_main_declared_source_is_not_accepted (tests.test_control_check.RecipeConditions.test_recipe_accepted_by_main_declared_source_is_not_accepted) ... ok
+test_unknown_effect_is_unclassified (tests.test_control_check.RecipeConditions.test_unknown_effect_is_unclassified) ... ok
+test_cooperative_draft_is_consistent_but_not_a_safety_pass (tests.test_control_check.SafetyAndRouting.test_cooperative_draft_is_consistent_but_not_a_safety_pass) ... ok
+test_known_loss_is_denied_before_any_approval_even_with_simulated_trust (tests.test_control_check.SafetyAndRouting.test_known_loss_is_denied_before_any_approval_even_with_simulated_trust) ... ok
+test_narrow_self_declared_scope_never_makes_the_light_route_true (tests.test_control_check.SafetyAndRouting.test_narrow_self_declared_scope_never_makes_the_light_route_true) ... ok
+test_path_helpers_reject_untrusted_paths_and_prefix_tricks (tests.test_control_check.SafetyAndRouting.test_path_helpers_reject_untrusted_paths_and_prefix_tricks) ... ok
+test_record_showing_a_protected_or_heavy_target_leaves_the_light_route (tests.test_control_check.SafetyAndRouting.test_record_showing_a_protected_or_heavy_target_leaves_the_light_route) ... ok
+test_route_is_a_union_and_main_cannot_declare_it_down (tests.test_control_check.SafetyAndRouting.test_route_is_a_union_and_main_cannot_declare_it_down) ... ok
+test_similar_looking_path_is_outside_the_grant (tests.test_control_check.SafetyAndRouting.test_similar_looking_path_is_outside_the_grant) ... ok
+test_unknown_operation_and_zone_are_unclassified_not_light (tests.test_control_check.SafetyAndRouting.test_unknown_operation_and_zone_are_unclassified_not_light) ... ok
+
+======================================================================
+FAIL: test_action_digest_dropped_from_one_side_is_a_mismatch (tests.test_control_check.CorrectiveBinding.test_action_digest_dropped_from_one_side_is_a_mismatch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 698, in test_action_digest_dropped_from_one_side_is_a_mismatch
+    self.assertIn('STALE_REVIEW', obj['reasons'])
+AssertionError: 'STALE_REVIEW' not found in ['CONDITION_UNRESOLVED', 'OBSERVATION_UNAVAILABLE', 'PRESERVATION_UNKNOWN', 'SIMULATED_VERIFIER_NOT_AUTHORITY', 'UNCLASSIFIED_OPERATION']
+
+======================================================================
+FAIL: test_effect_on_another_source_id_or_revision_differs_from_the_task (tests.test_control_check.CorrectiveBinding.test_effect_on_another_source_id_or_revision_differs_from_the_task)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 690, in test_effect_on_another_source_id_or_revision_differs_from_the_task
+    self.assertIn('BINDING_MISMATCH', obj['reasons'], field)
+AssertionError: 'BINDING_MISMATCH' not found in ['CONDITION_UNRESOLVED', 'OBSERVATION_UNAVAILABLE', 'PRESERVATION_UNKNOWN', 'SIMULATED_VERIFIER_NOT_AUTHORITY', 'UNCLASSIFIED_OPERATION'] : revision
+
+======================================================================
+FAIL: test_non_pass_review_on_an_older_binding_is_stale_not_blocking (tests.test_control_check.CorrectiveBinding.test_non_pass_review_on_an_older_binding_is_stale_not_blocking)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 727, in test_non_pass_review_on_an_older_binding_is_stale_not_blocking
+    self.assertNotIn('REVIEW_BLOCKING_VERDICT', obj['reasons'])
+AssertionError: 'REVIEW_BLOCKING_VERDICT' unexpectedly found in ['CONDITION_UNRESOLVED', 'OBSERVATION_UNAVAILABLE', 'PRESERVATION_UNKNOWN', 'REVIEW_BLOCKING_VERDICT', 'SIMULATED_VERIFIER_NOT_AUTHORITY', 'UNCLASSIFIED_OPERATION']
+
+======================================================================
+FAIL: test_review_bound_to_another_source_revision_is_stale (tests.test_control_check.CorrectiveBinding.test_review_bound_to_another_source_revision_is_stale)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 679, in test_review_bound_to_another_source_revision_is_stale
+    self.assertEqual(gate(obj, 'review:PRE_EFFECT'), 'UNMET')
+AssertionError: 'MET' != 'UNMET'
+- MET
++ UNMET
+? ++
+
+
+======================================================================
+FAIL: test_review_scope_objects_must_keep_the_same_qualifiers (tests.test_control_check.CorrectiveBinding.test_review_scope_objects_must_keep_the_same_qualifiers)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 716, in test_review_scope_objects_must_keep_the_same_qualifiers
+    self.assertIn('STALE_REVIEW', obj['reasons'])
+AssertionError: 'STALE_REVIEW' not found in ['ACCEPTANCE_CLAIM_NOT_SUPPORTED', 'CONDITION_UNRESOLVED', 'EVIDENCE_NOT_VERIFIED', 'OBSERVATION_UNAVAILABLE', 'PRESERVATION_UNKNOWN', 'SIMULATED_VERIFIER_NOT_AUTHORITY', 'UNCLASSIFIED_OPERATION']
+
+======================================================================
+FAIL: test_child_pointer_needs_a_binding_basis (tests.test_control_check.CorrectiveDelegation.test_child_pointer_needs_a_binding_basis)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 750, in test_child_pointer_needs_a_binding_basis
+    self.assertEqual(gate(obj, 'DELEGATE_SCOPE'), 'NOT_CHECKED')
+AssertionError: 'MET' != 'NOT_CHECKED'
+- MET
++ NOT_CHECKED
+
+
+======================================================================
+FAIL: test_child_pointer_that_contradicts_its_basis_is_a_mismatch (tests.test_control_check.CorrectiveDelegation.test_child_pointer_that_contradicts_its_basis_is_a_mismatch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 757, in test_child_pointer_that_contradicts_its_basis_is_a_mismatch
+    self.assertEqual(gate(obj, 'DELEGATE_SCOPE'), 'UNMET')
+AssertionError: 'MET' != 'UNMET'
+- MET
++ UNMET
+? ++
+
+
+======================================================================
+FAIL: test_empty_scope_with_no_child_record_is_not_checked_even_with_every_digest_equal (tests.test_control_check.CorrectiveDelegation.test_empty_scope_with_no_child_record_is_not_checked_even_with_every_digest_equal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 771, in test_empty_scope_with_no_child_record_is_not_checked_even_with_every_digest_equal
+    self.assertEqual(gate(obj, 'DELEGATE_SCOPE'), 'NOT_CHECKED')
+AssertionError: 'MET' != 'NOT_CHECKED'
+- MET
++ NOT_CHECKED
+
+
+======================================================================
+FAIL: test_parent_context_digest_must_match_the_effect_binding (tests.test_control_check.CorrectiveDelegation.test_parent_context_digest_must_match_the_effect_binding)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 764, in test_parent_context_digest_must_match_the_effect_binding
+    self.assertEqual(gate(obj, 'DELEGATE_SCOPE'), 'UNMET')
+AssertionError: 'MET' != 'UNMET'
+- MET
++ UNMET
+? ++
+
+
+======================================================================
+FAIL: test_accepted_domain_role_uses_the_domain_role_group (tests.test_control_check.CorrectiveRoleNamespace.test_accepted_domain_role_uses_the_domain_role_group)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 800, in test_accepted_domain_role_uses_the_domain_role_group
+    self.assertEqual(gate(obj, 'DELEGATE_SCOPE'), 'MET', obj['notes'])
+AssertionError: 'UNMET' != 'MET'
+- UNMET
+? --
++ MET
+ : ['requested envelope role differs from the callee role']
+
+======================================================================
+FAIL: test_registered_role_may_use_a_functional_group_but_not_an_actor_group (tests.test_control_check.CorrectiveRoleNamespace.test_registered_role_may_use_a_functional_group_but_not_an_actor_group)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 811, in test_registered_role_may_use_a_functional_group_but_not_an_actor_group
+    self.assertEqual(gate(only(run(ok, 'effect', verifier=cc.SimulatedVerifier())), 'DELEGATE_SCOPE'), 'MET')
+AssertionError: 'UNMET' != 'MET'
+- UNMET
+? --
++ MET
+
+
+======================================================================
+FAIL: test_verifier_attesting_a_different_role_identity_is_refused (tests.test_control_check.CorrectiveRoleNamespace.test_verifier_attesting_a_different_role_identity_is_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 833, in test_verifier_attesting_a_different_role_identity_is_refused
+    self.assertEqual(gate(only(run(bundle, 'effect', verifier=good)), 'DELEGATE_SCOPE'), 'MET')
+AssertionError: 'UNMET' != 'MET'
+- UNMET
+? --
++ MET
+
+
+======================================================================
+FAIL: test_empty_actor_list_means_nobody_not_a_wildcard (tests.test_control_check.CorrectiveSubject.test_empty_actor_list_means_nobody_not_a_wildcard)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 658, in test_empty_actor_list_means_nobody_not_a_wildcard
+    self.assertEqual(gate(obj, 'GRANT_SCOPE'), 'UNMET')
+AssertionError: 'MET' != 'UNMET'
+- MET
++ UNMET
+? ++
+
+
+======================================================================
+FAIL: test_other_actor_with_same_role_does_not_inherit_the_grant (tests.test_control_check.CorrectiveSubject.test_other_actor_with_same_role_does_not_inherit_the_grant)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 645, in test_other_actor_with_same_role_does_not_inherit_the_grant
+    self.assertEqual(gate(obj, 'GRANT_SCOPE'), 'UNMET', phase)
+AssertionError: 'MET' != 'UNMET'
+- MET
++ UNMET
+? ++
+ : dispatch
+
+======================================================================
+FAIL: test_empty_scope_still_needs_child_task_and_binding_basis (tests.test_control_check.Delegation.test_empty_scope_still_needs_child_task_and_binding_basis)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 567, in test_empty_scope_still_needs_child_task_and_binding_basis
+    self.assertEqual(gate(obj, 'DELEGATE_SCOPE'), 'MET', obj['notes'])  # child record + basis present
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'UNMET' != 'MET'
+- UNMET
+? --
++ MET
+ : ['child task asks for an operation, tool or file outside the delegated scope']
+
+======================================================================
+FAIL: test_parent_digest_must_match_the_effect_binding (tests.test_control_check.Delegation.test_parent_digest_must_match_the_effect_binding)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 623, in test_parent_digest_must_match_the_effect_binding
+    self.assertIn('BINDING_MISMATCH', obj['reasons'])
+AssertionError: 'BINDING_MISMATCH' not found in ['DELEGATE_SCOPE_UNVERIFIED', 'SIMULATED_VERIFIER_NOT_AUTHORITY']
+
+----------------------------------------------------------------------
+Ran 93 tests in 13.219s
+
+FAILED (failures=16)

@@ -1,0 +1,340 @@
+{
+  "example_only": true,
+  "note": "Expectation index for inactive EXAMPLE bundles (candidate v2). schema_valid is a Draft 2020-12 structure expectation. binding_stale_or_mismatched compares declared digests with law.cvf.bind/2 reference recomputation, not a workflow outcome. expected_design describes a counterfactual scenario, NEVER the required verdict for the shipped bundle. Every workflow remains NOT_RUN. No example carries authority; attribution is a claim. ex19 context-only remains separate G-01 debt.",
+  "expected_design_basis": "COUNTERFACTUAL_SCENARIO_NOT_AS_SHIPPED",
+  "scenario_precondition": "Only in a separately authored C2 test fixture may example-only markers be replaced and the required inactive example grant represented as an eligible active cooperative grant for the stated hypothetical scenario. Preserve all other scenario defects and check them independently. Do not activate, rewrite, migrate or directly use the shipped examples as grants. Even a scenario PASS requires all applicable current source, scope, binding, review and observation gates; this file supplies no evidence for them.",
+  "as_shipped_expectation": {
+    "workflow_status": "NOT_RUN",
+    "schema_invalid_cases": "Reject structure; do not evaluate as a workflow PASS.",
+    "grant_dependent_cases": "BLOCKED with GRANT_INACTIVE; other applicable failures may also be reported. No shipped example can authorize an effect."
+  },
+  "workflow_status": "NOT_RUN",
+  "schema": "../control.schema.json",
+  "policy": "../../../rules/v2/ROUTING_POLICY.json",
+  "cases": [
+    {
+      "file": "ex01_draft_in_grant.json",
+      "scenario": "New draft in working/ inside a standing group grant; user confirmation attributed",
+      "schema_valid": true,
+      "workflow_tested": false,
+      "route_rows": [
+        "R-READ_DRAFT"
+      ],
+      "required_review_phases": [],
+      "binding_stale_or_mismatched": false,
+      "expected_design": {
+        "disposition": "BLOCKED",
+        "assurance_level": "ADVISORY",
+        "reasons": ["UNSUPPORTED_BINDING_PART"],
+        "why": "C2 design review erratum 2026-10-18: even under the stated counterfactual active-grant assumption, this grant retains expires_at, whose evaluation is UNSUPPORTED by contract 4.5. No PASS is expected. NO_PROTECTED_TARGET also remains unresolved until a versioned zone owner is accepted; route_rows is a scenario cue, not a computed complete route. As shipped GRANT_INACTIVE also blocks. A separate positive fixture without a temporal constraint is a different scenario, not permission to remove this defect from this example."
+      }
+    },
+    {
+      "file": "ex02_mutation_reviewed_bound.json",
+      "scenario": "Off-recipe register write; PRE_EFFECT and PRE_INTEGRATION reviews bound to digests recomputed from the records",
+      "schema_valid": true,
+      "workflow_tested": false,
+      "route_rows": [
+        "R-MUTATION"
+      ],
+      "required_review_phases": [
+        "PRE_EFFECT",
+        "PRE_INTEGRATION"
+      ],
+      "binding_stale_or_mismatched": false,
+      "expected_design": {
+        "disposition": "BLOCKED",
+        "assurance_level": "ADVISORY",
+        "reasons": ["UNSUPPORTED_BINDING_PART", "PRESERVATION_UNKNOWN"],
+        "why": "C2 design review erratum 2026-10-18: even under the stated counterfactual active-grant assumption, expires_at remains UNSUPPORTED and the provenance_write has no observed preservation protocol. Equal bindings and eligible cooperative reviews cannot establish preservation or actual outcome. No PASS is expected; INPUT_REVISION, ACTUAL_OUTCOME and other due gates may add failures. As shipped GRANT_INACTIVE also blocks. No example grant, record, schema or binding was changed."
+      }
+    },
+    {
+      "file": "ex03_intent_main_proposal.json",
+      "scenario": "Intent reference is Main's own proposal (MAIN_PROPOSAL/MAIN_AUTHORED); every digest consistent",
+      "schema_valid": true,
+      "workflow_tested": false,
+      "route_rows": [
+        "R-MUTATION"
+      ],
+      "required_review_phases": [
+        "PRE_EFFECT",
+        "PRE_INTEGRATION"
+      ],
+      "binding_stale_or_mismatched": false,
+      "expected_design": {
+        "disposition": "BLOCKED",
+        "reasons": [
+          "USER_CONFIRMATION_MISSING"
+        ],
+        "why": "Matching hashes and reviews do not turn a Main proposal into a user decision; user_intent needs source class USER_CONFIRMATION."
+      }
+    },
+    {
+      "file": "ex04_main_authored_user_confirmation.json",
+      "scenario": "Main-authored entry marked USER_CONFIRMATION",
+      "schema_valid": false,
+      "workflow_tested": false,
+      "schema_error": "attribution: USER_CONFIRMATION requires a user channel; MAIN_AUTHORED may only be MAIN_PROPOSAL or UNVERIFIED"
+    },
+    {
+      "file": "ex05_reviewer_self_report.json",
+      "scenario": "Reviewer eligibility is the reviewer's own ROLE_REPORT; independence SELF_DECLARED; hashes match",
+      "schema_valid": true,
+      "workflow_tested": false,
+      "route_rows": [
+        "R-MUTATION"
+      ],
+      "required_review_phases": [
+        "PRE_EFFECT",
+        "PRE_INTEGRATION"
+      ],
+      "binding_stale_or_mismatched": false,
+      "expected_design": {
+        "disposition": "BLOCKED",
+        "reasons": [
+          "REVIEWER_NOT_ELIGIBLE"
+        ],
+        "why": "reviewer_eligibility accepts USER_CONFIRMATION or TOOL_OBSERVATION only; a role's own report and SELF_DECLARED never satisfy it. No fallback to Main self-review."
+      }
+    },
+    {
+      "file": "ex06_review_missing.json",
+      "scenario": "Mutation requested with no review records at all",
+      "schema_valid": true,
+      "workflow_tested": false,
+      "route_rows": [
+        "R-MUTATION"
+      ],
+      "required_review_phases": [
+        "PRE_EFFECT",
+        "PRE_INTEGRATION"
+      ],
+      "binding_stale_or_mismatched": false,
+      "expected_design": {
+        "disposition": "BLOCKED",
+        "reasons": [
+          "REVIEW_MISSING"
+        ],
+        "why": "R-MUTATION needs both phases; Main cannot waive them."
+      }
+    },
+    {
+      "file": "ex07_reviewer_blocked_then_accepted.json",
+      "scenario": "PRE_INTEGRATION verdict BLOCKED; Main marks ACCEPTED_FOR_INTEGRATION with requirements MET",
+      "schema_valid": true,
+      "workflow_tested": false,
+      "route_rows": [
+        "R-MUTATION"
+      ],
+      "required_review_phases": [
+        "PRE_EFFECT",
+        "PRE_INTEGRATION"
+      ],
+      "binding_stale_or_mismatched": false,
+      "expected_design": {
+        "disposition": "DENY",
+        "reasons": [
+          "REVIEW_BLOCKING_VERDICT"
+        ],
+        "why": "Structure is valid because Main's claims are MET; the acceptance point reads the bound verdict, which Main cannot drop."
+      }
+    },
+    {
+      "file": "ex08_binding_stale_input_revision.json",
+      "scenario": "Reviews bound to input revision 1; effect and result bound to input revision 2",
+      "schema_valid": true,
+      "workflow_tested": false,
+      "route_rows": [
+        "R-MUTATION"
+      ],
+      "required_review_phases": [
+        "PRE_EFFECT",
+        "PRE_INTEGRATION"
+      ],
+      "binding_stale_or_mismatched": true,
+      "expected_design": {
+        "disposition": "BLOCKED",
+        "reasons": [
+          "BINDING_MISMATCH",
+          "STALE_REVIEW"
+        ],
+        "why": "Accepted-task and input digests differ from the review binding; only the changed part needs re-review."
+      }
+    },
+    {
+      "file": "ex09_child_exceeds_scope.json",
+      "scenario": "Delegation: callee listed in the grant, but the child asks for overwrite beyond a read-only grant scope",
+      "schema_valid": true,
+      "workflow_tested": false,
+      "route_rows": [
+        "R-DELEGATE"
+      ],
+      "required_review_phases": [],
+      "binding_stale_or_mismatched": false,
+      "expected_design": {
+        "disposition": "BLOCKED",
+        "reasons": [
+          "GRANT_OUT_OF_SCOPE"
+        ],
+        "why": "Child operations must lie inside the grant and the parent task; the Reviewer call itself is not reviewed. Parent native dispatch permission is not a child tool permission."
+      }
+    },
+    {
+      "file": "ex10_recipe_changes_user_decision.json",
+      "scenario": "Accepted recipe version, but this run changes a user decision; Main proposed R-RECIPE",
+      "schema_valid": true,
+      "workflow_tested": false,
+      "route_rows": [
+        "R-MUTATION"
+      ],
+      "required_review_phases": [
+        "PRE_EFFECT",
+        "PRE_INTEGRATION"
+      ],
+      "binding_stale_or_mismatched": false,
+      "expected_design": {
+        "disposition": "BLOCKED",
+        "reasons": [
+          "REVIEW_MISSING"
+        ],
+        "why": "R-RECIPE needs NO_USER_DECISION_CHANGE; the R-MUTATION clause RECIPE_ACCEPTED_VERSION + USER_DECISION_CHANGE matches. Main's proposed row cannot lower it."
+      }
+    },
+    {
+      "file": "ex11_recipe_effect_unknown.json",
+      "scenario": "Accepted recipe version; effect on user decisions UNKNOWN",
+      "schema_valid": true,
+      "workflow_tested": false,
+      "route_rows": [
+        "R-UNCLASSIFIED"
+      ],
+      "required_review_phases": [],
+      "binding_stale_or_mismatched": false,
+      "expected_design": {
+        "disposition": "BLOCKED",
+        "reasons": [
+          "UNCLASSIFIED_OPERATION"
+        ],
+        "why": "R-UNCLASSIFIED clause RECIPE_ACCEPTED_VERSION + USER_DECISION_EFFECT_UNKNOWN matches; no fallthrough to a light route."
+      }
+    },
+    {
+      "file": "ex12_unknown_operation.json",
+      "scenario": "Operation and zone unknown; Main proposed the light draft route",
+      "schema_valid": true,
+      "workflow_tested": false,
+      "route_rows": [
+        "R-UNCLASSIFIED"
+      ],
+      "required_review_phases": [],
+      "binding_stale_or_mismatched": false,
+      "expected_design": {
+        "disposition": "BLOCKED",
+        "reasons": [
+          "UNCLASSIFIED_OPERATION"
+        ],
+        "why": "Never falls back to R-READ_DRAFT; independent read/draft work may continue."
+      }
+    },
+    {
+      "file": "ex13_known_preservation_loss.json",
+      "scenario": "Overwrite known to drop validations",
+      "schema_valid": true,
+      "workflow_tested": false,
+      "route_rows": [
+        "R-MUTATION",
+        "R-KNOWN_LOSS"
+      ],
+      "required_review_phases": [
+        "PRE_EFFECT",
+        "PRE_INTEGRATION"
+      ],
+      "binding_stale_or_mismatched": false,
+      "expected_design": {
+        "disposition": "DENY",
+        "reasons": [
+          "KNOWN_PRESERVATION_LOSS"
+        ],
+        "why": "Refuse before the transaction regardless of grant or review. A refusal does not prove support for that format."
+      }
+    },
+    {
+      "file": "ex14_directory_input_unsupported_binding.json",
+      "scenario": "Input object is a directory; a declared digest cannot be defined as the bytes of a directory",
+      "schema_valid": true,
+      "workflow_tested": false,
+      "route_rows": [
+        "R-MUTATION"
+      ],
+      "required_review_phases": [
+        "PRE_EFFECT",
+        "PRE_INTEGRATION"
+      ],
+      "binding_stale_or_mismatched": false,
+      "expected_design": {
+        "disposition": "BLOCKED",
+        "reasons": [
+          "UNSUPPORTED_BINDING_PART"
+        ],
+        "why": "bind/2 defines object bytes for files only; a directory digest is UNSUPPORTED and blocks the dependent gate, never guessed."
+      }
+    },
+    {
+      "file": "ex15_v1_record_in_v2_bundle.json",
+      "scenario": "A review record still carrying law.cvf.control/1 inside a v2 bundle",
+      "schema_valid": false,
+      "workflow_tested": false,
+      "schema_error": "schema_version must equal law.cvf.control/2; a v1 receipt is never reinterpreted or mixed"
+    },
+    {
+      "file": "ex16_unknown_schema_version.json",
+      "scenario": "schema_version law.cvf.control/3",
+      "schema_valid": false,
+      "workflow_tested": false,
+      "schema_error": "unknown version refused, not interpreted"
+    },
+    {
+      "file": "ex17_basis_missing.json",
+      "scenario": "Task without evaluation_basis",
+      "schema_valid": false,
+      "workflow_tested": false,
+      "schema_error": "required property evaluation_basis missing"
+    },
+    {
+      "file": "ex18_basis_unknown.json",
+      "scenario": "evaluation_basis TRUSTED_ENFORCED",
+      "schema_valid": false,
+      "workflow_tested": false,
+      "schema_error": "evaluation_basis must be COOPERATIVE_WORKFLOW; Main cannot choose a basis per run"
+    },
+    {
+      "file": "ex20_external_send_missing_payload.json",
+      "scenario": "External send with a recipient but no payload locator/digest",
+      "schema_valid": false,
+      "workflow_tested": false,
+      "schema_error": "external_send/network_write require payload"
+    },
+    {
+      "file": "ex21_zero_object_pass.json",
+      "scenario": "Review verdict PASS with zero objects",
+      "schema_valid": false,
+      "workflow_tested": false,
+      "schema_error": "PASS requires scope.objects minItems 1"
+    },
+    {
+      "file": "ex22_worker_sets_acceptance.json",
+      "scenario": "Worker marks its own result REVIEW_PASSED and ACCEPTED_FOR_INTEGRATION",
+      "schema_valid": false,
+      "workflow_tested": false,
+      "schema_error": "state_set_by role worker may only set CANDIDATE"
+    },
+    {
+      "file": "ex23_v1_binding_reused.json",
+      "scenario": "Review whose binding is a v1 shape (routing/1, no bind_version, no policy_digest)",
+      "schema_valid": false,
+      "workflow_tested": false,
+      "schema_error": "binding needs bind_version law.cvf.bind/2, policy_version law.cvf.routing/2 and policy_digest; a v1 digest is not comparable"
+    }
+  ]
+}

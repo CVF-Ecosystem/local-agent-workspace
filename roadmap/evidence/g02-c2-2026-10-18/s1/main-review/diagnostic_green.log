@@ -1,0 +1,19 @@
+test_all_v1_bundle_is_refused_with_explicit_hint_and_never_tried (tests.test_control_check_v2.RefusalMatrix.test_all_v1_bundle_is_refused_with_explicit_hint_and_never_tried) ... ok
+test_basis_variants (tests.test_control_check_v2.RefusalMatrix.test_basis_variants) ... ok
+test_binding_literals (tests.test_control_check_v2.RefusalMatrix.test_binding_literals) ... ok
+test_bundle_bom_is_tolerated_like_v1 (tests.test_control_check_v2.RefusalMatrix.test_bundle_bom_is_tolerated_like_v1) ... ok
+test_canonical_domain_is_unsupported_not_guessed (tests.test_control_check_v2.RefusalMatrix.test_canonical_domain_is_unsupported_not_guessed) ... ok
+test_diagnostic_path_key_requires_full_match (tests.test_control_check_v2.RefusalMatrix.test_diagnostic_path_key_requires_full_match) ... ok
+test_duplicate_key_nested_in_a_valid_bundle (tests.test_control_check_v2.RefusalMatrix.test_duplicate_key_nested_in_a_valid_bundle) ... ok
+test_example_files_from_expected (tests.test_control_check_v2.RefusalMatrix.test_example_files_from_expected) ... ok
+test_malformed_input (tests.test_control_check_v2.RefusalMatrix.test_malformed_input) ... ok
+test_non_string_and_garbage_versions (tests.test_control_check_v2.RefusalMatrix.test_non_string_and_garbage_versions) ... ok
+test_preflight_diagnostics_do_not_echo_record_type_values (tests.test_control_check_v2.RefusalMatrix.test_preflight_diagnostics_do_not_echo_record_type_values) ... ok
+test_routing_policy_record_is_not_checkable (tests.test_control_check_v2.RefusalMatrix.test_routing_policy_record_is_not_checkable) ... ok
+test_schema_invalid_after_literals_is_deny_and_does_not_echo_values (tests.test_control_check_v2.RefusalMatrix.test_schema_invalid_after_literals_is_deny_and_does_not_echo_values) ... ok
+test_version_missing (tests.test_control_check_v2.RefusalMatrix.test_version_missing) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.508s
+
+OK

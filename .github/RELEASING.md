@@ -67,7 +67,7 @@ Trước khi nâng cấp, giữ một bản sao của project (mục 1 trong `do
 - CI chưa chạy lần nào. Các ô chưa được xác nhận cho đến khi job xanh.
 - macOS và Python 3.8 chưa được chạy trên máy phát triển này; không có Python 3.8 trên máy. CI không kiểm Python 3.8 trên macOS (image `macos-13` đã ngừng).
 - Kiểm tương thích 3.8 là heuristic: `ast.parse(feature_version=(3, 8))` và một danh sách regex. Có thể bỏ sót (ví dụ `dict | dict`) hoặc báo nhầm. Kiểm chứng thật là CI chạy trên Python 3.8.
-- Không có kiểm thử giao diện tự động (E2E) cho bảng điều khiển trong cổng này.
+- Cổng hành vi có kiểm thử giao diện bảng điều khiển bằng trình duyệt khi Playwright và Chromium khả dụng; thiếu điều kiện thì các lớp browser test bị skip. Kết quả trên máy này không chứng minh đã chạy trên mọi host hoặc CI.
 - ZIP không có chữ ký số và chưa được notarize. SHA-256 chỉ cho biết file có toàn vẹn, không xác thực người phát hành.
 - `platform.release()` trên Windows 11 có thể trả về `10` (giới hạn của Python).
 - Một số cổng không áp dụng cho gói đã phát hành (không có `tests/`). Công cụ không từ chối bản chính thức có cây làm việc bẩn; hãy xem `git.dirty` trong báo cáo.
@@ -136,7 +136,7 @@ Before upgrading, keep a copy of the project (section 1 of `docs/en/EXISTING_PRO
 - CI has not run yet. Every cell stays unconfirmed until its job passes.
 - macOS and Python 3.8 have not been run on this development machine, which has no Python 3.8. CI does not test Python 3.8 on macOS (the `macos-13` image is retired).
 - The Python 3.8 check is a heuristic: `ast.parse(feature_version=(3, 8))` plus a regex list. It can miss cases (for example `dict | dict`) or report false positives. Real verification is the Python 3.8 CI job.
-- No automated UI (end-to-end) tests for the control panel are part of these gates.
+- The behaviour gate includes browser tests for the control panel when Playwright and Chromium are available; browser test classes are skipped when those prerequisites are missing. Results on this machine do not establish runs on every host or in CI.
 - The ZIP is not code-signed or notarized. The SHA-256 shows the file is intact, not who published it.
 - `platform.release()` can return `10` on Windows 11 (a Python limitation).
 - Some gates do not apply to a packaged copy (there is no `tests/` folder). The tool does not refuse an official build from a dirty working tree; check `git.dirty` in the report.

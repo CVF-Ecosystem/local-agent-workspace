@@ -1,0 +1,388 @@
+{
+  "note": "Reference vectors for law.cvf.bind/2 (CANDIDATE). A hash identifies bytes; it grants nothing. All inputs are fake. Recomputed by tests/test_control_v2_candidate.py.",
+  "bind_version": "law.cvf.bind/2",
+  "canonical": [
+    {
+      "id": "u11-terminal-newline-key",
+      "input_json": "{\"key\\n\":1}",
+      "expected": {
+        "status": "UNSUPPORTED",
+        "reason": "KEY_NOT_ALLOWED"
+      }
+    },
+    {
+      "id": "c01-key-order-whitespace",
+      "input_json": "{ \"b\": 1, \"a\": [true, null, \"x\"] }",
+      "expected": {
+        "status": "OK",
+        "canonical_utf8": "{\"a\":[true,null,\"x\"],\"b\":1}",
+        "digest": "sha256:54a65415ad370228851a1da4b31b6fd42dc58b19a50d35cae759325f7388ce64"
+      }
+    },
+    {
+      "id": "c02-empty-containers",
+      "input_json": "{\"z\":[],\"y\":{}}",
+      "expected": {
+        "status": "OK",
+        "canonical_utf8": "{\"y\":{},\"z\":[]}",
+        "digest": "sha256:ce454d0e882db6a83fc347f4e1372d4923a90d619fc680caf9d5307b4d46ea46"
+      }
+    },
+    {
+      "id": "c03-null-is-not-absent-null",
+      "input_json": "{\"a\":null}",
+      "expected": {
+        "status": "OK",
+        "canonical_utf8": "{\"a\":null}",
+        "digest": "sha256:d091f9c83c091f79652fe8786375b3fe4ce0861a56f5bfbafedbe431877ff0e8"
+      }
+    },
+    {
+      "id": "c03-null-is-not-absent-absent",
+      "input_json": "{}",
+      "expected": {
+        "status": "OK",
+        "canonical_utf8": "{}",
+        "digest": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+      }
+    },
+    {
+      "id": "c04-unicode-raw-nfc",
+      "input_json": "{\"k\":\"\\u00e9\\u4e2d\"}",
+      "expected": {
+        "status": "OK",
+        "canonical_utf8": "{\"k\":\"é中\"}",
+        "digest": "sha256:46af7c8fb8b65095424ce987112c67d2af79db4203787e6672236d2c716a4459"
+      }
+    },
+    {
+      "id": "c05-control-escapes-and-del",
+      "input_json": "\"\\u0001\\n\\t\\\"\\\\\\u007f\"",
+      "expected": {
+        "status": "OK",
+        "canonical_utf8": "\"\\u0001\\n\\t\\\"\\\\\"",
+        "digest": "sha256:7886a3b055dd545039a15c979910b9cac7af1b96cc40e0ebeb6f7066b73fc465"
+      }
+    },
+    {
+      "id": "c06-integers",
+      "input_json": "[0,-1,9007199254740991,-9007199254740991]",
+      "expected": {
+        "status": "OK",
+        "canonical_utf8": "[0,-1,9007199254740991,-9007199254740991]",
+        "digest": "sha256:d1f4b91349edc7ebd49ff1de73304f618c38a7456b5e36df82573d372466fff6"
+      }
+    },
+    {
+      "id": "c07-line-separator-raw",
+      "input_json": "\"\\u2028\"",
+      "expected": {
+        "status": "OK",
+        "canonical_utf8": "\" \"",
+        "digest": "sha256:8aa716ff98153a8b537e4e21f27cb75d7ebe92f4754aca11a38ee7a27b714941"
+      }
+    },
+    {
+      "id": "c08-nested-sort",
+      "input_json": "{\"b\":{\"d\":1,\"c\":2},\"a\":1}",
+      "expected": {
+        "status": "OK",
+        "canonical_utf8": "{\"a\":1,\"b\":{\"c\":2,\"d\":1}}",
+        "digest": "sha256:0372c09046efb505e3dea21aff53286f19f693aebe8caea1e66781674cce3c8e"
+      }
+    },
+    {
+      "id": "u01-float",
+      "input_json": "1.5",
+      "expected": {
+        "status": "UNSUPPORTED",
+        "reason": "NON_INTEGER_NUMBER"
+      }
+    },
+    {
+      "id": "u02-exponent",
+      "input_json": "1e3",
+      "expected": {
+        "status": "UNSUPPORTED",
+        "reason": "NON_INTEGER_NUMBER"
+      }
+    },
+    {
+      "id": "u03-integral-float",
+      "input_json": "1.0",
+      "expected": {
+        "status": "UNSUPPORTED",
+        "reason": "NON_INTEGER_NUMBER"
+      }
+    },
+    {
+      "id": "u04-int-too-large",
+      "input_json": "9007199254740992",
+      "expected": {
+        "status": "UNSUPPORTED",
+        "reason": "INTEGER_OUT_OF_RANGE"
+      }
+    },
+    {
+      "id": "u05-non-nfc",
+      "input_json": "\"e\\u0301\"",
+      "expected": {
+        "status": "UNSUPPORTED",
+        "reason": "NON_NFC_STRING"
+      }
+    },
+    {
+      "id": "u06-duplicate-key",
+      "input_json": "{\"a\":1,\"a\":2}",
+      "expected": {
+        "status": "UNSUPPORTED",
+        "reason": "DUPLICATE_KEY"
+      }
+    },
+    {
+      "id": "u07-lone-surrogate",
+      "input_json": "\"\\ud800\"",
+      "expected": {
+        "status": "UNSUPPORTED",
+        "reason": "LONE_SURROGATE"
+      }
+    },
+    {
+      "id": "u08-key-with-space",
+      "input_json": "{\"a b\":1}",
+      "expected": {
+        "status": "UNSUPPORTED",
+        "reason": "KEY_NOT_ALLOWED"
+      }
+    },
+    {
+      "id": "u09-non-ascii-key",
+      "input_json": "{\"\\u00e9\":1}",
+      "expected": {
+        "status": "UNSUPPORTED",
+        "reason": "KEY_NOT_ALLOWED"
+      }
+    },
+    {
+      "id": "u10-nan",
+      "input_json": "NaN",
+      "expected": {
+        "status": "UNSUPPORTED",
+        "reason": "NON_FINITE_NUMBER"
+      }
+    }
+  ],
+  "object_bytes": [
+    {
+      "id": "empty",
+      "bytes_hex": "",
+      "digest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "lf",
+      "bytes_hex": "610a",
+      "digest": "sha256:87428fc522803d31065e7bce3cf03fe475096631e5e07bbd7a0fde60c4cf25c7"
+    },
+    {
+      "id": "crlf",
+      "bytes_hex": "610d0a",
+      "digest": "sha256:8e4621379786ef42a4fec155cd525c291dd7db3c1fde3478522f4f61c03fd1bd"
+    },
+    {
+      "id": "utf8-bom",
+      "bytes_hex": "efbbbf610a",
+      "digest": "sha256:be4fccb045869c7ad387b9081a44cfd495b37efc020da4b44542de0d980c747f"
+    }
+  ],
+  "projection_fixture": {
+    "task": {
+      "schema_version": "law.cvf.control/2",
+      "record_type": "task",
+      "evaluation_basis": "COOPERATIVE_WORKFLOW",
+      "work_id": "EXAMPLE-work-1",
+      "task_id": "EXAMPLE-task-1",
+      "task_revision": 1,
+      "proposed_by": {
+        "actor_id": "EXAMPLE-main",
+        "role": "main",
+        "host": "EXAMPLE-host"
+      },
+      "intent": {
+        "refs": [
+          {
+            "ref_id": "EXAMPLE-intent-ref-1",
+            "kind": "user_intent",
+            "locator": "EXAMPLE://session/msg-1",
+            "revision": "1",
+            "digest": "sha256:3b01c340b7bac5627c94fd7e4f82d48b9360457159ea9d1f4dbfdf42ea7f3617",
+            "attribution": {
+              "source_class": "USER_CONFIRMATION",
+              "channel": "USER_MESSAGE",
+              "recorded_by": {
+                "actor_id": "EXAMPLE-main",
+                "role": "main",
+                "host": "EXAMPLE-host"
+              },
+              "evidence_locator": "EXAMPLE://session/msg-1"
+            }
+          }
+        ],
+        "main_interpretation": "EXAMPLE: Main's reading of the user request.",
+        "unconfirmed": []
+      },
+      "authority": {
+        "grant_refs": [
+          {
+            "ref_id": "EXAMPLE-grant-ref-1",
+            "kind": "grant",
+            "locator": "EXAMPLE://user-store/grant-1",
+            "revision": "1",
+            "digest": "sha256:585bfd913bcd01b32f1542c3eb6657828187a426e03f9446dbd250bb75c16824",
+            "attribution": {
+              "source_class": "USER_CONFIRMATION",
+              "channel": "USER_MESSAGE",
+              "recorded_by": {
+                "actor_id": "EXAMPLE-main",
+                "role": "main",
+                "host": "EXAMPLE-host"
+              },
+              "evidence_locator": "EXAMPLE://session/msg-grant"
+            }
+          }
+        ],
+        "subject": {
+          "actor_id": "EXAMPLE-worker-1",
+          "role": "worker",
+          "host": "EXAMPLE-host"
+        }
+      },
+      "inputs": [
+        {
+          "path": "references/EXAMPLE-quy-che.docx",
+          "digest": "sha256:abfb409c82355f7b9e544d6b63bc56a2062549c74217553b5571f84623990eed",
+          "source_id": "SRC-EXAMPLE-1",
+          "revision": "1"
+        }
+      ],
+      "effects": {
+        "actions": [
+          {
+            "operation": "provenance_write",
+            "tool": "EXAMPLE-editor",
+            "targets": [
+              "references/_INDEX.xlsx"
+            ],
+            "write_zone": "shared_register"
+          }
+        ],
+        "protected_targets": [
+          "references/"
+        ],
+        "preservation": [
+          {
+            "target": "references/_INDEX.xlsx",
+            "must_keep": "EXAMPLE: data validation, formulas",
+            "known_loss_state": "NONE_KNOWN"
+          }
+        ],
+        "on_missing": "STOP_DEPENDENT_EFFECT"
+      },
+      "acceptance": {
+        "requirements": [
+          {
+            "req_id": "REQ-1",
+            "statement": "EXAMPLE: output covers the requested sections",
+            "mandatory": true,
+            "expected_evidence": [
+              "artifact path + digest"
+            ]
+          }
+        ]
+      },
+      "envelope": {
+        "role": "worker",
+        "model": {
+          "value": "EXAMPLE-model",
+          "status": "REQUESTED"
+        },
+        "effort": {
+          "value": "high",
+          "status": "UNKNOWN"
+        }
+      },
+      "route_proposal": {
+        "policy_version": "law.cvf.routing/2",
+        "proposed_rows": [
+          "R-MUTATION"
+        ]
+      },
+      "context_refs": [
+        {
+          "path": "references/EXAMPLE-context.txt",
+          "digest": "sha256:7d5247ef19aa24b48b4d439315f9b5c685774174cd15485b89993ce1e630d56c"
+        }
+      ]
+    },
+    "canonical_intent": "{\"bind\":\"law.cvf.bind/2\",\"part\":\"intent\",\"refs\":[{\"digest\":\"sha256:3b01c340b7bac5627c94fd7e4f82d48b9360457159ea9d1f4dbfdf42ea7f3617\",\"kind\":\"user_intent\",\"revision\":\"1\"}]}",
+    "canonical_context": "{\"bind\":\"law.cvf.bind/2\",\"context_refs\":[{\"digest\":\"sha256:7d5247ef19aa24b48b4d439315f9b5c685774174cd15485b89993ce1e630d56c\",\"path\":\"references/EXAMPLE-context.txt\"}],\"part\":\"context\"}",
+    "canonical_action": "{\"action\":{\"operation\":\"provenance_write\",\"targets\":[\"references/_INDEX.xlsx\"],\"tool\":\"EXAMPLE-editor\",\"write_zone\":\"shared_register\"},\"bind\":\"law.cvf.bind/2\",\"part\":\"action\"}",
+    "expected": {
+      "intent": "sha256:159e51014082dba5310459539d7cf72ff2206eaea451244d3b09b57298c29317",
+      "context": "sha256:e95cf857220b42c5ebaf79356340098ae94aabfd8c2465576e36f00be9f118ad",
+      "task": "sha256:6deb9dc2d52274a3c3f520cda7aa73f635852b263ba8fc22cf79e64bf9c219d7",
+      "action": "sha256:27f0ff1028b9d28965bef6fc076e08ee18fb3238e5d10b94a72a182bf5df64f4"
+    }
+  },
+  "policy_digest": {
+    "file": ".cvf/rules/v2/ROUTING_POLICY.json",
+    "digest": "sha256:ed0c9eba974c8324b4a10d8b0aa6cefe4d80cc251f20299a56edf6fee030e05e",
+    "note": "digest of the parsed policy object, not of file bytes, so line endings do not matter; changes whenever the policy content changes"
+  },
+  "unsupported": [
+    {
+      "part": "path_alias_equivalence",
+      "status": "UNSUPPORTED",
+      "note": "Paths are compared as exact strings. Case, separators, '..', 8.3, trailing dot, ADS, UNC, junction/symlink equivalence is never assumed; different strings are BINDING_MISMATCH, not equal."
+    },
+    {
+      "part": "non_file_objects",
+      "status": "UNSUPPORTED",
+      "note": "Directories, links, cloud placeholders and device paths have no defined object bytes."
+    },
+    {
+      "part": "role_actual_context",
+      "status": "UNSUPPORTED",
+      "note": "context_digest covers the declared context_refs only. What prompt, history or tool output a role actually saw has no observation point in this contract."
+    },
+    {
+      "part": "review_effect_result_digests",
+      "status": "UNSUPPORTED",
+      "note": "No digest of a review, effect or result record is defined; they are referenced by id and by their binding."
+    },
+    {
+      "part": "v1_digest_comparison",
+      "status": "UNSUPPORTED",
+      "note": "v1 digests had no defined input; a v1 receipt is never equal or reinterpreted under bind/2."
+    },
+    {
+      "part": "time_and_expiry",
+      "status": "UNSUPPORTED",
+      "note": "Clock source and expiry evaluation are not defined by C1."
+    },
+    {
+      "part": "attribution_authenticity",
+      "status": "UNSUPPORTED",
+      "note": "Nothing here proves that a user, tool or role really produced a claim; attribution is cooperative."
+    },
+    {
+      "part": "format_semantic_equality",
+      "status": "UNSUPPORTED",
+      "note": "Two files with different bytes are different objects even if an application would render them the same."
+    },
+    {
+      "part": "float_and_non_nfc_inputs",
+      "status": "UNSUPPORTED",
+      "note": "Rejected rather than normalised: see canonical vectors u01-u05."
+    }
+  ]
+}

@@ -13,6 +13,8 @@ Chỉ điền điều hữu ích và ổn định. Tiến độ hiện tại thu
 - Nguồn / mẫu đã duyệt chính: [Đường dẫn hoặc mục trong index nguồn]
 - Ràng buộc quan trọng: [Ràng buộc nghiệp vụ đã xác nhận hoặc giới hạn xử lý dữ liệu]
 - Mức nhạy cảm dữ liệu: [Công khai / Nội bộ / Có dữ liệu cá nhân hoặc mật; nêu cách xử lý]
+- Phạm vi được giao cho agent phụ: Xem .agent/EXECUTION_PROFILE.json (quyền gọi vai do profile giữ; chưa có grant thì chưa có quyền)
+- Ngoại lệ thư mục nguồn cũ: [Không có / thư mục trong project, nhiều thư mục ngăn bằng dấu ; ví dụ: Tai-lieu-cu; Ho-so-2023]
 
 ## Mục đích của workspace
 

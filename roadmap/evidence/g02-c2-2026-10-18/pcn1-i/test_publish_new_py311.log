@@ -1,0 +1,40 @@
+test_identity_is_hex_and_never_an_out_of_range_integer (tests.test_publish_new.Canonical.test_identity_is_hex_and_never_an_out_of_range_integer) ... ok
+test_v2_canonical_vectors (tests.test_publish_new.Canonical.test_v2_canonical_vectors) ... ok
+test_wire_must_be_canonical_raw_bytes (tests.test_publish_new.Canonical.test_wire_must_be_canonical_raw_bytes) ... ok
+test_exit_codes_and_changes (tests.test_publish_new.Cli.test_exit_codes_and_changes) ... ok
+test_in_place_edit_before_recover_is_unknown (tests.test_publish_new.Crash.test_in_place_edit_before_recover_is_unknown) ... ok
+test_kill_after_link_is_recovered_by_identity_and_bytes (tests.test_publish_new.Crash.test_kill_after_link_is_recovered_by_identity_and_bytes) ... ok
+test_kill_after_prepared (tests.test_publish_new.Crash.test_kill_after_prepared) ... ok
+test_kill_after_published_leaves_cleanup_to_recover (tests.test_publish_new.Crash.test_kill_after_published_leaves_cleanup_to_recover) ... ok
+test_kill_before_link_never_claims_not_published (tests.test_publish_new.Crash.test_kill_before_link_never_claims_not_published) ... ok
+test_replaced_target_with_same_bytes_is_unknown (tests.test_publish_new.Crash.test_replaced_target_with_same_bytes_is_unknown) ... ok
+test_multiple_terminals_and_empty_prepared (tests.test_publish_new.Evidence.test_multiple_terminals_and_empty_prepared) ... ok
+test_non_canonical_or_foreign_evidence_fails_closed (tests.test_publish_new.Evidence.test_non_canonical_or_foreign_evidence_fails_closed) ... ok
+test_rid_taken_by_an_early_recover_is_a_consistent_terminal (tests.test_publish_new.Evidence.test_rid_taken_by_an_early_recover_is_a_consistent_terminal) ... ok
+test_supersedes_is_unbound_metadata (tests.test_publish_new.Evidence.test_supersedes_is_unbound_metadata) ... ok
+test_terminal_next_to_broken_prepared_is_inconsistent (tests.test_publish_new.Evidence.test_terminal_next_to_broken_prepared_is_inconsistent) ... ok
+test_refused_before_any_write (tests.test_publish_new.NotWindows.test_refused_before_any_write) ... skipped 'non-Windows refusal'
+test_bootstrap_then_lock_or_prepared_write_failure_reports_writes (tests.test_publish_new.Publish.test_bootstrap_then_lock_or_prepared_write_failure_reports_writes) ... ok
+test_case_only_difference_is_a_conflict (tests.test_publish_new.Publish.test_case_only_difference_is_a_conflict) ... ok
+test_changed_or_missing_source_is_refused (tests.test_publish_new.Publish.test_changed_or_missing_source_is_refused) ... ok
+test_cleanup_failure_keeps_proof_and_recover_cleans_only_the_right_file (tests.test_publish_new.Publish.test_cleanup_failure_keeps_proof_and_recover_cleans_only_the_right_file) ... ok
+test_existing_target_is_kept_and_conflict_recorded (tests.test_publish_new.Publish.test_existing_target_is_kept_and_conflict_recorded) ... ok
+test_happy_path_writes_canonical_evidence_and_the_exact_bytes (tests.test_publish_new.Publish.test_happy_path_writes_canonical_evidence_and_the_exact_bytes) ... ok
+test_junction_parent_and_runtime_are_refused_before_writing (tests.test_publish_new.Publish.test_junction_parent_and_runtime_are_refused_before_writing) ... ok
+test_output_needs_internal_draft_and_sets_are_canonical (tests.test_publish_new.Publish.test_output_needs_internal_draft_and_sets_are_canonical) ... ok
+test_published_write_failure_is_pending_and_stays_blocked (tests.test_publish_new.Publish.test_published_write_failure_is_pending_and_stays_blocked) ... ok
+test_recover_and_discard_are_busy_while_another_process_holds_the_rid (tests.test_publish_new.Publish.test_recover_and_discard_are_busy_while_another_process_holds_the_rid) ... ok
+test_recover_that_comes_before_the_publisher_takes_the_rid (tests.test_publish_new.Publish.test_recover_that_comes_before_the_publisher_takes_the_rid) ... ok
+test_refused_forms_write_nothing (tests.test_publish_new.Publish.test_refused_forms_write_nothing) ... ok
+test_request_shape (tests.test_publish_new.Publish.test_request_shape) ... ok
+test_size_limits (tests.test_publish_new.Publish.test_size_limits) ... ok
+test_stage_failure_abandons (tests.test_publish_new.Publish.test_stage_failure_abandons) ... ok
+test_terminal_write_failure_is_unknown_and_not_hidden (tests.test_publish_new.Publish.test_terminal_write_failure_is_unknown_and_not_hidden) ... ok
+test_two_recovers_of_one_rid (tests.test_publish_new.Publish.test_two_recovers_of_one_rid) ... ok
+test_two_requests_racing_for_one_target (tests.test_publish_new.Publish.test_two_requests_racing_for_one_target) ... ok
+test_unsupported_volume_writes_nothing (tests.test_publish_new.Publish.test_unsupported_volume_writes_nothing) ... ok
+
+----------------------------------------------------------------------
+Ran 35 tests in 2.447s
+
+OK (skipped=1)

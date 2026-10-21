@@ -1,0 +1,225 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:law:execution-profile:1",
+  "title": "LAW execution profile",
+  "description": "Package-owned structure of .agent/EXECUTION_PROFILE.json (language neutral, shared by VI and EN). The profile holds the project's REQUESTED choices (host, model or tier, effort, fallback, limits) and, when authority_owner is PROFILE, canonical v3 grant records. Requested is not observed: nothing here says a host applied a choice, registered a role or enforces a limit. Grants are claims validated separately against .cvf/contracts/v3/control.schema.json; this schema checks only that each grant is an object. No credential, account, session, observed or receipt fields exist. Validating proves structure only, never authority.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "authority_owner",
+    "host",
+    "roles",
+    "fallback",
+    "requested_limits",
+    "grants"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "law.execution-profile/1"
+    },
+    "authority_owner": {
+      "description": "Exactly one owner of delegation authority. PROJECT: the project's PROJECT.md line holds it and grants must be empty. PROFILE: grants live here and PROJECT.md holds only a pointer.",
+      "enum": [
+        "PROJECT",
+        "PROFILE"
+      ]
+    },
+    "host": {
+      "description": "Requested host or app label, or null when not chosen. Not a claim that the host was observed or supports anything.",
+      "$ref": "#/$defs/nullable_label"
+    },
+    "roles": {
+      "type": "object",
+      "required": [
+        "scout",
+        "worker",
+        "reviewer"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "scout": {
+          "$ref": "#/$defs/role_choice"
+        },
+        "worker": {
+          "$ref": "#/$defs/role_choice"
+        },
+        "reviewer": {
+          "$ref": "#/$defs/role_choice"
+        }
+      }
+    },
+    "fallback": {
+      "description": "Fallback only when the user chose one. allowed=false means none was granted and every choice is null.",
+      "allOf": [
+        {
+          "$ref": "#/$defs/choice"
+        },
+        {
+          "type": "object",
+          "required": [
+            "allowed"
+          ],
+          "properties": {
+            "allowed": {
+              "type": "boolean"
+            }
+          },
+          "if": {
+            "properties": {
+              "allowed": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "anyOf": [
+              {
+                "properties": {
+                  "model": {
+                    "type": "string"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "tier": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          },
+          "else": {
+            "properties": {
+              "model": {
+                "type": "null"
+              },
+              "tier": {
+                "type": "null"
+              },
+              "effort": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "requested_limits": {
+      "description": "Requested limits only. They never widen a grant and do not prove a host applies them.",
+      "type": "object",
+      "required": [
+        "max_concurrency",
+        "max_depth"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "max_concurrency": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 64
+            }
+          ]
+        },
+        "max_depth": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 8
+            }
+          ]
+        }
+      }
+    },
+    "grants": {
+      "description": "Canonical v3 grant records (record_type grant). Empty unless authority_owner is PROFILE. Each is validated against the fixed v3 control schema by tools/execution_profile.py.",
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "$defs": {
+    "label": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,79}$"
+    },
+    "nullable_label": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/label"
+        }
+      ]
+    },
+    "choice": {
+      "description": "A model OR a tier (never both), plus an optional effort. All null means not configured.",
+      "type": "object",
+      "required": [
+        "model",
+        "tier",
+        "effort"
+      ],
+      "properties": {
+        "model": {
+          "$ref": "#/$defs/nullable_label"
+        },
+        "tier": {
+          "$ref": "#/$defs/nullable_label"
+        },
+        "effort": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "enum": [
+                "low",
+                "medium",
+                "high",
+                "xhigh",
+                "max"
+              ]
+            }
+          ]
+        }
+      },
+      "not": {
+        "type": "object",
+        "required": [
+          "model",
+          "tier"
+        ],
+        "properties": {
+          "model": {
+            "type": "string"
+          },
+          "tier": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "role_choice": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/choice"
+        }
+      ],
+      "unevaluatedProperties": false
+    }
+  }
+}

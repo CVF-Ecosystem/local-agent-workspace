@@ -3,6 +3,19 @@
 Định dạng phiên bản: `MAJOR.MINOR.PATCH`. Số phiên bản nằm trong `VERSION`; hướng dẫn nâng cấp ở
 `docs/HUONG_DAN_CHUYEN_DOI_PROJECT_CO_SAN_VI.md`.
 
+## v1.9.0 — 2026-10-21
+
+Bản chuẩn bị, chưa phát hành: nhãn đã tăng để project 1.8.0 nâng lên một đích có thật; chưa qua bản đóng băng, chưa chạy gate phát hành cuối.
+MINOR vì thêm công cụ, thư mục và metadata, còn định dạng nguồn, sổ `references/_INDEX.xlsx` và phong bì kết quả của 1.8.0 vẫn đọc được. Nếu phát hiện đổi định dạng không tương thích thì phải chốt lại số MAJOR trước khi phát hành, không giữ MINOR cho tiện.
+
+- Thêm `.cvf/` (quy tắc điều phối vai và quyền tác động, hợp đồng, kiểm tra) tự đủ trong LAW, và `roles/` (Scout, Worker, Reviewer). Quyền gọi vai nằm ở `.agent/EXECUTION_PROFILE.json` (xem `tools/execution_profile.py status`); mẫu mới bắt đầu không có quyền nào.
+- Thêm `tools/library_sync.py` (`python tools/library.py sync`): ghi nhận file trong `references/` vào sổ theo ID và revision. Sổ cũ giữ nguyên ID và các cột sẵn có, chỉ thêm cột `LAW *` và sheet `LAW history`.
+- Thêm `tools/artifacts.py`, `publish_new.py`, `context_update.py`, `current_draft.py`, `native_agents.py`, `audit_scripts.py` và các lệnh kiểm tương ứng (nguồn, kết quả, căn cứ; không tự duyệt).
+- `upgrade_package.py`: project 1.8.0 chưa ai sửa file lõi `.cvf` được nâng lên (trước đây bị chặn nhầm). File lõi đã bị sửa vẫn chặn, kể cả `--force`. File lưu sau lúc xem trước nhưng trước khi ghi bị từ chối, không bị ghi đè. Project thiếu dòng quyền trong `PROJECT.md` không được tự tạo profile; hướng dẫn ở `docs/HUONG_DAN_CHUYEN_DOI_PROJECT_CO_SAN_VI.md`.
+- Chiều hạ phiên bản không được hỗ trợ. Công cụ nâng cấp của gói 1.8.0 từ chối khi nhãn project cao hơn nhãn gói; `--force` của công cụ cũ tắt chính chốt đó, không dùng để hạ project về 1.8.0, và đây không phải bảo đảm chặn mọi bản chạy cũ.
+- `library.py check` báo mã ID trùng (nêu ID và các dòng, mã thoát khác 0), nhất quán với `sync`; sổ cũ không có cột ID vẫn đọc như trước. Thông báo lỗi sổ, nâng cấp bị chặn và hạ phiên bản có bước xử lý cụ thể.
+- Hướng dẫn nâng cấp: file package ngoài danh sách tự hợp nhất (ví dụ `tools/check_output.py.new`) có đường thủ công có sao lưu; đường cho project thiếu dòng quyền và project mất profile.
+
 ## v1.8.0 — 2026-10-14
 
 - Bảo toàn native và chuẩn tiếp nhận skill/gói: một chuẩn chung ở `skills/README.md` (ba mức ứng viên, đủ điều kiện dùng, được cập nhật
