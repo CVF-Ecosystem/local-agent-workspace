@@ -382,6 +382,42 @@ class Diagnostics(PanelBase):
         self.assertNotIn('/Users/', text)
         self.assertNotIn('/home/', text)
 
+    def test_bundle_exports_only_safe_component_metadata_and_keeps_local_paths(self):
+        import current_draft
+        paths = (r'C:\HostedToolCache\windows\Python\3.12.10\x64\python.exe',
+                 'C:/SharedTools/Python/python.exe',
+                 r'C:\\HostedToolCache\\windows\\Python\\python.exe',
+                 '/opt/hostedtoolcache/Python/3.12.10/x64/bin/python',
+                 str(self.project / 'python.exe'), os.path.join(os.path.expanduser('~'), 'python.exe'))
+        readiness = {'usable': True, 'reason': None, 'jsonschema': '4.23.0', 'fs': 'NTFS'}
+        with patch.object(current_draft, 'readiness', return_value=readiness), \
+                patch.object(app, 'run_tool', return_value={'result': {}}):
+            for path in paths:
+                with self.subTest(path=path), patch.object(app.sys, 'executable', path):
+                    local = app.components()
+                    controlled = next(row for row in local if row['feature'] == 'controlled')
+                    self.assertEqual(controlled['python_path'], path)
+                    # Future metadata must not add paths, nested payloads, or mistyped values to exports.
+                    controlled.update(executable=path, install_root=path, details={'path': path})
+                    rows = local + [{'feature': path, 'needs': [path], 'version': {'path': path},
+                                     'reason': path, 'jsonschema': path, 'fs': path, 'usable': path}]
+                    with patch.object(app, 'components', return_value=rows):
+                        rel = app.diagnostics_bundle()
+                    with zipfile.ZipFile(str(self.project / rel)) as archive:
+                        self.assertEqual(archive.namelist(), ['diagnostics.json'])
+                        text = archive.read('diagnostics.json').decode('utf-8')
+                    exported = json.loads(text)['components']
+                    safe = next(row for row in exported if row.get('feature') == 'controlled')
+                    self.assertEqual(safe, {'feature': 'controlled', 'needs': 'jsonschema>=4.18',
+                                           'usable': True, 'reason': None, 'version': app.sys.version.split()[0],
+                                           'jsonschema': '4.23.0', 'fs': 'NTFS'})
+                    self.assertEqual(exported[-1], {})
+                    self.assertNotIn(path, text)
+                    self.assertNotIn(json.dumps(path)[1:-1], text)
+                    for key in ('python_path', 'executable', 'install_root', 'details'):
+                        self.assertNotIn(key, text)
+                    self.assertEqual(controlled['python_path'], path)
+
     def test_bundle_is_written_only_under_runtime_diagnostics(self):
         before = snapshot(self.project)
         with patch.object(app, 'pack_info', return_value={'items': []}):
@@ -1974,6 +2010,7 @@ class MergeFinishBase(MergeReplaceBase):
 
 
 class MergeFinishPreview(MergeFinishBase):
+    @windows_only
     def test_preview_describes_the_pair_and_writes_nothing(self):
         before = tree_state(self.project)
         pv = self.fpv()
@@ -2003,6 +2040,7 @@ class MergeFinishPreview(MergeFinishBase):
         self.assertEqual(reads, [self.guide, self.guide + '.new'])
         self.assertEqual((pv['current_sha256'], pv['candidate_sha256']), (sha(self.raw(self.guide)), sha(self.raw(self.guide + '.new'))))
 
+    @windows_only
     def test_identical_pair_can_finish_while_replace_keeps_its_noop(self):
         write(self.project, self.guide + '.new', self.raw(self.guide))
         pv = self.fpv()
@@ -2543,6 +2581,7 @@ class MergeFinishHttp(MergeFinishBase):
                 conn.close()
         self.assertEqual(tree_state(self.project), before)
 
+    @windows_only
     def test_preview_and_observe_are_read_only_and_not_logged(self):
         base = self.serve()
         before = tree_state(self.project)

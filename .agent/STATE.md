@@ -8,7 +8,7 @@ Phát triển LAW thành workspace local dùng lâu dài cho công việc văn p
 
 ## Current phase
 
-21/10/2026: Đã công bố GitHub Pre-release v1.9.0-rc1 theo yêu cầu operator phát hành để thu feedback, chưa final. Tag trỏ source6f39c60b, ZIP/gate giữ đúng bản đã review;3asset tải lại từ GitHub khớp checksum. Stable latest vẫnv1.8.0; CI/supportofficial chưa xác nhận. MVP dùng thử đã bàn giao; tiếp feedback thật, không tự mở tính năng.
+21/10/2026: Operator giao “sửa đi” sau review L19. Đã sửa diagnostics export và test portability trên nhánh fix/l19-ci-diagnostics; giữ runtime, schema và giá trị pin. Main hoàn tất phần worker CI bị hết dung lượng, reviewer độc lập đã nhận diff, không thấy blocker; 103 test tập trung đạt. Chưa nhận CI mới hoặc thay RC1 đã công bố.
 
 ## Completed
 
@@ -28,7 +28,7 @@ Phát triển LAW thành workspace local dùng lâu dài cho công việc văn p
 - Asset ZIP1177698byte/261file: SHA256 3b0ea0888496a653b9c1ece77d1a13fdd13d5996ffdc2bc5f212775026c703f4; gateJSON64cea39ce6e04cc892ce70705f908ede0488892f58d6bcf09d6caa6dd82165d0; checksumfile f8dcd28e1a25216559b90d22aecd9b76d316b029e389c610b3c6eba90195874a.
 - Bản local ở dist/local-agent-workspace-v1.9.0-rc1*; ZIP/gate đã upload nguyên bytes. Gate4passed/1492test6skip ở source6f39;2fullrebuild sau timeout vẫnfailed,2archiveprobe đúngwriter bằngSHA.
 - Release notes có tải/hướng dẫn/nâng cấp/backup/giới hạn và feedback. docs/FEEDBACK_FORM_VI_EN.md đã có trongZIP; GitHub Issue template phan-hoi.md tồn tại, Issues bật; chưa có feedback mới để ghi.
-- Nguồn ở origin/branding-tokens, review đã push370ea81; ghi nhận phát hành cập nhật metadata sau đó. Main không đổi VERSION/CHANGELOG/tag source, code/gate hoặc ZIP; không merge main/global/profile.
+- Nhánh sửa fix/l19-ci-diagnostics từ ddd6118; origin/main1ca3f0c đã mergePR6(370ea81). Run39548822713:5jobfailedBehaviour,package/HTMLsuccess,RCbuild/uploadskipped. Review trước chỉ fetch; corrective hiện hành trên nhánh riêng, chưa có kết quả CI mới.
 
 ## Open items
 
@@ -37,12 +37,12 @@ Phát triển LAW thành workspace local dùng lâu dài cho công việc văn p
 - Upgrade bằng script cũ trong project không bootstrap profile; chạy lại bằng script mới. A-06/A-07 giữ giới hạn cũ; D4 chỉ bản lab6ee4cef2, không duyệt phát hành.
 - A-10 core có3vai/preset candidate/retire đã review. Proof lab chỉ capability/model/locator: còn1finding diễn đạt nhỏ candidate dòng21, giữ CANDIDATE/chưa user acceptance; telemetry0.38191935USD không hóa đơn. Không nhận model quality/fullR4/enforcement.
 - Adapter status vẫn NOT_INSPECTED cho host: receipt không chứng minh invocation. Proof riêng đã quan sát model/Read, chưa sandbox/tools enforcement. Native+receipt có journal nhưng không nguyên tử, còn TOCTOU cuối; parser identity subset/nested unknown từ chối.
-- RC1 chỉ có evidence local Windows/NTFS/Python3.11.9; CI/official chưa có. GateRC1 đo gitclean tại commit6f39; hiện dirty metadata sau build. UI log không chứng minh nội dung từng trang/visual; Office visualQA và symlink file thật chưa đo.
+- CI main1ca3 hiệnfailed5/5; RC1 localWindows3.11.9 giữ evidence lịch sử, không chuyển CI thànhPASS. L19-02diagnostics appliesRC1; chưa nên coi ZIPchẩnđoán đãche sạch đườngdẫn. Parser test đã chốt injection RecursionError, không thêm depth policy; chưa visualQA/symlinkfile thật.
 
 ## Waiting on user
 
-- Không chờ xác nhận phát hành prerelease: operator đã yêu cầu và đã công bố v1.9.0-rc1 để dùng/thu feedback. Chưa có kết quả usability hoặc phản hồi người dùng mới.
-- Chưa cấp stable/final release, merge main hoặc host-global-admin/CVF cha. Không suy release candidate thành official support/CI xanh; stable latest1.8.0 giữ nguyên.
+- Không còn quyết định chặn corrective L19: đã có quyền sửa và quyền GitHub từ phiên trước.
+- RC1 vẫn là prerelease; chưa có yêu cầu stable/final hoặc thay asset/tag RC1.
 
 ## Decisions
 
@@ -56,4 +56,4 @@ Phát triển LAW thành workspace local dùng lâu dài cho công việc văn p
 
 ## Next milestone
 
-Thu feedback thật bằng form/Issues đã có trong quá trình dùng prerelease. Codex chốt finding cần sửa với operator, Claude thi công/Codex review; chưa có finding thì giữ baseline, không dựng lại hoặc tự mở feature/pilot. Bản stable/final là quyết định sau feedback, không phải đầu ra lần này.
+Chốt review L19, commit/push nhánh sửa và kiểm ma trận CI thật. Không thêm tính năng, không bỏ gate hoặc sửa pin để làm xanh; RC1 giữ nguyên bytes và lịch sử. CI mới chưa có kết quả thì ghi đang chờ, không dùng local test thay thế.
