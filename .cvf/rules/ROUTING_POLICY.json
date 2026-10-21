@@ -1,0 +1,136 @@
+{
+  "schema_version": "law.cvf.control/1",
+  "record_type": "routing_policy",
+  "note": "Canonical machine-readable routing table. CONTROL_RULES.md renders the same row IDs for people; change both together, bump policy_version and get independent review. Not active: no checker or host enforces it yet (G-02/G-03).",
+  "policy_id": "law-routing-minimum",
+  "policy_version": "law.cvf.routing/1",
+  "status": "DESIGN_PENDING_REVIEW",
+  "readable_rendering": ".cvf/rules/CONTROL_RULES.md#routing-toi-thieu",
+  "combine": "UNION_OF_REQUIREMENTS",
+  "main_may_downgrade": false,
+  "missing_required_reviewer": "BLOCK_DEPENDENT_EFFECT_NO_SELF_REVIEW",
+  "reviewer_dispatch_needs_review": false,
+  "unknown_handling": "NEVER_ALLOW",
+  "unresolved_condition": "TREAT_AS_UNCLASSIFIED",
+  "unmatched_effect_route": "R-UNCLASSIFIED",
+  "match_semantics": "match_any: OR between clauses. Inside a clause: AND between fields; operations/write_zones/content_use: actual value is one of the list; conditions_all: every condition holds; conditions_any: at least one holds.",
+  "group_grant_reuse": "REUSE_WITHIN_SCOPE_WITHOUT_REAPPROVAL",
+  "review_grants_authority": false,
+  "independent_read_draft_continues": true,
+  "rows": [
+    {
+      "row_id": "R-READ_DRAFT",
+      "title": "Read/survey or create a new draft in working/new output; no original, register, permission, install/export or external write",
+      "match_any": [
+        { "operations": ["read", "create_new"], "write_zones": ["none", "working", "output_new"], "conditions_all": ["NO_PROTECTED_TARGET"] }
+      ],
+      "required_gates": ["GRANT_SCOPE", "PATH_SCOPE", "TOOL_SCOPE", "ENVELOPE"],
+      "required_review_phases": [],
+      "authority_evidence": "COOPERATIVE_GRANT_REFERENCE",
+      "trusted_refs_required": [],
+      "note": "No Reviewer call and no separate task record required. A standing group grant covers it."
+    },
+    {
+      "row_id": "R-RECIPE",
+      "title": "Deterministic operation by a recipe accepted at this exact version, not changing a user decision",
+      "match_any": [
+        { "operations": ["create_new", "overwrite", "delete", "register_write", "provenance_write"], "conditions_all": ["RECIPE_ACCEPTED_VERSION", "NO_USER_DECISION_CHANGE"] }
+      ],
+      "required_gates": ["GRANT_SCOPE", "RECIPE_VERSION_ACCEPTED", "INPUT_REVISION", "PRESERVATION", "ACTUAL_OUTCOME"],
+      "required_review_phases": [],
+      "authority_evidence": "TRUSTED_VERIFIED",
+      "trusted_refs_required": ["grant", "recipe_acceptance"],
+      "note": "No LLM review per file. Both conditions must hold. A tool name is not a recipe; a new or changed recipe, or an accepted recipe that changes a user decision, goes to R-MUTATION; an unknown decision effect goes to R-UNCLASSIFIED."
+    },
+    {
+      "row_id": "R-MUTATION",
+      "title": "New or off-recipe overwrite/delete of sources, register or provenance change",
+      "match_any": [
+        { "operations": ["overwrite", "delete", "register_write", "provenance_write"], "conditions_all": ["RECIPE_ABSENT_OR_CHANGED"] },
+        { "operations": ["create_new", "overwrite", "delete", "register_write", "provenance_write"], "conditions_all": ["RECIPE_ACCEPTED_VERSION", "USER_DECISION_CHANGE"] }
+      ],
+      "required_gates": ["GRANT_SCOPE", "BINDING", "INPUT_REVISION", "PRESERVATION"],
+      "required_review_phases": ["PRE_EFFECT", "PRE_INTEGRATION"],
+      "authority_evidence": "TRUSTED_VERIFIED",
+      "trusted_refs_required": ["user_intent", "grant", "reviewer_eligibility"]
+    },
+    {
+      "row_id": "R-AUTHORITY_CHANGE",
+      "title": "Verification status, schema/policy or permission change; skill install/export",
+      "match_any": [
+        { "operations": ["verification_status_write", "schema_or_policy_write", "grant_write", "skill_install", "skill_export"] }
+      ],
+      "required_gates": ["GRANT_SCOPE", "BINDING", "INPUT_REVISION", "PRESERVATION", "SKILL_INTAKE_STANDARD"],
+      "required_review_phases": ["PRE_EFFECT", "PRE_INTEGRATION"],
+      "authority_evidence": "TRUSTED_VERIFIED",
+      "trusted_refs_required": ["user_intent", "grant", "reviewer_eligibility"],
+      "additional_owner": "skills/README.md (intake standard for install/export; a Reviewer verdict does not replace it)",
+      "note": "Never a recipe. A review does not issue a grant; a grant change still needs the user or an issuer the user authorized."
+    },
+    {
+      "row_id": "R-HIGH_STAKES",
+      "title": "Content to sign, send outside or use as a decision basis; claim that a source/content is verified",
+      "match_any": [
+        { "content_use": ["sign", "send_external", "decision_basis", "verified_claim"] }
+      ],
+      "required_gates": ["SOURCE_SCOPE_AND_CONCLUSION"],
+      "required_review_phases": ["PRE_DELIVERY"],
+      "authority_evidence": "TRUSTED_VERIFIED",
+      "trusted_refs_required": ["user_intent", "reviewer_eligibility"],
+      "note": "Adds to any mutation row that also matches; content_use can only add requirements, its absence is not evidence of low risk."
+    },
+    {
+      "row_id": "R-EXTERNAL",
+      "title": "Send data out, network write, hard-to-reverse effect or envelope overrun",
+      "match_any": [
+        { "operations": ["external_send", "network_write", "irreversible_other"] },
+        { "conditions_all": ["ENVELOPE_EXCEEDED"] }
+      ],
+      "required_gates": ["GRANT_EXACT_COVERAGE", "ENVELOPE", "ACTUAL_OUTCOME"],
+      "required_review_phases": ["PRE_EFFECT", "PRE_INTEGRATION"],
+      "authority_evidence": "TRUSTED_VERIFIED",
+      "trusted_refs_required": ["user_intent", "grant", "reviewer_eligibility"],
+      "note": "A grant still in force is reused; review neither replaces consent nor raises limits."
+    },
+    {
+      "row_id": "R-DELEGATE",
+      "title": "Call Scout/Worker/Reviewer within the granted role, tools, scope and limits",
+      "match_any": [
+        { "operations": ["delegate"] }
+      ],
+      "required_gates": ["DELEGATE_SCOPE", "ENVELOPE"],
+      "required_review_phases": [],
+      "authority_evidence": "TRUSTED_VERIFIED",
+      "trusted_refs_required": ["grant"],
+      "note": "Needs a full delegation descriptor (callee role, parent/child task, tool scope, requested envelope) inside the grant's delegate_callees and the parent task; a trusted grant alone is not enough. Calling a Reviewer is not itself reviewed (no recursion). Effects performed by the delegate follow their own rows."
+    },
+    {
+      "row_id": "R-UNCLASSIFIED",
+      "title": "Unclassifiable operation, or missing recipe/authority/required review",
+      "match_any": [
+        { "operations": ["unknown"] },
+        { "conditions_any": ["UNCLASSIFIED", "MISSING_AUTHORITY", "MISSING_REQUIRED_REVIEW"] },
+        { "conditions_all": ["RECIPE_ACCEPTED_VERSION", "USER_DECISION_EFFECT_UNKNOWN"] }
+      ],
+      "required_gates": [],
+      "required_review_phases": [],
+      "authority_evidence": "TRUSTED_VERIFIED",
+      "trusted_refs_required": ["grant"],
+      "forced_disposition": "BLOCKED",
+      "note": "Also the route for any effect no other row matches and for any condition the checker cannot resolve. Blocks the dependent effect; independent read/draft work may continue. Never falls back to R-READ_DRAFT."
+    },
+    {
+      "row_id": "R-KNOWN_LOSS",
+      "title": "Format or structure known to be lost by the operation",
+      "match_any": [
+        { "conditions_all": ["KNOWN_PRESERVATION_LOSS"] }
+      ],
+      "required_gates": ["PRESERVATION"],
+      "required_review_phases": [],
+      "authority_evidence": "TRUSTED_VERIFIED",
+      "trusted_refs_required": ["grant"],
+      "forced_disposition": "DENY",
+      "note": "Refuse before the transaction; a warning after writing is not enough. A safe refusal does not prove support for that format."
+    }
+  ]
+}

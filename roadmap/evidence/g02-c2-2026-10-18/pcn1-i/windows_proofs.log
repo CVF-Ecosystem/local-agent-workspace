@@ -1,0 +1,59 @@
+python 3.11.9 Windows-10-10.0.26200-SP0 executable python.exe
+temp folder (fake data only): %TEMP%/pcn1-proof-d3tk_9p3
+== lock offset 2^30 accepted, file not extended
+   REQUESTED: msvcrt.locking(fd, LK_NBLCK, 1) at 2**30 on a 70-byte file
+   OBSERVED:  {"holder": "LOCKED", "size_before": 70, "size_after_lock": 70}
+   VERDICT:   PASS
+== lock outside EOF does not block content readers (other process)
+   REQUESTED: read [0,size) via open() and os.open(O_RDONLY) while locked
+   OBSERVED:  {"rc": 0, "stdout": "70 70 True REFUSED errno=13", "stderr": ""}
+   VERDICT:   PASS
+== second locker is refused without waiting
+   REQUESTED: LK_NBLCK from another process on the same byte
+   OBSERVED:  {"second": "REFUSED errno=13"}
+   VERDICT:   PASS
+== lock released after holder is killed
+   REQUESTED: kill holder (TerminateProcess), then LK_NBLCK from a new process
+   OBSERVED:  {"stdout": "LOCKED", "seconds_after_kill": 0.03, "holder_returncode": 1}
+   VERDICT:   PASS
+== os.open share mode
+   REQUESTED: while held: open for read, second O_RDWR open, rename
+   OBSERVED:  {"read_open": 70, "second_rdwr_open": "OK", "rename_while_open": "ERR 13"}
+   VERDICT:   PASS
+== identity adapter (GetFileInformationByHandle) and hard link
+   REQUESTED: identity of two names of one file, by path and by fd; compare os.stat
+   OBSERVED:  {"win32_a": {"volume_serial": "5289a548", "file_index": "01aa00000012782d"}, "win32_b": {"volume_serial": "5289a548", "file_index": "01aa00000012782d"}, "nlink_a": 2, "fd_identity": {"volume_serial": "5289a548", "file_index": "01aa00000012782d"}, "os_stat_st_dev_hex8": "5289a548", "os_stat_st_ino_hex16": "01aa00000012782d", "st_ino_bits": 57, "st_dev_equals_volume_serial": true, "st_ino_equals_file_index": true}
+   VERDICT:   PASS
+== identity above 2^53-1 is carried as hex, not integer
+   REQUESTED: serialize hex16 of max 64-bit index with LAW-CJ/2
+   OBSERVED:  {"hex": "ffffffffffffffff", "cj": "{\"file_index\":\"ffffffffffffffff\"}"}
+   VERDICT:   PASS
+== os.link refuses a name that differs only in case
+   REQUESTED: link to 'case.TXT' when 'Case.txt' exists
+   OBSERVED:  {"result": "FileExistsError winerror=183", "existing_bytes": "old"}
+   VERDICT:   PASS
+== NTFS local detection
+   REQUESTED: GetVolumePathNameW + GetVolumeInformationW + GetDriveTypeW on temp, project and present drives
+   OBSERVED:  {"temp": {"fs": "NTFS", "local": true, "drive_type": 3, "cloud_attributes": false}, "project": {"fs": "NTFS", "local": true, "drive_type": 3, "cloud_attributes": false}, "drives": {"C": {"fs": "NTFS", "drive_type": 3, "local": true}, "D": {"fs": "NTFS", "drive_type": 3, "local": true}, "G": {"fs": "FAT32", "drive_type": 3, "local": true}}}
+   VERDICT:   PASS
+== publish refused on a real non-NTFS volume
+   REQUESTED: publish with project_root=G:\ (FAT32)
+   OBSERVED:  {"outcome": "REFUSED", "reason": "UNSUPPORTED_FS", "wrote": [], "root_listing_unchanged": true}
+   VERDICT:   PASS
+== parent pin blocks rename of an ancestor during the link
+   REQUESTED: hold handles root->working->w1; other process renames working; link inside
+   OBSERVED:  {"held": [true, true, true], "rename_while_held": "REFUSED 13", "link_ok": true, "rename_after_release": "RENAMED_AFTER_RELEASE"}
+   VERDICT:   PASS
+
+SUMMARY
+  PASS        lock offset 2^30 accepted, file not extended
+  PASS        lock outside EOF does not block content readers (other process)
+  PASS        second locker is refused without waiting
+  PASS        lock released after holder is killed
+  PASS        os.open share mode
+  PASS        identity adapter (GetFileInformationByHandle) and hard link
+  PASS        identity above 2^53-1 is carried as hex, not integer
+  PASS        os.link refuses a name that differs only in case
+  PASS        NTFS local detection
+  PASS        publish refused on a real non-NTFS volume
+  PASS        parent pin blocks rename of an ancestor during the link

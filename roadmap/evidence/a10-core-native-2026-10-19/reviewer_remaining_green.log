@@ -1,0 +1,11 @@
+test_foreign_sibling_bytes_are_bound_even_with_a_clear_unrelated_name (tests.test_native_agents.RemainingReview.test_foreign_sibling_bytes_are_bound_even_with_a_clear_unrelated_name) ... ok
+test_foreign_sibling_filename_never_bypasses_inventory_or_unknown_name_checks (tests.test_native_agents.RemainingReview.test_foreign_sibling_filename_never_bypasses_inventory_or_unknown_name_checks) ... ok
+test_guard_error_after_move_is_reconciled_instead_of_reporting_no_effect (tests.test_native_agents.RemainingReview.test_guard_error_after_move_is_reconciled_instead_of_reporting_no_effect) ... ok
+test_inactive_matching_receipt_without_a_marker_is_not_a_retired_managed_file (tests.test_native_agents.RemainingReview.test_inactive_matching_receipt_without_a_marker_is_not_a_retired_managed_file) ... ok
+test_inactive_slot_appearing_after_capture_blocks_normal_apply (tests.test_native_agents.RemainingReview.test_inactive_slot_appearing_after_capture_blocks_normal_apply) ... ok
+test_retire_reports_a_changed_active_file_as_conflict (tests.test_native_agents.RemainingReview.test_retire_reports_a_changed_active_file_as_conflict) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.473s
+
+OK

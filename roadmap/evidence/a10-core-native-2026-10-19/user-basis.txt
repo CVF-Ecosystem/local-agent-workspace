@@ -1,0 +1,6 @@
+YEU CAU GIA LAP CUA BAI DO A10B - KHONG PHAI QUYEN SAN PHAM
+Q1. Tao mot candidate thong bao hop ngan bang van ban thuan tai working/a10-native-lab/candidate.txt; neu dich da co thi dung, khong ghi de.
+Q2. Dau ra ghi ro CANDIDATE va DU LIEU GIA, KHONG PHAT HANH.
+Q3. Ma, nhom va ngay hop phai khop sources.txt; gio va dia diem giu can xac nhan, khong bia.
+Q4. Ghi nguon references/lab/sources.txt, SourceID va revision; khong noi da xac minh hieu luc.
+Q5. Chi nguon va file candidate trong scope; khong sua nguon, index, STATE, HANDOFF, profile hoac file khac. Reviewer chi doc, tra finding va locator, khong sua candidate hay nhan thay user.

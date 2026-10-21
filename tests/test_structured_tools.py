@@ -17,6 +17,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools'))
+import check_package as cp
 import result_schema
 
 HAS_OPENPYXL = importlib.util.find_spec('openpyxl') is not None
@@ -210,11 +211,18 @@ class ProjectJourney(StructuredBase):
     """Hành trình của project: tạo bản sao -> thêm nguồn -> cài thử gói -> kiểm package. Luật phát hành không áp vào file của project.
     Project journey: copy -> add sources -> trial-install a pack -> check. Release rules do not apply to project files."""
 
+    def use_clean_package(self):
+        """Project đi ra từ gói sạch (projection chung với bản phát hành), không phải bản chép nguyên cây kho nguồn (có v1/v2, fixtures, evidence).
+        A project comes out of the clean shipped package (shared projection), not a raw copy of the source tree."""
+        self.base = Path(self.tmp.name) / 'clean-package'
+        cp.materialize(str(self.base), branding=False)
+
     def check(self):
         result, human, data = self.structured('check_package.py')
         return result.returncode, data['status'], human
 
     def test_project_files_do_not_trigger_release_rules_but_package_files_still_do(self):
+        self.use_clean_package()
         self.init_project()
         self.assertEqual(self.check()[:2], (0, 'success'))
         result, _, data = self.structured('pack.py', 'add', 'hanh-chinh-nhan-su')
@@ -235,6 +243,7 @@ class ProjectJourney(StructuredBase):
     def test_a_readme_the_user_creates_in_a_new_folder_belongs_to_the_project(self):
         """README do người dùng tạo trong thư mục riêng là của project; README khung của package vẫn bị kiểm.
         A README the user makes in their own folder belongs to the project; the package's scaffold README is still checked."""
+        self.use_clean_package()
         self.init_project()
         self.assertFalse((self.base / 'references' / 'customer-a').exists())
         for rel in (('references', 'customer-a', 'README.md'), ('working', 'khach-a', 'README.md'), ('output', 'README-khac', 'README.md')):
@@ -302,11 +311,9 @@ class NewProject(StructuredBase):
 
     def release_template(self):
         """Bộ mẫu như sau khi giải nén ZIP phát hành: mẫu sạch, không có release_templates/ / as unzipped from a release ZIP."""
-        for rel in ('PROJECT.md', '.agent/STATE.md', '.agent/HANDOFF.md', 'en/PROJECT.md', 'en/.agent/STATE.md', 'en/.agent/HANDOFF.md'):
-            shutil.copyfile(str(self.base / 'release_templates' / rel), str(self.base / rel))
-        shutil.rmtree(str(self.base / 'release_templates'))
-        r = self.run_tool('check_package.py', '--write-manifest')
-        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        clean = Path(self.tmp.name) / 'clean-package'
+        cp.materialize(str(clean), branding=False)  # chính bytes và MANIFEST của bản phát hành / the very bytes and MANIFEST of a release
+        self.base = clean
 
     def test_preview_then_create_next_to_the_template_and_never_overwrite(self):
         self.release_template()
@@ -447,6 +454,229 @@ class LibraryNotChecked(StructuredBase):
         self.assertEqual(data['unchecked'], [{'tool': 'library.py', 'reason': 'openpyxl_missing'}])
         result, _, data = self.structured('library.py', 'stats', '--json', patch=NO_OPENPYXL)
         self.assertEqual((result.returncode, data['status']), (2, 'not_checked'))
+
+
+@unittest.skipUnless(HAS_OPENPYXL, 'openpyxl is not installed; library checks skipped')
+class LibraryReadFailures(StructuredBase):
+    """A-07: an index that cannot be read or has no usable structure is a failure for find, stats and check, never a success with
+    zero rows. A valid index with no rows, and a filter with no hits, stay successes. Synthetic workbooks in a package copy."""
+
+    def index(self):
+        return self.base / 'references' / '_INDEX.xlsx'
+
+    def workbook(self, build):
+        import openpyxl
+        wb = openpyxl.Workbook()
+        build(wb)
+        self.index().parent.mkdir(parents=True, exist_ok=True)
+        wb.save(str(self.index()))
+
+    def read(self, *args):
+        result = self.run_tool('library.py', *args, '--result-json')
+        human, data = result_schema.split_output(result.stdout)
+        return result, human, data
+
+    def test_valid_empty_index_and_filter_with_no_hit_are_successes(self):
+        self.assertEqual(self.structured('library.py', 'init')[0].returncode, 0)
+        result, _, data = self.read('stats', '--json')
+        self.assertEqual((result.returncode, data['status'], data['rows']), (0, 'success', 0))
+        result, _, data = self.read('find', 'khong-co-gi', '--json')
+        self.assertEqual((result.returncode, data['status'], data['count']), (0, 'success', 0))
+        fill_library(self.base)
+        result, _, data = self.read('find', 'tu-khoa-khong-khop', '--json')
+        self.assertEqual((result.returncode, data['status'], data['count']), (0, 'success', 0))  # lọc 0 hit khác sổ 0 dòng
+
+    def test_unreadable_or_structureless_index_is_a_failure_with_its_own_reason(self):
+        def corrupt():
+            self.index().parent.mkdir(parents=True, exist_ok=True)
+            self.index().write_bytes(b'not a workbook')
+
+        def no_sheet():
+            self.workbook(lambda wb: setattr(wb.active, 'title', 'Sheet khác'))
+
+        def no_header():
+            def build(wb):
+                wb.active.title = 'Danh mục'
+                wb.active['A1'] = 'chỉ một dòng'
+            self.workbook(build)
+
+        def no_columns():
+            def build(wb):
+                wb.active.title = 'Danh mục'
+                wb.active.cell(4, 1, 'Mã / ID')
+                wb.active.cell(4, 2, 'Trích yếu / Title')
+            self.workbook(build)
+
+        for name, build, reason in (('corrupt', corrupt, 'index_unreadable'), ('no sheet', no_sheet, 'index_missing_sheet'),
+                                    ('no header row', no_header, 'index_no_header'), ('no columns', no_columns, 'index_missing_columns')):
+            for command in (('find', 'x', '--json'), ('stats', '--json')):
+                with self.subTest(case=name, command=command[0]):
+                    build()
+                    result, _, data = self.read(*command)
+                    self.assertNotEqual(result.returncode, 0, 'a broken index must not look like an empty library')
+                    self.assertIn(data['status'], ('blocked', 'error'))
+                    self.assertEqual(data.get('reason'), reason)
+                    self.assertIs(data['changes'], False)
+
+    def test_check_still_reports_missing_columns_as_findings_and_stops_on_a_missing_header(self):
+        def build(wb):
+            wb.active.title = 'Danh mục'
+            wb.active.cell(4, 1, 'Mã / ID')
+            wb.active.cell(4, 2, 'Trích yếu / Title')
+        self.workbook(build)
+        result, _, data = self.read('check', '--json')
+        self.assertEqual((result.returncode, data['status']), (1, 'issues'))  # hành vi cũ của check giữ nguyên / the old check behaviour is kept
+        self.assertTrue(any('thiếu cột' in f['message'] for f in data['findings']))
+
+    def test_cli_and_the_panel_reader_agree_on_identity_and_status(self):
+        self.assertEqual(self.structured('library.py', 'init')[0].returncode, 0)
+        fill_library(self.base)
+        sys.path.insert(0, str(self.base / 'tools'))
+        try:
+            spec = importlib.util.spec_from_file_location('library_under_test', str(self.base / 'tools' / 'library.py'))
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            panel = module.browse(str(self.base))
+        finally:
+            sys.path.remove(str(self.base / 'tools'))
+        self.assertTrue(panel['ok'])
+        cli = json.loads(self.run_tool('library.py', 'find', 'l-0', '--json', '--all').stdout)['hits']
+        by_row = {h['row']: h for h in cli}
+        for rec in panel['rows']:
+            if rec['row'] in by_row:
+                shown = by_row[rec['row']]
+                self.assertEqual((rec['id'], rec['status'], rec['verify'], rec['title'], rec['revision'], rec['file_state']),
+                                 (shown['id'], shown['status'], shown['verify'], shown['title'], shown['revision'], shown['file_state']))
+        self.assertTrue(by_row)
+
+
+@unittest.skipUnless(HAS_OPENPYXL, 'openpyxl is not installed; library checks skipped')
+class LibraryCheckAgreesWithSync(StructuredBase):
+    """M3-C1/F6: `check` must not be green where `sync` refuses (duplicate ID), shipped READMEs are told apart by ownership (never by name), and
+    an unreadable index says what to do. Synthetic workbooks in a package copy."""
+
+    def index(self):
+        return self.base / 'references' / '_INDEX.xlsx'
+
+    def with_duplicate_id(self):
+        import openpyxl
+        self.assertEqual(self.structured('library.py', 'init')[0].returncode, 0)
+        fill_library(self.base)
+        wb = openpyxl.load_workbook(str(self.index()))
+        ws = wb['Danh mục']
+        id_col = next(c for c in range(1, ws.max_column + 1) if str(ws.cell(row=4, column=c).value or '').startswith('Mã'))
+        self.assertEqual(ws.cell(row=8, column=id_col).value, 'L-004')
+        ws.cell(row=8, column=id_col, value=' L-001 ')  # the same ID as row 5 once stripped, like sync strips it
+        wb.save(str(self.index()))
+
+    def test_check_names_a_duplicate_id_with_its_rows_and_exits_nonzero(self):
+        self.with_duplicate_id()
+        result = self.run_tool('library.py', 'check', '--json', '--result-json')
+        human, data = result_schema.split_output(result.stdout)
+        self.assertEqual((result.returncode, data['status'], data['errors']), (1, 'issues', 4))  # the 3 old findings + the duplicate
+        dup = [f for f in data['findings'] if 'L-001' in f['message']]
+        self.assertEqual(len(dup), 1, data['findings'])
+        self.assertEqual(dup[0]['severity'], 'error')
+        self.assertEqual(dup[0]['row'], 8)
+        self.assertIn('5, 8', dup[0]['message'])  # every row of the ID, not only the later one
+        steps = ' '.join(data['next_actions'])
+        self.assertIn('Excel', steps)
+        self.assertIn('Đừng dựng lại sổ', steps)  # never "rebuild the index" as the way out
+        plain = self.run_tool('library.py', 'check')
+        self.assertEqual(plain.returncode, 1)
+        self.assertIn('trùng Mã "L-001" ở các dòng 5, 8', plain.stdout)
+        self.assertIn('KHÔNG ĐẠT', plain.stdout)
+
+    def test_sync_refuses_the_same_index_for_the_same_reason(self):
+        self.with_duplicate_id()
+        before = self.index().read_bytes()
+        result = self.run_tool('library.py', 'sync')
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        said = result.stdout + result.stderr
+        self.assertIn('L-001', said)
+        self.assertIn('5, 8', said)
+        self.assertIn('library.py check', said)
+        self.assertEqual(self.index().read_bytes(), before)  # a refusal edits nothing, IDs included
+
+    def test_an_older_index_without_an_id_column_is_read_as_before(self):
+        import openpyxl
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = 'Danh mục'
+        for col, head in enumerate(('Nhóm', 'Số, ký hiệu', 'Trích yếu', 'Tình trạng', 'Có toàn văn', 'Đường dẫn file'), 1):
+            ws.cell(row=4, column=col, value=head)
+        for row, number in ((5, 'QC-01'), (6, 'QC-02')):
+            for col, value in enumerate(('Nội bộ', number, 'Quy chế ' + number, 'Còn hiệu lực', 'Không', ''), 1):
+                ws.cell(row=row, column=col, value=value)
+        self.index().parent.mkdir(parents=True, exist_ok=True)
+        wb.save(str(self.index()))
+        result = self.run_tool('library.py', 'check', '--json', '--result-json')
+        human, data = result_schema.split_output(result.stdout)
+        self.assertEqual((result.returncode, data['status'], data['errors']), (0, 'success', 0), result.stdout)
+
+    def test_a_shipped_readme_is_left_out_by_ownership_and_one_you_edited_is_a_source(self):
+        self.assertEqual(self.structured('library.py', 'init')[0].returncode, 0)
+        ref = self.base / 'references'
+        shipped = ref / 'README.md'
+        self.assertTrue(shipped.is_file())
+        # a manifest that really lists the READMEs the package ships, at their current bytes (the maintainer manifest of the repo is stale by design)
+        lines = ['%s  %s' % (hashlib.sha256(p.read_bytes()).hexdigest(), p.relative_to(self.base).as_posix()) for p in sorted(ref.rglob('README.md'))]
+        (self.base / 'MANIFEST.sha256').write_text('\n'.join(lines) + '\n', encoding='utf-8')
+        group = ref / 'legal' / 'README.md'
+        self.assertIn('%s  references/legal/README.md' % hashlib.sha256(group.read_bytes()).hexdigest(), lines)
+
+        def unindexed():
+            result = self.run_tool('library.py', 'check', '--json')
+            return [f for f in json.loads(result.stdout)['unindexed'] if f.endswith('README.md')]
+
+        self.assertEqual(unindexed(), [])  # the two shipped READMEs are not "missing from the index"
+        keep = {p: p.read_bytes() for p in (shipped, group)}
+        for path, name in ((shipped, 'README.md'), (group, 'legal/README.md')):
+            path.write_bytes(path.read_bytes() + 'Ghi chú của tôi\n'.encode('utf-8'))
+            self.assertEqual(unindexed(), [name], 'a README you wrote or edited is a source, whatever its file name')
+            path.write_bytes(keep[path])
+            self.assertEqual(unindexed(), [])
+        other = ref / 'policies' / 'quy-che' / 'README.md'  # not shipped there: judged by ownership, not skipped for being named README
+        write(other, 'my own notes')
+        self.assertEqual(unindexed(), ['policies/quy-che/README.md'])
+
+    @unittest.skipUnless(os.name == 'nt', 'Windows junction read-boundary regression')
+    def test_readme_ownership_never_hashes_through_a_junction_outside_the_project(self):
+        self.assertEqual(self.structured('library.py', 'init')[0].returncode, 0)
+        outside = Path(self.tmp.name) / 'outside-project'
+        outside.mkdir()
+        canary = outside / 'README.md'
+        canary.write_bytes(b'synthetic outside README; ownership must not read this')
+        before = canary.read_bytes()
+        link = self.base / 'references' / 'linked'
+        made = subprocess.run(['cmd', '/c', 'mklink', '/J', str(link), str(outside)],
+                              capture_output=True, encoding='utf-8', errors='replace')
+        self.assertEqual(made.returncode, 0, made.stdout + made.stderr)
+        self.addCleanup(os.rmdir, str(link))  # remove only the junction, before the temporary tree
+        patch = ('import os, sys\n'
+                 'sys.path.insert(0, os.path.dirname(os.path.abspath(sys.argv[1])))\n'
+                 'import library_sync\n'
+                 '_digest = library_sync.digest\n'
+                 'def guarded_digest(path):\n'
+                 '    if not library_sync.link_free(path, library_sync.library.ROOT):\n'
+                 '        raise AssertionError("ownership attempted an outside README read")\n'
+                 '    return _digest(path)\n'
+                 'library_sync.digest = guarded_digest\n')
+        result = self.run_tool('library.py', 'check', '--json', patch=patch)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('linked/README.md', json.loads(result.stdout)['unindexed'])
+        self.assertEqual(canary.read_bytes(), before)
+
+    def test_an_unreadable_index_says_what_to_do_and_never_rebuilds_over_it(self):
+        self.index().parent.mkdir(parents=True, exist_ok=True)
+        self.index().write_bytes(b'not a workbook')
+        result = self.run_tool('library.py', 'check', '--json', '--result-json')
+        human, data = result_schema.split_output(result.stdout)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(data.get('reason'), 'index_unreadable')
+        self.assertTrue(data['next_actions'] and 'sao lưu' in data['next_actions'][0], data)
+        self.assertIn('Đừng chép mẫu rỗng', data['next_actions'][0])
+        self.assertEqual(self.index().read_bytes(), b'not a workbook')
 
 
 class GuidesResults(StructuredBase):

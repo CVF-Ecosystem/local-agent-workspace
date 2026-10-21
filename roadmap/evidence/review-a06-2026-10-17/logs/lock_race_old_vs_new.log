@@ -1,0 +1,9 @@
+previous protocol:
+   B entered
+   A entered while B holds: True
+   B lock file still there when B leaves: False
+   B cleanup/other error FileNotFoundError(2, 'The system cannot find the file specified')
+current protocol:
+   B entered
+   A busy
+   lock file present afterwards (never deleted): True

@@ -1,0 +1,7 @@
+DU LIEU GIA - LAB TICH HOP LAW, KHONG SU DUNG THUC TE
+SourceID: LAB-SRC-A10-01
+Revision: lab-r1
+Ma thong bao: LAB-A10-042
+Noi dung: Hop ra soat danh muc tai lieu thu nghiem.
+Ngay hop: 23/10/2026 (gia lap).
+Gio va dia diem: can xac nhan.

@@ -1,0 +1,8 @@
+law.cvf.check/3 contract=v3 selection=CLI_EXPLICIT stage=BINDING_ROUTING_ONLY candidate=CANDIDATE_NOT_ACTIVE phase=accept phase_scope=null disposition=UNSUPPORTED effect_authorized=false assurance=UNVERIFIED init_error=false basis=COOPERATIVE_WORKFLOW
+reasons: UNSUPPORTED_BINDING_PART
+detail: outside the LAW-CJ/2 domain in bound projection parts (task), never normalized: NON_NFC_STRING x1
+owners: schema_sha256=12becc373df364bdec33e7bd5e0533056799044e1f42d28020ee5d969596525c policy_sha256=8c63bd03bbcdb733c7c9810815dafbc039fe0e46303d196e00004337a46fa204
+coverage: record_structure_checked=false binding_evaluated=false routing_evaluated=false gates_evaluated=false artifact_bytes_observed=false target_existence_observed=false actual_operation_observed=false requirements_semantic_verified=false owner_protection=NOT_PROVEN
+route: evaluated=false rows=0 status=null assumptions=0
+aggregate: records_checked_state=NOT_EVALUATED due_gates=0 met=0 not_required=0 not_yet_due=0 not_checked=0 unsupported=0 not_met=0 user_accepted_declared=0 open_assumptions=0 conclusion_scope=RECORD_CONSISTENCY_IN_MEMORY
+gates=0

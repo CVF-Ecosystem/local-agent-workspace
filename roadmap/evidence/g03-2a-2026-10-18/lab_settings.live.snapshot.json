@@ -1,0 +1,197 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\DELL\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+            "args": [
+              "-I",
+              "-B",
+              "C:\\Users\\DELL\\AppData\\Local\\Temp\\LAW-G03-2a-20261018-001903\\hooks\\gate.py",
+              "start"
+            ],
+            "timeout": 5,
+            "onFailure": "continue"
+          }
+        ]
+      }
+    ],
+    "InstructionsLoaded": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\DELL\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+            "args": [
+              "-I",
+              "-B",
+              "C:\\Users\\DELL\\AppData\\Local\\Temp\\LAW-G03-2a-20261018-001903\\hooks\\gate.py",
+              "instructions"
+            ],
+            "timeout": 5,
+            "onFailure": "continue"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|NotebookEdit|Bash|PowerShell|Agent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\DELL\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+            "args": [
+              "-I",
+              "-B",
+              "C:\\Users\\DELL\\AppData\\Local\\Temp\\LAW-G03-2a-20261018-001903\\hooks\\gate.py",
+              "pre"
+            ],
+            "timeout": 3,
+            "onFailure": "block"
+          }
+        ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\DELL\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+            "args": [
+              "-I",
+              "-B",
+              "C:\\Users\\DELL\\AppData\\Local\\Temp\\LAW-G03-2a-20261018-001903\\hooks\\gate.py",
+              "observe"
+            ],
+            "timeout": 5,
+            "onFailure": "continue"
+          }
+        ]
+      },
+      {
+        "matcher": "Glob",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\DELL\\AppData\\Local\\Temp\\LAW-G03-2a-20261018-001903\\hooks\\no_such_executable.exe",
+            "args": [
+              "x"
+            ],
+            "timeout": 3,
+            "onFailure": "block"
+          }
+        ]
+      },
+      {
+        "matcher": "Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\DELL\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+            "args": [
+              "-I",
+              "-B",
+              "C:\\Users\\DELL\\AppData\\Local\\Temp\\LAW-G03-2a-20261018-001903\\hooks\\no_such_script.py"
+            ],
+            "timeout": 3,
+            "onFailure": "block"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\DELL\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+            "args": [
+              "-I",
+              "-B",
+              "C:\\Users\\DELL\\AppData\\Local\\Temp\\LAW-G03-2a-20261018-001903\\hooks\\gate.py",
+              "post"
+            ],
+            "timeout": 5,
+            "onFailure": "continue"
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\DELL\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+            "args": [
+              "-I",
+              "-B",
+              "C:\\Users\\DELL\\AppData\\Local\\Temp\\LAW-G03-2a-20261018-001903\\hooks\\gate.py",
+              "subagent"
+            ],
+            "timeout": 5,
+            "onFailure": "continue"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\DELL\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+            "args": [
+              "-I",
+              "-B",
+              "C:\\Users\\DELL\\AppData\\Local\\Temp\\LAW-G03-2a-20261018-001903\\hooks\\gate.py",
+              "subagent"
+            ],
+            "timeout": 5,
+            "onFailure": "continue"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\DELL\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+            "args": [
+              "-I",
+              "-B",
+              "C:\\Users\\DELL\\AppData\\Local\\Temp\\LAW-G03-2a-20261018-001903\\hooks\\gate.py",
+              "permission"
+            ],
+            "timeout": 5,
+            "onFailure": "continue"
+          }
+        ]
+      }
+    ],
+    "PermissionDenied": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\DELL\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+            "args": [
+              "-I",
+              "-B",
+              "C:\\Users\\DELL\\AppData\\Local\\Temp\\LAW-G03-2a-20261018-001903\\hooks\\gate.py",
+              "permission"
+            ],
+            "timeout": 5,
+            "onFailure": "continue"
+          }
+        ]
+      }
+    ]
+  }
+}

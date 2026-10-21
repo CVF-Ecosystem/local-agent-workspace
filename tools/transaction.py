@@ -19,8 +19,18 @@ TEST ONLY / CHỈ DÙNG KIỂM THỬ: biến môi trường LOCAL_AGENT_WORKSPAC
   commit:N  raise OSError sau khi đã commit N thao tác / after N committed ops
   kill:N    os._exit(70) sau khi đã commit N thao tác / after N committed ops
 Không đặt biến này khi dùng thật. / Never set this in real use.
+
+Liên kết và ranh giới kiểm→ghi / Links and the check-to-write boundary:
+  - Thư mục runtime và mọi đích ghi phải không đi qua symlink/junction (link_free); vi phạm thì chưa ghi gì.
+    Runtime and every write target must not pass through a symlink or junction; a violation writes nothing.
+  - Trên Windows, giữ mở handle thư mục (không FILE_SHARE_DELETE) chặn đổi tên/xóa thư mục đó và mọi thư mục cha, nên không thể thay
+    nó bằng junction giữa lúc kiểm và lúc ghi. Nơi không giữ được handle, chỉ kiểm lại sát trước khi ghi (thu hẹp, không đóng cửa sổ).
+    On Windows an open folder handle without FILE_SHARE_DELETE blocks renaming or deleting that folder and its parents, so it cannot be
+    swapped for a junction between check and write. Elsewhere only a re-check right before the write narrows the window, it does not close it.
+  - Hash lúc đọc (expected_before) chỉ phát hiện nội dung đổi, không thay cho kiểm ranh giới: đích ngoài có cùng bytes vẫn khớp hash.
+    The hash taken at read time detects changed content only; an outside target with identical bytes would match it.
 """
-import argparse, datetime, hashlib, io, json, os, shutil, sys, uuid
+import argparse, contextlib, datetime, hashlib, io, json, os, shutil, sys, uuid
 from result_schema import emit, make
 
 SCHEMA = 'local-agent-workspace/transaction-v1'
@@ -30,6 +40,9 @@ MARGIN = 1024 * 1024
 FAULT_ENV = 'LOCAL_AGENT_WORKSPACE_TEST_FAULT'
 INCOMPLETE = ('prepared', 'committing')  # rollback_partial là trạng thái kết thúc, không chặn / terminal, does not block
 LANG = 'vi'
+_UNSET = object()
+PIN_ENABLED = True  # chỉ test đặt False để thử nhánh không giữ handle / tests set False to exercise the no-handle path
+_HOOK = None  # TEST ONLY: _HOOK(point, path), point = stage|backup|commit|resume|rollback; gọi sau khi giữ thư mục, trước khi băm/ghi / called once the folders are held, before hashing or writing
 
 def L(vi, en): return en if LANG == 'en' else vi
 
@@ -70,22 +83,133 @@ def _now():
 def runtime_root(project):
     return os.path.join(project, *RUNTIME_DIR.split('/'))
 
+def link_free(path, root):
+    """True when no component of path below root is a symlink or junction (realpath equals the plain path)."""
+    rel = os.path.relpath(os.path.abspath(path), os.path.abspath(root))
+    expected = os.path.normpath(os.path.join(os.path.realpath(root), rel))
+    return os.path.normcase(os.path.realpath(path)) == os.path.normcase(expected)
+
+def guard(project, *paths):
+    """Raise TransactionError, before anything is written, when a path passes through a link. / Chặn đường dẫn đi qua liên kết."""
+    for path in paths:
+        if not link_free(path, project):
+            rel = os.path.relpath(os.path.abspath(path), os.path.abspath(project)).replace(os.sep, '/')
+            raise TransactionError(L('Đường dẫn ghi hoặc runtime là, hoặc đi qua, liên kết (symlink/junction); chưa ghi gì: %s',
+                                     'A write or runtime path is, or passes through, a link (symlink/junction); nothing was written: %s') % rel)
+
+def runtime_problem(project):
+    """None when the runtime folder is plain; otherwise the message. / Thông báo nếu runtime đi qua liên kết."""
+    project = os.path.abspath(project)
+    try:
+        guard(project, os.path.join(runtime_root(project), 'transactions'))
+    except TransactionError as e:
+        return str(e)
+    return None
+
+def _rmtree(project, path):
+    """rmtree only inside the project: never delete through a link. / Không xóa qua liên kết."""
+    if link_free(path, project):
+        shutil.rmtree(path, ignore_errors=True)
+
+_k32 = None
+
+def _open_dir_handle(path):
+    """Windows: open a folder handle that blocks renaming or deleting it (and its parents) but allows writing inside."""
+    global _k32
+    import ctypes
+    from ctypes import wintypes
+    if _k32 is None:
+        _k32 = ctypes.WinDLL('kernel32', use_last_error=True)
+        _k32.CreateFileW.restype = wintypes.HANDLE
+        _k32.CreateFileW.argtypes = [wintypes.LPCWSTR, wintypes.DWORD, wintypes.DWORD, wintypes.LPVOID,
+                                     wintypes.DWORD, wintypes.DWORD, wintypes.HANDLE]
+        _k32.CloseHandle.argtypes = [wintypes.HANDLE]
+    # FILE_LIST_DIRECTORY|FILE_READ_ATTRIBUTES; share READ|WRITE only (no DELETE); OPEN_EXISTING; FILE_FLAG_BACKUP_SEMANTICS
+    h = _k32.CreateFileW(path, 0x1 | 0x80, 0x1 | 0x2, None, 3, 0x02000000, None)
+    return None if h in (None, ctypes.c_void_p(-1).value) else h
+
+class Pins:
+    """Folder handles held for the length of a write. hold() is False when the OS cannot give one; callers still re-check."""
+
+    def __init__(self):
+        self._handles = []
+
+    def hold(self, path):
+        if not PIN_ENABLED or os.name != 'nt':
+            return False
+        try:
+            h = _open_dir_handle(path)
+        except Exception:
+            return False
+        if h is None:
+            return False
+        self._handles.append(h)
+        return True
+
+    def close(self):
+        while self._handles:
+            try:
+                _k32.CloseHandle(self._handles.pop())
+            except Exception:
+                pass
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        self.close()
+        return False
+
+class _Held:
+    """Handed to the caller inside held(): call it to re-check, read .protected for the level of protection."""
+
+    def __init__(self, project, files):
+        self._project, self._files, self.protected = project, files, False
+
+    def __call__(self):
+        guard(self._project, *self._files)
+
+@contextlib.contextmanager
+def held(project, *files, create=(), point=None):
+    """Protect the files about to be read, hashed, written, replaced or removed (sources and targets alike).
+
+    Order: check the full path of every file -> create the listed parents -> hold every parent folder -> check again ->
+    test hook (point, first file) -> caller works and calls the yielded recheck() right before the write.
+    .protected is True only when every existing parent folder is really held (Windows); otherwise only re-checking protects.
+    """
+    files = [os.path.abspath(f) for f in files]
+    guard(project, *files)
+    for f in create:
+        os.makedirs(os.path.dirname(os.path.abspath(f)), exist_ok=True)
+    with Pins() as pins:
+        every = True
+        for folder in sorted({os.path.dirname(f) for f in files}):
+            if os.path.isdir(folder):
+                every = pins.hold(folder) and every
+        check = _Held(project, files)
+        check.protected = every
+        check()
+        if point and _HOOK is not None:
+            _HOOK(point, files[0])
+        yield check
+
 def txdir(project, txid):
     return os.path.join(runtime_root(project), 'transactions', txid)
 
-def _write_json_atomic(path, data):
-    d = os.path.dirname(path)
-    os.makedirs(d, exist_ok=True)
+def _write_json_atomic(project, path, data):
     tmp = path + '.tmp'
-    with io.open(tmp, 'w', encoding='utf-8', newline='') as f:
-        f.write(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
-        f.flush()
-        os.fsync(f.fileno())
-    os.replace(tmp, path)
+    with held(project, tmp, path, create=(tmp,)) as check:  # cả file tạm và file nhật ký / the temp file and the journal leaf
+        with io.open(tmp, 'w', encoding='utf-8', newline='') as f:
+            f.write(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
+            f.flush()
+            os.fsync(f.fileno())
+        check()
+        os.replace(tmp, path)
 
 def probe_writable(project):
     """Kiểm quyền ghi bằng file tạm trong .agent/runtime. / Write probe inside the runtime folder."""
     d = runtime_root(project)
+    guard(project, d)
     os.makedirs(d, exist_ok=True)
     p = os.path.join(d, '.probe-' + uuid.uuid4().hex)
     with open(p, 'wb') as f:
@@ -99,7 +223,10 @@ class Transaction:
     until staged, never written to the journal.
     """
 
-    def __init__(self, project, operation, txid=None):
+    def __init__(self, project, operation, txid=None, *, prune=True):
+        # prune=False (owner opt-in, P-CTX1): never delete another transaction's journal and never remove the runtime folders; the
+        # transaction still cleans its own staging/backup. Default True keeps the long-standing behaviour.
+        self._prune = bool(prune)
         self.project = os.path.abspath(project)
         self.txid = txid or (datetime.datetime.now().strftime('%Y%m%d-%H%M%S-') + uuid.uuid4().hex[:8])
         self.dir = txdir(self.project, self.txid)
@@ -108,14 +235,26 @@ class Transaction:
         self.journal = {'schema': SCHEMA, 'id': self.txid, 'operation': operation, 'status': 'prepared',
                         'created': _now(), 'updated': _now(), 'ops': []}
         self._content = {}
+        self._pins = Pins()
+        self._prot = []  # mức bảo vệ của từng vùng ghi vào project / protection level of each write into the project
+
+    @property
+    def protection(self):
+        """'held' when every write into the project had its folders held open (Windows), else 'recheck_only'; 'none' before any."""
+        if not self._prot:
+            return 'none'
+        return 'held' if all(self._prot) else 'recheck_only'
 
     # ---- planning / lập kế hoạch
-    def add(self, rel, data, action='write'):
-        """Thêm một thao tác ghi file rel với nội dung data (bytes). / Plan a write of rel with bytes data."""
+    def add(self, rel, data, action='write', expected_before=_UNSET):
+        """Plan a write; expected_before binds it to a hash captured when the caller read the file."""
         if rel.startswith('/') or '..' in rel.split('/') or '\\' in rel:
             raise TransactionError('Invalid relative path / Đường dẫn không hợp lệ: ' + rel)
         dst = os.path.join(self.project, *rel.split('/'))
+        guard(self.project, os.path.dirname(dst))
         before = sha_file(dst)
+        if expected_before is not _UNSET and before != expected_before:
+            raise TransactionError('File changed since it was read / File đã đổi từ lúc đọc: ' + rel)
         if before is not None and before == sha_bytes(data):
             return None  # đã đúng nội dung: không cần thao tác / already identical: no op needed
         op = {'path': rel, 'action': action, 'before': before, 'after': sha_bytes(data),
@@ -126,7 +265,7 @@ class Transaction:
 
     def _save(self):
         self.journal['updated'] = _now()
-        _write_json_atomic(os.path.join(self.dir, 'journal.json'), self.journal)
+        _write_json_atomic(self.project, os.path.join(self.dir, 'journal.json'), self.journal)
 
     def _set_state(self, op, state):
         op['state'] = state
@@ -154,21 +293,28 @@ class Transaction:
 
     # ---- execution / thực thi
     def begin(self):
+        guard(self.project, self.dir)
         os.makedirs(self.stage_dir, exist_ok=True)
         os.makedirs(self.backup_dir, exist_ok=True)
+        self._pins.hold(self.dir)  # runtime của giao dịch không bị thay bằng liên kết khi đang chạy / keeps the runtime from being swapped
+        guard(self.project, self.dir)
         self._save()
+
+    def close(self):
+        self._pins.close()
 
     def stage(self):
         n = 0
         limit = _fault('stage')
         for op in self.journal['ops']:
             p = os.path.join(self.stage_dir, *op['path'].split('/'))
-            os.makedirs(os.path.dirname(p), exist_ok=True)
-            with open(p, 'wb') as f:
-                f.write(self._content[op['path']])
-                f.flush(); os.fsync(f.fileno())
-            if sha_file(p) != op['after']:
-                raise TransactionError(L('Hash bản staging không khớp: %s', 'Staged hash mismatch: %s') % op['path'])
+            with held(self.project, p, create=(p,), point='stage') as check:
+                check()
+                with open(p, 'wb') as f:
+                    f.write(self._content[op['path']])
+                    f.flush(); os.fsync(f.fileno())
+                if sha_file(p) != op['after']:
+                    raise TransactionError(L('Hash bản staging không khớp: %s', 'Staged hash mismatch: %s') % op['path'])
             n += 1
             if limit is not None and n >= limit:
                 raise OSError('synthetic fault: stage')
@@ -181,10 +327,11 @@ class Transaction:
                 continue
             src = os.path.join(self.project, *op['path'].split('/'))
             dst = os.path.join(self.backup_dir, *op['path'].split('/'))
-            os.makedirs(os.path.dirname(dst), exist_ok=True)
-            shutil.copyfile(src, dst)
-            if sha_file(dst) != op['before']:
-                raise TransactionError(L('Hash bản sao lưu không khớp: %s', 'Backup hash mismatch: %s') % op['path'])
+            with held(self.project, src, dst, create=(dst,), point='backup') as check:
+                check()
+                shutil.copyfile(src, dst)
+                if sha_file(dst) != op['before']:
+                    raise TransactionError(L('Hash bản sao lưu không khớp: %s', 'Backup hash mismatch: %s') % op['path'])
             n += 1
             if limit is not None and n >= limit:
                 raise OSError('synthetic fault: backup')
@@ -199,11 +346,33 @@ class Transaction:
             if op['state'] != 'pending':
                 continue
             dst = os.path.join(self.project, *op['path'].split('/'))
-            if sha_file(dst) != op['before']:
-                self._set_state(op, 'skipped_conflict')
-                raise CommitConflict(L('File đã đổi sau khi lập kế hoạch: %s', 'File changed after planning: %s') % op['path'])
-            os.makedirs(os.path.dirname(dst), exist_ok=True)
-            os.replace(os.path.join(self.stage_dir, *op['path'].split('/')), dst)
+            staged = os.path.join(self.stage_dir, *op['path'].split('/'))
+            try:
+                with held(self.project, dst, staged, create=(dst,), point='commit') as recheck:
+                    self._prot.append(recheck.protected)
+                    recheck()  # trước khi băm / before hashing
+                    if sha_file(dst) != op['before']:
+                        self._set_state(op, 'skipped_conflict')
+                        raise CommitConflict(L('File đã đổi sau khi lập kế hoạch: %s', 'File changed after planning: %s') % op['path'])
+                    if sha_file(staged) != op['after']:
+                        self._set_state(op, 'skipped_conflict')
+                        raise CommitConflict(L('Bản staging không còn đúng: %s', 'The staged copy is no longer valid: %s') % op['path'])
+                    recheck()  # sát trước khi ghi / right before the write
+                    try:
+                        os.replace(staged, dst)
+                    except OSError as e:
+                        if any(o['state'] == 'done' for o in self.journal['ops']):
+                            raise
+                        # chưa ghi file nào (đang mở trong ứng dụng khác, chỉ đọc, bị khóa): hủy sạch, không để việc dở
+                        # nothing written yet (open in another app, read-only, locked): abandon cleanly, no open work
+                        self.abandon()
+                        raise TransactionError(L('Không thay được file %s (đang mở trong ứng dụng khác, chỉ đọc hoặc bị khóa?): %s. Chưa ghi gì; đóng ứng dụng rồi chạy lại.',
+                                                 'Could not replace %s (open in another application, read-only or locked?): %s. Nothing was written; close it and run again.') % (op['path'], e))
+            except TransactionError as e:
+                if self.journal['status'] == 'rolled_back':
+                    raise
+                self._set_state(op, 'skipped_conflict')  # đích đổi thành liên kết: từ chối, không ghi / target became a link: refused
+                raise CommitConflict(str(e))
             self._set_state(op, 'done')
             done += 1
             if limit is not None and done >= limit:
@@ -211,33 +380,40 @@ class Transaction:
             if kill is not None and done >= kill:
                 os._exit(70)
         self.journal['status'] = 'committed'
+        self.journal['protection'] = self.protection
         self._save()
         self._cleanup()
 
     def _cleanup(self):
         for d in (self.stage_dir, self.backup_dir):
-            shutil.rmtree(d, ignore_errors=True)
-        prune(self.project, keep=self.txid)
+            _rmtree(self.project, d)
+        if self._prune:
+            prune(self.project, keep=self.txid)
 
     def run(self):
         """Chạy toàn bộ: preflight -> begin -> stage -> backup -> commit. Lỗi giữa chừng để lại nhật ký. / Full run."""
         if not self.journal['ops']:
             return None  # không có gì để ghi: không tạo nhật ký / nothing to write: no journal created
+        guard(self.project, self.dir)
         problems = self.preflight()
         if problems:
             # Không để lại nhật ký: thư mục giao dịch được dọn ngay / no journal is kept after a failed preflight
-            shutil.rmtree(self.dir, ignore_errors=True)
-            _prune_empty_runtime(self.project)
+            _rmtree(self.project, self.dir)
+            if self._prune:
+                _prune_empty_runtime(self.project)
             raise TransactionError('; '.join(problems))
-        self.begin()
         try:
-            self.stage()
-            self.backup()
-        except Exception as e:
-            # chưa chạm file người dùng: hủy giao dịch, không để việc dở / no user file touched: abandon, no open work
-            self.abandon()
-            raise TransactionError(L('Lỗi trước khi ghi file: %s', 'Failed before any file was written: %s') % e)
-        self.commit()
+            self.begin()
+            try:
+                self.stage()
+                self.backup()
+            except Exception as e:
+                # chưa chạm file người dùng: hủy giao dịch, không để việc dở / no user file touched: abandon, no open work
+                self.abandon()
+                raise TransactionError(L('Lỗi trước khi ghi file: %s', 'Failed before any file was written: %s') % e)
+            self.commit()
+        finally:
+            self.close()
         return self.txid
 
     def abandon(self):
@@ -245,10 +421,12 @@ class Transaction:
         self.journal['note'] = 'abandoned before commit'
         self._save()
         for d in (self.stage_dir, self.backup_dir):
-            shutil.rmtree(d, ignore_errors=True)
+            _rmtree(self.project, d)
 
 def _prune_empty_runtime(project):
     for d in (os.path.join(runtime_root(project), 'transactions'), runtime_root(project)):
+        if not link_free(d, project):
+            continue
         try:
             os.rmdir(d)
         except OSError:
@@ -256,6 +434,7 @@ def _prune_empty_runtime(project):
 
 def _load(project, txid):
     path = os.path.join(txdir(project, txid), 'journal.json')
+    guard(project, path)  # không đọc nhật ký qua liên kết / never read a journal through a link
     with io.open(path, encoding='utf-8') as f:
         j = json.load(f)
     if j.get('schema') != SCHEMA:
@@ -264,19 +443,42 @@ def _load(project, txid):
 
 def _save_journal(project, txid, journal):
     journal['updated'] = _now()
-    _write_json_atomic(os.path.join(txdir(project, txid), 'journal.json'), journal)
+    _write_json_atomic(project, os.path.join(txdir(project, txid), 'journal.json'), journal)
 
-def incomplete(project_root):
-    """Tóm tắt các giao dịch chưa hoàn tất. / Summaries of unfinished transactions."""
+def incomplete(project_root, *, strict=False):
+    """Tóm tắt các giao dịch chưa hoàn tất. / Summaries of unfinished transactions.
+
+    strict=True refuses unsafe, unreadable or uninterpretable journals instead of skipping them (P-CTX1).
+    It only checks the fields needed for this scan, not the full recovery schema, and never writes.
+    """
     base = os.path.join(runtime_root(os.path.abspath(project_root)), 'transactions')
     out = []
-    if not os.path.isdir(base):
-        return out
+    if strict:
+        try:
+            os.lstat(base)  # unlike lexists(), an inspection error must not look like a missing directory
+        except FileNotFoundError:
+            return out
+        if not os.path.isdir(base) or runtime_problem(project_root):
+            raise TransactionError('Cannot safely inspect transaction journals')
+    if not os.path.isdir(base) or runtime_problem(project_root):
+        return out  # không đọc nhật ký qua liên kết; writer và status báo lỗi riêng / never read journals through a link
     for name in sorted(os.listdir(base)):
         try:
             j = _load(os.path.abspath(project_root), name)
+            if strict and (not isinstance(j, dict) or j.get('status') not in
+                           ('prepared', 'committing', 'committed', 'rolled_back', 'rollback_partial') or
+                           not isinstance(j.get('ops'), list) or any(
+                               not isinstance(o, dict) or o.get('state') not in
+                               ('pending', 'done', 'skipped_conflict', 'rolled_back') for o in j['ops'])):
+                raise TransactionError('Cannot determine transaction status from journal')
         except (OSError, ValueError, TransactionError):
+            if strict:
+                raise TransactionError('Cannot read or interpret transaction journal')
             continue
+        except (AttributeError, TypeError):
+            if strict:
+                raise TransactionError('Cannot read or interpret transaction journal')
+            raise  # preserve the existing non-strict caller behaviour
         if j.get('status') not in INCOMPLETE:
             continue
         ops = j.get('ops', [])
@@ -293,6 +495,7 @@ def resume(project_root, txid):
     """Áp các thao tác còn pending nếu target còn như trước; đánh dấu done nếu đã có after. / Finish pending ops."""
     project = os.path.abspath(project_root)
     _check_id(txid)
+    guard(project, txdir(project, txid))
     j = _load(project, txid)
     if j.get('status') == 'rollback_partial':
         return make('blocked', code=1, transaction=txid, changes=False,
@@ -311,32 +514,35 @@ def resume(project_root, txid):
         if op['state'] != 'pending':
             continue
         dst = os.path.join(project, *op['path'].split('/'))
-        cur = sha_file(dst)
         staged = os.path.join(txdir(project, txid), 'staging', *op['path'].split('/'))
-        if cur == op['after']:
-            op['state'] = 'done'; finished.append(op['path'])
-        elif cur == op['before'] and os.path.isfile(staged) and sha_file(staged) == op['after']:
-            os.makedirs(os.path.dirname(dst), exist_ok=True)
-            os.replace(staged, dst)
-            op['state'] = 'done'; applied.append(op['path'])
+        did_apply = False
+        # Băm và quyết định nằm trong vùng bảo vệ, sau hook, sát trước replace / hash and decide inside the protected span
+        with held(project, dst, staged, create=(dst,), point='resume') as check:
+            check()
+            cur = sha_file(dst)
+            if cur == op['after']:
+                op['state'] = 'done'; finished.append(op['path'])
+            elif cur == op['before'] and os.path.isfile(staged) and sha_file(staged) == op['after']:
+                check()
+                os.replace(staged, dst)
+                op['state'] = 'done'; applied.append(op['path']); did_apply = True
+            elif cur == op['before']:
+                unstaged.append(op['path'])  # chưa có bản staging hợp lệ: không thể áp / no valid staged copy to apply
+            else:
+                op['state'] = 'skipped_conflict'; skipped.append(op['path'])
+        _save_journal(project, txid, j)
+        if did_apply:
             n += 1
             if commit_limit is not None and n >= commit_limit:
-                _save_journal(project, txid, j)
                 raise OSError('synthetic fault: commit')
             if kill is not None and n >= kill:
-                _save_journal(project, txid, j)
                 os._exit(70)
-        elif cur == op['before']:
-            unstaged.append(op['path'])  # chưa có bản staging hợp lệ: không thể áp / no valid staged copy to apply
-        else:
-            op['state'] = 'skipped_conflict'; skipped.append(op['path'])
-        _save_journal(project, txid, j)
     remaining = [o for o in j['ops'] if o['state'] in ('pending', 'skipped_conflict')]
     if not remaining:
         j['status'] = 'committed'
         _save_journal(project, txid, j)
-        shutil.rmtree(os.path.join(txdir(project, txid), 'staging'), ignore_errors=True)
-        shutil.rmtree(os.path.join(txdir(project, txid), 'backup'), ignore_errors=True)
+        _rmtree(project, os.path.join(txdir(project, txid), 'staging'))
+        _rmtree(project, os.path.join(txdir(project, txid), 'backup'))
         prune(project, keep=txid)
     else:
         j['status'] = 'committing' if any(o['state'] == 'pending' for o in j['ops']) else j['status']
@@ -360,15 +566,6 @@ def resume(project_root, txid):
                       [{'path': p, 'action': 'not_staged'} for p in unstaged],
                 next_actions=nxt)
 
-def _restore_atomic(backup, dst, tdir, expect):
-    """Sao lưu -> file tạm cùng ổ -> kiểm hash -> os.replace. / Copy to a temp file on the same volume, verify, then replace."""
-    tmp = os.path.join(tdir, 'restore.tmp')
-    shutil.copyfile(backup, tmp)
-    if sha_file(tmp) != expect:
-        os.remove(tmp)
-        raise TransactionError(L('Hash bản khôi phục không khớp: %s', 'Restore hash mismatch: %s') % os.path.basename(dst))
-    os.replace(tmp, dst)
-
 def rollback(project_root, txid):
     """Khôi phục bản gốc của thao tác đã done hoặc còn pending (xét theo nội dung file) nếu file chưa bị sửa. File người dùng đã sửa được giữ nguyên;
     khi đó trạng thái rollback_partial KHÔNG chặn thao tác mới và thư mục backup được giữ để khôi phục tay.
@@ -377,6 +574,7 @@ def rollback(project_root, txid):
     """
     project = os.path.abspath(project_root)
     _check_id(txid)
+    guard(project, txdir(project, txid))
     j = _load(project, txid)
     if j.get('status') == 'committed':
         return make('blocked', code=1, transaction=txid, changes=False,
@@ -390,20 +588,30 @@ def rollback(project_root, txid):
         if op['state'] not in ('pending', 'done', 'skipped_conflict'):
             continue
         dst = os.path.join(project, *op['path'].split('/'))
-        cur = sha_file(dst)
-        if op['before'] is None:
-            if cur is None:
+        backup = os.path.join(tdir, 'backup', *op['path'].split('/'))
+        tmp = os.path.join(tdir, 'restore.tmp')
+        # Băm, xét điều kiện và khôi phục đều trong vùng bảo vệ, sau hook, sát trước replace/remove
+        # Hash, eligibility and restore all happen inside the protected span, after the hook, right before replace/remove
+        with held(project, dst, backup, tmp, point='rollback') as check:
+            check()
+            cur = sha_file(dst)
+            if op['before'] is None:
+                if cur is None:
+                    op['state'] = 'rolled_back'
+                elif cur == op['after']:
+                    check()
+                    os.remove(dst); op['state'] = 'rolled_back'; removed.append(op['path'])
+                else:
+                    op['state'] = 'skipped_conflict'
+            elif cur == op['before']:
                 op['state'] = 'rolled_back'
-            elif cur == op['after']:
-                os.remove(dst); op['state'] = 'rolled_back'; removed.append(op['path'])
-            else:
-                op['state'] = 'skipped_conflict'
-        elif cur == op['before']:
-            op['state'] = 'rolled_back'
-        else:
-            backup = os.path.join(tdir, 'backup', *op['path'].split('/'))
-            if cur == op['after'] and os.path.isfile(backup) and sha_file(backup) == op['before']:
-                _restore_atomic(backup, dst, tdir, op['before'])
+            elif cur == op['after'] and os.path.isfile(backup) and sha_file(backup) == op['before']:
+                shutil.copyfile(backup, tmp)
+                if sha_file(tmp) != op['before']:
+                    os.remove(tmp)
+                    raise TransactionError(L('Hash bản khôi phục không khớp: %s', 'Restore hash mismatch: %s') % os.path.basename(dst))
+                check()
+                os.replace(tmp, dst)
                 op['state'] = 'rolled_back'; restored.append(op['path'])
             else:
                 op['state'] = 'skipped_conflict'
@@ -412,9 +620,9 @@ def rollback(project_root, txid):
     partial = [o['path'] for o in j['ops'] if o['state'] in ('skipped_conflict', 'pending')]
     j['status'] = 'rollback_partial' if partial else 'rolled_back'
     _save_journal(project, txid, j)
-    shutil.rmtree(os.path.join(tdir, 'staging'), ignore_errors=True)
+    _rmtree(project, os.path.join(tdir, 'staging'))
     if not partial:
-        shutil.rmtree(os.path.join(tdir, 'backup'), ignore_errors=True)
+        _rmtree(project, os.path.join(tdir, 'backup'))
     extra, nxt = {}, []
     if partial:
         bdir = '.agent/runtime/transactions/%s/backup/' % txid
@@ -432,7 +640,7 @@ def rollback(project_root, txid):
 def prune(project, keep=None):
     """Giữ KEEP_JOURNALS nhật ký đã committed mới nhất. / Keep the newest committed journals."""
     base = os.path.join(runtime_root(os.path.abspath(project)), 'transactions')
-    if not os.path.isdir(base):
+    if not os.path.isdir(base) or runtime_problem(project):
         return
     done = []
     for name in os.listdir(base):
@@ -444,7 +652,7 @@ def prune(project, keep=None):
             done.append((j.get('created', ''), name))
     done.sort(reverse=True)
     for _, name in done[KEEP_JOURNALS - (1 if keep else 0):]:
-        shutil.rmtree(os.path.join(base, name), ignore_errors=True)
+        _rmtree(os.path.abspath(project), os.path.join(base, name))
 
 def blocked_message(project):
     """Thông báo chặn khi có giao dịch dở (VI / EN); None nếu không có. / Bilingual block notice, None when clear."""
@@ -471,6 +679,13 @@ def _cli(argv):
         sys.stdout.reconfigure(encoding='utf-8'); sys.stderr.reconfigure(encoding='utf-8')
     project = os.path.abspath(a.project)
     if a.cmd == 'status':
+        problem = runtime_problem(project)
+        if problem:
+            if a.result_json:
+                emit(make('error', code=2, message=problem, changes=False))
+            else:
+                print(problem)
+            return 2
         items = incomplete(project)
         code = 1 if items else 0
         if a.result_json:

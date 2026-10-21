@@ -24,6 +24,7 @@ import app
 import library
 import merge_center
 import result_schema
+import upgrade_package as up
 
 
 def snapshot(root):
@@ -82,8 +83,8 @@ class Workflows(unittest.TestCase):
                 self.assertIn('MERGE REQUIRED', result.stdout)
                 for name in adopt.ADAPTERS:
                     self.assertEqual((target / name).read_bytes(), before[name])
-                    src = ROOT / ('en' if lang == 'en' else '') / name
-                    self.assertEqual((target / (name + '.new')).read_bytes(), src.read_bytes())
+                    # bản package đi vào project là bytes đã projection (tham chiếu .cvf sang v3), không phải bytes thô của kho nguồn
+                    self.assertEqual((target / (name + '.new')).read_bytes(), cp.delivery_bytes(('en/' if lang == 'en' else '') + name))
                 after = snapshot(target)
                 rerun = run('adopt_project.py', '--project', target, '--name', 'Example', '--apply')
                 self.assertNotEqual(rerun.returncode, 0)
@@ -102,7 +103,7 @@ class Workflows(unittest.TestCase):
     def test_adopt_identical_instruction_has_no_pending_copy(self):
         target = self.root / 'project'
         target.mkdir()
-        shutil.copy2(ROOT / 'AGENTS.md', target / 'AGENTS.md')
+        (target / 'AGENTS.md').write_bytes(cp.delivery_bytes('AGENTS.md'))  # đúng bytes package sẽ giao / exactly the bytes the package ships
         r = run('adopt_project.py', '--project', target, '--name', 'Example', '--apply')
         self.assertEqual(r.returncode, 0, r.stderr)
         self.assertFalse((target / 'AGENTS.md.new').exists())
@@ -336,6 +337,261 @@ class Workflows(unittest.TestCase):
             self.assertEqual(app.status()['workspace_kind'], 'unknown')
             write(fake, '.agent/PACKAGE_INFO.json', json.dumps({'package': 'local-agent-workspace', 'version': '1.6.0'}))
             self.assertEqual(app.status()['workspace_kind'], 'project')
+
+
+class UpgradeIdentity(unittest.TestCase):
+    """D-01a: nhãn phiên bản tách khỏi baseline nội dung gói. Chỉ fixture trong thư mục tạm; kế hoạch giữ/cập nhật/xung đột vẫn do upgrade_package quyết định.
+    The version label is told apart from the package content baseline. Fixtures only; the plan itself is still decided by upgrade_package."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory(prefix='workspace-identity-')
+        self.root = Path(self.tmp.name)
+        self.addCleanup(self.tmp.cleanup)
+
+    def pair(self, old_label='1.6.0', new_label='1.6.0'):
+        old, new = self.root / 'old', self.root / 'new'
+        for root, label in ((old, old_label), (new, new_label)):
+            write(root, 'VERSION', label + '\n')
+            write(root, 'untouched.txt', 'package one')
+            write(root, 'kept.txt', 'package one')
+            write(root, 'PROJECT.md', 'private context')
+            manifest(root)
+        write(old, '.agent/PACKAGE_INFO.json', json.dumps({'package': 'local-agent-workspace', 'version': old_label, 'language': 'vi'}))
+        return old, new
+
+    def rewrite_manifest(self, root, keep=lambda rel: True, reverse=False, eol=b'\n'):
+        lines = [l for l in (root / 'MANIFEST.sha256').read_text(encoding='utf-8').splitlines() if l.strip() and keep(l.split('  ', 1)[1])]
+        (root / 'MANIFEST.sha256').write_bytes(eol.join(x.encode('utf-8') for x in (lines[::-1] if reverse else lines)) + eol)
+
+    def upgrade(self, old, new, *extra):
+        r = run('upgrade_package.py', '--project', old, '--from', new, *extra, '--result-json')
+        human, data = result_schema.split_output(r.stdout)
+        return r, human, data
+
+    def test_same_label_different_baseline_is_told_apart_and_apply_updates_by_plan(self):
+        old, new = self.pair()
+        write(new, 'untouched.txt', 'package two')
+        manifest(new)
+        before = snapshot(old)
+        r, human, data = self.upgrade(old, new)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        pi = data['package_identity']
+        self.assertEqual((data['status'], data['from_version'], data['to_version']), ('preview', '1.6.0', '1.6.0'))
+        self.assertEqual(pi['relation'], 'SAME_LABEL_DIFFERENT_BASELINE')
+        self.assertEqual((pi['version']['same'], pi['baseline']['same']), (True, False))
+        self.assertEqual({pi['baseline'][k]['state'] for k in ('installed', 'source')}, {'KNOWN'})
+        self.assertNotEqual(pi['baseline']['installed']['digest'], pi['baseline']['source']['digest'])
+        self.assertIn('[SAME_LABEL_DIFFERENT_BASELINE]', human)
+        self.assertEqual(snapshot(old), before)  # xem trước không ghi, không tạo runtime / the preview writes nothing, no runtime
+        self.assertFalse((old / '.agent' / 'runtime').exists())
+        r, human, data = self.upgrade(old, new, '--apply')
+        self.assertEqual((r.returncode, data['status']), (0, 'success'), r.stdout + r.stderr)
+        self.assertEqual(data['package_identity']['relation'], 'SAME_LABEL_DIFFERENT_BASELINE')
+        self.assertEqual((old / 'untouched.txt').read_text(), 'package two')
+        self.assertEqual((old / 'VERSION').read_bytes(), before['VERSION'])  # nhãn không bị tăng giả / the label is not bumped
+        self.assertEqual(json.loads((old / '.agent/PACKAGE_INFO.json').read_text())['version'], '1.6.0')
+        r, human, data = self.upgrade(old, new)
+        self.assertEqual(data['package_identity']['relation'], 'SAME_LABEL_SAME_BASELINE')
+        self.assertFalse(data['changes'])
+
+    def test_same_baseline_ignores_manifest_order_and_eol(self):
+        old, new = self.pair()
+        self.rewrite_manifest(old, eol=b'\n')
+        self.rewrite_manifest(new, reverse=True, eol=b'\r\n')
+        a, b = up.manifest_identity(str(old)), up.manifest_identity(str(new))
+        self.assertEqual(a['state'], 'KNOWN')
+        self.assertEqual(a, b)
+        r, human, data = self.upgrade(old, new)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertEqual(data['package_identity']['relation'], 'SAME_LABEL_SAME_BASELINE')
+        self.assertEqual((data['package_identity']['baseline']['same'], data['changes']), (True, False))
+        # đổi nội dung một entry thì identity khác / one changed entry changes the identity
+        write(new, 'untouched.txt', 'package two')
+        manifest(new)
+        self.assertNotEqual(up.manifest_identity(str(new))['digest'], a['digest'])
+
+    def test_same_baseline_with_own_edits_keeps_them_and_still_does_the_remaining_work(self):
+        old, new = self.pair()
+        for root in (old, new):
+            write(root, 'extra.txt', 'package one')
+            write(root, '.agent/INDEX.md', 'template index')
+            manifest(root)
+        self.rewrite_manifest(old, keep=lambda rel: rel != '.agent/PACKAGE_INFO.json')  # manifest() đã nuốt PACKAGE_INFO của project / manifest() swept up the project's PACKAGE_INFO
+        (old / 'extra.txt').unlink()  # file của package mà project thiếu / a package file the project lacks
+        (old / '.agent' / 'INDEX.md').unlink()  # file mẫu của người dùng còn thiếu / a missing starter file
+        write(old, 'kept.txt', 'user change')
+        r, human, data = self.upgrade(old, new)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertEqual(data['package_identity']['relation'], 'SAME_LABEL_SAME_BASELINE')
+        self.assertTrue(data['changes'])  # cùng baseline không short-circuit kế hoạch / the plan is not short-circuited by identity
+        self.assertEqual({(f['path'], f['action']) for f in data['files']}, {('extra.txt', 'add'), ('.agent/INDEX.md', 'user_missing')})
+        self.assertIn('kept.txt', human)
+        kept = (old / 'kept.txt').read_bytes()
+        r, human, data = self.upgrade(old, new, '--apply')
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertEqual((old / 'kept.txt').read_bytes(), kept)
+        self.assertEqual((old / 'extra.txt').read_text(), 'package one')
+        self.assertTrue((old / '.agent' / 'INDEX.md').is_file())
+        self.assertFalse(list(old.rglob('*.new')))
+        self.assertFalse(self.upgrade(old, new)[2]['changes'])
+
+    def test_different_label_is_shown_with_its_own_baseline_relation(self):
+        old, new = self.pair('1.6.0', '1.7.0')
+        write(new, 'untouched.txt', 'package two')
+        manifest(new)
+        r, human, data = self.upgrade(old, new)
+        self.assertEqual((data['from_version'], data['to_version']), ('1.6.0', '1.7.0'))
+        self.assertEqual(data['package_identity']['relation'], 'DIFFERENT_LABEL_DIFFERENT_BASELINE')
+        self.assertIn('[DIFFERENT_LABEL_DIFFERENT_BASELINE]', human)
+        # nhãn đổi mà MANIFEST không ghi VERSION: cùng baseline, vẫn do kế hoạch quyết định việc làm / label bumped but the MANIFEST does not list VERSION
+        old, new = self.root / 'o2', self.root / 'n2'
+        for root, label in ((old, '1.6.0'), (new, '1.6.1')):
+            write(root, 'VERSION', label + '\n')
+            write(root, 'a.txt', 'package one')
+            manifest(root)
+            self.rewrite_manifest(root, keep=lambda rel: rel != 'VERSION')
+        write(old, '.agent/PACKAGE_INFO.json', json.dumps({'package': 'local-agent-workspace', 'version': '1.6.0', 'language': 'vi'}))
+        r, human, data = self.upgrade(old, new)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertEqual(data['package_identity']['relation'], 'DIFFERENT_LABEL_SAME_BASELINE')
+        self.assertEqual((data['package_identity']['version']['same'], data['package_identity']['baseline']['same']), (False, True))
+
+    def test_a_missing_or_damaged_manifest_has_no_identity_whatever_the_label_says(self):
+        base = self.root / 'm'
+        good = 'a' * 64
+        cases = {
+            'MANIFEST_MALFORMED_LINE': (good + '  a.txt\nnot a manifest line\n').encode(),
+            'MANIFEST_DUPLICATE_PATH': (good + '  a.txt\n' + good + '  a.txt\n').encode(),
+            'MANIFEST_EMPTY': b'\n  \n',
+            'MANIFEST_UNREADABLE': b'\xff\xfe\x00bad',
+            'MANIFEST_AMBIGUOUS': (good + '  a\x0cb.txt\n').encode(),  # read_manifest tách ở \x0c / read_manifest splits at \x0c
+        }
+        for reason, raw in cases.items():
+            with self.subTest(reason):
+                base.mkdir(exist_ok=True)
+                (base / 'MANIFEST.sha256').write_bytes(raw)
+                got = up.manifest_identity(str(base))
+                self.assertEqual((got['state'], got['reason'], got['digest'], got['entries']), ('UNKNOWN', reason, None, None))
+        shutil.rmtree(str(base))
+        base.mkdir()
+        self.assertEqual(up.manifest_identity(str(base))['reason'], 'MANIFEST_MISSING')
+        # cùng VERSION cũng không cứu được: relation UNKNOWN, baseline.same là null / the same VERSION does not rescue it
+        old, new = self.pair()
+        raw = (new / 'MANIFEST.sha256').read_bytes()
+        line = raw.splitlines()[0] + b'\n'
+        (new / 'MANIFEST.sha256').write_bytes(raw + line)  # entry trùng nhau từng byte: owner hiện vẫn cho chạy / a byte-identical duplicate: the owner still lets it run
+        r, human, data = self.upgrade(old, new)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        pi = data['package_identity']
+        self.assertEqual((pi['relation'], pi['version']['same'], pi['baseline']['same']), ('UNKNOWN', True, None))
+        self.assertEqual(pi['baseline']['source']['reason'], 'MANIFEST_DUPLICATE_PATH')
+        self.assertIn('[UNKNOWN]', human)
+        (new / 'MANIFEST.sha256').write_bytes(raw)
+        self.assertEqual(self.upgrade(old, new)[2]['files'], data['files'])  # kế hoạch không đổi vì identity / the plan does not depend on identity
+
+    def test_refusals_for_a_missing_or_malformed_manifest_are_kept_and_nothing_is_written(self):
+        for side in ('old', 'new'):
+            for label, mutate in (('missing', lambda p: p.unlink()),
+                                  ('malformed', lambda p: p.write_bytes(p.read_bytes() + b'khong phai dong manifest\n'))):
+                with self.subTest(side=side, case=label):
+                    shutil.rmtree(str(self.root), ignore_errors=True)
+                    self.root.mkdir(exist_ok=True)
+                    old, new = self.pair()
+                    mutate((old if side == 'old' else new) / 'MANIFEST.sha256')
+                    before = snapshot(old)
+                    for extra in ((), ('--apply',)):
+                        r = run('upgrade_package.py', '--project', old, '--from', new, *extra, '--result-json')
+                        self.assertNotEqual(r.returncode, 0, r.stdout)
+                        self.assertNotIn('package_identity', r.stdout)
+                        self.assertEqual(snapshot(old), before)
+
+    def test_real_upgrade_keeps_user_material_byte_for_byte(self):
+        old, new = self.pair()
+        for root in (old, new):
+            write(root, 'conflict.txt', 'package one')
+            write(root, '.agent/STATE.md', 'template state')
+            write(root, '.agent/HANDOFF.md', 'template handoff')
+            write(root, '.agent/INDEX.md', 'template index')
+            write(root, '.agent/SKILL_INDEX.md', '| x | LOCAL | SHARED | skills/local/shared/x/SKILL.md |')
+        for name in ('retired-plain', 'retired-edited'):
+            write(old, 'skills/local/shared/%s/SKILL.md' % name, 'shared skill that the new package dropped')
+        manifest(old)
+        write(old, 'skills/local/shared/retired-edited/SKILL.md', 'edited shared skill')
+        write(new, 'untouched.txt', 'package two')
+        write(new, 'conflict.txt', 'package two')
+        write(new, '.agent/STATE.md', 'newer template state')
+        manifest(new)
+        write(old, 'conflict.txt', 'user change')
+        write(old, '.agent/STATE.md', 'real state')
+        write(old, '.agent/HANDOFF.md', 'real handoff')
+        write(old, '.agent/INDEX.md', 'real index with sources')
+        write(old, '.agent/SKILL_INDEX.md', '| x | LOCAL | SHARED | skills/local/shared/x/SKILL.md |\n| retired-edited | LOCAL | SHARED | skills/local/shared/retired-edited/SKILL.md |')
+        # tài liệu opaque: profile hỏng/phiên bản lạ, sổ nguồn không phải xlsx thật, đầu ra nhị phân, marker runtime, skill riêng
+        opaque = {
+            '.agent/EXECUTION_PROFILE.json': b'{"schema": "future/99", "owner": [',
+            'references/_INDEX.xlsx': b'PK\x03\x04 not a real workbook',
+            'references/source-documents/nguon.md': 'nguồn của tôi\n'.encode('utf-8'),
+            'working/nhap.md': 'nháp\n'.encode('utf-8'),
+            'output/ket-qua.docx': b'\x00\x01binary output\xff',
+            'archive/cu.md': b'old',
+            'skills/local/project/rieng/SKILL.md': 'kỹ năng riêng\n'.encode('utf-8'),
+            '.agent/runtime/marker.txt': b'runtime marker',
+        }
+        for rel, raw in opaque.items():
+            (old / rel).parent.mkdir(parents=True, exist_ok=True)
+            (old / rel).write_bytes(raw)
+        before = snapshot(old)
+        r, human, data = self.upgrade(old, new)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertEqual(snapshot(old), before)
+        self.assertIn('skills/local/shared/retired-edited/SKILL.md', human)  # liệt kê obsolete, không xóa / listed as obsolete, not deleted
+        r, human, data = self.upgrade(old, new, '--apply')
+        self.assertEqual((r.returncode, data['status']), (0, 'success'), r.stdout + r.stderr)
+        after = snapshot(old)
+        changed = {k for k in set(before) | set(after) if before.get(k) != after.get(k)}
+        self.assertEqual({k for k in changed if not k.startswith('.agent/runtime/transactions/')},
+                         {'untouched.txt', 'conflict.txt.new', 'MANIFEST.sha256', '.agent/PACKAGE_INFO.json'})
+        for rel, raw in opaque.items():
+            self.assertEqual(after[rel], raw, rel)
+        for rel in ('.agent/STATE.md', '.agent/HANDOFF.md', '.agent/INDEX.md', '.agent/SKILL_INDEX.md', 'conflict.txt', 'kept.txt', 'PROJECT.md',
+                    'skills/local/shared/retired-plain/SKILL.md', 'skills/local/shared/retired-edited/SKILL.md'):
+            self.assertEqual(after[rel], before[rel], rel)
+        self.assertEqual((old / 'conflict.txt.new').read_text(), 'package two')
+        self.assertEqual([p.name for p in old.rglob('*.new')], ['conflict.txt.new'])
+
+    def test_pending_merge_and_cvf_refusals_keep_their_behaviour_and_report_identity(self):
+        old, new = self.pair()
+        write(new, 'untouched.txt', 'package two')
+        write(new, 'kept.txt', 'package two')
+        manifest(new)
+        write(old, 'kept.txt', 'user change')
+        write(old, 'kept.txt.new', 'work in progress')
+        before = snapshot(old)
+        r, human, data = self.upgrade(old, new, '--apply')
+        self.assertEqual((r.returncode, data['status']), (1, 'blocked'), r.stdout + r.stderr)
+        self.assertTrue(data['merge_required'])
+        self.assertEqual(data['package_identity']['relation'], 'SAME_LABEL_DIFFERENT_BASELINE')
+        self.assertEqual(snapshot(old), before)
+        write(old, 'kept.txt.new', 'package two')  # .new đã đúng bản package: không ghi đè, không báo lỗi / already the package version: kept
+        r, human, data = self.upgrade(old, new, '--apply')
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertEqual(((old / 'kept.txt').read_text(), (old / 'kept.txt.new').read_text()), ('user change', 'package two'))
+        # .cvf không hỗ trợ ở project: chặn cả --apply --force, giữ nguyên toàn cây / an unsupported .cvf stays refused even with --force
+        old, new = self.root / 'o2', self.root / 'n2'
+        for root in (old, new):
+            write(root, 'VERSION', '1.6.0\n')
+            write(root, 'a.txt', 'package one')
+        write(old, '.agent/PACKAGE_INFO.json', json.dumps({'package': 'local-agent-workspace', 'version': '1.6.0', 'language': 'vi'}))
+        write(old, '.cvf/rules/v2/ROUTING_POLICY.json', '{}')
+        manifest(old)
+        manifest(new)
+        before = snapshot(old)
+        for extra in ((), ('--apply',), ('--apply', '--force')):
+            r, human, data = self.upgrade(old, new, *extra)
+            self.assertEqual((r.returncode, data['status']), (1, 'blocked'), r.stdout + r.stderr)
+            self.assertIn('SOURCE_CVF_MISSING_FOR_TARGET', human)
+            self.assertIn('package_identity', data)
+            self.assertEqual(snapshot(old), before)
 
 
 if __name__ == '__main__':

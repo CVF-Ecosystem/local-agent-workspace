@@ -1,0 +1,53 @@
+{
+  "check_version": "law.cvf.check/3",
+  "contract": "v3",
+  "selection": "CLI_EXPLICIT",
+  "candidate_status": "CANDIDATE_NOT_ACTIVE",
+  "implementation_stage": "S3B_FOUNDATION_ONLY",
+  "evaluation_basis": "COOPERATIVE_WORKFLOW",
+  "phase": "accept",
+  "phase_scope": "STRUCTURE_ONLY",
+  "disposition": "BLOCKED",
+  "effect_authorized": false,
+  "assurance_level": "UNVERIFIED",
+  "init_error": false,
+  "reasons": [
+    "CANDIDATE_EVALUATION_NOT_IMPLEMENTED"
+  ],
+  "details": [],
+  "owners": {
+    "schema_sha256": "12becc373df364bdec33e7bd5e0533056799044e1f42d28020ee5d969596525c",
+    "policy_sha256": "8c63bd03bbcdb733c7c9810815dafbc039fe0e46303d196e00004337a46fa204"
+  },
+  "route": {
+    "evaluated": false,
+    "rows": [],
+    "status": null,
+    "assumptions": []
+  },
+  "gates": [],
+  "aggregate": {
+    "records_checked_state": "NOT_EVALUATED",
+    "due_gates": 0,
+    "met": 0,
+    "not_required": 0,
+    "not_yet_due": 0,
+    "not_checked": 0,
+    "unsupported": 0,
+    "not_met": 0,
+    "user_accepted_declared": 0,
+    "open_assumptions": [],
+    "conclusion_scope": "RECORD_CONSISTENCY_IN_MEMORY"
+  },
+  "coverage": {
+    "record_structure_checked": true,
+    "binding_evaluated": false,
+    "routing_evaluated": false,
+    "gates_evaluated": false,
+    "artifact_bytes_observed": false,
+    "target_existence_observed": false,
+    "actual_operation_observed": false,
+    "requirements_semantic_verified": false,
+    "owner_protection": "NOT_PROVEN"
+  }
+}

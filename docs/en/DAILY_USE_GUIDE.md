@@ -1,6 +1,6 @@
 # Daily use guide
 
-Local Assistant Workspace v1.8 keeps your documents, context and results in one folder. The assistant
+Local Assistant Workspace v1.9 keeps your documents, context and results in one folder. The assistant
 still chooses the approach, tools and skills that fit.
 
 ## 1. Give work in plain language
@@ -198,4 +198,4 @@ The panel deletes none of your files, with two exceptions. "Roll back" on an unf
 
 **Diagnostics bundle.** "Create diagnostics bundle" writes one ZIP file on this computer, to `.agent/runtime/diagnostics/diagnostics-<time>.zip`, for a helper to look at when something goes wrong. It contains the package version, workspace type, Python and operating system, the state of optional features, pending merge files (relative paths only), unfinished transactions, the operations history and the package integrity check. It contains no document content, project name, names of people or absolute paths; folder paths and the computer's user name are masked. It is never sent automatically. Press "Open the bundle folder" to review it; you decide whether to share it.
 
-**Compare on the Pending merges page.** "Compare" shows the differences between the current file and its `.new` copy, as blocks with line numbers. It is read-only: it stores nothing and does not merge or overwrite. Files over 256 KB, or files that are not UTF-8 text, are not shown in the panel; open both versions in their own app. After you merge by hand, delete the `.new` file.
+**Compare on the Pending merges page.** "Compare" shows the differences between the current file and its `.new` copy, as blocks with line numbers. It does not change either file, merge or overwrite; the action may be recorded in the operations history. Files over 256 KB, or files that are not UTF-8 text, are not shown in the panel; open both versions in their own app. It is for viewing only. Replacing the current file or storing the `.new` is a separate step that exists only for some files; how each kind of file is handled is in section 3 of "Use with an existing project and upgrade the package". For files outside that scope, merge by hand with whoever owns the file; do not delete the `.new` just to clear the warning.

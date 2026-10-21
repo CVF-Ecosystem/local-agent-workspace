@@ -1,0 +1,246 @@
+{
+ "label": "OFFLINE_REPLAY",
+ "python": "3.11.9",
+ "created": "20261018-001815",
+ "cases": [
+  {
+   "kind": "exit",
+   "code": 0,
+   "stdout": "{\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"allow\", \"permissionDecisionReason\": \"G03-2a lab: allowed/\"}}",
+   "stderr_head": "",
+   "secs": 0.05,
+   "case": "T1 Write allowed/",
+   "simulated_host": "DECISION allow",
+   "label": "OFFLINE_REPLAY (simulated_host = du doan tu tai lieu, khong phai host)"
+  },
+  {
+   "kind": "exit",
+   "code": 0,
+   "stdout": "{\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"deny\", \"permissionDecisionReason\": \"G03-2a lab: write outside allowed/\"}}",
+   "stderr_head": "",
+   "secs": 0.04,
+   "case": "T1 Write denied/",
+   "simulated_host": "DECISION deny",
+   "label": "OFFLINE_REPLAY (simulated_host = du doan tu tai lieu, khong phai host)"
+  },
+  {
+   "kind": "exit",
+   "code": 0,
+   "stdout": "{\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"deny\", \"permissionDecisionReason\": \"G03-2a lab: write outside allowed/\"}}",
+   "stderr_head": "",
+   "secs": 0.04,
+   "case": "T1 Write ngoai allowed (.claude/settings.json)",
+   "simulated_host": "DECISION deny",
+   "label": "OFFLINE_REPLAY (simulated_host = du doan tu tai lieu, khong phai host)"
+  },
+  {
+   "kind": "exit",
+   "code": 0,
+   "stdout": "{\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"deny\", \"permissionDecisionReason\": \"G03-2a lab: write outside allowed/\"}}",
+   "stderr_head": "",
+   "secs": 0.04,
+   "case": "T1 Write allowed/../denied traversal",
+   "simulated_host": "DECISION deny",
+   "label": "OFFLINE_REPLAY (simulated_host = du doan tu tai lieu, khong phai host)"
+  },
+  {
+   "kind": "exit",
+   "code": 0,
+   "stdout": "{\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"allow\", \"permissionDecisionReason\": \"G03-2a lab: allowed/\"}}",
+   "stderr_head": "",
+   "secs": 0.05,
+   "case": "T1 Write ALLOWED/ doi hoa-thuong",
+   "simulated_host": "DECISION allow",
+   "label": "OFFLINE_REPLAY (simulated_host = du doan tu tai lieu, khong phai host)"
+  },
+  {
+   "kind": "exit",
+   "code": 0,
+   "stdout": "{\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"deny\", \"permissionDecisionReason\": \"G03-2a lab: write outside allowed/\"}}",
+   "stderr_head": "",
+   "secs": 0.04,
+   "case": "T1 Write denied/x:stream (ADS)",
+   "simulated_host": "DECISION deny",
+   "label": "OFFLINE_REPLAY (simulated_host = du doan tu tai lieu, khong phai host)"
+  },
+  {
+   "kind": "exit",
+   "code": 0,
+   "stdout": "{\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"deny\", \"permissionDecisionReason\": \"G03-2a lab: write outside allowed/\"}}",
+   "stderr_head": "",
+   "secs": 0.04,
+   "case": "T1 Write 'denied./' dau cham cuoi",
+   "simulated_host": "DECISION deny",
+   "label": "OFFLINE_REPLAY (simulated_host = du doan tu tai lieu, khong phai host)"
+  },
+  {
+   "kind": "exit",
+   "code": 0,
+   "stdout": "{\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"deny\", \"permissionDecisionReason\": \"G03-2a lab: command text mentions denied/\"}}",
+   "stderr_head": "",
+   "secs": 0.04,
+   "case": "T4 Bash literal denied/",
+   "simulated_host": "DECISION deny",
+   "label": "OFFLINE_REPLAY (simulated_host = du doan tu tai lieu, khong phai host)"
+  },
+  {
+   "kind": "exit",
+   "code": 0,
+   "stdout": "{\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"deny\", \"permissionDecisionReason\": \"G03-2a lab: command text mentions denied/\"}}",
+   "stderr_head": "",
+   "secs": 0.04,
+   "case": "T4 PowerShell literal denied/",
+   "simulated_host": "DECISION deny",
+   "label": "OFFLINE_REPLAY (simulated_host = du doan tu tai lieu, khong phai host)"
+  },
+  {
+   "kind": "exit",
+   "code": 0,
+   "stdout": "",
+   "stderr_head": "",
+   "secs": 0.05,
+   "case": "T4 PowerShell gian tiep 'den'+'ied'",
+   "simulated_host": "NO_DECISION -> normal permission flow",
+   "label": "OFFLINE_REPLAY (simulated_host = du doan tu tai lieu, khong phai host)"
+  },
+  {
+   "kind": "exit",
+   "code": 0,
+   "stdout": "",
+   "stderr_head": "",
+   "secs": 0.04,
+   "case": "T1 Agent lan 1",
+   "simulated_host": "NO_DECISION -> normal permission flow",
+   "label": "OFFLINE_REPLAY (simulated_host = du doan tu tai lieu, khong phai host)"
+  },
+  {
+   "kind": "exit",
+   "code": 0,
+   "stdout": "{\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"deny\", \"permissionDecisionReason\": \"G03-2a lab: native Agent budget (1) used\"}}",
+   "stderr_head": "",
+   "secs": 0.04,
+   "case": "T1 Agent lan 2 (vuot ngan sach)",
+   "simulated_host": "DECISION deny",
+   "label": "OFFLINE_REPLAY (simulated_host = du doan tu tai lieu, khong phai host)"
+  },
+  {
+   "kind": "exit",
+   "code": 0,
+   "stdout": "{\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"deny\", \"permissionDecisionReason\": \"G03-2a lab: no recursive delegation\"}}",
+   "stderr_head": "",
+   "secs": 0.04,
+   "case": "T1 Agent de quy (co agent_id)",
+   "simulated_host": "DECISION deny",
+   "label": "OFFLINE_REPLAY (simulated_host = du doan tu tai lieu, khong phai host)"
+  },
+  {
+   "kind": "exit",
+   "code": 0,
+   "stdout": "{\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"deny\", \"permissionDecisionReason\": \"G03-2a lab: write outside allowed/\"}}",
+   "stderr_head": "",
+   "secs": 0.04,
+   "case": "T1 child Write denied/ (agent_id)",
+   "simulated_host": "DECISION deny",
+   "label": "OFFLINE_REPLAY (simulated_host = du doan tu tai lieu, khong phai host)"
+  },
+  {
+   "kind": "exit",
+   "code": 1,
+   "stdout": "",
+   "stderr_head": "\r\n  File \"C:\\Users\\DELL\\AppData\\Local\\Temp\\LAW-G03-2a-replay-20261018-001815\\hooks\\gate.py\", line 136, in do_pre\r\n    raise RuntimeError(\"T2 injected exception\")\r\nRuntimeError: T2 injected exception\r\n",
+   "secs": 0.04,
+   "case": "T2 exception exit!=0,2",
+   "simulated_host": "BLOCK (failure+onFailure=block)",
+   "label": "OFFLINE_REPLAY (simulated_host = du doan tu tai lieu, khong phai host)"
+  },
+  {
+   "kind": "exit",
+   "code": 0,
+   "stdout": "{not json",
+   "stderr_head": "",
+   "secs": 0.04,
+   "case": "T2 malformed JSON exit0",
+   "simulated_host": "BLOCK (invalid output+onFailure=block)",
+   "label": "OFFLINE_REPLAY (simulated_host = du doan tu tai lieu, khong phai host)"
+  },
+  {
+   "kind": "timeout",
+   "secs": 3.02,
+   "case": "T2 timeout (>3s)",
+   "simulated_host": "BLOCK",
+   "label": "OFFLINE_REPLAY (simulated_host = du doan tu tai lieu, khong phai host)"
+  },
+  {
+   "kind": "cannot_start",
+   "error": "FileNotFoundError",
+   "secs": 0.0,
+   "case": "T2 missing executable (Glob hook)",
+   "simulated_host": "BLOCK",
+   "label": "OFFLINE_REPLAY (simulated_host = du doan tu tai lieu, khong phai host)"
+  },
+  {
+   "kind": "exit",
+   "code": 2,
+   "stdout": "",
+   "stderr_head": "\\Local\\Programs\\Python\\Python311\\python.exe: can't open file 'C:\\\\Users\\\\DELL\\\\AppData\\\\Local\\\\Temp\\\\LAW-G03-2a-replay-20261018-001815\\\\hooks\\\\no_such_script.py': [Errno 2] No such file or directory\r\n",
+   "secs": 0.05,
+   "case": "T2 missing script qua python -I (Grep hook)",
+   "simulated_host": "BLOCK (exit 2)",
+   "label": "OFFLINE_REPLAY (simulated_host = du doan tu tai lieu, khong phai host)"
+  },
+  {
+   "kind": "exit",
+   "code": 0,
+   "stdout": "",
+   "stderr_head": "",
+   "secs": 0.04,
+   "case": "T3 exit0 im lang tren denied/",
+   "simulated_host": "NO_DECISION -> normal permission flow",
+   "label": "OFFLINE_REPLAY (simulated_host = du doan tu tai lieu, khong phai host)"
+  },
+  {
+   "kind": "exit",
+   "code": 0,
+   "stdout": "LAW-G03-2A plain text, no decision\r\n",
+   "stderr_head": "",
+   "secs": 0.04,
+   "case": "T3 plaintext exit0 tren denied/",
+   "simulated_host": "NO_DECISION (plain text only logged) -> normal permission flow",
+   "label": "OFFLINE_REPLAY (simulated_host = du doan tu tai lieu, khong phai host)"
+  },
+  {
+   "kind": "exit",
+   "code": 0,
+   "stdout": "{\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"ask\", \"permissionDecisionReason\": \"G03-2a T5: hook asks the user\"}}",
+   "stderr_head": "",
+   "secs": 0.04,
+   "case": "T5 ask",
+   "simulated_host": "DECISION ask",
+   "label": "OFFLINE_REPLAY (simulated_host = du doan tu tai lieu, khong phai host)"
+  },
+  {
+   "kind": "exit",
+   "code": 0,
+   "stdout": "{\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"allow\", \"permissionDecisionReason\": \"G03-2a lab: allowed/\"}}",
+   "stderr_head": "",
+   "secs": 0.04,
+   "case": "T6 Pre (Edit)",
+   "simulated_host": "DECISION allow",
+   "label": "OFFLINE_REPLAY (simulated_host = du doan tu tai lieu, khong phai host)"
+  },
+  {
+   "kind": "exit",
+   "code": 0,
+   "stdout": "",
+   "stderr_head": "",
+   "secs": 0.05,
+   "case": "T6 Post (Edit) sau 2 lan ghi ngoai hook",
+   "simulated_host": "NO_DECISION -> normal permission flow",
+   "label": "OFFLINE_REPLAY (simulated_host = du doan tu tai lieu, khong phai host)"
+  }
+ ],
+ "trace_origin_values": [
+  "OFFLINE_REPLAY"
+ ],
+ "trace_lines": 41
+}

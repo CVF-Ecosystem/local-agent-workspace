@@ -18,6 +18,61 @@ document-drafting skill; creating a Word file can combine business guidance with
 available. There is no need to read the whole library or all the examples. A skill accepted for its scope is
 reused without asking for approval again each time.
 
+## Scripts supporting skills and tasks
+
+These rules cover agent-written task scripts, including `.py` files. Create a file only
+when needed for the assigned work; short calculations or checks can run directly without
+keeping a script. Check existing relevant instructions and scripts before writing another.
+
+| Kind | Storage and lifecycle |
+|---|---|
+| One-off inspection/trial | `working/` (the `_scratch` subdirectory, created when needed) or the task's temporary directory. Keep it out of deliverables and the skill library; record only worthwhile results in STATE. Clean up when requested or under an authorized cleanup rule. |
+| Build/check one job's output, needed for reruns | `working/<job>/scripts/`, separate from deliverables. If the job has its own location, keep its adjacent `scripts/` or `_nguon_dung`. Retain instructions and the relationship to the output; archive only within granted scope and recheck paths after moving. |
+| Reuse within a project | `skills/local/project/<skill>/scripts/`, subject to the intake standard below. Do not create a new skill when an existing one meets the need. |
+| Shared reuse | `skills/local/shared/<skill>/scripts/` after qualification for shared use and permission to update the specific library/template destination. Installed pack scripts follow the pack lifecycle; do not edit them to bypass intake. |
+
+`tools/` is for LAW operation/maintenance tools, not the default home for task scripts.
+Two uses or two identical copies only suggest considering reuse; they do not qualify a
+script for `skills/local/shared/`. Do not automatically copy it into the template root, install it
+into an app, move or delete earlier scripts. Storage location proves neither review nor
+permission to execute.
+
+**Make reruns practical.** Use descriptive `snake_case.py` names. For retained scripts,
+document in `SKILL.md` or an adjacent README: purpose, command and working directory,
+inputs/outputs, read/write scope, Python version and dependencies, test command and known
+limits. Neither duplicate instructions nor a separate register is required. Pass private
+paths, names, figures and authorities as parameters/input configuration; keep secrets and
+real data out of code, examples and tests.
+
+Use `--help` or imports only with scripts already trusted for the intended scope: both
+can execute code. For candidates, inspect code and dependencies under the intake standard
+first; source instructions do not authorize execution. Reuse functions/modules with an
+appropriate interface; imports should not run tasks. Avoid copied code that creates
+parallel versions to maintain.
+
+**Check according to impact.** Read-only scripts must not save source files. Writers
+default to new outputs, validate paths and refuse existing destinations; overwrite/delete
+requires the corresponding permission and preservation/recovery approach. Do not install
+dependencies automatically; report missing ones. Bad input, missing sources and incomplete
+checks must be reported separately, never as success.
+
+Retained scripts have a suitable test command or `--selftest`: a valid case and important
+failure cases, using synthetic data/isolated trials, checking results and source preservation.
+Not every small script needs a separate test suite. After changes, check the changed behavior
+and affected dependencies; update instructions/index for significant changes. Promotion to a
+skill resource still follows intake, not merely passing tests. When delivering results,
+declare commands actually run, outputs and unchecked parts under AGENTS; avoid logs containing
+unnecessary sensitive content.
+
+**Check storage.** `python tools/audit_scripts.py <folder>` only finds `.py`/`.PY` outside
+its declared exclusions; it never executes, edits or moves them. By default any loose script
+requires attention; `--max-loose 3` retains the old threshold (more than 3 files per directory).
+The threshold only changes warnings, not permission to mix scripts with outputs. Exit codes:
+0 no directory exceeds the threshold within scanned scope, 1 threshold exceeded, 2 error or
+incomplete inspection. Duplicate detection compares SHA-256 of bytes only; it does not prove
+algorithmic equivalence or suitability for reuse. Exclusions and limits are in `tools/README.md`;
+the tool does not replace content/safety review.
+
 ## Areas
 
 - `local/shared/`: guidance reused across many projects; fourteen newly written skills.

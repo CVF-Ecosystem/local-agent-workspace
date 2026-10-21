@@ -1,0 +1,9 @@
+$ ast.parse(..., feature_version=(3, 8)) — chỉ ngữ pháp, KHÔNG phải chạy Python 3.8
+ok-3.8-grammar .cvf/checks/v2/refs.py
+ok-3.8-grammar .cvf/checks/v2/binding.py
+ok-3.8-grammar .cvf/checks/v2/loader.py
+ok-3.8-grammar tests/test_control_check_v2_s2.py
+ok-3.8-grammar tests/test_control_check_v2.py
+
+$ grep API mới hơn 3.8
+(không có / none)

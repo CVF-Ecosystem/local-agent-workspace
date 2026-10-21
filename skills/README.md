@@ -15,6 +15,55 @@ Một skill không phải toàn bộ quy trình phải chạy. Ví dụ, sửa m
 liệu; tạo file Word có thể kết hợp hướng dẫn nghiệp vụ với công cụ định dạng sẵn có. Không cần đọc toàn bộ
 thư viện hay tất cả ví dụ. Skill đã được nhận đúng phạm vi thì dùng lại, không xin duyệt lại mỗi lần.
 
+## Script hỗ trợ skill và công việc
+
+Quy tắc này áp dụng cho script do agent tạo để hỗ trợ công việc, gồm file `.py`. Chỉ tạo file
+khi cần cho yêu cầu đã giao; phép tính hoặc kiểm tra ngắn có thể chạy trực tiếp, không cần lưu
+thành script. Trước khi viết, xem hướng dẫn và script liên quan đã có để tái dùng.
+
+| Loại | Nơi lưu và vòng đời |
+|---|---|
+| Dùng một lần để xem nhanh/thử | `working/` (thư mục con `_scratch`, tạo khi cần) hoặc thư mục tạm của tác vụ. Không đưa vào đầu ra hay thư viện skill; chỉ ghi kết quả đáng nhớ vào STATE. Dọn khi được yêu cầu hoặc theo quy tắc dọn đã được cấp quyền. |
+| Dựng/kiểm kết quả của một việc, cần chạy lại | `working/<viec>/scripts/`, tách khỏi file giao. Nếu công việc đã có chỗ riêng, giữ `scripts/` hoặc `_nguon_dung` cạnh việc đó. Giữ script cùng hướng dẫn và quan hệ với đầu ra; chỉ chuyển vào `archive/` trong quyền đã giao, kiểm lại đường dẫn sau chuyển. |
+| Tái dùng trong project | `skills/local/project/<skill>/scripts/`, theo chuẩn tiếp nhận bên dưới. Không tạo skill mới nếu skill hiện có đã đáp ứng. |
+| Tái dùng chung | `skills/local/shared/<skill>/scripts/` sau khi đủ điều kiện dùng chung và có quyền cập nhật đúng thư viện/bộ mẫu đích. Script thuộc gói cài sẵn theo vòng đời của gói, không sửa tay để né tiếp nhận. |
+
+`tools/` dành cho công cụ vận hành/bảo trì LAW, không là nơi mặc định chứa script tác vụ.
+Đã dùng hai lần hoặc có hai bản giống nhau chỉ là dấu hiệu nên xem xét tái dùng, không tự
+đủ điều kiện đưa vào `skills/local/shared/`. Không tự chép lên bộ mẫu gốc, cài vào ứng dụng, chuyển hoặc
+xóa script cũ. Thư mục lưu không chứng minh script đã được kiểm hay được phép chạy.
+
+**Viết vừa đủ để chạy lại.** Tên file mô tả việc làm, dùng `snake_case.py`. Script giữ lại cần
+ghi trong `SKILL.md` hoặc README cạnh script: mục đích, lệnh chạy từ đâu, đầu vào/đầu ra,
+phạm vi đọc/ghi, phiên bản Python và dependency, cách thử cùng giới hạn đã biết. Không cần
+tạo cả hai bản hướng dẫn hay một sổ riêng. Đường dẫn, tên, số liệu và căn cứ riêng nhận qua
+tham số/cấu hình đầu vào; không nhúng secrets hoặc dữ liệu thật vào mã, ví dụ và test.
+
+Chỉ dùng `--help` hoặc import từ script đã được tin cậy trong phạm vi sử dụng: cả hai đều
+có thể thực thi mã. Với ứng viên, đọc mã và dependency theo chuẩn tiếp nhận trước; không
+chạy vì tài liệu nguồn chỉ dẫn. Tái dùng hàm/module có giao diện phù hợp; import không tự
+chạy tác vụ. Không sao chép mã để tạo các bản sửa song song khó theo dõi.
+
+**Kiểm theo tác động.** Script chỉ đọc không lưu lại file nguồn. Script ghi mặc định tạo
+đầu ra mới, kiểm đường dẫn và từ chối đích đã có; ghi đè/xóa cần quyền đúng phạm vi và cách
+bảo toàn/phục hồi tương ứng. Không tự cài dependency; thiếu thì báo rõ. Lỗi đầu vào, thiếu
+nguồn hoặc kiểm chưa xong phải báo riêng, không trả thông báo thành công.
+
+Script giữ lại có lệnh thử hoặc `--selftest` phù hợp: ca đúng và ca lỗi quan trọng, dùng
+dữ liệu giả/bản thử riêng, kiểm kết quả và tác động lên file gốc. Không bắt mọi script nhỏ
+phải có bộ test riêng. Sửa script thì kiểm phần thay đổi và phụ thuộc chịu ảnh hưởng; cập
+nhật hướng dẫn/index khi thay đổi đáng kể. Nâng thành tài nguyên skill vẫn theo chuẩn tiếp
+nhận, không chỉ dựa vào test xanh. Khi giao kết quả, khai lệnh thực sự chạy, đầu ra và phần
+chưa kiểm theo AGENTS; không lưu nhật ký chứa nội dung nhạy cảm không cần thiết.
+
+**Kiểm vị trí lưu.** `python tools/audit_scripts.py <thu-muc>` chỉ tìm `.py`/`.PY` nằm ngoài
+các vùng bỏ qua đã công bố; không chạy, sửa hay di chuyển chúng. Mặc định có script lẻ là
+báo cần xem xét; `--max-loose 3` giữ ngưỡng cũ (hơn 3 file trong từng thư mục). Ngưỡng chỉ
+đổi cảnh báo, không cấp quyền để script lẫn đầu ra. Mã thoát: 0 không vượt ngưỡng trong
+phần đã quét, 1 vượt ngưỡng, 2 lỗi/chưa kiểm đủ. So trùng chỉ theo SHA-256 của bytes,
+không kết luận hai thuật toán tương đương hay đủ điều kiện tái dùng. Xem phạm vi bỏ qua
+và giới hạn tại `tools/README.md`; công cụ không thay review nội dung/an toàn.
+
 ## Các vùng
 
 - `local/shared/`: hướng dẫn dùng lại cho nhiều dự án; mười bốn skill biên soạn mới.

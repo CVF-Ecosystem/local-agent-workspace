@@ -43,6 +43,10 @@ purpose, readers, outputs, main sources/templates and known limits to `PROJECT.m
 to fill them in after you talk it through. Only stable, useful information is needed; do not paste a
 whole document library into it.
 
+The standing scope for sub-agents and existing source-folder exceptions fields in the "Project details"
+section of `PROJECT.md` stay empty in a new project. Fill them in only after you have decided to grant that scope or choose that
+exception; the assistant does not fill them in by itself.
+
 If the project will run across several sessions, start `.agent/STATE.md` with the current
 goal, what you are working on and the next step. Items you have no information for can stay
 blank or be marked as not yet known; you do not need a full plan to begin.

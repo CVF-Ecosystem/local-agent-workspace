@@ -1,0 +1,119 @@
+{
+  "captured_utc": "2026-10-17T17:47:04.7302518Z",
+  "lab": "C:\\Users\\DELL\\AppData\\Local\\Temp\\LAW-G03-2a-20261018-001903",
+  "operator_report": "Operator said completed; GUI/per-step outputs pending",
+  "files": [
+    {
+      "path": "fixture/input.txt",
+      "exists": true,
+      "sha256": "0cde402ef2ca561cb4f01f4661b46fe80fa234bb22b8d2bc1e45414b601bdb31",
+      "bytes": 78,
+      "text": "LAW-G03-2A fixture line 1\nLAW-G03-2A fixture line 2\nLAW-G03-2A fixture line 3\n"
+    },
+    {
+      "path": "allowed/T1-main-allow.txt",
+      "exists": true,
+      "sha256": "448754cb72945e06b00de0b3d993975a97be8f318bcb1ca0f188ce354610defd",
+      "bytes": 20,
+      "text": "LAW-G03-2A-T1-ALLOW\n"
+    },
+    {
+      "path": "denied/T1-main-deny.txt",
+      "exists": false,
+      "sha256": null,
+      "bytes": null,
+      "text": null
+    },
+    {
+      "path": "allowed/T1-child-allow.txt",
+      "exists": true,
+      "sha256": "88d5d1db8bcbef10cd84f7bd53bb90fc808966ee418fd982b21e3febf1896f1c",
+      "bytes": 17,
+      "text": "LAW-G03-2A-CHILD\n"
+    },
+    {
+      "path": "denied/T1-child-deny.txt",
+      "exists": false,
+      "sha256": null,
+      "bytes": null,
+      "text": null
+    },
+    {
+      "path": "allowed/T2-exception.txt",
+      "exists": false,
+      "sha256": null,
+      "bytes": null,
+      "text": null
+    },
+    {
+      "path": "allowed/T2-malformed.txt",
+      "exists": true,
+      "sha256": "5c795143db074019e77bf4a5e7958f51ef0af28e44a41945b7e86364313d6eb3",
+      "bytes": 14,
+      "text": "LAW-G03-2A-T2\n"
+    },
+    {
+      "path": "allowed/T2-timeout.txt",
+      "exists": false,
+      "sha256": null,
+      "bytes": null,
+      "text": null
+    },
+    {
+      "path": "denied/T3-silent.txt",
+      "exists": true,
+      "sha256": "fe8ebb66cff8f4532d6ef87f27776f561ca15df524e055cc6fa49ec5ec81d108",
+      "bytes": 14,
+      "text": "LAW-G03-2A-T3\n"
+    },
+    {
+      "path": "denied/T3-plain.txt",
+      "exists": true,
+      "sha256": "fe8ebb66cff8f4532d6ef87f27776f561ca15df524e055cc6fa49ec5ec81d108",
+      "bytes": 14,
+      "text": "LAW-G03-2A-T3\n"
+    },
+    {
+      "path": "denied/T4-bash.txt",
+      "exists": false,
+      "sha256": null,
+      "bytes": null,
+      "text": null
+    },
+    {
+      "path": "denied/T4-ps.txt",
+      "exists": false,
+      "sha256": null,
+      "bytes": null,
+      "text": null
+    },
+    {
+      "path": "denied/T4-indirect.txt",
+      "exists": true,
+      "sha256": "92fe18615e00b04d4188cf0084f7ca71d942cfe5f5fd0c29f797f47549f09f7c",
+      "bytes": 15,
+      "text": "LAW-G03-2A-T4\r\n"
+    },
+    {
+      "path": "allowed/T5-ask.txt",
+      "exists": true,
+      "sha256": "7c7750e8d2a0ed98531a84e45e3c86821120a3d92dc4d8a11a85396ac5d936e8",
+      "bytes": 14,
+      "text": "LAW-G03-2A-T5\n"
+    },
+    {
+      "path": "allowed/T6-edit.txt",
+      "exists": true,
+      "sha256": "0e4c3f808e723c9e21b2842dd886b2d44bb822fc1aa246612c81333ced86abff",
+      "bytes": 20,
+      "text": "LAW-G03-2A-T6 after\n"
+    },
+    {
+      "path": "denied/canary.txt",
+      "exists": true,
+      "sha256": "e311b7937cd9d8796763461bd6e3e65fd16eac7da41aaf4c178b527ea1129370",
+      "bytes": 39,
+      "text": "LAW-G03-2A canary, must stay unchanged\n"
+    }
+  ]
+}

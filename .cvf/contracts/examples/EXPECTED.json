@@ -1,0 +1,163 @@
+{
+  "example_only": true,
+  "note": "Expectation index for the EXAMPLE records in this folder. schema_valid was checked against control.schema.json with a JSON Schema validator (see HANDOFF G-01). Every other field is a design expectation for the G-02 checker and has NOT been executed. 'current' assumes today's state: no trusted verifier exists, so trust_anchor/verification values in records are unverified claims. 'if_anchors_verified' assumes a G-03 verifier outside Main confirms the non-Main anchors. Example grants are EXAMPLE_INACTIVE, so as shipped no example can open an effect. A record that is schema-valid but lacks operation facts the checker needs is BLOCKED with OPERATION_DESCRIPTOR_INCOMPLETE; schema-valid never means ALLOW. Routes follow the match semantics in ROUTING_POLICY.json (OR between clauses, AND between fields, conditions_all/conditions_any explicit).",
+  "schema": "control.schema.json",
+  "policy": "../rules/ROUTING_POLICY.json",
+  "cases": [
+    {
+      "file": "ex01_draft_in_grant.json",
+      "scenario": "New draft in working/ inside a standing group grant",
+      "schema_valid": true,
+      "route_rows": ["R-READ_DRAFT"],
+      "required_review_phases": [],
+      "expected_current": { "disposition": "BLOCKED", "reasons": ["GRANT_INACTIVE"], "why": "Shipped example grant is EXAMPLE_INACTIVE." },
+      "expected_if_grant_active": { "disposition": "PASS", "assurance_level": "ADVISORY", "why": "Row needs only a cooperative grant reference in scope; no Reviewer, no task record, no re-approval." }
+    },
+    {
+      "file": "ex02_mutation_reviewed_bound.json",
+      "scenario": "Off-recipe register write with PRE_EFFECT and PRE_INTEGRATION reviews bound to the same digests",
+      "schema_valid": true,
+      "route_rows": ["R-MUTATION"],
+      "required_review_phases": ["PRE_EFFECT", "PRE_INTEGRATION"],
+      "expected_current": { "disposition": "BLOCKED", "reasons": ["TRUSTED_VERIFICATION_UNAVAILABLE"], "why": "Intent, grant and reviewer eligibility are VERIFIED only by the record's own claim; no verifier outside Main exists yet." },
+      "expected_if_anchors_verified": { "disposition": "PASS", "why": "Bindings, phases and verdicts line up; still not semantic proof of the content." }
+    },
+    {
+      "file": "ex03_missing_intent.json",
+      "scenario": "Task without the intent block",
+      "schema_valid": false,
+      "schema_error": "required property 'intent' missing"
+    },
+    {
+      "file": "ex04_unknown_schema_version.json",
+      "scenario": "schema_version law.cvf.control/9",
+      "schema_valid": false,
+      "schema_error": "schema_version must equal law.cvf.control/1; unknown versions are refused, not interpreted"
+    },
+    {
+      "file": "ex05_binding_changed.json",
+      "scenario": "Review bound to input-A; effect requested on input-B (source revision 2)",
+      "schema_valid": true,
+      "route_rows": ["R-MUTATION"],
+      "expected_current": { "disposition": "BLOCKED", "reasons": ["BINDING_MISMATCH", "STALE_REVIEW", "TRUSTED_VERIFICATION_UNAVAILABLE"] },
+      "expected_if_anchors_verified": { "disposition": "BLOCKED", "reasons": ["BINDING_MISMATCH", "STALE_REVIEW"], "why": "Only the changed input part needs re-review." }
+    },
+    {
+      "file": "ex06_reviewer_blocked_then_accepted.json",
+      "scenario": "PRE_INTEGRATION verdict BLOCKED; Main marks ACCEPTED_FOR_INTEGRATION with requirements claimed MET",
+      "schema_valid": true,
+      "expected_current": { "disposition": "DENY", "reasons": ["REVIEW_BLOCKING_VERDICT"], "why": "Structure is valid because Main's requirement claims are MET; the acceptance point must read the bound verdict, which Main cannot drop." },
+      "expected_if_anchors_verified": { "disposition": "DENY", "reasons": ["REVIEW_BLOCKING_VERDICT"] }
+    },
+    {
+      "file": "ex07_output_changed_after_review.json",
+      "scenario": "PRE_INTEGRATION PASS bound to output-X; artifact digest is now output-Y",
+      "schema_valid": true,
+      "expected_current": { "disposition": "BLOCKED", "reasons": ["STALE_REVIEW", "TRUSTED_VERIFICATION_UNAVAILABLE"] },
+      "expected_if_anchors_verified": { "disposition": "BLOCKED", "reasons": ["STALE_REVIEW"] }
+    },
+    {
+      "file": "ex08_main_rewrote_intent.json",
+      "scenario": "Intent ref anchored MAIN_DECLARED, self-marked VERIFIED, digest consistent everywhere",
+      "schema_valid": true,
+      "route_rows": ["R-MUTATION"],
+      "expected_current": { "disposition": "BLOCKED", "reasons": ["INTENT_NOT_TRUSTED"] },
+      "expected_if_anchors_verified": { "disposition": "BLOCKED", "reasons": ["INTENT_NOT_TRUSTED"], "why": "MAIN_DECLARED can never satisfy user_intent; matching hashes do not prove origin." }
+    },
+    {
+      "file": "ex09_self_declared_reviewer.json",
+      "scenario": "Reviewer eligibility anchored MAIN_DECLARED, independence SELF_DECLARED, hashes match",
+      "schema_valid": true,
+      "route_rows": ["R-MUTATION"],
+      "expected_current": { "disposition": "BLOCKED", "reasons": ["REVIEWER_ELIGIBILITY_UNTRUSTED"] },
+      "expected_if_anchors_verified": { "disposition": "BLOCKED", "reasons": ["REVIEWER_ELIGIBILITY_UNTRUSTED"], "why": "No fallback to Main self-review." }
+    },
+    {
+      "file": "ex10_zero_object_pass.json",
+      "scenario": "Review verdict PASS with zero objects reviewed",
+      "schema_valid": false,
+      "schema_error": "verdict PASS requires scope.objects minItems 1; a check with no object is NOT_APPLICABLE, never PASS"
+    },
+    {
+      "file": "ex11_known_preservation_loss.json",
+      "scenario": "Overwrite known to drop x14 validations",
+      "schema_valid": true,
+      "route_rows": ["R-MUTATION", "R-KNOWN_LOSS"],
+      "expected_current": { "disposition": "DENY", "reasons": ["KNOWN_PRESERVATION_LOSS"], "why": "Refuse before the transaction regardless of grant or review." },
+      "expected_if_anchors_verified": { "disposition": "DENY", "reasons": ["KNOWN_PRESERVATION_LOSS"] }
+    },
+    {
+      "file": "ex12_delegate_missing_descriptor.json",
+      "scenario": "Main calls a role with no delegation descriptor (no callee role, child task, tool scope or requested envelope)",
+      "schema_valid": false,
+      "schema_error": "operation delegate requires the delegation descriptor; there is nothing to compare against the grant, so it is refused even if the grant is trusted"
+    },
+    {
+      "file": "ex13_worker_sets_acceptance.json",
+      "scenario": "Worker marks its own result REVIEW_PASSED and ACCEPTED_FOR_INTEGRATION",
+      "schema_valid": false,
+      "schema_error": "state_set_by role worker may only set CANDIDATE"
+    },
+    {
+      "file": "ex14_recipe_accepted_no_decision_change.json",
+      "scenario": "Positive recipe: accepted version, grant in scope, no user decision changed",
+      "schema_valid": true,
+      "route_rows": ["R-RECIPE"],
+      "required_review_phases": [],
+      "expected_current": { "disposition": "BLOCKED", "reasons": ["TRUSTED_VERIFICATION_UNAVAILABLE"], "why": "Grant and recipe acceptance are VERIFIED only by the record's own claim." },
+      "expected_if_anchors_verified": { "disposition": "PASS", "why": "Runtime gates only (recipe version, grant, input revision, preservation, actual outcome); no per-file LLM review." }
+    },
+    {
+      "file": "ex15_recipe_changes_user_decision.json",
+      "scenario": "Negative recipe: accepted version but this run changes a user decision; Main proposed R-RECIPE",
+      "schema_valid": true,
+      "route_rows": ["R-MUTATION"],
+      "required_review_phases": ["PRE_EFFECT", "PRE_INTEGRATION"],
+      "expected_current": { "disposition": "BLOCKED", "reasons": ["REVIEW_MISSING", "TRUSTED_VERIFICATION_UNAVAILABLE"], "why": "conditions_all of R-RECIPE fails on NO_USER_DECISION_CHANGE; the R-MUTATION clause RECIPE_ACCEPTED_VERSION + USER_DECISION_CHANGE matches. Main's proposed row cannot lower it." },
+      "expected_if_anchors_verified": { "disposition": "BLOCKED", "reasons": ["REVIEW_MISSING"] }
+    },
+    {
+      "file": "ex16_recipe_decision_effect_unknown.json",
+      "scenario": "Unknown recipe effect: accepted version, effect on user decisions UNKNOWN",
+      "schema_valid": true,
+      "route_rows": ["R-UNCLASSIFIED"],
+      "expected_current": { "disposition": "BLOCKED", "reasons": ["UNCLASSIFIED_OPERATION"], "why": "Neither R-RECIPE nor R-MUTATION's recipe clause holds; R-UNCLASSIFIED clause RECIPE_ACCEPTED_VERSION + USER_DECISION_EFFECT_UNKNOWN matches. No fallthrough to a light route." },
+      "expected_if_anchors_verified": { "disposition": "BLOCKED", "reasons": ["UNCLASSIFIED_OPERATION"] }
+    },
+    {
+      "file": "ex17_delegate_full_descriptor.json",
+      "scenario": "Main calls a core Reviewer with callee role, parent/child task, read-only tool scope and requested envelope; grant lists the callee",
+      "schema_valid": true,
+      "route_rows": ["R-DELEGATE"],
+      "required_review_phases": [],
+      "expected_current": { "disposition": "BLOCKED", "reasons": ["GRANT_INACTIVE"], "why": "Shipped example grant is EXAMPLE_INACTIVE." },
+      "expected_if_grant_active_and_verified": { "disposition": "PASS", "why": "Only after the checker confirms callee is in delegate_callees and the child tool scope/envelope lie within the grant and parent task; otherwise BLOCKED DELEGATE_SCOPE_UNVERIFIED. The Reviewer call itself is not reviewed." }
+    },
+    {
+      "file": "ex18_external_send_missing_payload.json",
+      "scenario": "External send with a recipient but no payload locator/digest",
+      "schema_valid": false,
+      "schema_error": "external_send/network_write require payload; a send whose bytes are not bound cannot be checked"
+    },
+    {
+      "file": "ex19_delegate_context_only.json",
+      "scenario": "Parent dispatches a Reviewer that only processes passed context; child tool, operation and path scopes are explicitly empty",
+      "schema_valid": true,
+      "route_rows": [
+        "R-DELEGATE"
+      ],
+      "required_review_phases": [],
+      "expected_current": {
+        "disposition": "BLOCKED",
+        "reasons": [
+          "GRANT_INACTIVE"
+        ],
+        "why": "Shipped example grant remains EXAMPLE_INACTIVE; structural validity grants no authority."
+      },
+      "expected_if_grant_active_and_verified": {
+        "disposition": "PASS",
+        "why": "Only after independently verified grant, parent/child binding, callee and envelope checks. Empty tool_scope arrays grant no permissions, never wildcard; any later child tool/operation/path request beyond them must be blocked by G-02. Parent native dispatch permission is not a child tool permission."
+      }
+    }
+  ]
+}

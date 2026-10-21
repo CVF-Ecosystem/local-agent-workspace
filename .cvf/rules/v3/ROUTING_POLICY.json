@@ -1,0 +1,708 @@
+{
+  "schema_version": "law.cvf.control/3",
+  "record_type": "routing_policy",
+  "evaluation_basis": "COOPERATIVE_WORKFLOW",
+  "note": "CANDIDATE_NOT_ACTIVE (A0 narrow). Canonical machine-readable routing table for the cooperative workflow basis, limited to one create_new action published by owner protocol P-CN1 (Windows NTFS local). CONTROL_RULES.md renders the same row IDs for people; change both together, bump policy_version and get independent review. Not loadable by the v1 or v2 checker; no checker, loader or host uses it. Same nine row IDs as law.cvf.routing/2; only R-READ_DRAFT (split into three clauses) and R-MUTATION (one clause added) change. Also declares operational_context_protocol P-CTX1 (tools/context_update.py: update of an existing .agent/STATE.md or .agent/HANDOFF.md, operational context only, not an artifact): the artifact checker, workflow and observer do not evaluate it, a PASS is never derived from it, and any metadata that reaches the artifact checker stays UNSUPPORTED.",
+  "policy_id": "law-routing-minimum-cooperative",
+  "policy_version": "law.cvf.routing/3",
+  "status": "CANDIDATE_NOT_ACTIVE",
+  "readable_rendering": ".cvf/rules/v3/CONTROL_RULES.md#routing-toi-thieu",
+  "combine": "UNION_OF_REQUIREMENTS",
+  "main_may_downgrade": false,
+  "missing_required_reviewer": "BLOCK_DEPENDENT_EFFECT_NO_SELF_REVIEW",
+  "reviewer_dispatch_needs_review": false,
+  "unknown_handling": "NEVER_ALLOW",
+  "unresolved_condition": "TREAT_AS_UNCLASSIFIED",
+  "unmatched_effect_route": "R-UNCLASSIFIED",
+  "match_semantics": "match_any: OR between clauses. Inside a clause: AND between fields; operations/write_zones/content_use: actual value is one of the list; conditions_all: every condition holds; conditions_any: at least one holds.",
+  "group_grant_reuse": "REUSE_WITHIN_SCOPE_WITHOUT_REAPPROVAL",
+  "review_grants_authority": false,
+  "assurance_ceiling": "ADVISORY",
+  "tamper_resistance": "NONE",
+  "basis_change_per_run": "FORBIDDEN",
+  "legacy_and_unknown_handling": "REFUSE_NO_AUTO_MIGRATION",
+  "binding_definition": "law.cvf.bind/3",
+  "unsupported_binding_part_handling": "BLOCK_DEPENDENT_GATE",
+  "independent_read_draft_continues": true,
+  "rows": [
+    {
+      "row_id": "R-READ_DRAFT",
+      "title": "Read/survey, or create one new draft file in working/ or output/ (internal draft only); no original, register, permission, install/export, authority-named or external write",
+      "match_any": [
+        {
+          "operations": [
+            "read"
+          ],
+          "write_zones": [
+            "none"
+          ]
+        },
+        {
+          "operations": [
+            "create_new"
+          ],
+          "write_zones": [
+            "working"
+          ],
+          "conditions_all": [
+            "NO_PROTECTED_TARGET"
+          ]
+        },
+        {
+          "operations": [
+            "create_new"
+          ],
+          "write_zones": [
+            "output_new"
+          ],
+          "conditions_all": [
+            "NO_PROTECTED_TARGET",
+            "CONTENT_USE_INTERNAL_ONLY"
+          ]
+        }
+      ],
+      "required_gates": [
+        "GRANT_SCOPE",
+        "PATH_SCOPE",
+        "TOOL_SCOPE",
+        "ENVELOPE"
+      ],
+      "required_review_phases": [],
+      "authority_evidence": "GRANT_REFERENCE_ATTRIBUTED",
+      "attributed_refs_required": [
+        {
+          "kind": "grant",
+          "accepted_source_classes": [
+            "USER_CONFIRMATION"
+          ]
+        }
+      ],
+      "note": "No Reviewer call and no separate task record required. A standing group grant covers it. create_new clauses have the open assumption A-NEW_TARGET (route CONDITIONAL, so BLOCKED) until the S4 observer closes it at dispatch/effect. Runtime effects of an accepted owner protocol attach here only under owner_protocols; otherwise they follow R-MUTATION."
+    },
+    {
+      "row_id": "R-RECIPE",
+      "title": "Deterministic operation by a recipe accepted at this exact version, not changing a user decision",
+      "match_any": [
+        {
+          "operations": [
+            "create_new",
+            "overwrite",
+            "delete",
+            "register_write",
+            "provenance_write"
+          ],
+          "conditions_all": [
+            "RECIPE_ACCEPTED_VERSION",
+            "NO_USER_DECISION_CHANGE"
+          ]
+        }
+      ],
+      "required_gates": [
+        "GRANT_SCOPE",
+        "RECIPE_VERSION_ACCEPTED",
+        "INPUT_REVISION",
+        "PRESERVATION",
+        "ACTUAL_OUTCOME"
+      ],
+      "required_review_phases": [],
+      "authority_evidence": "ATTRIBUTED_REFS_REQUIRED",
+      "attributed_refs_required": [
+        {
+          "kind": "grant",
+          "accepted_source_classes": [
+            "USER_CONFIRMATION"
+          ]
+        },
+        {
+          "kind": "recipe_acceptance",
+          "accepted_source_classes": [
+            "USER_CONFIRMATION"
+          ]
+        }
+      ],
+      "note": "No LLM review per file. Both conditions must hold. A tool name is not a recipe; a new or changed recipe, or an accepted recipe that changes a user decision, goes to R-MUTATION; an unknown decision effect goes to R-UNCLASSIFIED."
+    },
+    {
+      "row_id": "R-MUTATION",
+      "title": "New or off-recipe overwrite/delete of sources, register or provenance change",
+      "match_any": [
+        {
+          "operations": [
+            "overwrite",
+            "delete",
+            "register_write",
+            "provenance_write"
+          ],
+          "conditions_all": [
+            "RECIPE_ABSENT_OR_CHANGED"
+          ]
+        },
+        {
+          "operations": [
+            "create_new",
+            "overwrite",
+            "delete",
+            "register_write",
+            "provenance_write"
+          ],
+          "conditions_all": [
+            "RECIPE_ACCEPTED_VERSION",
+            "USER_DECISION_CHANGE"
+          ]
+        },
+        {
+          "operations": [
+            "create_new"
+          ],
+          "write_zones": [
+            "agent_runtime"
+          ]
+        }
+      ],
+      "required_gates": [
+        "GRANT_SCOPE",
+        "BINDING",
+        "INPUT_REVISION",
+        "PRESERVATION"
+      ],
+      "required_review_phases": [
+        "PRE_EFFECT",
+        "PRE_INTEGRATION"
+      ],
+      "authority_evidence": "ATTRIBUTED_REFS_REQUIRED",
+      "attributed_refs_required": [
+        {
+          "kind": "user_intent",
+          "accepted_source_classes": [
+            "USER_CONFIRMATION"
+          ]
+        },
+        {
+          "kind": "grant",
+          "accepted_source_classes": [
+            "USER_CONFIRMATION"
+          ]
+        },
+        {
+          "kind": "reviewer_eligibility",
+          "accepted_source_classes": [
+            "USER_CONFIRMATION",
+            "TOOL_OBSERVATION"
+          ]
+        }
+      ],
+      "note": "create_new in agent_runtime (direct or by an unaccepted owner) follows this row. An accepted owner protocol (owner_protocols) is the only exception, for exactly its envelope."
+    },
+    {
+      "row_id": "R-AUTHORITY_CHANGE",
+      "title": "Verification status, schema/policy or permission change; skill install/export",
+      "match_any": [
+        {
+          "operations": [
+            "verification_status_write",
+            "schema_or_policy_write",
+            "grant_write",
+            "skill_install",
+            "skill_export"
+          ]
+        }
+      ],
+      "required_gates": [
+        "GRANT_SCOPE",
+        "BINDING",
+        "INPUT_REVISION",
+        "PRESERVATION",
+        "SKILL_INTAKE_STANDARD"
+      ],
+      "required_review_phases": [
+        "PRE_EFFECT",
+        "PRE_INTEGRATION"
+      ],
+      "authority_evidence": "ATTRIBUTED_REFS_REQUIRED",
+      "attributed_refs_required": [
+        {
+          "kind": "user_intent",
+          "accepted_source_classes": [
+            "USER_CONFIRMATION"
+          ]
+        },
+        {
+          "kind": "grant",
+          "accepted_source_classes": [
+            "USER_CONFIRMATION"
+          ]
+        },
+        {
+          "kind": "reviewer_eligibility",
+          "accepted_source_classes": [
+            "USER_CONFIRMATION",
+            "TOOL_OBSERVATION"
+          ]
+        }
+      ],
+      "additional_owner": "skills/README.md (intake standard for install/export; a Reviewer verdict does not replace it)",
+      "note": "Never a recipe. A review does not issue a grant; a grant change still needs the user or an issuer the user authorized."
+    },
+    {
+      "row_id": "R-HIGH_STAKES",
+      "title": "Content to sign, send outside or use as a decision basis; claim that a source/content is verified",
+      "match_any": [
+        {
+          "content_use": [
+            "sign",
+            "send_external",
+            "decision_basis",
+            "verified_claim"
+          ]
+        }
+      ],
+      "required_gates": [
+        "SOURCE_SCOPE_AND_CONCLUSION"
+      ],
+      "required_review_phases": [
+        "PRE_DELIVERY"
+      ],
+      "authority_evidence": "ATTRIBUTED_REFS_REQUIRED",
+      "attributed_refs_required": [
+        {
+          "kind": "user_intent",
+          "accepted_source_classes": [
+            "USER_CONFIRMATION"
+          ]
+        },
+        {
+          "kind": "reviewer_eligibility",
+          "accepted_source_classes": [
+            "USER_CONFIRMATION",
+            "TOOL_OBSERVATION"
+          ]
+        }
+      ],
+      "note": "Adds to any mutation row that also matches; content_use can only add requirements, its absence is not evidence of low risk."
+    },
+    {
+      "row_id": "R-EXTERNAL",
+      "title": "Send data out, network write, hard-to-reverse effect or envelope overrun",
+      "match_any": [
+        {
+          "operations": [
+            "external_send",
+            "network_write",
+            "irreversible_other"
+          ]
+        },
+        {
+          "conditions_all": [
+            "ENVELOPE_EXCEEDED"
+          ]
+        }
+      ],
+      "required_gates": [
+        "GRANT_EXACT_COVERAGE",
+        "ENVELOPE",
+        "ACTUAL_OUTCOME"
+      ],
+      "required_review_phases": [
+        "PRE_EFFECT",
+        "PRE_INTEGRATION"
+      ],
+      "authority_evidence": "ATTRIBUTED_REFS_REQUIRED",
+      "attributed_refs_required": [
+        {
+          "kind": "user_intent",
+          "accepted_source_classes": [
+            "USER_CONFIRMATION"
+          ]
+        },
+        {
+          "kind": "grant",
+          "accepted_source_classes": [
+            "USER_CONFIRMATION"
+          ]
+        },
+        {
+          "kind": "reviewer_eligibility",
+          "accepted_source_classes": [
+            "USER_CONFIRMATION",
+            "TOOL_OBSERVATION"
+          ]
+        }
+      ],
+      "note": "A grant still in force is reused; review neither replaces consent nor raises limits."
+    },
+    {
+      "row_id": "R-DELEGATE",
+      "title": "Call Scout/Worker/Reviewer within the granted role, tools, scope and limits",
+      "match_any": [
+        {
+          "operations": [
+            "delegate"
+          ]
+        }
+      ],
+      "required_gates": [
+        "DELEGATE_SCOPE",
+        "ENVELOPE"
+      ],
+      "required_review_phases": [],
+      "authority_evidence": "ATTRIBUTED_REFS_REQUIRED",
+      "attributed_refs_required": [
+        {
+          "kind": "grant",
+          "accepted_source_classes": [
+            "USER_CONFIRMATION"
+          ]
+        }
+      ],
+      "note": "Needs a full delegation descriptor (callee role, parent/child task, tool scope, requested envelope) inside the grant's delegate_callees and the parent task; a grant alone is not enough. Calling a Reviewer is not itself reviewed (no recursion). Effects performed by the delegate follow their own rows."
+    },
+    {
+      "row_id": "R-UNCLASSIFIED",
+      "title": "Unclassifiable operation, or missing recipe/authority/required review",
+      "match_any": [
+        {
+          "operations": [
+            "unknown"
+          ]
+        },
+        {
+          "conditions_any": [
+            "UNCLASSIFIED",
+            "MISSING_AUTHORITY",
+            "MISSING_REQUIRED_REVIEW"
+          ]
+        },
+        {
+          "conditions_all": [
+            "RECIPE_ACCEPTED_VERSION",
+            "USER_DECISION_EFFECT_UNKNOWN"
+          ]
+        }
+      ],
+      "required_gates": [],
+      "required_review_phases": [],
+      "authority_evidence": "ATTRIBUTED_REFS_REQUIRED",
+      "attributed_refs_required": [
+        {
+          "kind": "grant",
+          "accepted_source_classes": [
+            "USER_CONFIRMATION"
+          ]
+        }
+      ],
+      "forced_disposition": "BLOCKED",
+      "note": "Also the route for any effect no other row matches and for any condition the checker cannot resolve. Blocks the dependent effect; independent read/draft work may continue. Never falls back to R-READ_DRAFT."
+    },
+    {
+      "row_id": "R-KNOWN_LOSS",
+      "title": "Format or structure known to be lost by the operation",
+      "match_any": [
+        {
+          "conditions_all": [
+            "KNOWN_PRESERVATION_LOSS"
+          ]
+        }
+      ],
+      "required_gates": [
+        "PRESERVATION"
+      ],
+      "required_review_phases": [],
+      "authority_evidence": "ATTRIBUTED_REFS_REQUIRED",
+      "attributed_refs_required": [
+        {
+          "kind": "grant",
+          "accepted_source_classes": [
+            "USER_CONFIRMATION"
+          ]
+        }
+      ],
+      "forced_disposition": "DENY",
+      "note": "Refuse before the transaction; a warning after writing is not enough. A safe refusal does not prove support for that format."
+    }
+  ],
+  "candidate_scope": "A0_NARROW_ONE_CREATE_NEW_ACTION_P_CN1_WINDOWS_NTFS_LOCAL",
+  "conditional_route_disposition": "BLOCKED",
+  "light_write_zones": [
+    "working",
+    "output_new"
+  ],
+  "write_zone_rank": [
+    "none",
+    "working",
+    "output_new",
+    "agent_runtime",
+    "original_source",
+    "shared_register",
+    "framework",
+    "external"
+  ],
+  "zone_map": [
+    {
+      "path_prefix": "working/",
+      "write_zone": "working"
+    },
+    {
+      "path_prefix": "output/",
+      "write_zone": "output_new"
+    },
+    {
+      "path_prefix": ".agent/runtime/",
+      "write_zone": "agent_runtime"
+    }
+  ],
+  "unmapped_path_handling": "UNCLASSIFIED",
+  "authority_name_patterns": [
+    "agents.md",
+    "project.md",
+    "claude.md",
+    "gemini.md",
+    "routing_policy*.json",
+    "*.schema.json",
+    "control_rules*.md",
+    "control_contract*.md",
+    "execution_profile*.json",
+    "skill.md",
+    "pack.json",
+    "manifest.sha256",
+    "*.grant.json",
+    "grant*.json"
+  ],
+  "open_assumptions": [
+    {
+      "id": "A-NEW_TARGET",
+      "applies_to_operations": [
+        "create_new"
+      ],
+      "route_status_while_open": "CONDITIONAL",
+      "closed_by": "S4_OBSERVER",
+      "closes_in_phases": [
+        "dispatch",
+        "effect"
+      ],
+      "observation_scope": "AT_TIME_ONLY",
+      "limits": [
+        "EXCLUSIVE_WRITE_NOT_PROVEN",
+        "RACE_NOT_EXCLUDED"
+      ],
+      "not_applicable_in_phases": [
+        "accept"
+      ]
+    }
+  ],
+  "owner_protocols": [
+    {
+      "protocol_id": "P-CN1",
+      "protocol_version": 1,
+      "owner_tool": "publish_new",
+      "entrypoint": "tools/publish_new.py",
+      "entrypoint_sha256": "sha256:8a4e5914d0892ea1d28566f96f7114afd857b441e2013d8534dc9cb93e4bd852",
+      "pin_semantics": "VERSION_COMPARE_ADVISORY",
+      "platform": "windows-ntfs-local",
+      "operation": "create_new",
+      "target_zones": [
+        "working",
+        "output_new"
+      ],
+      "runtime_zone": "agent_runtime",
+      "runtime_dir": ".agent/runtime/publish/",
+      "attaches_to_row": "R-READ_DRAFT",
+      "envelope": [
+        {
+          "id": "T1",
+          "operation": "mkdir",
+          "path_scope": "TARGET_ANCESTORS_UNDER_ZONE"
+        },
+        {
+          "id": "T2",
+          "operation": "mkdir",
+          "path_scope": "RUNTIME_PUBLISH_DIR"
+        },
+        {
+          "id": "T3",
+          "operation": "create",
+          "path_scope": "RUNTIME_PREPARED_OF_RID"
+        },
+        {
+          "id": "T4",
+          "operation": "create",
+          "path_scope": "RUNTIME_STAGED_OF_RID"
+        },
+        {
+          "id": "T5",
+          "operation": "link",
+          "path_scope": "TARGET"
+        },
+        {
+          "id": "T6",
+          "operation": "create",
+          "path_scope": "RUNTIME_ONE_TERMINAL_OF_RID"
+        },
+        {
+          "id": "T7",
+          "operation": "delete",
+          "path_scope": "RUNTIME_STAGED_OF_RID"
+        }
+      ],
+      "grant_must_cover": {
+        "tools": [
+          "publish_new"
+        ],
+        "operations": [
+          "create_new",
+          "delete"
+        ],
+        "path_scopes": [
+          "TARGET_AND_ANCESTORS",
+          "RUNTIME_DIR"
+        ],
+        "delete_scope": "T7_STAGED_OF_SAME_RID_ONLY"
+      },
+      "required_by_phase": {
+        "dispatch": [
+          "PROTOCOL_VERSION_ENTRYPOINT_ACCEPTED",
+          "ENTRYPOINT_SHA256_OBSERVED_EQUALS_PIN",
+          "ACTION_ROUTE_R_READ_DRAFT_B_OR_C",
+          "GRANT_COVERS_ENVELOPE",
+          "NO_REVIEW_PHASE_REQUIRED",
+          "TARGET_ABSENT_OBSERVED_AT_TIME"
+        ],
+        "effect": [
+          "PROTOCOL_VERSION_ENTRYPOINT_ACCEPTED",
+          "ENTRYPOINT_SHA256_OBSERVED_EQUALS_PIN",
+          "ACTION_ROUTE_R_READ_DRAFT_B_OR_C",
+          "GRANT_COVERS_ENVELOPE",
+          "NO_REVIEW_PHASE_REQUIRED",
+          "TARGET_ABSENT_OBSERVED_AT_TIME",
+          "INPUTS_MATCH_DECLARED_DIGESTS"
+        ],
+        "accept": [
+          "PROTOCOL_VERSION_ENTRYPOINT_ACCEPTED",
+          "ACTION_ROUTE_R_READ_DRAFT_B_OR_C",
+          "GRANT_COVERS_ENVELOPE",
+          "NO_REVIEW_PHASE_REQUIRED",
+          "PUBLISHED_EVIDENCE_RESOLVES_FOR_RID",
+          "RECEIPT_REF_RESOLVES_TO_PUBLISHED",
+          "RUNTIME_FILES_WITHIN_ENVELOPE",
+          "CURRENT_BYTES_EQUAL_PUBLISHED_CONTENT",
+          "USER_ACCEPTANCE_COMPLETE_D4"
+        ]
+      },
+      "receipt": {
+        "ref_kind": "effect_receipt",
+        "evidence_schema": "local-agent-workspace/publish-v1",
+        "terminal_state": "PUBLISHED",
+        "digest_of": "RAW_PUBLISHED_BYTES",
+        "required_in_phases": [
+          "accept"
+        ]
+      },
+      "not_exempt": [
+        "EVIDENCE_EDIT_OR_DELETE",
+        "OTHER_RUNTIME_FILES",
+        "STATE_OR_HANDOFF_FILES",
+        "RENAME_OR_OVERWRITE",
+        "DECLARED_TOOL_NAME_ONLY",
+        "FILE_LOCATION_ONLY"
+      ],
+      "review_phases_supported": []
+    }
+  ],
+  "operational_context_protocol": {
+    "protocol_id": "P-CTX1",
+    "protocol_version": 1,
+    "owner_tool": "context_update",
+    "entrypoint": "tools/context_update.py",
+    "entrypoint_sha256": "sha256:ee7cb6b15f3b5e70f394d9483085126a919c4f19f044b773f0a185cd74626248",
+    "pin_semantics": "VERSION_COMPARE_ADVISORY",
+    "platform": "windows-ntfs-local",
+    "scope": "OPERATIONAL_CONTEXT_NOT_ARTIFACT",
+    "target_paths": [
+      ".agent/STATE.md",
+      ".agent/HANDOFF.md"
+    ],
+    "files_per_call": 1,
+    "existing_file_only": true,
+    "expected_before": "SHA256_OF_BYTES_READ_REQUIRED",
+    "runtime_precondition": "ROOT_AGENT_RUNTIME_EXISTING_PLAIN_PINNED_BEFORE_PROBE",
+    "transaction_prune": false,
+    "envelope": [
+      {
+        "id": "C1",
+        "operation": "read",
+        "path_scope": "CONTEXT_TARGET"
+      },
+      {
+        "id": "C2",
+        "operation": "create_delete",
+        "path_scope": "RUNTIME_PROBE_FILE"
+      },
+      {
+        "id": "C3",
+        "operation": "create",
+        "path_scope": "OWN_TRANSACTION_JOURNAL_STAGE_BACKUP"
+      },
+      {
+        "id": "C4",
+        "operation": "replace",
+        "path_scope": "CONTEXT_TARGET"
+      },
+      {
+        "id": "C5",
+        "operation": "delete",
+        "path_scope": "OWN_TRANSACTION_STAGE_BACKUP"
+      }
+    ],
+    "grant_precondition": {
+      "required": true,
+      "checked_by": "ACTOR_BEFORE_CALL",
+      "source": "USER_OR_SESSION_GROUP_GRANT_NOT_CONTEXT_CONTENT",
+      "tools": [
+        "context_update"
+      ],
+      "operations": [
+        "overwrite",
+        "create_new",
+        "delete"
+      ],
+      "path_scopes": [
+        "CONTEXT_TARGET",
+        "RUNTIME_TRANSACTIONS_OWN"
+      ],
+      "delete_scope": "OWN_STAGE_BACKUP_ONLY"
+    },
+    "non_authority": [
+      "NOT_GRANT_SOURCE",
+      "NOT_POLICY",
+      "NOT_REVIEW_VERDICT",
+      "NOT_USER_ACCEPTANCE",
+      "NOT_ARTIFACT_PASS"
+    ],
+    "outside_envelope": "FOLLOWS_CURRENT_ROUTE",
+    "not_exempt": [
+      "NATIVE_OR_DIRECT_WRITE",
+      "OTHER_PATHS",
+      "OTHER_JOURNALS_OR_RUNTIME_FILES",
+      "RUNTIME_PARENT_CREATE_OR_REMOVE",
+      "DECLARED_TOOL_NAME_ONLY",
+      "FILE_LOCATION_ONLY"
+    ],
+    "artifact_checker_handling": "UNSUPPORTED",
+    "concurrency": "COOPERATIVE_SINGLE_WRITER_HASH_GUARD_NOT_CAS"
+  },
+  "unsupported_in_candidate": [
+    "PROTECTION_OVERLAY",
+    "STAGED_BYTES_AND_RELATION",
+    "MULTI_ACTION_OCCURRENCE_AND_COMPLETION",
+    "EXTRA_REVIEW_PHASES",
+    "REVIEW_SCOPE_AND_CONCLUSIONS",
+    "AGENT_STATE_AND_PACKAGE_CONTENT_ZONES",
+    "FRAMEWORK_CREATE_NEW_ROW",
+    "ACTION_DIGEST_REMOVAL",
+    "VETO_REDUCTION_DEPENDENCY_MODEL",
+    "OVERWRITE_OR_INPUT_IS_TARGET",
+    "POSIX_NETWORK_CLOUD_FILESYSTEMS",
+    "HOST_ENFORCEMENT",
+    "RECIPE_AND_NON_CORE_ROLES",
+    "OPERATIONAL_CONTEXT_P_CTX1_CHECKER_EVALUATION"
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "schema_version": "law.cvf.control/1",
+  "record_type": "effect",
+  "example_only": true,
+  "effect_id": "EXAMPLE-effect-send",
+  "stage": "REQUEST",
+  "binding": {
+    "task_id": "EXAMPLE-task-1",
+    "task_revision": 1,
+    "intent_digest": "sha256:1a3b044d79e525460323ad7dfd77a6ba8b1b380bc5fd96c097c930d5f5f3566f",
+    "accepted_task_digest": "sha256:d31d22e7e4b7fcb5a9253c8948456ea5ff052ab3de71b9802872e73094f5b89c",
+    "context_digest": "sha256:097e8405eb7d535d0a85bf55b776d44d8901959c507f0ed29c13d893e8b31ae7",
+    "inputs": [
+      {
+        "path": "references/EXAMPLE-quy-che.docx",
+        "digest": "sha256:c3405cb3606009ca984e418008967889a095d515b0f469c72074644eab9c981f",
+        "source_id": "SRC-EXAMPLE-1",
+        "revision": "1"
+      }
+    ],
+    "policy_version": "law.cvf.routing/1"
+  },
+  "actor": {
+    "actor_id": "EXAMPLE-worker-1",
+    "role": "worker",
+    "host": "EXAMPLE-host"
+  },
+  "action": {
+    "operation": "external_send",
+    "tool": "EXAMPLE-mail",
+    "targets": [
+      "EXAMPLE://recipient/doi-tac"
+    ],
+    "write_zone": "external",
+    "content_use": [
+      "send_external"
+    ]
+  },
+  "routing": {
+    "policy_version": "law.cvf.routing/1",
+    "matched_rows": [
+      "R-EXTERNAL",
+      "R-HIGH_STAKES"
+    ],
+    "required_review_phases": [
+      "PRE_EFFECT",
+      "PRE_INTEGRATION",
+      "PRE_DELIVERY"
+    ]
+  },
+  "grant_ref_ids": [
+    "EXAMPLE-grant-ref-2"
+  ],
+  "review_ids": [],
+  "assurance_level": "ADVISORY",
+  "disposition": "PENDING",
+  "reasons": [],
+  "decided_by": {
+    "actor_id": "EXAMPLE-main",
+    "role": "main",
+    "host": "EXAMPLE-host"
+  }
+}

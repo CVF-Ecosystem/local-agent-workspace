@@ -1,0 +1,250 @@
+{
+  "schema_version": "law.cvf.control/1",
+  "record_type": "bundle",
+  "example_only": true,
+  "note": "Intent ref written by Main, self-marked VERIFIED; intent_digest matches everywhere.",
+  "bundle_id": "EXAMPLE-ex08",
+  "records": [
+    {
+      "schema_version": "law.cvf.control/1",
+      "record_type": "task",
+      "example_only": true,
+      "work_id": "EXAMPLE-work-1",
+      "task_id": "EXAMPLE-task-1",
+      "task_revision": 1,
+      "proposed_by": {
+        "actor_id": "EXAMPLE-main",
+        "role": "main",
+        "host": "EXAMPLE-host"
+      },
+      "intent": {
+        "refs": [
+          {
+            "ref_id": "EXAMPLE-intent-ref-main",
+            "kind": "user_intent",
+            "locator": "EXAMPLE://working/EXAMPLE-work-1/intent-by-main.md",
+            "revision": "1",
+            "digest": "sha256:1a3b044d79e525460323ad7dfd77a6ba8b1b380bc5fd96c097c930d5f5f3566f",
+            "trust_anchor": "MAIN_DECLARED",
+            "verification": {
+              "status": "VERIFIED",
+              "verifier": {
+                "actor_id": "EXAMPLE-main",
+                "role": "main",
+                "host": "EXAMPLE-host"
+              },
+              "method": "EXAMPLE: host-side lookup, not implemented"
+            }
+          }
+        ],
+        "main_interpretation": "EXAMPLE: Main rewrote the goal and dropped a user condition.",
+        "unconfirmed": []
+      },
+      "authority": {
+        "grant_refs": [
+          {
+            "ref_id": "EXAMPLE-grant-ref-2",
+            "kind": "grant",
+            "locator": "EXAMPLE://user-store/grant-2",
+            "revision": "1",
+            "digest": "sha256:404067bd80a8ffe28146748c3739a81be7b0037484d631fe0565d559788fd9c5",
+            "trust_anchor": "USER_CONTROLLED_STORE",
+            "verification": {
+              "status": "VERIFIED",
+              "verifier": {
+                "actor_id": "EXAMPLE-host-verifier",
+                "role": "host"
+              },
+              "method": "EXAMPLE: host-side lookup, not implemented"
+            }
+          }
+        ],
+        "subject": {
+          "actor_id": "EXAMPLE-worker-1",
+          "role": "worker",
+          "host": "EXAMPLE-host"
+        }
+      },
+      "inputs": [
+        {
+          "path": "references/EXAMPLE-quy-che.docx",
+          "digest": "sha256:c3405cb3606009ca984e418008967889a095d515b0f469c72074644eab9c981f",
+          "source_id": "SRC-EXAMPLE-1",
+          "revision": "1"
+        }
+      ],
+      "effects": {
+        "actions": [
+          {
+            "operation": "provenance_write",
+            "tool": "EXAMPLE-editor",
+            "targets": [
+              "references/_INDEX.xlsx"
+            ],
+            "write_zone": "shared_register"
+          }
+        ],
+        "protected_targets": [
+          "references/"
+        ],
+        "preservation": [],
+        "on_missing": "STOP_DEPENDENT_EFFECT"
+      },
+      "acceptance": {
+        "requirements": [
+          {
+            "req_id": "REQ-1",
+            "statement": "EXAMPLE: output covers the requested sections",
+            "mandatory": true,
+            "expected_evidence": [
+              "artifact path + digest"
+            ]
+          }
+        ]
+      },
+      "envelope": {
+        "role": "worker",
+        "model": {
+          "value": "EXAMPLE-model",
+          "status": "REQUESTED"
+        },
+        "effort": {
+          "value": "high",
+          "status": "UNKNOWN"
+        }
+      },
+      "route_proposal": {
+        "policy_version": "law.cvf.routing/1",
+        "proposed_rows": [
+          "R-MUTATION"
+        ]
+      }
+    },
+    {
+      "schema_version": "law.cvf.control/1",
+      "record_type": "review",
+      "example_only": true,
+      "review_id": "EXAMPLE-review-pre",
+      "phase": "PRE_EFFECT",
+      "binding": {
+        "task_id": "EXAMPLE-task-1",
+        "task_revision": 1,
+        "intent_digest": "sha256:1a3b044d79e525460323ad7dfd77a6ba8b1b380bc5fd96c097c930d5f5f3566f",
+        "accepted_task_digest": "sha256:d31d22e7e4b7fcb5a9253c8948456ea5ff052ab3de71b9802872e73094f5b89c",
+        "context_digest": "sha256:097e8405eb7d535d0a85bf55b776d44d8901959c507f0ed29c13d893e8b31ae7",
+        "inputs": [
+          {
+            "path": "references/EXAMPLE-quy-che.docx",
+            "digest": "sha256:c3405cb3606009ca984e418008967889a095d515b0f469c72074644eab9c981f",
+            "source_id": "SRC-EXAMPLE-1",
+            "revision": "1"
+          }
+        ],
+        "policy_version": "law.cvf.routing/1"
+      },
+      "reviewer": {
+        "actor": {
+          "actor_id": "EXAMPLE-reviewer-1",
+          "role": "reviewer",
+          "host": "EXAMPLE-host"
+        },
+        "eligibility_ref": {
+          "ref_id": "EXAMPLE-elig-ref-1",
+          "kind": "reviewer_eligibility",
+          "locator": "EXAMPLE://host/dispatch/reviewer-1",
+          "revision": "1",
+          "digest": "sha256:1f397c4aeda0fad6d1ff3fb75becb3ea46470d9b3dcd68531a2fce25f7bf6720",
+          "trust_anchor": "HOST_PERMISSION_DECISION",
+          "verification": {
+            "status": "VERIFIED",
+            "verifier": {
+              "actor_id": "EXAMPLE-host-verifier",
+              "role": "host"
+            },
+            "method": "EXAMPLE: host-side lookup, not implemented"
+          }
+        },
+        "independence_observed": "OBSERVED_SEPARATE_CONTEXT"
+      },
+      "scope": {
+        "objects": [
+          {
+            "path": "working/EXAMPLE-work-1/task.json",
+            "digest": "sha256:d31d22e7e4b7fcb5a9253c8948456ea5ff052ab3de71b9802872e73094f5b89c"
+          }
+        ],
+        "requirements_checked": [
+          "REQ-1"
+        ],
+        "not_checked": [
+          "EXAMPLE: semantic correctness outside REQ-1"
+        ],
+        "intent_refs_checked": [
+          "EXAMPLE-intent-ref-main"
+        ]
+      },
+      "verdict": "PASS",
+      "findings": []
+    },
+    {
+      "schema_version": "law.cvf.control/1",
+      "record_type": "effect",
+      "example_only": true,
+      "effect_id": "EXAMPLE-effect-1",
+      "stage": "REQUEST",
+      "binding": {
+        "task_id": "EXAMPLE-task-1",
+        "task_revision": 1,
+        "intent_digest": "sha256:1a3b044d79e525460323ad7dfd77a6ba8b1b380bc5fd96c097c930d5f5f3566f",
+        "accepted_task_digest": "sha256:d31d22e7e4b7fcb5a9253c8948456ea5ff052ab3de71b9802872e73094f5b89c",
+        "context_digest": "sha256:097e8405eb7d535d0a85bf55b776d44d8901959c507f0ed29c13d893e8b31ae7",
+        "inputs": [
+          {
+            "path": "references/EXAMPLE-quy-che.docx",
+            "digest": "sha256:c3405cb3606009ca984e418008967889a095d515b0f469c72074644eab9c981f",
+            "source_id": "SRC-EXAMPLE-1",
+            "revision": "1"
+          }
+        ],
+        "policy_version": "law.cvf.routing/1"
+      },
+      "actor": {
+        "actor_id": "EXAMPLE-worker-1",
+        "role": "worker",
+        "host": "EXAMPLE-host"
+      },
+      "action": {
+        "operation": "provenance_write",
+        "tool": "EXAMPLE-editor",
+        "targets": [
+          "references/_INDEX.xlsx"
+        ],
+        "write_zone": "shared_register"
+      },
+      "routing": {
+        "policy_version": "law.cvf.routing/1",
+        "matched_rows": [
+          "R-MUTATION"
+        ],
+        "required_review_phases": [
+          "PRE_EFFECT",
+          "PRE_INTEGRATION"
+        ]
+      },
+      "grant_ref_ids": [
+        "EXAMPLE-grant-ref-2"
+      ],
+      "review_ids": [
+        "EXAMPLE-review-pre"
+      ],
+      "assurance_level": "ADVISORY",
+      "disposition": "PENDING",
+      "reasons": [],
+      "decided_by": {
+        "actor_id": "EXAMPLE-main",
+        "role": "main",
+        "host": "EXAMPLE-host"
+      }
+    }
+  ]
+}

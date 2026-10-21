@@ -1,0 +1,293 @@
+{
+  "schema_version": "law.cvf.control/2",
+  "record_type": "bundle",
+  "evaluation_basis": "COOPERATIVE_WORKFLOW",
+  "example_only": true,
+  "note": "Recipe effect unknown",
+  "bundle_id": "EXAMPLE-v2-ex11",
+  "records": [
+    {
+      "schema_version": "law.cvf.control/2",
+      "record_type": "task",
+      "evaluation_basis": "COOPERATIVE_WORKFLOW",
+      "example_only": true,
+      "note": "EXAMPLE task",
+      "work_id": "EXAMPLE-work-1",
+      "task_id": "EXAMPLE-task-1",
+      "task_revision": 1,
+      "proposed_by": {
+        "actor_id": "EXAMPLE-main",
+        "role": "main",
+        "host": "EXAMPLE-host"
+      },
+      "intent": {
+        "refs": [
+          {
+            "ref_id": "EXAMPLE-intent-ref-1",
+            "kind": "user_intent",
+            "locator": "EXAMPLE://session/msg-1",
+            "revision": "1",
+            "digest": "sha256:3b01c340b7bac5627c94fd7e4f82d48b9360457159ea9d1f4dbfdf42ea7f3617",
+            "attribution": {
+              "source_class": "USER_CONFIRMATION",
+              "channel": "USER_MESSAGE",
+              "recorded_by": {
+                "actor_id": "EXAMPLE-main",
+                "role": "main",
+                "host": "EXAMPLE-host"
+              },
+              "evidence_locator": "EXAMPLE://session/msg-1"
+            }
+          }
+        ],
+        "main_interpretation": "EXAMPLE: Main's reading of the user request.",
+        "unconfirmed": []
+      },
+      "authority": {
+        "grant_refs": [
+          {
+            "ref_id": "EXAMPLE-grant-ref-1",
+            "kind": "grant",
+            "locator": "EXAMPLE://user-store/grant-1",
+            "revision": "1",
+            "digest": "sha256:585bfd913bcd01b32f1542c3eb6657828187a426e03f9446dbd250bb75c16824",
+            "attribution": {
+              "source_class": "USER_CONFIRMATION",
+              "channel": "USER_MESSAGE",
+              "recorded_by": {
+                "actor_id": "EXAMPLE-main",
+                "role": "main",
+                "host": "EXAMPLE-host"
+              },
+              "evidence_locator": "EXAMPLE://session/msg-grant"
+            }
+          }
+        ],
+        "subject": {
+          "actor_id": "EXAMPLE-worker-1",
+          "role": "worker",
+          "host": "EXAMPLE-host"
+        }
+      },
+      "inputs": [
+        {
+          "path": "references/EXAMPLE-quy-che.docx",
+          "digest": "sha256:abfb409c82355f7b9e544d6b63bc56a2062549c74217553b5571f84623990eed",
+          "source_id": "SRC-EXAMPLE-1",
+          "revision": "1"
+        }
+      ],
+      "effects": {
+        "actions": [
+          {
+            "operation": "overwrite",
+            "tool": "EXAMPLE-recipe-tool",
+            "targets": [
+              "references/EXAMPLE-list.xlsx"
+            ],
+            "write_zone": "original_source",
+            "recipe": {
+              "recipe_id": "EXAMPLE-recipe-1",
+              "recipe_version": "1.0",
+              "user_decision_effect": "UNKNOWN",
+              "acceptance_ref": {
+                "ref_id": "EXAMPLE-recipe-ref-1",
+                "kind": "recipe_acceptance",
+                "locator": "EXAMPLE://user-store/recipe-1",
+                "revision": "1",
+                "digest": "sha256:ed90d9eab3aa3753896e0c4b21386ec553f0f4a912db7106890681eaf1cafd84",
+                "attribution": {
+                  "source_class": "USER_CONFIRMATION",
+                  "channel": "USER_MESSAGE",
+                  "recorded_by": {
+                    "actor_id": "EXAMPLE-main",
+                    "role": "main",
+                    "host": "EXAMPLE-host"
+                  },
+                  "evidence_locator": "EXAMPLE://session/msg-recipe"
+                }
+              }
+            }
+          }
+        ],
+        "protected_targets": [
+          "references/"
+        ],
+        "preservation": [
+          {
+            "target": "references/EXAMPLE-list.xlsx",
+            "must_keep": "EXAMPLE: validations",
+            "known_loss_state": "NONE_KNOWN"
+          }
+        ],
+        "on_missing": "STOP_DEPENDENT_EFFECT"
+      },
+      "acceptance": {
+        "requirements": [
+          {
+            "req_id": "REQ-1",
+            "statement": "EXAMPLE: output covers the requested sections",
+            "mandatory": true,
+            "expected_evidence": [
+              "artifact path + digest"
+            ]
+          }
+        ]
+      },
+      "envelope": {
+        "role": "worker",
+        "model": {
+          "value": "EXAMPLE-model",
+          "status": "REQUESTED"
+        },
+        "effort": {
+          "value": "high",
+          "status": "UNKNOWN"
+        }
+      },
+      "route_proposal": {
+        "policy_version": "law.cvf.routing/2",
+        "proposed_rows": [
+          "R-RECIPE"
+        ]
+      }
+    },
+    {
+      "schema_version": "law.cvf.control/2",
+      "record_type": "grant",
+      "evaluation_basis": "COOPERATIVE_WORKFLOW",
+      "example_only": true,
+      "grant_id": "EXAMPLE-grant-1",
+      "grant_revision": 1,
+      "issuer": {
+        "actor_id": "EXAMPLE-user",
+        "role": "user"
+      },
+      "issuer_ref": {
+        "ref_id": "EXAMPLE-grant-ref-1",
+        "kind": "grant",
+        "locator": "EXAMPLE://user-store/grant-1",
+        "revision": "1",
+        "digest": "sha256:585bfd913bcd01b32f1542c3eb6657828187a426e03f9446dbd250bb75c16824",
+        "attribution": {
+          "source_class": "USER_CONFIRMATION",
+          "channel": "USER_MESSAGE",
+          "recorded_by": {
+            "actor_id": "EXAMPLE-main",
+            "role": "main",
+            "host": "EXAMPLE-host"
+          },
+          "evidence_locator": "EXAMPLE://session/msg-grant"
+        }
+      },
+      "subject": {
+        "roles": [
+          "worker"
+        ],
+        "actor_ids": [
+          "EXAMPLE-worker-1"
+        ]
+      },
+      "scope": {
+        "task_classes": [
+          "EXAMPLE-register-update"
+        ],
+        "operations": [
+          "provenance_write"
+        ],
+        "paths": [
+          "references/_INDEX.xlsx"
+        ],
+        "tools": [
+          "EXAMPLE-editor"
+        ]
+      },
+      "limits": {
+        "expires_at": "2027-01-01T00:00:00Z"
+      },
+      "status": "EXAMPLE_INACTIVE"
+    },
+    {
+      "schema_version": "law.cvf.control/2",
+      "record_type": "effect",
+      "evaluation_basis": "COOPERATIVE_WORKFLOW",
+      "example_only": true,
+      "effect_id": "EXAMPLE-effect-1",
+      "stage": "REQUEST",
+      "binding": {
+        "bind_version": "law.cvf.bind/2",
+        "evaluation_basis": "COOPERATIVE_WORKFLOW",
+        "task_id": "EXAMPLE-task-1",
+        "task_revision": 1,
+        "intent_digest": "sha256:159e51014082dba5310459539d7cf72ff2206eaea451244d3b09b57298c29317",
+        "accepted_task_digest": "sha256:5dc3f211bd1d0b9e63faa74b5c5fba24758a88e729073db6a09e854dbb22f5d2",
+        "context_digest": "sha256:5ca56eb8872c8b6e886357451a6bb298ca5744e677c2ef5ad36d509413fae6f1",
+        "policy_version": "law.cvf.routing/2",
+        "policy_digest": "sha256:ed0c9eba974c8324b4a10d8b0aa6cefe4d80cc251f20299a56edf6fee030e05e",
+        "inputs": [
+          {
+            "path": "references/EXAMPLE-quy-che.docx",
+            "digest": "sha256:abfb409c82355f7b9e544d6b63bc56a2062549c74217553b5571f84623990eed",
+            "source_id": "SRC-EXAMPLE-1",
+            "revision": "1"
+          }
+        ],
+        "action_digest": "sha256:15c4197f2a3dcf090f1d6efc6cf16b36e42401765a302930b60db53db1533036"
+      },
+      "actor": {
+        "actor_id": "EXAMPLE-worker-1",
+        "role": "worker",
+        "host": "EXAMPLE-host"
+      },
+      "action": {
+        "operation": "overwrite",
+        "tool": "EXAMPLE-recipe-tool",
+        "targets": [
+          "references/EXAMPLE-list.xlsx"
+        ],
+        "write_zone": "original_source",
+        "recipe": {
+          "recipe_id": "EXAMPLE-recipe-1",
+          "recipe_version": "1.0",
+          "user_decision_effect": "UNKNOWN",
+          "acceptance_ref": {
+            "ref_id": "EXAMPLE-recipe-ref-1",
+            "kind": "recipe_acceptance",
+            "locator": "EXAMPLE://user-store/recipe-1",
+            "revision": "1",
+            "digest": "sha256:ed90d9eab3aa3753896e0c4b21386ec553f0f4a912db7106890681eaf1cafd84",
+            "attribution": {
+              "source_class": "USER_CONFIRMATION",
+              "channel": "USER_MESSAGE",
+              "recorded_by": {
+                "actor_id": "EXAMPLE-main",
+                "role": "main",
+                "host": "EXAMPLE-host"
+              },
+              "evidence_locator": "EXAMPLE://session/msg-recipe"
+            }
+          }
+        }
+      },
+      "routing": {
+        "policy_version": "law.cvf.routing/2",
+        "matched_rows": [
+          "R-UNCLASSIFIED"
+        ],
+        "required_review_phases": []
+      },
+      "grant_ref_ids": [
+        "EXAMPLE-grant-ref-1"
+      ],
+      "review_ids": [],
+      "assurance_level": "ADVISORY",
+      "disposition": "PENDING",
+      "reasons": [],
+      "decided_by": {
+        "actor_id": "EXAMPLE-main",
+        "role": "main",
+        "host": "EXAMPLE-host"
+      }
+    }
+  ]
+}

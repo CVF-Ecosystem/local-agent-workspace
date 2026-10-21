@@ -1,0 +1,472 @@
+{
+  "note": "Reference vectors for law.cvf.bind/3 (CANDIDATE, A0 narrow). A hash identifies bytes; it grants nothing. All inputs are fake. Recomputed by tests/test_control_v3_candidate.py. The canonical and object_bytes groups are LAW-CJ/2 and unchanged from v2; the projection fixture is the exact task snapshot of tools/publish_new.py (build_task).",
+  "bind_version": "law.cvf.bind/3",
+  "canonical": [
+    {
+      "id": "u11-terminal-newline-key",
+      "input_json": "{\"key\\n\":1}",
+      "expected": {
+        "status": "UNSUPPORTED",
+        "reason": "KEY_NOT_ALLOWED"
+      }
+    },
+    {
+      "id": "c01-key-order-whitespace",
+      "input_json": "{ \"b\": 1, \"a\": [true, null, \"x\"] }",
+      "expected": {
+        "status": "OK",
+        "canonical_utf8": "{\"a\":[true,null,\"x\"],\"b\":1}",
+        "digest": "sha256:54a65415ad370228851a1da4b31b6fd42dc58b19a50d35cae759325f7388ce64"
+      }
+    },
+    {
+      "id": "c02-empty-containers",
+      "input_json": "{\"z\":[],\"y\":{}}",
+      "expected": {
+        "status": "OK",
+        "canonical_utf8": "{\"y\":{},\"z\":[]}",
+        "digest": "sha256:ce454d0e882db6a83fc347f4e1372d4923a90d619fc680caf9d5307b4d46ea46"
+      }
+    },
+    {
+      "id": "c03-null-is-not-absent-null",
+      "input_json": "{\"a\":null}",
+      "expected": {
+        "status": "OK",
+        "canonical_utf8": "{\"a\":null}",
+        "digest": "sha256:d091f9c83c091f79652fe8786375b3fe4ce0861a56f5bfbafedbe431877ff0e8"
+      }
+    },
+    {
+      "id": "c03-null-is-not-absent-absent",
+      "input_json": "{}",
+      "expected": {
+        "status": "OK",
+        "canonical_utf8": "{}",
+        "digest": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+      }
+    },
+    {
+      "id": "c04-unicode-raw-nfc",
+      "input_json": "{\"k\":\"\\u00e9\\u4e2d\"}",
+      "expected": {
+        "status": "OK",
+        "canonical_utf8": "{\"k\":\"é中\"}",
+        "digest": "sha256:46af7c8fb8b65095424ce987112c67d2af79db4203787e6672236d2c716a4459"
+      }
+    },
+    {
+      "id": "c05-control-escapes-and-del",
+      "input_json": "\"\\u0001\\n\\t\\\"\\\\\\u007f\"",
+      "expected": {
+        "status": "OK",
+        "canonical_utf8": "\"\\u0001\\n\\t\\\"\\\\\"",
+        "digest": "sha256:7886a3b055dd545039a15c979910b9cac7af1b96cc40e0ebeb6f7066b73fc465"
+      }
+    },
+    {
+      "id": "c06-integers",
+      "input_json": "[0,-1,9007199254740991,-9007199254740991]",
+      "expected": {
+        "status": "OK",
+        "canonical_utf8": "[0,-1,9007199254740991,-9007199254740991]",
+        "digest": "sha256:d1f4b91349edc7ebd49ff1de73304f618c38a7456b5e36df82573d372466fff6"
+      }
+    },
+    {
+      "id": "c07-line-separator-raw",
+      "input_json": "\"\\u2028\"",
+      "expected": {
+        "status": "OK",
+        "canonical_utf8": "\" \"",
+        "digest": "sha256:8aa716ff98153a8b537e4e21f27cb75d7ebe92f4754aca11a38ee7a27b714941"
+      }
+    },
+    {
+      "id": "c08-nested-sort",
+      "input_json": "{\"b\":{\"d\":1,\"c\":2},\"a\":1}",
+      "expected": {
+        "status": "OK",
+        "canonical_utf8": "{\"a\":1,\"b\":{\"c\":2,\"d\":1}}",
+        "digest": "sha256:0372c09046efb505e3dea21aff53286f19f693aebe8caea1e66781674cce3c8e"
+      }
+    },
+    {
+      "id": "u01-float",
+      "input_json": "1.5",
+      "expected": {
+        "status": "UNSUPPORTED",
+        "reason": "NON_INTEGER_NUMBER"
+      }
+    },
+    {
+      "id": "u02-exponent",
+      "input_json": "1e3",
+      "expected": {
+        "status": "UNSUPPORTED",
+        "reason": "NON_INTEGER_NUMBER"
+      }
+    },
+    {
+      "id": "u03-integral-float",
+      "input_json": "1.0",
+      "expected": {
+        "status": "UNSUPPORTED",
+        "reason": "NON_INTEGER_NUMBER"
+      }
+    },
+    {
+      "id": "u04-int-too-large",
+      "input_json": "9007199254740992",
+      "expected": {
+        "status": "UNSUPPORTED",
+        "reason": "INTEGER_OUT_OF_RANGE"
+      }
+    },
+    {
+      "id": "u05-non-nfc",
+      "input_json": "\"e\\u0301\"",
+      "expected": {
+        "status": "UNSUPPORTED",
+        "reason": "NON_NFC_STRING"
+      }
+    },
+    {
+      "id": "u06-duplicate-key",
+      "input_json": "{\"a\":1,\"a\":2}",
+      "expected": {
+        "status": "UNSUPPORTED",
+        "reason": "DUPLICATE_KEY"
+      }
+    },
+    {
+      "id": "u07-lone-surrogate",
+      "input_json": "\"\\ud800\"",
+      "expected": {
+        "status": "UNSUPPORTED",
+        "reason": "LONE_SURROGATE"
+      }
+    },
+    {
+      "id": "u08-key-with-space",
+      "input_json": "{\"a b\":1}",
+      "expected": {
+        "status": "UNSUPPORTED",
+        "reason": "KEY_NOT_ALLOWED"
+      }
+    },
+    {
+      "id": "u09-non-ascii-key",
+      "input_json": "{\"\\u00e9\":1}",
+      "expected": {
+        "status": "UNSUPPORTED",
+        "reason": "KEY_NOT_ALLOWED"
+      }
+    },
+    {
+      "id": "u10-nan",
+      "input_json": "NaN",
+      "expected": {
+        "status": "UNSUPPORTED",
+        "reason": "NON_FINITE_NUMBER"
+      }
+    }
+  ],
+  "object_bytes": [
+    {
+      "id": "empty",
+      "bytes_hex": "",
+      "digest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "lf",
+      "bytes_hex": "610a",
+      "digest": "sha256:87428fc522803d31065e7bce3cf03fe475096631e5e07bbd7a0fde60c4cf25c7"
+    },
+    {
+      "id": "crlf",
+      "bytes_hex": "610d0a",
+      "digest": "sha256:8e4621379786ef42a4fec155cd525c291dd7db3c1fde3478522f4f61c03fd1bd"
+    },
+    {
+      "id": "utf8-bom",
+      "bytes_hex": "efbbbf610a",
+      "digest": "sha256:be4fccb045869c7ad387b9081a44cfd495b37efc020da4b44542de0d980c747f"
+    }
+  ],
+  "projection_fixture": {
+    "request": {
+      "work_id": "w-20261018-01",
+      "target": "working/w-20261018-01/bao-cao-nhap.docx",
+      "intent_ref": {
+        "ref_id": "intent-1",
+        "locator": "host:msg/0012",
+        "digest": "sha256:632db1a37ba364c0ec851f206ab3af0d97ffab2d58617b4a1c1515e4085b4171",
+        "attribution": {
+          "source_class": "USER_CONFIRMATION",
+          "channel": "USER_MESSAGE",
+          "evidence_locator": "host:msg/0012",
+          "recorded_by": {
+            "actor_id": "main",
+            "role": "main"
+          }
+        }
+      },
+      "main_interpretation": "Bao cao ngan ve muc gia",
+      "requirements": [
+        {
+          "req_id": "REQ-1",
+          "statement": "Summarise the price section",
+          "mandatory": true
+        },
+        {
+          "req_id": "REQ-2",
+          "statement": "State what is uncertain",
+          "mandatory": true
+        }
+      ],
+      "grant_refs": [
+        {
+          "ref_id": "grant-1",
+          "locator": "PROJECT.md#pham-vi",
+          "digest": "sha256:95e52ec9affe114bf9f22c68eb349e086bac18cb75dee376d44092a963331f02",
+          "attribution": {
+            "source_class": "USER_CONFIRMATION",
+            "channel": "USER_MESSAGE",
+            "evidence_locator": "host:msg/0007",
+            "recorded_by": {
+              "actor_id": "main",
+              "role": "main"
+            }
+          }
+        }
+      ],
+      "subject": {
+        "actor_id": "main",
+        "role": "main"
+      },
+      "inputs": [
+        {
+          "path": "references/source-documents/team/quy-che-gia.pdf",
+          "digest": "sha256:21cd1e5a45c706f44d3c684c73be866d4d93a8d4a9912d9dd69e4ce826ae8465"
+        }
+      ]
+    },
+    "request_id": "4c2f9e0a4c2f9e0a4c2f9e0a4c2f9e0a",
+    "task": {
+      "record_type": "task",
+      "schema_version": "law.cvf.control/3",
+      "evaluation_basis": "COOPERATIVE_WORKFLOW",
+      "work_id": "w-20261018-01",
+      "task_id": "pcn1-4c2f9e0a4c2f9e0a4c2f9e0a4c2f9e0a",
+      "task_revision": 1,
+      "proposed_by": {
+        "actor_id": "main",
+        "role": "main"
+      },
+      "intent": {
+        "refs": [
+          {
+            "ref_id": "intent-1",
+            "locator": "host:msg/0012",
+            "digest": "sha256:632db1a37ba364c0ec851f206ab3af0d97ffab2d58617b4a1c1515e4085b4171",
+            "attribution": {
+              "source_class": "USER_CONFIRMATION",
+              "channel": "USER_MESSAGE",
+              "evidence_locator": "host:msg/0012",
+              "recorded_by": {
+                "actor_id": "main",
+                "role": "main"
+              }
+            },
+            "kind": "user_intent"
+          }
+        ],
+        "main_interpretation": "Bao cao ngan ve muc gia"
+      },
+      "authority": {
+        "grant_refs": [
+          {
+            "ref_id": "grant-1",
+            "locator": "PROJECT.md#pham-vi",
+            "digest": "sha256:95e52ec9affe114bf9f22c68eb349e086bac18cb75dee376d44092a963331f02",
+            "attribution": {
+              "source_class": "USER_CONFIRMATION",
+              "channel": "USER_MESSAGE",
+              "evidence_locator": "host:msg/0007",
+              "recorded_by": {
+                "actor_id": "main",
+                "role": "main"
+              }
+            },
+            "kind": "grant"
+          }
+        ],
+        "subject": {
+          "actor_id": "main",
+          "role": "main"
+        }
+      },
+      "inputs": [
+        {
+          "path": "references/source-documents/team/quy-che-gia.pdf",
+          "digest": "sha256:21cd1e5a45c706f44d3c684c73be866d4d93a8d4a9912d9dd69e4ce826ae8465"
+        }
+      ],
+      "effects": {
+        "actions": [
+          {
+            "operation": "create_new",
+            "tool": "publish_new",
+            "targets": [
+              "working/w-20261018-01/bao-cao-nhap.docx"
+            ],
+            "write_zone": "working"
+          }
+        ],
+        "expected_outputs": [
+          "working/w-20261018-01/bao-cao-nhap.docx"
+        ],
+        "on_missing": "STOP_DEPENDENT_EFFECT"
+      },
+      "acceptance": {
+        "requirements": [
+          {
+            "req_id": "REQ-1",
+            "statement": "Summarise the price section",
+            "mandatory": true
+          },
+          {
+            "req_id": "REQ-2",
+            "statement": "State what is uncertain",
+            "mandatory": true
+          }
+        ]
+      },
+      "envelope": {
+        "role": "main"
+      }
+    },
+    "expected": {
+      "intent": "sha256:e3b3cbc0800a479c35e374863db6fcf7f08fb4f0172ac00eb80a50fabae37183",
+      "context": "sha256:e0673081c5e11fd718fb48bdd94ab81ae541a3ae14ec5f126fbc4456880ea884",
+      "task": "sha256:a9133fa6a8e85259f26819566186bbf64bb79bd5e54d8803c6b71e7de0c8ad77",
+      "action": "sha256:67a8d07fce953fcd8ddf95d4c3fb3284e6169cae20ec384dd14573aed0a122e8"
+    },
+    "canonical_intent": "{\"bind\":\"law.cvf.bind/3\",\"part\":\"intent\",\"refs\":[{\"digest\":\"sha256:632db1a37ba364c0ec851f206ab3af0d97ffab2d58617b4a1c1515e4085b4171\",\"kind\":\"user_intent\"}]}",
+    "canonical_context": "{\"bind\":\"law.cvf.bind/3\",\"context_refs\":[],\"part\":\"context\"}",
+    "canonical_action": "{\"action\":{\"operation\":\"create_new\",\"targets\":[\"working/w-20261018-01/bao-cao-nhap.docx\"],\"tool\":\"publish_new\",\"write_zone\":\"working\"},\"bind\":\"law.cvf.bind/3\",\"part\":\"action\"}"
+  },
+  "policy_digest": {
+    "file": ".cvf/rules/v3/ROUTING_POLICY.json",
+    "digest": "sha256:1a4fd3233dcf4b8571d9fa2249faf060216b3e530ca7d8dcf976dc5df880eaf3",
+    "note": "digest of the parsed policy object, not of file bytes, so line endings do not matter; changes whenever the policy content changes"
+  },
+  "receipt_fixture": {
+    "published": {
+      "at": "2026-10-18T09:15:03Z",
+      "content": {
+        "sha256": "sha256:d8334a6e94d6b7d1e08fa13f253b957e11ed859e26f679991375c15f41869b43",
+        "size": 2500
+      },
+      "identity": {
+        "file_index": "0001000000000242",
+        "volume_serial": "abcdef01"
+      },
+      "nlink_at_check": 2,
+      "protection": "held",
+      "protocol": "P-CN1",
+      "protocol_version": 1,
+      "recovered": false,
+      "request_id": "4c2f9e0a4c2f9e0a4c2f9e0a4c2f9e0a",
+      "schema": "local-agent-workspace/publish-v1",
+      "state": "PUBLISHED",
+      "target": "working/w-20261018-01/bao-cao-nhap.docx"
+    },
+    "canonical_utf8": "{\"at\":\"2026-10-18T09:15:03Z\",\"content\":{\"sha256\":\"sha256:d8334a6e94d6b7d1e08fa13f253b957e11ed859e26f679991375c15f41869b43\",\"size\":2500},\"identity\":{\"file_index\":\"0001000000000242\",\"volume_serial\":\"abcdef01\"},\"nlink_at_check\":2,\"protection\":\"held\",\"protocol\":\"P-CN1\",\"protocol_version\":1,\"recovered\":false,\"request_id\":\"4c2f9e0a4c2f9e0a4c2f9e0a4c2f9e0a\",\"schema\":\"local-agent-workspace/publish-v1\",\"state\":\"PUBLISHED\",\"target\":\"working/w-20261018-01/bao-cao-nhap.docx\"}",
+    "digest": "sha256:7e8d6e5573ca40fa9c31dba8d2b5b1d7a6b21749d2c749aa23fdc1546de1b710",
+    "note": "receipt_ref.digest is the digest of the raw published.json bytes (LAW-CJ/2, no trailing newline), not of the object. Fake identity and bytes. Genuine evidence is only what the owner tool wrote; this fixture proves the digest definition, nothing else."
+  },
+  "unsupported": [
+    {
+      "part": "path_alias_equivalence",
+      "status": "UNSUPPORTED",
+      "note": "Paths are compared as exact strings. Case, separators, '..', 8.3, trailing dot, ADS, UNC, junction/symlink equivalence is never assumed; different strings are BINDING_MISMATCH, not equal."
+    },
+    {
+      "part": "non_file_objects",
+      "status": "UNSUPPORTED",
+      "note": "Directories, links, cloud placeholders and device paths have no defined object bytes."
+    },
+    {
+      "part": "role_actual_context",
+      "status": "UNSUPPORTED",
+      "note": "context_digest covers the declared context_refs only. What prompt, history or tool output a role actually saw has no observation point in this contract."
+    },
+    {
+      "part": "review_effect_result_digests",
+      "status": "UNSUPPORTED",
+      "note": "No digest of a review, effect or result record is defined; they are referenced by id and by their binding."
+    },
+    {
+      "part": "v1_digest_comparison",
+      "status": "UNSUPPORTED",
+      "note": "v1 digests had no defined input; a v1 receipt is never equal or reinterpreted under bind/2."
+    },
+    {
+      "part": "time_and_expiry",
+      "status": "UNSUPPORTED",
+      "note": "Clock source and expiry evaluation are not defined by C1."
+    },
+    {
+      "part": "attribution_authenticity",
+      "status": "UNSUPPORTED",
+      "note": "Nothing here proves that a user, tool or role really produced a claim; attribution is cooperative."
+    },
+    {
+      "part": "format_semantic_equality",
+      "status": "UNSUPPORTED",
+      "note": "Two files with different bytes are different objects even if an application would render them the same."
+    },
+    {
+      "part": "float_and_non_nfc_inputs",
+      "status": "UNSUPPORTED",
+      "note": "Rejected rather than normalised: see canonical vectors u01-u05."
+    },
+    {
+      "part": "bind_2_bind_3_equivalence",
+      "status": "UNSUPPORTED",
+      "note": "Digests of law.cvf.bind/2 and law.cvf.bind/3 are never comparable; no migration of v2 receipts."
+    },
+    {
+      "part": "staged_bytes_and_relation",
+      "status": "UNSUPPORTED",
+      "note": "Only ACTUAL_BYTES outputs exist in this candidate."
+    },
+    {
+      "part": "overlay_digest",
+      "status": "UNSUPPORTED",
+      "note": "protection_overlay is deferred; bind/3 has no overlay part in this candidate."
+    },
+    {
+      "part": "multi_action_occurrence",
+      "status": "UNSUPPORTED",
+      "note": "completion, action_index and actions_performed occurrences are deferred; one action keeps action_digest."
+    },
+    {
+      "part": "receipt_authenticity",
+      "status": "UNSUPPORTED",
+      "note": "A receipt digest ties a record to bytes of published.json; it does not prove who wrote it."
+    },
+    {
+      "part": "entrypoint_pin_authenticity",
+      "status": "UNSUPPORTED",
+      "note": "The pin is a cooperative version compare of tool bytes; it does not prove the running process."
+    },
+    {
+      "part": "historical_precondition_from_current_state",
+      "status": "UNSUPPORTED",
+      "note": "Current file state never proves the target was absent before the operation."
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+15f09349d7cae6d3  gate.py
+a9a93b23324b339e  make_lab.py
+43799417d628a3c5  replay.py
+5e73418d83f21d20  analyze.py
+23cc302fec0b6de4  t0_inventory.py
+7717464a4534b817  cleanup_lab.py
+c386b82a8d7e3f78  lab_settings.snapshot.json
+434677de39933502  lab_manifest.snapshot.json
+7c4e1e3e6725f082  replay_result.json
+da186307b580410a  replay_trace.jsonl
+03d41e0510d5bbaa  replay_report.md
+f86e48c4e1f1906d  replay_stdout.log
+925d81ab5c554958  t0_inventory.json
+7bfb94f0c344f324  README.md
+  (README.md va HASHES.txt co the doi sau; hash README ghi luc tao)

@@ -1,0 +1,71 @@
+test_preflight_diagnostics_do_not_echo_record_type_values (tests.test_control_check_v2.RefusalMatrix.test_preflight_diagnostics_do_not_echo_record_type_values) ... 
+  test_preflight_diagnostics_do_not_echo_record_type_values (tests.test_control_check_v2.RefusalMatrix.test_preflight_diagnostics_do_not_echo_record_type_values) (marker="'law_private_marker'") ... FAIL
+  test_preflight_diagnostics_do_not_echo_record_type_values (tests.test_control_check_v2.RefusalMatrix.test_preflight_diagnostics_do_not_echo_record_type_values) (marker="'law_private_marker\\n'") ... FAIL
+  test_preflight_diagnostics_do_not_echo_record_type_values (tests.test_control_check_v2.RefusalMatrix.test_preflight_diagnostics_do_not_echo_record_type_values) (marker="'task\\n'") ... FAIL
+test_diagnostic_path_key_requires_full_match (tests.test_control_check_v2.RefusalMatrix.test_diagnostic_path_key_requires_full_match) ... FAIL
+
+======================================================================
+FAIL: test_preflight_diagnostics_do_not_echo_record_type_values (tests.test_control_check_v2.RefusalMatrix.test_preflight_diagnostics_do_not_echo_record_type_values) (marker="'law_private_marker'")
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check_v2.py", line 269, in test_preflight_diagnostics_do_not_echo_record_type_values
+    self.assertEqual(res['details'], ['schema_version missing in: records[0]'])
+AssertionError: Lists differ: ['schema_version missing in: records[0] (law_private_marker)'] != ['schema_version missing in: records[0]']
+
+First differing element 0:
+'schema_version missing in: records[0] (law_private_marker)'
+'schema_version missing in: records[0]'
+
+- ['schema_version missing in: records[0] (law_private_marker)']
+?                                        ---------------------
+
++ ['schema_version missing in: records[0]']
+
+======================================================================
+FAIL: test_preflight_diagnostics_do_not_echo_record_type_values (tests.test_control_check_v2.RefusalMatrix.test_preflight_diagnostics_do_not_echo_record_type_values) (marker="'law_private_marker\\n'")
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check_v2.py", line 269, in test_preflight_diagnostics_do_not_echo_record_type_values
+    self.assertEqual(res['details'], ['schema_version missing in: records[0]'])
+AssertionError: Lists differ: ['schema_version missing in: records[0] (law_private_marker\n)'] != ['schema_version missing in: records[0]']
+
+First differing element 0:
+'schema_version missing in: records[0] (law_private_marker\n)'
+'schema_version missing in: records[0]'
+
+- ['schema_version missing in: records[0] (law_private_marker\n)']
+?                                        -----------------------
+
++ ['schema_version missing in: records[0]']
+
+======================================================================
+FAIL: test_preflight_diagnostics_do_not_echo_record_type_values (tests.test_control_check_v2.RefusalMatrix.test_preflight_diagnostics_do_not_echo_record_type_values) (marker="'task\\n'")
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check_v2.py", line 269, in test_preflight_diagnostics_do_not_echo_record_type_values
+    self.assertEqual(res['details'], ['schema_version missing in: records[0]'])
+AssertionError: Lists differ: ['schema_version missing in: records[0] (task\n)'] != ['schema_version missing in: records[0]']
+
+First differing element 0:
+'schema_version missing in: records[0] (task\n)'
+'schema_version missing in: records[0]'
+
+- ['schema_version missing in: records[0] (task\n)']
+?                                        ---------
+
++ ['schema_version missing in: records[0]']
+
+======================================================================
+FAIL: test_diagnostic_path_key_requires_full_match (tests.test_control_check_v2.RefusalMatrix.test_diagnostic_path_key_requires_full_match)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check_v2.py", line 275, in test_diagnostic_path_key_requires_full_match
+    self.assertEqual(loader._safe_path(['task_revision\n']), '.?')
+AssertionError: '.task_revision\n' != '.?'
+- .task_revision
++ .?
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.171s
+
+FAILED (failures=4)

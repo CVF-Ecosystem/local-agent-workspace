@@ -1,0 +1,168 @@
+test_changed_full_output_binding_is_still_stale (tests.test_control_check.MainDeltaProjection.test_changed_full_output_binding_is_still_stale) ... ok
+test_explicit_wrong_qualifier_is_incomplete_coverage_not_stale_binding (tests.test_control_check.MainDeltaProjection.test_explicit_wrong_qualifier_is_incomplete_coverage_not_stale_binding) ... FAIL
+test_minimal_summary_with_full_binding_is_covered (tests.test_control_check.MainDeltaProjection.test_minimal_summary_with_full_binding_is_covered) ... FAIL
+test_missing_or_extra_object_does_not_cover_artifacts (tests.test_control_check.MainDeltaProjection.test_missing_or_extra_object_does_not_cover_artifacts) ... 
+  test_missing_or_extra_object_does_not_cover_artifacts (tests.test_control_check.MainDeltaProjection.test_missing_or_extra_object_does_not_cover_artifacts) (mode='missing') ... FAIL
+  test_missing_or_extra_object_does_not_cover_artifacts (tests.test_control_check.MainDeltaProjection.test_missing_or_extra_object_does_not_cover_artifacts) (mode='extra') ... FAIL
+test_nonpass_exact_binding_keeps_veto_with_minimal_or_empty_summary (tests.test_control_check.MainDeltaProjection.test_nonpass_exact_binding_keeps_veto_with_minimal_or_empty_summary) ... 
+  test_nonpass_exact_binding_keeps_veto_with_minimal_or_empty_summary (tests.test_control_check.MainDeltaProjection.test_nonpass_exact_binding_keeps_veto_with_minimal_or_empty_summary) (summary='minimal') ... FAIL
+  test_nonpass_exact_binding_keeps_veto_with_minimal_or_empty_summary (tests.test_control_check.MainDeltaProjection.test_nonpass_exact_binding_keeps_veto_with_minimal_or_empty_summary) (summary='empty') ... FAIL
+  test_nonpass_exact_binding_keeps_veto_with_minimal_or_empty_summary (tests.test_control_check.MainDeltaProjection.test_nonpass_exact_binding_keeps_veto_with_minimal_or_empty_summary) (summary='contradictory') ... FAIL
+test_child_revision_or_source_id_mismatch_is_not_met (tests.test_control_check.MainDeltaChild.test_child_revision_or_source_id_mismatch_is_not_met) ... 
+  test_child_revision_or_source_id_mismatch_is_not_met (tests.test_control_check.MainDeltaChild.test_child_revision_or_source_id_mismatch_is_not_met) (key='revision') ... FAIL
+  test_child_revision_or_source_id_mismatch_is_not_met (tests.test_control_check.MainDeltaChild.test_child_revision_or_source_id_mismatch_is_not_met) (key='source_id') ... FAIL
+test_matching_child_inputs_meet_record_scope (tests.test_control_check.MainDeltaChild.test_matching_child_inputs_meet_record_scope) ... ok
+test_peer_echo_with_missing_input_cannot_meet_scope (tests.test_control_check.MainDeltaChild.test_peer_echo_with_missing_input_cannot_meet_scope) ... FAIL
+test_attested_matching_group_only_meets_record_scope (tests.test_control_check.MainDeltaRegistered.test_attested_matching_group_only_meets_record_scope) ... ok
+test_attested_other_group_is_refused (tests.test_control_check.MainDeltaRegistered.test_attested_other_group_is_refused) ... FAIL
+test_mapping_must_bind_the_same_identity_and_class (tests.test_control_check.MainDeltaRegistered.test_mapping_must_bind_the_same_identity_and_class) ... ok
+test_missing_mapping_is_not_checked (tests.test_control_check.MainDeltaRegistered.test_missing_mapping_is_not_checked) ... 
+  test_missing_mapping_is_not_checked (tests.test_control_check.MainDeltaRegistered.test_missing_mapping_is_not_checked) (verifier='SimulatedVerifier') ... FAIL
+  test_missing_mapping_is_not_checked (tests.test_control_check.MainDeltaRegistered.test_missing_mapping_is_not_checked) (verifier='SimulatedVerifier') ... FAIL
+  test_missing_mapping_is_not_checked (tests.test_control_check.MainDeltaRegistered.test_missing_mapping_is_not_checked) (verifier='NoneType') ... FAIL
+
+======================================================================
+FAIL: test_explicit_wrong_qualifier_is_incomplete_coverage_not_stale_binding (tests.test_control_check.MainDeltaProjection.test_explicit_wrong_qualifier_is_incomplete_coverage_not_stale_binding)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 983, in test_explicit_wrong_qualifier_is_incomplete_coverage_not_stale_binding
+    self.assertIn('REVIEW_SCOPE_INCOMPLETE', obj['reasons'])
+AssertionError: 'REVIEW_SCOPE_INCOMPLETE' not found in ['ACCEPTANCE_CLAIM_NOT_SUPPORTED', 'BINDING_MISMATCH', 'CONDITION_UNRESOLVED', 'EVIDENCE_NOT_VERIFIED', 'OBSERVATION_UNAVAILABLE', 'PRESERVATION_UNKNOWN', 'SIMULATED_VERIFIER_NOT_AUTHORITY', 'STALE_REVIEW', 'UNCLASSIFIED_OPERATION']
+
+======================================================================
+FAIL: test_minimal_summary_with_full_binding_is_covered (tests.test_control_check.MainDeltaProjection.test_minimal_summary_with_full_binding_is_covered)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 957, in test_minimal_summary_with_full_binding_is_covered
+    self.assertEqual(gate(obj, 'review:PRE_INTEGRATION'), 'MET', obj['notes'])
+AssertionError: 'UNMET' != 'MET'
+- UNMET
+? --
++ MET
+ : ['review EXAMPLE-review-int is bound to something else (differs on: scope.objects)', 'requirements are claimed MET; evidence kind labels and locators are claims, not observation', 'claimed states ACCEPTED_FOR_INTEGRATION, REVIEW_PASSED cannot be supported by this checker']
+
+======================================================================
+FAIL: test_missing_or_extra_object_does_not_cover_artifacts (tests.test_control_check.MainDeltaProjection.test_missing_or_extra_object_does_not_cover_artifacts) (mode='missing')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 996, in test_missing_or_extra_object_does_not_cover_artifacts
+    self.assertIn('REVIEW_SCOPE_INCOMPLETE', obj['reasons'])
+AssertionError: 'REVIEW_SCOPE_INCOMPLETE' not found in ['ACCEPTANCE_CLAIM_NOT_SUPPORTED', 'BINDING_MISMATCH', 'CONDITION_UNRESOLVED', 'EVIDENCE_NOT_VERIFIED', 'OBSERVATION_UNAVAILABLE', 'PRESERVATION_UNKNOWN', 'SIMULATED_VERIFIER_NOT_AUTHORITY', 'STALE_REVIEW', 'UNCLASSIFIED_OPERATION']
+
+======================================================================
+FAIL: test_missing_or_extra_object_does_not_cover_artifacts (tests.test_control_check.MainDeltaProjection.test_missing_or_extra_object_does_not_cover_artifacts) (mode='extra')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 996, in test_missing_or_extra_object_does_not_cover_artifacts
+    self.assertIn('REVIEW_SCOPE_INCOMPLETE', obj['reasons'])
+AssertionError: 'REVIEW_SCOPE_INCOMPLETE' not found in ['ACCEPTANCE_CLAIM_NOT_SUPPORTED', 'BINDING_MISMATCH', 'CONDITION_UNRESOLVED', 'EVIDENCE_NOT_VERIFIED', 'OBSERVATION_UNAVAILABLE', 'PRESERVATION_UNKNOWN', 'SIMULATED_VERIFIER_NOT_AUTHORITY', 'STALE_REVIEW', 'UNCLASSIFIED_OPERATION']
+
+======================================================================
+FAIL: test_nonpass_exact_binding_keeps_veto_with_minimal_or_empty_summary (tests.test_control_check.MainDeltaProjection.test_nonpass_exact_binding_keeps_veto_with_minimal_or_empty_summary) (summary='minimal')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 976, in test_nonpass_exact_binding_keeps_veto_with_minimal_or_empty_summary
+    self.assertIn('REVIEW_BLOCKING_VERDICT', obj['reasons'])
+AssertionError: 'REVIEW_BLOCKING_VERDICT' not found in ['ACCEPTANCE_CLAIM_NOT_SUPPORTED', 'CONDITION_UNRESOLVED', 'EVIDENCE_NOT_VERIFIED', 'OBSERVATION_UNAVAILABLE', 'PRESERVATION_UNKNOWN', 'SIMULATED_VERIFIER_NOT_AUTHORITY', 'UNCLASSIFIED_OPERATION']
+
+======================================================================
+FAIL: test_nonpass_exact_binding_keeps_veto_with_minimal_or_empty_summary (tests.test_control_check.MainDeltaProjection.test_nonpass_exact_binding_keeps_veto_with_minimal_or_empty_summary) (summary='empty')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 976, in test_nonpass_exact_binding_keeps_veto_with_minimal_or_empty_summary
+    self.assertIn('REVIEW_BLOCKING_VERDICT', obj['reasons'])
+AssertionError: 'REVIEW_BLOCKING_VERDICT' not found in ['ACCEPTANCE_CLAIM_NOT_SUPPORTED', 'CONDITION_UNRESOLVED', 'EVIDENCE_NOT_VERIFIED', 'OBSERVATION_UNAVAILABLE', 'PRESERVATION_UNKNOWN', 'SIMULATED_VERIFIER_NOT_AUTHORITY', 'UNCLASSIFIED_OPERATION']
+
+======================================================================
+FAIL: test_nonpass_exact_binding_keeps_veto_with_minimal_or_empty_summary (tests.test_control_check.MainDeltaProjection.test_nonpass_exact_binding_keeps_veto_with_minimal_or_empty_summary) (summary='contradictory')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 976, in test_nonpass_exact_binding_keeps_veto_with_minimal_or_empty_summary
+    self.assertIn('REVIEW_BLOCKING_VERDICT', obj['reasons'])
+AssertionError: 'REVIEW_BLOCKING_VERDICT' not found in ['ACCEPTANCE_CLAIM_NOT_SUPPORTED', 'CONDITION_UNRESOLVED', 'EVIDENCE_NOT_VERIFIED', 'OBSERVATION_UNAVAILABLE', 'PRESERVATION_UNKNOWN', 'SIMULATED_VERIFIER_NOT_AUTHORITY', 'UNCLASSIFIED_OPERATION']
+
+======================================================================
+FAIL: test_child_revision_or_source_id_mismatch_is_not_met (tests.test_control_check.MainDeltaChild.test_child_revision_or_source_id_mismatch_is_not_met) (key='revision')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 1037, in test_child_revision_or_source_id_mismatch_is_not_met
+    self.assertEqual(gate(obj, 'DELEGATE_SCOPE'), 'UNMET')
+AssertionError: 'MET' != 'UNMET'
+- MET
++ UNMET
+? ++
+
+
+======================================================================
+FAIL: test_child_revision_or_source_id_mismatch_is_not_met (tests.test_control_check.MainDeltaChild.test_child_revision_or_source_id_mismatch_is_not_met) (key='source_id')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 1037, in test_child_revision_or_source_id_mismatch_is_not_met
+    self.assertEqual(gate(obj, 'DELEGATE_SCOPE'), 'UNMET')
+AssertionError: 'MET' != 'UNMET'
+- MET
++ UNMET
+? ++
+
+
+======================================================================
+FAIL: test_peer_echo_with_missing_input_cannot_meet_scope (tests.test_control_check.MainDeltaChild.test_peer_echo_with_missing_input_cannot_meet_scope)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 1020, in test_peer_echo_with_missing_input_cannot_meet_scope
+    self.assertEqual(gate(obj, 'DELEGATE_SCOPE'), 'UNMET')
+AssertionError: 'MET' != 'UNMET'
+- MET
++ UNMET
+? ++
+
+
+======================================================================
+FAIL: test_attested_other_group_is_refused (tests.test_control_check.MainDeltaRegistered.test_attested_other_group_is_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 1057, in test_attested_other_group_is_refused
+    self.assertEqual(gate(obj, 'DELEGATE_SCOPE'), 'UNMET')
+AssertionError: 'MET' != 'UNMET'
+- MET
++ UNMET
+? ++
+
+
+======================================================================
+FAIL: test_missing_mapping_is_not_checked (tests.test_control_check.MainDeltaRegistered.test_missing_mapping_is_not_checked) (verifier='SimulatedVerifier')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 1064, in test_missing_mapping_is_not_checked
+    self.assertEqual(gate(obj, 'DELEGATE_SCOPE'), 'NOT_CHECKED')
+AssertionError: 'MET' != 'NOT_CHECKED'
+- MET
++ NOT_CHECKED
+
+
+======================================================================
+FAIL: test_missing_mapping_is_not_checked (tests.test_control_check.MainDeltaRegistered.test_missing_mapping_is_not_checked) (verifier='SimulatedVerifier')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 1064, in test_missing_mapping_is_not_checked
+    self.assertEqual(gate(obj, 'DELEGATE_SCOPE'), 'NOT_CHECKED')
+AssertionError: 'MET' != 'NOT_CHECKED'
+- MET
++ NOT_CHECKED
+
+
+======================================================================
+FAIL: test_missing_mapping_is_not_checked (tests.test_control_check.MainDeltaRegistered.test_missing_mapping_is_not_checked) (verifier='NoneType')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check.py", line 1064, in test_missing_mapping_is_not_checked
+    self.assertEqual(gate(obj, 'DELEGATE_SCOPE'), 'NOT_CHECKED')
+AssertionError: 'MET' != 'NOT_CHECKED'
+- MET
++ NOT_CHECKED
+
+
+----------------------------------------------------------------------
+Ran 12 tests in 4.609s
+
+FAILED (failures=14)

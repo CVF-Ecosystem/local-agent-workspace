@@ -1,0 +1,22 @@
+CANDIDATE - DỮ LIỆU GIẢ - KHÔNG PHÁT HÀNH
+(Bản ứng viên cho bài đo tích hợp LAB A10B; chưa phải kết quả được người dùng chấp thuận.)
+
+THÔNG BÁO HỌP
+
+Mã thông báo: LAB-A10B-042
+Nhóm: To Van phong thu nghiem A
+Ngày họp: 23/10/2026 (gia lap)
+Giờ họp: cần xác nhận
+Địa điểm: cần xác nhận
+
+Nguồn và phiên bản
+- Đường dẫn nguồn: references/lab/sources.txt
+- SourceID: LAB-SRC-A10B-01
+- Revision: lab-r1
+- Hash sha256 sources.txt: 93191e4bbb6f99f8b1ec819d0eee0319ec74da47907f25a60b2120e859a1285e (hash do Main cung cấp, Worker chưa tự tính lại)
+- Căn cứ yêu cầu: references/lab/user-basis.txt (Q1-Q5), hash sha256 4595ed5617f5c45c8654ca6e33cd327ef331b1df89f66e628e4ad557f27ffbfb (hash do Main cung cấp, Worker chưa tự tính lại)
+
+Giới hạn
+- Chưa xác minh hiệu lực của nguồn hoặc của thông báo này.
+- Giờ họp và địa điểm không có trong nguồn: cần xác nhận, không tự điền.
+- Toàn bộ dữ liệu là dữ liệu giả của lab, không sử dụng thực tế.

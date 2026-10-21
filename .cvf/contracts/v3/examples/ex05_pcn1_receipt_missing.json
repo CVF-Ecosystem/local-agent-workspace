@@ -1,0 +1,406 @@
+{
+  "schema_version": "law.cvf.control/3",
+  "record_type": "bundle",
+  "evaluation_basis": "COOPERATIVE_WORKFLOW",
+  "example_only": true,
+  "note": "Outcome applied but no receipt_ref",
+  "bundle_id": "EXAMPLE-v3-ex05",
+  "records": [
+    {
+      "record_type": "task",
+      "schema_version": "law.cvf.control/3",
+      "evaluation_basis": "COOPERATIVE_WORKFLOW",
+      "work_id": "w-20261018-01",
+      "task_id": "pcn1-4c2f9e0a4c2f9e0a4c2f9e0a4c2f9e0a",
+      "task_revision": 1,
+      "proposed_by": {
+        "actor_id": "main",
+        "role": "main"
+      },
+      "intent": {
+        "refs": [
+          {
+            "ref_id": "intent-1",
+            "locator": "host:msg/0012",
+            "digest": "sha256:632db1a37ba364c0ec851f206ab3af0d97ffab2d58617b4a1c1515e4085b4171",
+            "attribution": {
+              "source_class": "USER_CONFIRMATION",
+              "channel": "USER_MESSAGE",
+              "evidence_locator": "host:msg/0012",
+              "recorded_by": {
+                "actor_id": "main",
+                "role": "main"
+              }
+            },
+            "kind": "user_intent"
+          }
+        ],
+        "main_interpretation": "Bao cao ngan ve muc gia"
+      },
+      "authority": {
+        "grant_refs": [
+          {
+            "ref_id": "grant-1",
+            "locator": "PROJECT.md#pham-vi",
+            "digest": "sha256:95e52ec9affe114bf9f22c68eb349e086bac18cb75dee376d44092a963331f02",
+            "attribution": {
+              "source_class": "USER_CONFIRMATION",
+              "channel": "USER_MESSAGE",
+              "evidence_locator": "host:msg/0007",
+              "recorded_by": {
+                "actor_id": "main",
+                "role": "main"
+              }
+            },
+            "kind": "grant"
+          }
+        ],
+        "subject": {
+          "actor_id": "main",
+          "role": "main"
+        }
+      },
+      "inputs": [
+        {
+          "path": "references/source-documents/team/quy-che-gia.pdf",
+          "digest": "sha256:21cd1e5a45c706f44d3c684c73be866d4d93a8d4a9912d9dd69e4ce826ae8465"
+        }
+      ],
+      "effects": {
+        "actions": [
+          {
+            "operation": "create_new",
+            "tool": "publish_new",
+            "targets": [
+              "working/w-20261018-01/bao-cao-nhap.docx"
+            ],
+            "write_zone": "working"
+          }
+        ],
+        "expected_outputs": [
+          "working/w-20261018-01/bao-cao-nhap.docx"
+        ],
+        "on_missing": "STOP_DEPENDENT_EFFECT"
+      },
+      "acceptance": {
+        "requirements": [
+          {
+            "req_id": "REQ-1",
+            "statement": "Summarise the price section",
+            "mandatory": true
+          },
+          {
+            "req_id": "REQ-2",
+            "statement": "State what is uncertain",
+            "mandatory": true
+          }
+        ]
+      },
+      "envelope": {
+        "role": "main"
+      },
+      "example_only": true,
+      "note": "EXAMPLE task built by the P-CN1 request mapper"
+    },
+    {
+      "schema_version": "law.cvf.control/3",
+      "record_type": "grant",
+      "evaluation_basis": "COOPERATIVE_WORKFLOW",
+      "example_only": true,
+      "grant_id": "grant-1",
+      "grant_revision": 1,
+      "issuer": {
+        "actor_id": "EXAMPLE-user",
+        "role": "user"
+      },
+      "issuer_ref": {
+        "ref_id": "grant-1",
+        "kind": "grant",
+        "locator": "PROJECT.md#pham-vi",
+        "digest": "sha256:95e52ec9affe114bf9f22c68eb349e086bac18cb75dee376d44092a963331f02",
+        "attribution": {
+          "source_class": "USER_CONFIRMATION",
+          "channel": "USER_MESSAGE",
+          "evidence_locator": "host:msg/0007",
+          "recorded_by": {
+            "actor_id": "main",
+            "role": "main"
+          }
+        }
+      },
+      "subject": {
+        "roles": [
+          "main"
+        ],
+        "actor_ids": [
+          "main"
+        ]
+      },
+      "scope": {
+        "task_classes": [
+          "EXAMPLE-draft"
+        ],
+        "operations": [
+          "create_new",
+          "delete",
+          "read"
+        ],
+        "tools": [
+          "publish_new"
+        ],
+        "paths": [
+          "working/",
+          "output/",
+          ".agent/runtime/publish/"
+        ]
+      },
+      "status": "EXAMPLE_INACTIVE"
+    },
+    {
+      "schema_version": "law.cvf.control/3",
+      "record_type": "effect",
+      "evaluation_basis": "COOPERATIVE_WORKFLOW",
+      "example_only": true,
+      "effect_id": "eff-req-1",
+      "stage": "REQUEST",
+      "binding": {
+        "bind_version": "law.cvf.bind/3",
+        "evaluation_basis": "COOPERATIVE_WORKFLOW",
+        "task_id": "pcn1-4c2f9e0a4c2f9e0a4c2f9e0a4c2f9e0a",
+        "task_revision": 1,
+        "intent_digest": "sha256:e3b3cbc0800a479c35e374863db6fcf7f08fb4f0172ac00eb80a50fabae37183",
+        "accepted_task_digest": "sha256:a9133fa6a8e85259f26819566186bbf64bb79bd5e54d8803c6b71e7de0c8ad77",
+        "context_digest": "sha256:e0673081c5e11fd718fb48bdd94ab81ae541a3ae14ec5f126fbc4456880ea884",
+        "policy_version": "law.cvf.routing/3",
+        "policy_digest": "sha256:1a4fd3233dcf4b8571d9fa2249faf060216b3e530ca7d8dcf976dc5df880eaf3",
+        "inputs": [
+          {
+            "path": "references/source-documents/team/quy-che-gia.pdf",
+            "digest": "sha256:21cd1e5a45c706f44d3c684c73be866d4d93a8d4a9912d9dd69e4ce826ae8465"
+          }
+        ],
+        "action_digest": "sha256:67a8d07fce953fcd8ddf95d4c3fb3284e6169cae20ec384dd14573aed0a122e8"
+      },
+      "actor": {
+        "actor_id": "main",
+        "role": "main"
+      },
+      "action": {
+        "operation": "create_new",
+        "tool": "publish_new",
+        "targets": [
+          "working/w-20261018-01/bao-cao-nhap.docx"
+        ],
+        "write_zone": "working"
+      },
+      "routing": {
+        "policy_version": "law.cvf.routing/3",
+        "matched_rows": [
+          "R-READ_DRAFT"
+        ],
+        "required_review_phases": []
+      },
+      "grant_ref_ids": [
+        "grant-1"
+      ],
+      "review_ids": [],
+      "assurance_level": "ADVISORY",
+      "disposition": "PENDING",
+      "reasons": [],
+      "decided_by": {
+        "actor_id": "main",
+        "role": "main"
+      }
+    },
+    {
+      "schema_version": "law.cvf.control/3",
+      "record_type": "effect",
+      "evaluation_basis": "COOPERATIVE_WORKFLOW",
+      "example_only": true,
+      "effect_id": "eff-out-1",
+      "stage": "OUTCOME",
+      "binding": {
+        "bind_version": "law.cvf.bind/3",
+        "evaluation_basis": "COOPERATIVE_WORKFLOW",
+        "task_id": "pcn1-4c2f9e0a4c2f9e0a4c2f9e0a4c2f9e0a",
+        "task_revision": 1,
+        "intent_digest": "sha256:e3b3cbc0800a479c35e374863db6fcf7f08fb4f0172ac00eb80a50fabae37183",
+        "accepted_task_digest": "sha256:a9133fa6a8e85259f26819566186bbf64bb79bd5e54d8803c6b71e7de0c8ad77",
+        "context_digest": "sha256:e0673081c5e11fd718fb48bdd94ab81ae541a3ae14ec5f126fbc4456880ea884",
+        "policy_version": "law.cvf.routing/3",
+        "policy_digest": "sha256:1a4fd3233dcf4b8571d9fa2249faf060216b3e530ca7d8dcf976dc5df880eaf3",
+        "inputs": [
+          {
+            "path": "references/source-documents/team/quy-che-gia.pdf",
+            "digest": "sha256:21cd1e5a45c706f44d3c684c73be866d4d93a8d4a9912d9dd69e4ce826ae8465"
+          }
+        ],
+        "outputs": [
+          {
+            "path": "working/w-20261018-01/bao-cao-nhap.docx",
+            "digest": "sha256:d8334a6e94d6b7d1e08fa13f253b957e11ed859e26f679991375c15f41869b43",
+            "role": "ACTUAL_BYTES"
+          }
+        ],
+        "action_digest": "sha256:67a8d07fce953fcd8ddf95d4c3fb3284e6169cae20ec384dd14573aed0a122e8"
+      },
+      "actor": {
+        "actor_id": "main",
+        "role": "main"
+      },
+      "action": {
+        "operation": "create_new",
+        "tool": "publish_new",
+        "targets": [
+          "working/w-20261018-01/bao-cao-nhap.docx"
+        ],
+        "write_zone": "working"
+      },
+      "routing": {
+        "policy_version": "law.cvf.routing/3",
+        "matched_rows": [
+          "R-READ_DRAFT"
+        ],
+        "required_review_phases": []
+      },
+      "grant_ref_ids": [
+        "grant-1"
+      ],
+      "review_ids": [],
+      "assurance_level": "ADVISORY",
+      "disposition": "NOT_APPLICABLE",
+      "reasons": [],
+      "decided_by": {
+        "actor_id": "main",
+        "role": "main"
+      },
+      "outcome": {
+        "status": "APPLIED",
+        "artifacts": [
+          {
+            "path": "working/w-20261018-01/bao-cao-nhap.docx",
+            "digest": "sha256:d8334a6e94d6b7d1e08fa13f253b957e11ed859e26f679991375c15f41869b43",
+            "role": "ACTUAL_BYTES"
+          }
+        ],
+        "observed_by": {
+          "actor_id": "publish_new",
+          "role": "tool"
+        }
+      }
+    },
+    {
+      "schema_version": "law.cvf.control/3",
+      "record_type": "result",
+      "evaluation_basis": "COOPERATIVE_WORKFLOW",
+      "example_only": true,
+      "result_id": "pcn1-r-4c2f9e0a4c2f9e0a4c2f9e0a4c2f9e0a",
+      "binding": {
+        "bind_version": "law.cvf.bind/3",
+        "evaluation_basis": "COOPERATIVE_WORKFLOW",
+        "task_id": "pcn1-4c2f9e0a4c2f9e0a4c2f9e0a4c2f9e0a",
+        "task_revision": 1,
+        "intent_digest": "sha256:e3b3cbc0800a479c35e374863db6fcf7f08fb4f0172ac00eb80a50fabae37183",
+        "accepted_task_digest": "sha256:a9133fa6a8e85259f26819566186bbf64bb79bd5e54d8803c6b71e7de0c8ad77",
+        "context_digest": "sha256:e0673081c5e11fd718fb48bdd94ab81ae541a3ae14ec5f126fbc4456880ea884",
+        "policy_version": "law.cvf.routing/3",
+        "policy_digest": "sha256:1a4fd3233dcf4b8571d9fa2249faf060216b3e530ca7d8dcf976dc5df880eaf3",
+        "inputs": [
+          {
+            "path": "references/source-documents/team/quy-che-gia.pdf",
+            "digest": "sha256:21cd1e5a45c706f44d3c684c73be866d4d93a8d4a9912d9dd69e4ce826ae8465"
+          }
+        ],
+        "outputs": [
+          {
+            "path": "working/w-20261018-01/bao-cao-nhap.docx",
+            "digest": "sha256:d8334a6e94d6b7d1e08fa13f253b957e11ed859e26f679991375c15f41869b43",
+            "role": "ACTUAL_BYTES"
+          }
+        ]
+      },
+      "produced_by": {
+        "actor_id": "main",
+        "role": "main"
+      },
+      "artifacts": [
+        {
+          "path": "working/w-20261018-01/bao-cao-nhap.docx",
+          "digest": "sha256:d8334a6e94d6b7d1e08fa13f253b957e11ed859e26f679991375c15f41869b43",
+          "role": "ACTUAL_BYTES"
+        }
+      ],
+      "actions_performed": [
+        {
+          "operation": "create_new",
+          "tool": "publish_new",
+          "targets": [
+            "working/w-20261018-01/bao-cao-nhap.docx"
+          ],
+          "write_zone": "working"
+        }
+      ],
+      "evidence": [],
+      "requirements": [
+        {
+          "req_id": "REQ-1",
+          "mandatory": true,
+          "status": "UNKNOWN"
+        },
+        {
+          "req_id": "REQ-2",
+          "mandatory": true,
+          "status": "UNKNOWN"
+        }
+      ],
+      "gaps": [
+        "No tool checked the semantic content of the draft; only the user can accept it."
+      ],
+      "acceptance_states": [
+        "CANDIDATE",
+        "EFFECT_APPLIED",
+        "USER_ACCEPTED"
+      ],
+      "state_set_by": {
+        "actor_id": "main",
+        "role": "main"
+      },
+      "user_acceptance": {
+        "ref": {
+          "ref_id": "ua-1",
+          "kind": "user_acceptance",
+          "locator": "host:msg/0031",
+          "digest": "sha256:1eee8e6626fe5500df0bc4f134d18ebb643fb99d5701a24cc0c624e57b3af26f",
+          "attribution": {
+            "source_class": "USER_CONFIRMATION",
+            "channel": "USER_MESSAGE",
+            "evidence_locator": "host:msg/0031",
+            "recorded_by": {
+              "actor_id": "main",
+              "role": "main"
+            }
+          }
+        },
+        "task_id": "pcn1-4c2f9e0a4c2f9e0a4c2f9e0a4c2f9e0a",
+        "task_revision": 1,
+        "accepted_task_digest": "sha256:a9133fa6a8e85259f26819566186bbf64bb79bd5e54d8803c6b71e7de0c8ad77",
+        "accepted_requirements": [
+          "REQ-1",
+          "REQ-2"
+        ],
+        "result_id": "pcn1-r-4c2f9e0a4c2f9e0a4c2f9e0a4c2f9e0a",
+        "accepted_artifacts": [
+          {
+            "path": "working/w-20261018-01/bao-cao-nhap.docx",
+            "digest": "sha256:d8334a6e94d6b7d1e08fa13f253b957e11ed859e26f679991375c15f41869b43",
+            "role": "ACTUAL_BYTES"
+          }
+        ],
+        "presented_summary": {
+          "locator": "host:msg/0030",
+          "digest": "sha256:fefc7b4d0d7d1118564379e9b6201bb9dfa65d82980ff4401b7f651ad4c1d160"
+        }
+      }
+    }
+  ]
+}

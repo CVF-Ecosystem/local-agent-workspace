@@ -1,0 +1,18 @@
+test_canonical_vectors_recomputed (tests.test_control_v2_candidate.Vectors.test_canonical_vectors_recomputed) ... ok
+test_exclusions_do_not_change_digests (tests.test_control_v2_candidate.Vectors.test_exclusions_do_not_change_digests) ... ok
+test_included_fields_change_digests (tests.test_control_v2_candidate.Vectors.test_included_fields_change_digests) ... ok
+test_object_bytes_vectors (tests.test_control_v2_candidate.Vectors.test_object_bytes_vectors) ... ok
+test_policy_digest_vector_matches_file (tests.test_control_v2_candidate.Vectors.test_policy_digest_vector_matches_file) ... ok
+test_projection_vectors_recomputed (tests.test_control_v2_candidate.Vectors.test_projection_vectors_recomputed) ... ok
+test_set_fields_are_order_independent_but_sequences_are_not (tests.test_control_v2_candidate.Vectors.test_set_fields_are_order_independent_but_sequences_are_not) ... ok
+test_unsupported_list_is_explicit (tests.test_control_v2_candidate.Vectors.test_unsupported_list_is_explicit) ... ok
+test_binding_recomputation_matches_expectation (tests.test_control_v2_candidate.Examples.test_binding_recomputation_matches_expectation) ... ok
+test_examples_are_fake_and_inactive (tests.test_control_v2_candidate.Examples.test_examples_are_fake_and_inactive) ... ok
+test_schema_validity_matches_expected (tests.test_control_v2_candidate.Examples.test_schema_validity_matches_expected) ... ok
+test_schema_is_valid_draft_2020_12 (tests.test_control_v2_candidate.SchemaAndPolicy.test_schema_is_valid_draft_2020_12) ... ok
+test_v1_owner_hashes_unchanged (tests.test_control_v2_candidate.V1Untouched.test_v1_owner_hashes_unchanged) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.252s
+
+OK

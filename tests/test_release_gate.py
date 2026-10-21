@@ -138,6 +138,27 @@ class ReleaseGateTests(unittest.TestCase):
         self.assertBlocked(r, 1, 'behaviour_tests')
         self.assertEqual(list(out.glob('*.zip')) if out.exists() else [], [])
 
+    def test_behaviour_report_keeps_skipped_test_names_and_reasons(self):
+        pkg = make_copy(self.base, 'skip-names', with_tests=False)
+        (pkg / 'tests').mkdir()
+        write_lf(pkg / 'tests' / 'test_synthetic_skips.py',
+                 'import unittest\n\nclass Synthetic(unittest.TestCase):\n'
+                 '    def test_pass(self):\n        pass\n'
+                 '    @unittest.skip("first reason")\n    def test_first(self):\n        pass\n'
+                 '    @unittest.skip("second reason")\n    def test_second(self):\n        pass\n'
+                 '    @unittest.skip("documented reason")\n    def test_documented(self):\n'
+                 '        """A description printed on a separate line."""\n        pass\n')
+        out = self.base / 'skip-names-out'
+        r = run_tool(pkg, 'build_release.py', '--rc', '2', '--out', out, '--result-json', nested=False)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        report = json.loads(next(out.glob('*.gate.json')).read_text(encoding='utf-8'))
+        gate = next(g for g in report['gates'] if g['name'] == 'behaviour_tests')
+        self.assertEqual(gate['status'], 'passed')
+        self.assertIn('OK (skipped=3)', gate['detail'])
+        for name, reason in (('test_first', 'first reason'), ('test_second', 'second reason'), ('test_documented', 'documented reason')):
+            self.assertIn(name + ' (test_synthetic_skips.Synthetic.' + name + ')', gate['detail'])
+            self.assertIn(reason, gate['detail'])
+
     def test_gate_report_platform_python_hash_and_reproducible_zip(self):
         out1, out2 = self.base / 'report-1', self.base / 'report-2'
         r1 = run_tool(self.pkg, 'build_release.py', '--rc', '2', '--out', out1, '--result-json')

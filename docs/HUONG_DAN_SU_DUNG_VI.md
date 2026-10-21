@@ -1,6 +1,6 @@
 # Hướng dẫn sử dụng hằng ngày
 
-Local Trợ lý AI Workspace v1.8 giúp giữ tài liệu, ngữ cảnh và kết quả công việc trên
+Local Trợ lý AI Workspace v1.9 giúp giữ tài liệu, ngữ cảnh và kết quả công việc trên
 cùng một thư mục. Trợ lý AI vẫn chủ động chọn cách làm, công cụ và kỹ năng phù hợp.
 
 ## 1. Giao việc bằng ngôn ngữ tự nhiên
@@ -191,4 +191,4 @@ Bảng điều khiển không xóa file của bạn, trừ hai trường hợp. 
 
 **Gói chẩn đoán.** Nút "Tạo gói chẩn đoán" tạo một file ZIP trên máy này, trong `.agent/runtime/diagnostics/diagnostics-<thời điểm>.zip`, để gửi cho người hỗ trợ khi gặp lỗi. Gói gồm phiên bản của bộ công cụ, loại workspace, Python và hệ điều hành, tình trạng chức năng tùy chọn, số file chờ hợp nhất (chỉ đường dẫn tương đối), giao dịch dở, lịch sử thao tác và kết quả kiểm tra bộ công cụ. Gói không có nội dung tài liệu, tên dự án, tên người hay đường dẫn tuyệt đối. Gói không được gửi đi tự động. Bấm "Mở thư mục gói" để xem trước; bạn tự quyết định có chia sẻ hay không.
 
-**So sánh ở trang Chờ hợp nhất.** Nút "So sánh" cho thấy chỗ khác nhau giữa bản hiện hành và bản `.new`, theo từng đoạn có số dòng. Chỉ đọc: không lưu gì và không tự hợp nhất hay ghi đè. File lớn hơn 256 KB, hoặc không phải văn bản UTF-8, không hiện nội dung trong bảng điều khiển; mở hai bản bằng ứng dụng gốc để xem. Sau khi tự hợp nhất, bạn xóa file .new.
+**So sánh ở trang Chờ hợp nhất.** Nút "So sánh" cho thấy chỗ khác nhau giữa bản hiện hành và bản `.new`, theo từng đoạn có số dòng. Không sửa nội dung hai file và không tự hợp nhất hay ghi đè; thao tác có thể được ghi vào lịch sử. File lớn hơn 256 KB, hoặc không phải văn bản UTF-8, không hiện nội dung trong bảng điều khiển; mở hai bản bằng ứng dụng gốc để xem. Nút này chỉ để xem. Việc thay bản hiện hành hoặc lưu `.new` là bước riêng và chỉ có cho một số file; cách xử lý từng loại file nằm ở mục 3 của hướng dẫn “Dùng với dự án có sẵn và nâng cấp bộ công cụ”. File ngoài phạm vi đó thì tự hợp nhất thủ công, theo người phụ trách file; đừng xóa `.new` chỉ để hết cảnh báo.

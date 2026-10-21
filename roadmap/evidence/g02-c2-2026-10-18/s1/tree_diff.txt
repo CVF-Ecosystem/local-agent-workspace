@@ -1,0 +1,17 @@
+# files changed/added/removed vs tree_hashes_before.txt (sha256 prefix16)
+10a11,15
+> *.cvf/checks/control_check_v2.py 5179e7091579c048
+> *.cvf/checks/v2/README.md 0dbf75d29bce77b0
+> *.cvf/checks/v2/__init__.py 83ba965d6a3ac57a
+> *.cvf/checks/v2/canon.py c593c6d070ccdf67
+> *.cvf/checks/v2/loader.py 803f6cc44d1c460c
+271a277,283
+> *roadmap/evidence/g02-c2-2026-10-18/s1/cvf_hashes_before.txt 708dc0b0c1474eb2
+> *roadmap/evidence/g02-c2-2026-10-18/s1/green.log 4515611e85ba11b4
+> *roadmap/evidence/g02-c2-2026-10-18/s1/mutation_probe.log 5ed49aad1d6ee168
+> *roadmap/evidence/g02-c2-2026-10-18/s1/red_scaffold.log 34f1e5de0b0a82e5
+> *roadmap/evidence/g02-c2-2026-10-18/s1/smoke.log dab700d0e572882e
+> *roadmap/evidence/g02-c2-2026-10-18/s1/tree_hashes_after.txt e3b0c44298fc1c14
+> *roadmap/evidence/g02-c2-2026-10-18/s1/tree_hashes_before.txt d519ffd43a119292
+408a421
+> *tests/test_control_check_v2.py 42612225d23536c6

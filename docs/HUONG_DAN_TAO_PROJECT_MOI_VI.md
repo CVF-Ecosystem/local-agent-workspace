@@ -41,6 +41,9 @@ Không bắt buộc để bắt đầu: tên dự án đã được điền khi 
 mục đích, người đọc, đầu ra, nguồn/mẫu chính và những giới hạn đã biết, hoặc nhờ trợ lý AI điền sau khi
 trao đổi. Chỉ cần thông tin ổn định hữu ích; không chép cả kho tài liệu vào đó.
 
+Hai trường phạm vi giao cho agent phụ và ngoại lệ thư mục nguồn cũ trong mục "Thông tin dự án" của `PROJECT.md` để trống khi mới tạo.
+Chỉ điền khi bạn đã quyết định cấp quyền đó hoặc chọn ngoại lệ đó; trợ lý AI không tự điền.
+
 Nếu dự án kéo dài nhiều phiên, khởi tạo `.agent/STATE.md` với mục tiêu hiện tại,
 việc đang làm và bước tiếp theo. Những mục chưa có thông tin có thể để trống hoặc
 đánh dấu chưa có, không cần viết một kế hoạch đầy đủ để bắt đầu.

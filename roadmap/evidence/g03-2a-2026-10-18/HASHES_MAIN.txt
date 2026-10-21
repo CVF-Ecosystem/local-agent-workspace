@@ -1,0 +1,6 @@
+Main static correction baseline 2026-10-18. No replay/live rerun. Worker HASHES.txt and replay artifacts retained.
+deab9c13fe047abbaf65afce55a56f0d21393b89096a54895c480bf1751e3e3f  gate.py
+b0c6695677e088001bc7150f808830f56fc785c0ad1e9494797f20ab5ffe6d40  analyze.py
+8afff328011c6d5c9d613175f33a5be7bdc3840e4ecfdfe6281b7b75ad8a7fb2  cleanup_lab.py
+dd909057687758725c83347be7b66e386f667d98c309e181856b4bc25cedce33  README.md
+e83498302c3d482d938d31b3cf07e16fab58fea46f993fc0fa90a4ea9510000f  lab_manifest.main.snapshot.json

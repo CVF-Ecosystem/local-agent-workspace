@@ -17,6 +17,8 @@ Build được gọi bên trong bộ kiểm thử với biến này chỉ bỏ q
 (tránh đệ quy); các cổng khác vẫn chạy. `nested` không phải `passed`: tiến trình cha đã chạy bộ kiểm thử.
 
 Báo cáo cổng: <ZIP>.gate.json (schema local-agent-workspace/release-gate-v1), chỉ ghi khi ZIP được tạo.
+Profile `.agent/EXECUTION_PROFILE.json` luôn giao ở dạng mẫu sạch (owner PROFILE, không lựa chọn, không grant), kể cả khi kho nguồn có profile riêng,
+và không nằm trong MANIFEST; schema và helper là file package thường.
 Các bước sau cổng: dựng cây tạm -> chép PROJECT/STATE/HANDOFF sạch từ `release_templates/` -> tạo manifest
 trong cây tạm -> kèm nhận diện đơn vị trong assets/ (logo, branding.json, font; bỏ bằng --no-branding) -> đóng ZIP (không có timestamp, byte-reproducible) -> giải nén và chạy `--verify`.
 Mã thoát: 0 thành công; 1 cổng không đạt hoặc lỗi đóng gói; 2 lỗi dùng (ví dụ --skip-check không kèm --rc).
@@ -33,39 +35,13 @@ GATE_ENV = 'LOCAL_AGENT_WORKSPACE_GATE_NESTED'
 GATE_SCHEMA = 'local-agent-workspace/release-gate-v1'
 GATE_LABEL = {'passed': 'đạt', 'failed': 'lỗi', 'skipped': 'bỏ qua', 'nested': 'lồng nhau'}
 
-TEMPLATE_OVERLAYS = {
-    'PROJECT.md': 'release_templates/PROJECT.md',
-    '.agent/STATE.md': 'release_templates/.agent/STATE.md',
-    '.agent/HANDOFF.md': 'release_templates/.agent/HANDOFF.md',
-    'en/PROJECT.md': 'release_templates/en/PROJECT.md',
-    'en/.agent/STATE.md': 'release_templates/en/.agent/STATE.md',
-    'en/.agent/HANDOFF.md': 'release_templates/en/.agent/HANDOFF.md',
-}
-
 def copy_release_tree(stage, branding=True):
-    """Chép file package (và nhận diện đơn vị trong assets/ khi branding=True) vào cây tạm. Trả về (file, file nhận diện)."""
-    brand = cp.branding_files() if branding else []
-    files = [f for f in cp.all_files() if f not in ('.agent/PACKAGE_INFO.json', '.agent/MERGE_STATUS.json', 'MANIFEST.sha256')
-             and (cp.in_manifest(f) or f in cp.USER_FILES or f in brand)]
-    for rel in files:
-        dst = os.path.join(stage, *rel.split('/'))
-        os.makedirs(os.path.dirname(dst), exist_ok=True)
-        shutil.copyfile(cp.P(rel), dst)
-    for rel, src in TEMPLATE_OVERLAYS.items():
-        dst = os.path.join(stage, *rel.split('/'))
-        os.makedirs(os.path.dirname(dst), exist_ok=True)
-        shutil.copyfile(cp.P(src), dst)
-    if brand:  # branding.js dựng lại từ branding.json để trang hướng dẫn trong ZIP đúng ngay / rebuilt so the guides are right on unzip
-        js = cp.branding_js()
-        js_path = os.path.join(stage, 'assets', 'branding.js')
-        if js:
-            os.makedirs(os.path.dirname(js_path), exist_ok=True)
-            with io.open(js_path, 'w', encoding='utf-8', newline='\n') as f:
-                f.write(js)
-            if 'assets/branding.js' not in files:
-                files.append('assets/branding.js')
-                brand.append('assets/branding.js')
-    return files, sorted(brand)
+    """Ghi bản giao vào cây tạm bằng projection chung của check_package (cùng file, cùng bytes với new/adopt): mẫu sạch PROJECT/STATE/HANDOFF,
+    `.cvf` chỉ closure v3, phép thay tham chiếu. Trả về (file, file nhận diện). MANIFEST do bước `--write-manifest` trong cây tạm tính trên bytes thực giao.
+    Writes the shipped bytes via the shared projection; the MANIFEST is computed afterwards from the bytes that actually ship."""
+    brand = set(cp.branding_files()) | {'assets/branding.js'}
+    files = cp.materialize(stage, branding=branding, manifest=False)
+    return files, (sorted(set(files) & brand) if branding else [])
 
 def run_stage(stage, *args):
     return subprocess.run([sys.executable, os.path.join(stage, 'tools', 'check_package.py')] + list(args),
@@ -91,13 +67,21 @@ def gate_behaviour_tests():
         return gate_result('nested', 'build lồng trong bộ kiểm thử; tiến trình cha đã chạy bộ kiểm thử')
     env = dict(os.environ, PYTHONUTF8='1', **{GATE_ENV: '1'})
     try:
-        r = subprocess.run([sys.executable, '-B', '-m', 'unittest', 'discover', '-s', 'tests'],
+        r = subprocess.run([sys.executable, '-B', '-m', 'unittest', 'discover', '-s', 'tests', '-v'],
                            cwd=ROOT, env=env, capture_output=True, timeout=900)
     except subprocess.TimeoutExpired:
         return gate_result('failed', 'quá 900 giây')
     lines = [l for l in (r.stdout + r.stderr).decode('utf-8', 'replace').splitlines() if l.strip()]
     ran = next((l for l in lines if l.startswith('Ran ')), '')
     detail = ('%s; %s' % (ran, lines[-1] if lines else '')).strip('; ')
+    skips, test_label = [], ''
+    for line in lines:
+        if line.startswith('test') and ' (' in line:
+            test_label = line.split(' ... ', 1)[0]
+        if '... skipped ' in line:
+            skips.append(line if line.startswith('test') else test_label + ' | ' + line)
+    if skips:
+        detail += '; skipped tests:\n' + '\n'.join(skips)
     if r.returncode == 0:
         return gate_result('passed', detail)
     return gate_result('failed', 'mã thoát %d; %s' % (r.returncode, detail), lines[-40:])
@@ -192,7 +176,11 @@ def main():
 
     os.makedirs(out_dir, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='local-agent-release-') as stage:
-        files, brand = copy_release_tree(stage, branding=not a.no_branding)
+        try:
+            files, brand = copy_release_tree(stage, branding=not a.no_branding)
+        except cp.ProjectionError as e:
+            fail(a, 1, 'Không đóng gói: nguồn hoặc projection giao đi bất thường (%s). Không tạo ZIP.' % e, status='error',
+                 findings=[{'severity': 'error', 'message': 'projection: %s' % e}], unchecked=unchecked_items(records))
         t0 = time.perf_counter()
         checked = run_stage(stage, '--release')
         stage_rec = {'name': 'release_tree', 'status': 'failed' if checked.returncode else 'passed',
@@ -208,12 +196,20 @@ def main():
         if written.returncode:
             sys.stdout.write((written.stdout + written.stderr).decode('utf-8', 'replace'))
             fail(a, 1, 'Không tạo được manifest trong cây phát hành tạm.', status='error')
+        try:
+            projected = cp.delivery_manifest(files, branding=not a.no_branding)
+        except cp.ProjectionError as e:
+            fail(a, 1, 'Không đóng gói: không dựng được MANIFEST theo projection (%s).' % e, status='error')
+        with open(os.path.join(stage, 'MANIFEST.sha256'), 'rb') as mf:
+            if mf.read() != projected:  # hai đường tính MANIFEST phải ra cùng bytes / both ways of computing the MANIFEST must agree
+                fail(a, 1, 'Không đóng gói: MANIFEST trong cây tạm lệch MANIFEST tính từ projection.', status='error',
+                     findings=[{'severity': 'error', 'message': 'manifest: cây tạm lệch projection'}])
         files.append('MANIFEST.sha256')
         with zipfile.ZipFile(zpath, 'w', zipfile.ZIP_DEFLATED) as z:
             for rel in sorted(files):
                 path = os.path.join(stage, *rel.split('/'))
                 data = open(path, 'rb').read()
-                if os.path.splitext(rel)[1] in cp.TEXT_EXT:
+                if os.path.splitext(rel)[1] in cp.TEXT_EXT and rel not in cp.BYTE_EXACT + cp.CVF_MACHINE + cp.CVF_DEPENDENCIES:  # critical runtime bytes ship verbatim
                     data = data.replace(b'\r\n', b'\n')
                 zi = zipfile.ZipInfo(top + '/' + rel, date_time=(1980, 1, 1, 0, 0, 0))
                 zi.compress_type = zipfile.ZIP_DEFLATED

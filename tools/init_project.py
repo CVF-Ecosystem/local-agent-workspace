@@ -11,6 +11,8 @@ Việc script làm:
     <tên>.bak-<ngày>; file của người dùng (PROJECT, STATE, HANDOFF, INDEX...) đã điền thì giữ nguyên;
   - nếu có --purpose/--outputs/--style/--sources/--constraints/--sensitivity: điền các dòng tương ứng trong PROJECT.md;
   - đặt .agent/STATE.md sạch;
+  - giữ nguyên .agent/EXECUTION_PROFILE.json nếu đã có (kể cả lỗi hoặc phiên bản lạ); chưa có thì chỉ tạo khi PROJECT.md đủ rõ
+    (một dòng quyền gọi agent phụ), không đổi dòng văn xuôi cũ thành grant;
   - ghi .agent/PACKAGE_INFO.json (phiên bản package, ngôn ngữ, ngày khởi tạo).
 Mọi thay đổi ghi qua một giao dịch có nhật ký (tools/transaction.py); nếu bị gián đoạn, chạy resume hoặc rollback.
 All changes go through one journaled transaction; if interrupted, run resume or rollback.
@@ -19,6 +21,7 @@ Script không xóa file nào và không dùng mạng. Chỉ cần Python 3.8+.
 import argparse, datetime, io, json, os, re, sys
 from result_schema import emit, make
 import transaction as tx
+import execution_profile as ep
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OVERLAY_SKIP = {'en/PROJECT_INSTRUCTIONS_SNIPPET.md'}
@@ -42,7 +45,7 @@ FIELDS = [('purpose', ('Mục đích và người đọc', 'Purpose and audience
           ('constraints', ('Ràng buộc quan trọng', 'Important constraints')),
           ('sensitivity', ('Mức nhạy cảm dữ liệu', 'Data sensitivity'))]
 USER_TEMPLATES = {'PROJECT.md', '.agent/STATE.md', '.agent/HANDOFF.md', '.agent/INDEX.md',
-                  '.agent/SKILL_INDEX.md', '.agent/PENDING_LESSONS.md'}
+                  '.agent/SKILL_INDEX.md', '.agent/PENDING_LESSONS.md', ep.PROFILE_REL}
 NAME_LINE = {'vi': '- Tên dự án: [Tên]', 'en': '- Project name: [Name]'}
 PHASE_PLACEHOLDER = {'vi': '[Phase/trạng thái hiện tại]', 'en': '[Current phase/status]'}
 # Dấu của STATE người bảo trì trong kho nguồn: khởi tạo project thì thay bằng mẫu sạch (có sao lưu), không mang sang project.
@@ -184,6 +187,21 @@ def main():
         kept = L('Giữ nguyên .agent/STATE.md (đã có nội dung của bạn).', 'Kept .agent/STATE.md (it has your own content).')
         if kept not in log:
             log.append(kept)
+
+    # profile: file đã có (kể cả hỏng/lạ) giữ nguyên byte; thiếu thì bootstrap đúng quy tắc, không suy quyền từ văn xuôi
+    # profile: an existing file (even invalid or future) is kept byte for byte; a missing one is bootstrapped by rule, never from prose
+    ep.LANG = a.lang
+    if os.path.lexists(P(ep.PROFILE_REL)):
+        log.append(L('Giữ nguyên %s (đã có).', 'Kept %s (already present).') % ep.PROFILE_REL)
+    else:
+        boot = ep.bootstrap_plan(cur('PROJECT.md'))
+        if boot['bytes'] is None:
+            log.append(L('Chưa tạo %s: %s', 'Did not create %s: %s') % (ep.PROFILE_REL, ep.reason_text(boot['reasons'][0])))
+        else:
+            virt[ep.PROFILE_REL] = boot['bytes'].decode('utf-8')
+            log.append(L('Tạo %s (owner quyền PROJECT, chưa có grant).', 'Created %s (authority owner PROJECT, no grants).') % ep.PROFILE_REL)
+            if boot['reasons']:
+                log.append(L('CẦN MIGRATION: ', 'MIGRATION REQUIRED: ') + ep.reason_text(boot['reasons'][0]))
 
     info = {'package': 'local-agent-workspace', 'version': ver, 'language': a.lang,
             'project_name': name, 'initialized': today}

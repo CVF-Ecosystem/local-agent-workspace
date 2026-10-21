@@ -1,0 +1,28 @@
+# test-first scaffolding RED: refs.py/binding.py và hai helper loader chưa tồn tại (KHÔNG phải repro hành vi) / modules not yet written, not a behavioral repro
+$ python -B -W error::ResourceWarning -m unittest tests.test_control_check_v2_s2
+2026-10-18T00:32:00Z
+======================================================================
+FAIL: test_package_tree_has_exactly_the_s2_modules (tests.test_control_check_v2_s2.OwnersUntouched.test_package_tree_has_exactly_the_s2_modules)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_check_v2_s2.py", line 155, in test_package_tree_has_exactly_the_s2_modules
+    self.assertEqual(names, ['README.md', '__init__.py', 'binding.py', 'canon.py', 'loader.py', 'refs.py'])
+AssertionError: Lists differ: ['README.md', '__init__.py', 'canon.py', 'loader.py'] != ['README.md', '__init__.py', 'binding.py', 'canon.py', 'loader.py', 'refs.py']
+
+First differing element 2:
+'canon.py'
+'binding.py'
+
+Second list contains 2 additional elements.
+First extra element 4:
+'loader.py'
+
+- ['README.md', '__init__.py', 'canon.py', 'loader.py']
++ ['README.md', '__init__.py', 'binding.py', 'canon.py', 'loader.py', 'refs.py']
+?                              ++++++++++++++                       +++++++++++
+
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.027s
+
+FAILED (failures=1, errors=11)

@@ -1,0 +1,15 @@
+test_canonical_vectors_recomputed (tests.test_control_v2_candidate.Vectors.test_canonical_vectors_recomputed) ... 
+  test_canonical_vectors_recomputed (tests.test_control_v2_candidate.Vectors.test_canonical_vectors_recomputed) [u11-terminal-newline-key] ... FAIL
+
+======================================================================
+FAIL: test_canonical_vectors_recomputed (tests.test_control_v2_candidate.Vectors.test_canonical_vectors_recomputed) [u11-terminal-newline-key]
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_control_v2_candidate.py", line 433, in test_canonical_vectors_recomputed
+    with self.assertRaises(Unsupported) as cm:
+AssertionError: Unsupported not raised
+
+----------------------------------------------------------------------
+Ran 1 test in 0.003s
+
+FAILED (failures=1)

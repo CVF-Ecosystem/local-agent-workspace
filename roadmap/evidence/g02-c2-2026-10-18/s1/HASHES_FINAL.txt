@@ -1,0 +1,13 @@
+# sha256 (16) sau khi hoàn tất bàn giao S1 / after S1 handover
+1e5f2d726617db5a *.agent/HANDOFF.md
+7c5339debacac80c *.agent/STATE.md
+5179e7091579c048 *.cvf/checks/control_check_v2.py
+0dbf75d29bce77b0 *.cvf/checks/v2/README.md
+83ba965d6a3ac57a *.cvf/checks/v2/__init__.py
+c593c6d070ccdf67 *.cvf/checks/v2/canon.py
+803f6cc44d1c460c *.cvf/checks/v2/loader.py
+42612225d23536c6 *tests/test_control_check_v2.py
+f95bfc367bb7f470 *.cvf/checks/control_check.py
+454e3f4944825809 *tests/test_control_check.py
+b32d7b3ff0e8a014 *tests/test_control_v2_candidate.py
+ef2020113fe75525 *roadmap/evidence/g02-c2-2026-10-18/s1/README.md

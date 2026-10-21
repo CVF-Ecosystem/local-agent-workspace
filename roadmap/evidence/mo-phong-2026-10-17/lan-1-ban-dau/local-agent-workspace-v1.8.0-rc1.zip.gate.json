@@ -1,0 +1,50 @@
+{
+  "schema": "local-agent-workspace/release-gate-v1",
+  "version": "1.8.0",
+  "kind": "rc",
+  "rc": 1,
+  "skip_check": false,
+  "archive": "local-agent-workspace-v1.8.0-rc1.zip",
+  "archive_sha256": "fcfed6d222ce7a092a07f2fd2ba81162057d06f51183505ae3de161035213800",
+  "branding": [
+    "assets/branding.js",
+    "assets/branding.json",
+    "assets/logo.jpg"
+  ],
+  "gates": [
+    {
+      "name": "package_check",
+      "status": "passed",
+      "duration_s": 0.28,
+      "detail": "0 lỗi, 0 cảnh báo (gồm đồng bộ HTML với Markdown)"
+    },
+    {
+      "name": "python38_compat",
+      "status": "passed",
+      "duration_s": 0.27,
+      "detail": "0 vấn đề (heuristic, xem check_package.py)"
+    },
+    {
+      "name": "behaviour_tests",
+      "status": "passed",
+      "duration_s": 142.36,
+      "detail": "Ran 129 tests in 141.457s; OK"
+    },
+    {
+      "name": "release_tree",
+      "status": "passed",
+      "duration_s": 0.68,
+      "detail": "check_package --release trên cây phát hành tạm"
+    }
+  ],
+  "platform": {
+    "system": "Windows",
+    "release": "10"
+  },
+  "python": "3.11.9",
+  "git": {
+    "commit": "b13e375dbf256e726248b7d5b04142198bf25b19",
+    "dirty": true
+  },
+  "generated_utc": "2026-10-17T06:01:25Z"
+}
