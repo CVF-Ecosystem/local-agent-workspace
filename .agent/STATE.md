@@ -4,56 +4,46 @@
 
 ## Goal
 
-Phát triển LAW thành workspace local dùng lâu dài cho công việc văn phòng; agent native điều phối vai, giữ nguồn/skill và tiếp tục công việc gọn, tự đủ trong LAW.
+Phát triển LAW thành workspace local dùng lâu dài cho công việc văn phòng; giữ nguồn, quyền và bối cảnh qua các phiên, hoàn thiện MVP bằng feedback thực tế.
 
 ## Current phase
 
-21/10/2026: Operator giao đồng bộ source, gói prerelease và thông tin tải/feedback. Đang chuẩn bị v1.9.0-rc2 chứa L19; giữ tag/asset RC1 nguyên bản và dẫn người dùng sang RC2. Docs VI/EN/form và corrective fixture Python3.8/mac đã review; 68 test liên quan thành công gồm1skip. Build nguồn30b thất bại timeout900, không ZIP. Reviewer đã nhận budget1800 dựa CI Windows thành công1108s; đang sửa/test gate để retry normal một lần. Chưa có RC2 công bố.
+21/10/2026: Đã công bố v1.9.0-rc2 để dùng thử/thu feedback, chưa final. Nguồn5335f68 đã review độc lập và build sạch, 4gate passed/1495test6skip. RC2 chứa L19 và fixture portability; RC1 giữ nguyên tag/asset, notes dẫn RC2. Đã ghi nhận publication và nghiệm thu; CI main mới chưa có kết quả.
 
 ## Completed
 
-- G-00/G-01/G-02, C2/P-CN1 một file và G-03 baseline hợp tác hẹp/G-04 candidate đã nhận đúng phạm vi; COOPERATIVE/ADVISORY, không host enforcement.
-- I1/P-CTX1, I2 navigation, I3 package/lifecycle và A-02 core T01–T04 đã nhận WITH_LIMITS; không dispatch lại.
-- A-06 lockleaf, A-07 thư viện dùng chung/chọn nguồn và A-08 static contracts đã nhận WITH_LIMITS; T16 template/static/read-API nhận.
-- A-09 accepted: Worker corrective module46collected/45đạt/1skip; Reviewer7test độc lập đạt/0skip, P2 resolved. Worker198test trước statusfix/corrective giữ riêng lịch sử; không full198/fullgate source cuối.
-- A-10 Scout: Reviewer39test đạt trước sửa diagnostic cuối +2ca liên quan đạt sau sửa; không cộng thành fullsuite cuối. T28 hẹp: MainSonnet5.5→Agent law-scout→Haiku5.5 Read đúng nguồn giả; Reviewer soát trace nhận WITH_LIMITS.
-- A-10 core: Reviewer32test hẹp đạt/0skip source cuối; lab2child Sonnet5.5 tạo candidate rồi review chỉ đọc,270file cũ không đổi/+1candidate; retire2role/listing mới không còn projectroles. Không fullmodule72/fullgate.
-- A-11: Reviewer sửa3finding tại docs/test; sourcecuối25đạt/0skip=21probe+4projection. T29/T30 nhận subset hợp tác, không live Scout delta/nhiều TASK hoặc toàn R5.
-- B-01: sourcecuối21content+15regression đạt/0skip; Main1probe source-event→A-11 tăngrev/giữbytes/chặn publish cũ. Worker94chạy=92đạt/2skip trước correction, không full94 sourcecuối.
-- B-02: Reviewer34test+5panel+2browser đạt trước sửa opener cuối; sau sửa cuối9target đạt/0skip. Ba ca nợ docs/package đạt riêng; không cộng thành fullmodule/fullgate. Worker66artifact/61panel là trước correction.
+- G-00–G-04 và I1/I2/I3, A-02, A-06–A-11, B-01/B-02 đã nhận đúng subset/WITH_LIMITS trong HANDOFF/roadmap; không nhận host enforcement hoặc toàn R1–R6.
+- D-01a–g/SCRIPT-01, M1–M3 đã nhận đúng phạm vi; snapshot M4 và diễn tập mock M5 có sẵn. Người dùng mới/pilot chuyển sau MVP theo operator.
+- E07-B/RC1 đã nhận nội bộ và công bố prerelease; historical1492test6skip/2rebuildtimeout giữ nguyên, không thay bằng số liệu RC2.
+- L19: sửa diagnostics export allowlist, bảo toàn đúng7rawpin lịch sử, fixture EOL/Windows/parser/Python3.8/mac; không sửa runtimev3/schema/quyền/pin-value.
+- RC2: fullsuite1495test/1252.159s/6skip; verify/projection261file/create/upgradeRC1 giữ7file riêng đạt;2archiveprobe cùngSHA. Reviewer độc lập nhận source/budget/artifact.
 
 ## Current artifact
 
-- Release: https://github.com/CVF-Ecosystem/local-agent-workspace/releases/tag/v1.9.0-rc1 ; published2026-10-21T05:22:38Z, prerelease=true/draft=false, target6f39c60b77d368793612541f546ca92688289518.
-- Asset ZIP1177698byte/261file: SHA256 3b0ea0888496a653b9c1ece77d1a13fdd13d5996ffdc2bc5f212775026c703f4; gateJSON64cea39ce6e04cc892ce70705f908ede0488892f58d6bcf09d6caa6dd82165d0; checksumfile f8dcd28e1a25216559b90d22aecd9b76d316b029e389c610b3c6eba90195874a.
-- Bản local ở dist/local-agent-workspace-v1.9.0-rc1*; ZIP/gate đã upload nguyên bytes. Gate4passed/1492test6skip ở source6f39;2fullrebuild sau timeout vẫnfailed,2archiveprobe đúngwriter bằngSHA.
-- Release notes có tải/hướng dẫn/nâng cấp/backup/giới hạn và feedback. docs/FEEDBACK_FORM_VI_EN.md đã có trongZIP; GitHub Issue template phan-hoi.md tồn tại, Issues bật; chưa có feedback mới để ghi.
-- Nhánh sửa fix/l19-ci-diagnostics từ ddd6118; origin/main1ca3f0c đã mergePR6(370ea81). Run39548822713:5jobfailedBehaviour,package/HTMLsuccess,RCbuild/uploadskipped. Corrective source901e1d1 đã push nhánh riêng; CI39560119618 đúng SHA này: Ubuntu3.12 đã đạt cả job; mac/Python3.8 còn lỗi fixture, Windows đang chạy. Chưa là CI RC2.
+- Tải dùng thử: https://github.com/CVF-Ecosystem/local-agent-workspace/releases/tag/v1.9.0-rc2 ; published2026-10-21T08:07:36Z, prerelease=true/draft=false; source/tag5335f68e6d8ed2460234bc42c810a3050817bda8.
+- ZIP1178991byte/261file SHA25653a85eac42982cdb0a422fac4d7b59a644fbc2305d4c677094024120dfa9b323; gatebdc8e182abbdbd442bcded99c840eed995cdc677b778658652d8c7ce105a0de0; checksum4a13523d11d8a0f5d0fefb73eebc4f0180720af11f036a8f3610d5cda5a9fc6f. Baasset tải lại khớp.
+- RC1 tag6f39/3asset bytes giữ nguyên; RC1 và stable1.8 notes dẫn RC2. Stable/latest vẫn1.8.0. README VI/EN, changelog, feedback form/issue, About/homepage thống nhất RC2; Issues/nhãn phản hồi sẵn sàng.
+- main ngoài phiên đã mergePR7=a5aaf93 (tree bằng46af0ab); đã merge vào nhánh sửa, tree bằng5335 chính xác. Commit sau tag chỉ ghi hồ sơ bảo trì, không đổi projection của gói.
 
 ## Open items
 
-- A-09 capture nội bộ đúngbytes cho validate/plan/hash/backups. Config gắn toàn hash PROJECT chỉ đọc; bất kỳ dòng đổi làm token cũ PLAN_CHANGED, preview lại. Chấp nhận bảo thủ, không thêm permissionline projection; chưa kernel-race/atomic2file proof.
-- Mọi giao dịch dở (không riêng owner path) chặn luồng profile; ghi PROJECT+profile là nhóm có phục hồi, không nguyên tử. Symlink file thật chưa đo (WinError1314), chỉ junction runtime đã đo.
-- Upgrade bằng script cũ trong project không bootstrap profile; chạy lại bằng script mới. A-06/A-07 giữ giới hạn cũ; D4 chỉ bản lab6ee4cef2, không duyệt phát hành.
-- A-10 core có3vai/preset candidate/retire đã review. Proof lab chỉ capability/model/locator: còn1finding diễn đạt nhỏ candidate dòng21, giữ CANDIDATE/chưa user acceptance; telemetry0.38191935USD không hóa đơn. Không nhận model quality/fullR4/enforcement.
-- Adapter status vẫn NOT_INSPECTED cho host: receipt không chứng minh invocation. Proof riêng đã quan sát model/Read, chưa sandbox/tools enforcement. Native+receipt có journal nhưng không nguyên tử, còn TOCTOU cuối; parser identity subset/nested unknown từ chối.
-- CI main1ca3 hiệnfailed5/5; RC1 localWindows3.11.9 giữ evidence lịch sử, không chuyển CI thànhPASS. L19-02diagnostics appliesRC1; chưa nên coi ZIPchẩnđoán đãche sạch đườngdẫn. Parser test đã chốt injection RecursionError, không thêm depth policy; chưa visualQA/symlinkfile thật.
+- CI39560119618/source901e1d1: Ubuntu3.12 cả job đạt;3.8/mac fixture lỗi; Windows3.12 hành vi1493test40skip/1105.326s đạt nhưng buildtimeout900. Không gọi là CI RC2; CI main mới cần kết quả thật.
+- RC2 build đầu30b timeout900, không ZIP; budget1800 được review theo bước WindowsCI1108s. Retry5335 đạt, vẫn fail/noartifact nếu timeout; không skip/nested hoặc hạ assertion.
+- Chưa file-symlink thật (5skip1314), visual/nội dung từng trang UI hoặc Word/Excel, usability người mới hoặc hỗ trợ chính thức toàn ma trận. Profile/native chỉ cooperative/advisory, không host sandbox/enforcement.
+- Giữ residual A-09/A-10/A-11: conservative hash invalidation, journal không nguyên tử và TOCTOU cuối; adapter receipt không chứng minh invocation. Giới hạn chi tiết nằm HANDOFF; không tự mở lại tranche đã nhận.
 
 ## Waiting on user
 
-- Không còn quyết định chặn corrective L19: đã có quyền sửa và quyền GitHub từ phiên trước.
-- Đã có quyền phát hành prerelease cập nhật và đồng bộ main; không chờ user duyệt lại. Không stable/final, không đổi tag/asset RC1.
+- Không chờ xác nhận công bố: operator đã giao đồng bộ prerelease và thông tin project, RC2 đã đăng. Chưa có feedback người dùng mới.
+- Không có quyền stable/final hoặc host/global/admin/CVF cha từ lần phát hành này.
 
 ## Decisions
 
-- Operator amendment0.10: MVP trước/feedback sau; C-02/T37–T38 và phần người thật R6/T36/T48 chuyển sau MVP, không thành PASS. Giữ gate bảo toàn/quyền/nâng cấp/package/release; không mở thêm feature.
-- A-09 diagnostic đã NOT_INSPECTED, không phủ định host chưa kiểm; authority_usable=False/profile_refUNSUPPORTED giữ. LEGACY cho xuất native nếu profile hợp lệ/owner nhất quán/lựa chọn rõ, không migrate hoặc suy quyền dispatch.
-- A-10 một host/ba core role; factory candidate Haiku5.5/Sonnet5.5/Sonnet5.5 effortnull, không autofill profile. Effort/tier/fallback/limits chưa map UNSUPPORTED, không thêm vòng đo effort. Write không cưỡng chế new-only/path sandbox.
-- Retire đã đo: một Windows no-replace rename→fixedinactive, receipt giữ/post-reconcile; RETIRE_CONFLICT chặn apply, không autoactivate/livecancel. Reviewer product không mang quyền sửa nhỏ maintainer; candidate_presets khác product_presets.
-- A-11: current TASK/RESULT dùng v3 khi cần; so binding hiện hành và bytes thật trước writer. Publish task riêng bind raw TASK/RESULT/candidate/source/sổ đã dùng; staged lấy chính candidate bytes đã so hash. Một writer, không generic PASS/authority/acceptance hoặc native sandbox.
-- Dòng PROJECT trống/placeholder bootstrap owner PROJECT không grant; mẫu sạch dùng con trỏ + owner PROFILE. Không tạo/migrate profile maintainer.
-- B-02: version/quan hệ cùng sổ, không ContentID/engine/receipt/current-pointer mới. Mở cũ khác dùng mới: prepare kiểm closure/giữ unknown+inference+limits; stale sau publish từ chối register. x14 PARKED; không refresh pin/MANIFEST/RC3.
+- MVP trước, feedback sau; không thêm feature/pilot bắt buộc hoặc nhận mock thành usability thật.
+- RC dùng VERSION1.9.0 và tag v1.9.0-rc2; không retag/thay asset RC1 hoặc đổi stable/latest1.8.0.
+- Project mới bắt đầu PROFILE/grants[]; không tự tạo quyền/model/host. Dòng legacy chỉ bootstrap khi rõ, không suy quyền dispatch.
+- Công bố đúng commit/gate sạch; maintainer metadata sau phát hành được chứng minh không đổi package bytes. Không force/CI skip/cancel hoặc refresh pin/MANIFEST kho nguồn.
 
 ## Next milestone
 
-Review budget1800 → freeze commit sạch → retry RC2 normal một lần → verify/create/upgrade fixture → review artifact → publish đúng tag/gate, tải lại xác minh → metadata thật và main fast-forward. Timeout/failed vẫn chặn ZIP; không hạ gate. CI nguồn901e1d1 không gán RC2; CI main mới chạy sau push.
+Dùng RC2 và gửi feedback qua form/Issues đã có; theo dõi CI main mới. Chỉ sửa finding cụ thể tiếp theo, không dựng thêm roadmap hoặc release khi chưa có căn cứ.

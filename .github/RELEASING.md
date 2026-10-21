@@ -13,7 +13,7 @@ Maintainer guide for the source repository. The `.github/` folder is never packa
 
 | Hệ điều hành | Python | Trạng thái |
 |---|---|---|
-| Windows 11 | 3.11.9 | Đã chạy cục bộ ngày 2026-10-13: kiểm package, bộ kiểm thử hành vi, dựng RC và bản chính thức. Không nằm trong ma trận CI. |
+| Windows | 3.11.9 | RC2/source5335f68 đã chạy cục bộ ngày 2026-10-21: 4 gate passed, 1495 test/6 skip, verify/create/upgrade fixture đạt. Không nằm trong ma trận CI; chưa là final. |
 | Windows (latest) | 3.8, 3.12 | Đã chạy CI 39548822713: kiểm hành vi thất bại; chưa xác nhận hỗ trợ. |
 | Ubuntu (latest) | 3.8, 3.12 | Đã chạy CI 39548822713: kiểm hành vi thất bại; chưa xác nhận hỗ trợ. |
 | macOS (latest, Apple silicon) | 3.12 | Đã chạy CI 39548822713: kiểm hành vi thất bại; chưa xác nhận hỗ trợ. |
@@ -66,7 +66,7 @@ Trước khi nâng cấp, giữ một bản sao của project (mục 1 trong `do
 
 ## 6. Giới hạn còn lại
 
-- CI [39548822713](https://github.com/CVF-Ecosystem/local-agent-workspace/actions/runs/39548822713) trên main `1ca3f0c` đã thất bại ở cả 5 job hành vi. Lượt corrective [39560119618](https://github.com/CVF-Ecosystem/local-agent-workspace/actions/runs/39560119618) trên nguồn `901e1d1` đã có job hành vi Ubuntu/Python 3.12 đạt, nhưng macOS và Python 3.8 còn lỗi fixture kiểm thử; các cổng nền tảng chưa cùng xanh (ghi nhận ngày 2026-10-21). RC2 là prerelease có giới hạn; kết quả CI này chưa xác nhận bản RC2 đã dựng. Các ô chưa được xác nhận cho đến khi job tương ứng xanh trên nguồn phát hành.
+- RC2 [v1.9.0-rc2](https://github.com/CVF-Ecosystem/local-agent-workspace/releases/tag/v1.9.0-rc2), nguồn5335f68, đã công bố sau 4 gate cục bộ đạt. CI [39560119618](https://github.com/CVF-Ecosystem/local-agent-workspace/actions/runs/39560119618) trên nguồn cũ901e1d1 hoàn tất với 1/5 job đạt (Ubuntu3.12); Windows3.12 hành vi đạt nhưng buildtimeout900,3.8/mac lỗi fixture. Nguồn RC2 sửa các fixture và budget1800. CI main mới tự chạy sau đồng bộ, chưa có kết quả; không suy gate cục bộ thành hỗ trợ chính thức toàn ma trận.
 - macOS và Python 3.8 chưa được chạy trên máy phát triển này; không có Python 3.8 trên máy. CI không kiểm Python 3.8 trên macOS (image `macos-13` đã ngừng).
 - Kiểm tương thích 3.8 là heuristic: `ast.parse(feature_version=(3, 8))` và một danh sách regex. Có thể bỏ sót (ví dụ `dict | dict`) hoặc báo nhầm. Kiểm chứng thật là CI chạy trên Python 3.8.
 - Cổng hành vi có kiểm thử giao diện bảng điều khiển bằng trình duyệt khi Playwright và Chromium khả dụng; thiếu điều kiện thì các lớp browser test bị skip. Kết quả trên máy này không chứng minh đã chạy trên mọi host hoặc CI.
@@ -84,7 +84,7 @@ Anything without evidence of a run is listed as unconfirmed. A CI configuration 
 
 | Operating system | Python | Status |
 |---|---|---|
-| Windows 11 | 3.11.9 | Run locally on 2026-10-13: package check, behaviour test suite, RC and official builds. Not part of the CI matrix. |
+| Windows | 3.11.9 | RC2/source5335f68 run locally on 2026-10-21: 4 gates passed, 1495 tests/6 skips, verify/create/upgrade fixtures passed. Outside the CI matrix; not final. |
 | Windows (latest) | 3.8, 3.12 | CI run 39548822713: behaviour tests failed; support unconfirmed. |
 | Ubuntu (latest) | 3.8, 3.12 | CI run 39548822713: behaviour tests failed; support unconfirmed. |
 | macOS (latest, Apple silicon) | 3.12 | CI run 39548822713: behaviour tests failed; support unconfirmed. |
@@ -137,7 +137,7 @@ Before upgrading, keep a copy of the project (section 1 of `docs/en/EXISTING_PRO
 
 ## 6. Remaining limits
 
-- CI [39548822713](https://github.com/CVF-Ecosystem/local-agent-workspace/actions/runs/39548822713) on main `1ca3f0c` failed all 5 behaviour jobs. Corrective run [39560119618](https://github.com/CVF-Ecosystem/local-agent-workspace/actions/runs/39560119618) on source `901e1d1` has a passing Ubuntu/Python 3.12 behaviour job, while macOS and Python 3.8 still have test-fixture failures; platform gates are not all green (recorded 2026-10-21). RC2 is a prerelease with limits; these CI results do not establish a completed RC2 build. Each cell remains unconfirmed until its job passes on the release source.
+- [v1.9.0-rc2](https://github.com/CVF-Ecosystem/local-agent-workspace/releases/tag/v1.9.0-rc2), source5335f68, is published after 4 local gates passed. CI [39560119618](https://github.com/CVF-Ecosystem/local-agent-workspace/actions/runs/39560119618) on older source901e1d1 completed with 1/5 jobs passing (Ubuntu3.12); Windows3.12 behaviour passed but the build timed out at900s, while3.8/mac had fixture errors. RC2 fixes those fixtures and uses the1800s budget. New main CI runs after synchronization; results are pending. Local gates do not establish official support for the whole matrix.
 - macOS and Python 3.8 have not been run on this development machine, which has no Python 3.8. CI does not test Python 3.8 on macOS (the `macos-13` image is retired).
 - The Python 3.8 check is a heuristic: `ast.parse(feature_version=(3, 8))` plus a regex list. It can miss cases (for example `dict | dict`) or report false positives. Real verification is the Python 3.8 CI job.
 - The behaviour gate includes browser tests for the control panel when Playwright and Chromium are available; browser test classes are skipped when those prerequisites are missing. Results on this machine do not establish runs on every host or in CI.
