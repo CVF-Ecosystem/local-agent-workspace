@@ -1,12 +1,17 @@
 # Roadmap LAW — Workspace cá nhân dùng lâu dài
 
-Cập nhật: **21/10/2026**. Trạng thái: **D-01a–f và SCRIPT-01 đã nhận đúng phạm vi; D-01g đã nhận ACCEPTED_WITH_LIMITS, M1 đóng; M2 đã chốt danh sách nghiệm thu, M3 đã nhận ACCEPTED_WITH_LIMITS sau M3-C1+A1; snapshot M4 1.9.0 đã chuẩn bị/kiểm; diễn tập mock ba việc đã xong, operator là observer (mục0.9). Operator đã hoãn pilot người mới tới sau MVP; M5 không chặn MVP. E07-B/RC1 nội bộ đã nhận ACCEPTED_WITH_LIMITS tại mục0.11; prerelease v1.9.0-rc1 đã công bố; đã nhận reviewL19/CI main1ca3đỏ và diagnostics conditionalpathleak, corrective L19 đã vào RC2 công bố để dùng/thu feedback, 4gatepassed/1495test6skip; source/tải/feedback đồng bộ tại0.11, không mở tính năng. Từ đây theo lộ trình đóng tại mục 0, không tự mở thêm tính năng. C-02 chưa pilot; D-02/phát hành còn chờ.** Các verdict WITH_LIMITS và gate dữ liệu/phát hành giữ nguyên.
+Cập nhật: **21/10/2026**. MVP `v1.9.0-rc2` đã công bố dạng prerelease để thu feedback; 4 gate nguồn đạt, 1495 test/6 skip. Chưa final; pilot người mới sau MVP, phần phát hành chính thức còn mở. Lịch sử và giới hạn nghiệm thu ở mục 0–12. Hướng phát triển văn phòng nghiệp vụ và trạng thái hiện hành của V0–V7 ở [roadmap riêng](ROADMAP_VAN_PHONG_NGHIEP_VU.md).
 
-Đây là roadmap duy nhất dẫn việc tiếp theo của Local Agent Workspace (LAW), hợp nhất định hướng operator, đề xuất external agent R2, phản biện Claude và đối chiếu Local. [Roadmap trước](archive/ROADMAP_HOAN_THIEN_TRUOC_LAW_R2_2026-10-17.md) được giữ nguyên; kết quả lịch sử chỉ có giá trị trong phạm vi đã kiểm.
+Đây là roadmap nền cho MVP, bảo trì và lịch sử nghiệm thu của Local Agent Workspace (LAW), hợp nhất định hướng operator, đề xuất external agent R2, phản biện Claude và đối chiếu Local. [Roadmap trước](archive/ROADMAP_HOAN_THIEN_TRUOC_LAW_R2_2026-10-17.md) được giữ nguyên; kết quả lịch sử chỉ có giá trị trong phạm vi đã kiểm.
 
-Người dùng quyết định mục tiêu; agent làm việc trong kho chịu trách nhiệm đối chiếu code và triển khai trong phạm vi được giao. Trạng thái hiện hành ở mục 0; các snapshot và bằng chứng lịch sử bên dưới không thay kết luận nghiệm thu hiện tại. Chưa phát hành.
+Người dùng quyết định mục tiêu; agent làm việc trong kho chịu trách nhiệm đối chiếu code và triển khai trong phạm vi được giao. Trạng thái hiện hành ở mục 0; các snapshot và bằng chứng lịch sử bên dưới không thay kết luận nghiệm thu hiện tại. Đã công bố prerelease v1.9.0-rc2; chưa final.
 
 ## 0. Lộ trình đóng roadmap và nghiệm thu — chốt điều phối 21/10/2026
+
+Mục 0 ghi lộ trình đóng **MVP/RC2** và bằng chứng lịch sử. Phát triển văn phòng
+nghiệp vụ là giai đoạn tiếp theo đã được operator xác nhận, theo dõi và đánh dấu
+tiến độ tại [roadmap riêng](ROADMAP_VAN_PHONG_NGHIEP_VU.md); các giới hạn MVP ở
+mục này không xóa mục tiêu phát triển mới.
 
 Operator yêu cầu có đường đi, mốc đạt và điểm kết thúc để không tiếp tục trôi theo các
 gap nhỏ. Sáu mốc dưới đây là thứ tự đóng công việc còn lại, không là sáu tính năng mới.
@@ -555,6 +560,20 @@ finding, rồi kiểmđúngphạmvi và CIđúngcommit trongquyền đượcgiao
 đínhkèm, không sửacode/pin/gate hoặc push/release/CIrerun tronglượt xemgópý này.
 Không mở host/engine/OCR hoặc chươngtrình audit mới; không cần tuyển người thử.
 
+### 0.12 Hướng văn phòng nghiệp vụ — theo dõi ở roadmap riêng, 21/10/2026
+
+Local đã phản biện đề xuất external R1; external đồng ý với lát cắt đầu. Operator
+xác nhận đây là **hướng phát triển tiếp theo**, không dừng ở báo cáo local. Các
+tranche, ô đánh dấu, điều kiện đóng và trạng thái hiện hành nằm duy nhất tại
+[Roadmap văn phòng nghiệp vụ](ROADMAP_VAN_PHONG_NGHIEP_VU.md). Mục này giữ dấu vết
+hội tụ; RC2 và các verdict MVP lịch sử không đổi.
+
+**Operator hiệu chỉnh cùng ngày:** roadmap phần mở rộng đã lệch sang mở nguồn data,
+thiếu trục văn phòng trung tâm. Roadmap riêng hiện là revision2: Main tổ chức công việc,
+bộ chuyên môn có phương pháp/tool/preset, kiểm và tích hợp, theo việc và dùng lại.
+Chọn nguồn là năng lực hỗ trợ. Work order chọn nguồn V1 revision1 đã thu hồi;
+V0 hội tụ lát cắt local cũ không chứng minh đã chốt toàn kiến trúc trung tâm.
+
 ## 1. Mục tiêu và quyết định đã chốt
 
 LAW cung cấp bộ khung local để cá nhân làm việc lâu dài bằng agent/model của ứng dụng họ chọn. Giá trị tích lũy nằm ở nguồn dữ liệu, kỹ năng cá nhân, quy tắc ổn định, vai trò rõ ràng và khả năng tiếp tục qua nhiều phiên.
@@ -1047,6 +1066,24 @@ Kiểm tập trung: `tests/test_library_sync.py` **6 đạt**, `test_structured_
 5. **Bàn giao và đóng:** HANDOFF ghi input revision/commit, file đã đổi, bằng chứng/giới hạn, kết quả review hoặc trạng thái chờ review, và tranche tiếp theo đủ dependency; STATE giữ ảnh chụp ngắn; phần tự soát HANDOFF ghi kết quả EOL so baseline và mọi chuyển EOL có chủ đích. Chỉ đánh dấu đạt đúng phạm vi đã kiểm. Commit tách theo tranche khi được giao quản lý commit; release còn phải qua gate ở `tools/README.md`, nghiệm thu bản sao project và support matrix theo R7.
 
 Review độc lập ở đây là kiểm code và bằng chứng triển khai LAW; vai `roles/reviewer/` là vai chức năng của sản phẩm, chưa phải reviewer code tự động. Quy trình này có thể siết thêm khi pilot cho thấy một loại lỗi lặp hoặc phạm vi phát hành tăng; điều chỉnh tại owner này thay vì tạo registry/gate song song.
+
+#### Kiểm soát điều phối bắt buộc (operator chốt22/10/2026, bổ sung23/10/2026)
+
+Các yêu cầu dưới áp dụng cho Orchestrator/Reviewer/Worker bảo trì LAW, cùng mục1–5 ở trên;
+không thêm thủ tục cho việc văn phòng trong project người dùng.
+
+- **Trước khi giao hoặc thử tiếp:** Main đối chiếu hàng roadmap/acceptance gốc, diff và brief hiện hành trong HANDOFF. Mỗi lần giao, kể cả agent phụ hoặc tự nhận thi công, bắt buộc có ngay tại hàng/brief hiện có:
+  1. **Mốc sản phẩm:** ID/vị trí trong roadmap, đầu ra người dùng nhận được và điều kiện để gọi mốc đó đạt; không dùng tên tranche hoặc test thay cho mốc.
+  2. **Toàn bộ khoảng trống của mốc:** đối chiếu từng điều kiện đạt mốc với bằng chứng còn hiệu lực; ghi đã đạt, còn thiếu, bị chặn, hoãn theo quyết định nào hoặc chưa kiểm. Bao gồm phần ngoài lần giao, dependency, tích hợp/review/nghiệm thu và quyết định còn thiếu nếu chúng thuộc điều kiện của mốc. Không bỏ phần hoãn/chưa kiểm để làm mốc có vẻ đã xong; không tự thêm acceptance hoặc bịa owner/thời hạn.
+  3. **Đóng góp của lần giao:** chỉ rõ điều kiện/khoảng trống nào sẽ được đóng, đầu ra và cách kiểm; liệt kê toàn bộ phần vẫn còn sau lần giao, cùng phạm vi/owner, revision/trạng thái, evidence dùng lại và phép kiểm cần thêm. Reviewer/Worker kiểm brief này trước phần thi công phụ thuộc; thiếu liên kết mốc hoặc đối chiếu đủ điều kiện thì Main hoàn thiện brief trước, không giao một sửa kỹ thuật rời mốc.
+  Ghi gọn bằng đoạn hoặc bảng ngay tại hàng/brief hiện có, dùng lại đối chiếu còn hiệu lực và cập nhật phần thay đổi; không tạo registry/work order khác hoặc audit lại toàn kho. Khi nhận kết quả, cập nhật khoảng trống và trạng thái mốc; ghi riêng việc/tranche đã xong với mốc sản phẩm đã đạt. Chỉ chốt mốc theo toàn bộ điều kiện của mốc, không lấy số test hoặc việc hoàn tất một phần làm kết luận cho cả mốc.
+- **Giữ đơn vị công việc:** sửa lỗi nhỏ, kiểm bổ sung, đọc/checkpoint lại và hoàn thiện cùng acceptance ở trong tranche đang làm. Thiếu tool/lệnh, RESULT sai trường, budget dừng hoặc verdict PARTIAL không tự là lý do mở tranche mới hay chạy lại paid demo. Khi cần chia vì phạm vi/owner đổi thực sự, sửa lớn hoặc rủi ro schema/quyền/dữ liệu, ghi lý do, ranh giới và dependency ngay tại hàng/brief hiện có. Không đặt tên tranche mới chỉ để hợp thức hóa một sửa nhỏ.
+- **Reviewer chịu phần sửa nhỏ:** tự sửa lỗi rõ nguyên nhân/cách sửa trong phạm vi đã review; kiểm đúng phần, ghi tác giả và kết quả trong HANDOFF. Không chuyển lại Worker, không thêm reviewer/vòng review chỉ để soát sửa nhỏ đó. Giới hạn này không cho phép gộp schema/quyền/dữ liệu/sửa lớn vào sửa nhỏ.
+- **Giữ acceptance sản phẩm:** thử nghiệm phải phục vụ trực tiếp một điều kiện còn thiếu và tái dùng evidence còn đúng source. Điều kiện riêng của smoke, cấu trúc JSON, lệnh checkpoint hoặc cùng parent session không tự trở thành gate roadmap. Không hạ gate hiện có hoặc nhận fixture thay hành vi thật. Đổi acceptance sản phẩm phải theo quyết định operator, không suy từ kết quả test.
+- **Một brief đang giao, một owner tích hợp:** ghi revision/trạng thái ngay trong HANDOFF; ghi owner/phạm vi chồng lấn nếu có. Worker đọc lại brief/status mới nhất ngay trước tác động ghi hoặc mở lượt trả phí; revision đổi, thu hồi hoặc scope trùng thì dừng phần phụ thuộc và báo Main. Main đổi/thu hồi brief phải ghi lý do/revision mới và báo ngay operator trong hội thoại để chuyển cho Worker; không chỉ sửa file rồi coi bên kia đã biết. Chưa có xác nhận dừng/bằng chứng trạng thái thì không giao trùng hoặc sửa cùng file. Thực thi đã xảy ra trước khi biết đổi thì giữ bằng chứng, khai thời điểm và review đúng giới hạn; không retry/sửa hồi tố. Lệnh trực tiếp mới nhất của operator được ưu tiên.
+
+Đây là kiểm soát bắt buộc ở lớp hướng dẫn/hợp tác, chưa có host checker/khóa nguyên tử để
+cưỡng chế hoặc bảo đảm không có race. Không tuyên bố đã chặn lượt chạy chỉ từ trạng thái file.
 
 ### 8.4 Phân vai model/effort khi thi công roadmap
 

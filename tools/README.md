@@ -62,6 +62,9 @@ cập riêng, không dùng mạng. Mỗi nút gọi một công cụ có sẵn t
 `upgrade_package`, `pack`, `check_output`, `install_skills`, `check_package`, `build_guides_html`, `build_release`, `library`, `transaction`); thao tác có ghi
 luôn xem trước rồi mới thực hiện. Nút "Chọn…" dùng hộp chọn thư mục của `tkinter` nếu Python có. Tự tắt khoảng 3 phút sau khi
 đóng trang. Giao diện nằm trong `app_ui.html` (một file, không tài nguyên ngoài, tiếng Việt và tiếng Anh, sáng và tối).
+Khung "Giao việc cho trợ lý AI" có ô mô tả công việc bằng lời thường và nút "Chuẩn bị lời nhắc": lời nhắc chuẩn bị gồm mô tả đó, chỉ dẫn mở `roles/office/MAIN.md` và danh mục
+`roles/office/catalog.json` (khi `office.py` báo dùng được). Trạng thái chỉ là "đã chuẩn bị" hoặc "đã sao chép": chưa gửi, chưa phân công, chưa chạy. Mô tả chỉ nằm trong bộ nhớ trang,
+không gửi qua `/api/*`, không ghi lịch sử thao tác hay chẩn đoán.
 
 Mọi phản hồi từ `/api/run` có trường `result` theo schema `local-agent-workspace/result-v1`: trạng thái, mã kết quả,
 có thay đổi hay không, file liên quan, phần chưa kiểm và việc cần làm. Mọi công cụ mà bảng điều khiển gọi (kể cả khởi tạo, kiểm package, gói lĩnh vực, cài skill, thư viện nguồn, dựng HTML và
@@ -486,7 +489,7 @@ của `.cvf/rules/v3/ROUTING_POLICY.json`; checker artifact không đánh giá n
 
 ## Task/RESULT và checkpoint trước tích hợp (A-11, hướng dẫn: không có công cụ mới)
 
-Không có script, helper hay schema mới dưới `tools/`. A-11 chỉ là hướng dẫn trình tự ở mục "TASK, RESULT và checkpoint trước tích hợp (A-11)" của `roles/README.md`
+A-11 không thêm script, helper hay schema dưới `tools/` (`office.py` ở mục kế tiếp thuộc V1-A, tách riêng). A-11 chỉ là hướng dẫn trình tự ở mục "TASK, RESULT và checkpoint trước tích hợp (A-11)" của `roles/README.md`
 (kèm khối mã mẫu `law-recipe`, ví dụ Worker một candidate; không phải bộ kiểm Scout delta chung) trên các owner đã có; mỗi owner giữ nguyên giới hạn của nó:
 
 | Owner | Dùng cho | Chỉ bảo vệ | Không bảo vệ |
@@ -506,6 +509,52 @@ bản phân phối) trích đúng khối mã từ `roles/README.md` và chạy n
 hay race ở mức nhân hệ điều hành. Dừng/timeout/kết quả muộn/mở lại phiên dùng đúng các owner này (trình tự ở mục B-03 của `roles/README.md`, không nhân bản ở đây): khi mất phản hồi
 của `publish`, đọc lại bằng `status`/`observe` cho đúng request ID trước mọi lần giao lại, và nhớ `recover` **ghi** evidence/dọn file tạm (khai là phép ghi, gọi riêng trong quyền của tác động đó); `status`/`observe`
 không thay `recover` và ngược lại. `native_agents.py retire` chỉ chuyển file cấu hình, không xác nhận tiến trình đang chạy đã dừng. Lineage thuộc B-01/B-02.
+
+## office.py (V1-A: danh mục phương pháp văn phòng, chỉ đọc)
+
+```text
+python tools/office.py list [--lang vi|en] [--json]
+python tools/office.py validate [--json]
+python tools/office.py compose --input FILE|- [--json]
+```
+
+Đọc `roles/office/catalog.json` (`law.office-methods/1`) và sáu hợp đồng phương pháp trong cùng thư mục của package; kiểm cấu trúc rồi soạn **một** brief giao việc
+cho method ID mà Main đã chọn. Không có đối số đường dẫn catalog hay script: chỉ cây package cố định, qua kiểm đường dẫn và liên kết sẵn có. Từ chối phiên bản, trường,
+ID, vai lõi, khả năng hay đường dẫn lạ, khóa JSON trùng, NaN, đầu vào quá 64 KiB, hợp đồng thiếu/lỗi hoặc skill đã nêu mà không đọc được.
+
+- **`list`** liệt kê phương pháp cho Main chọn theo ý nghĩa; không xếp hạng, không đề xuất, không phân loại yêu cầu bằng từ khóa.
+- **`validate`** kiểm catalog và từng hợp đồng (tiêu đề máy đọc được, đủ chín mục đúng thứ tự có phần `EN:`, khả năng và skill được nêu trong hợp đồng khớp catalog).
+  Hợp đồng hỏng chỉ làm hỏng phương pháp đó; catalog hỏng làm hỏng tất cả.
+- **`compose`** nhận yêu cầu JSON của Main (`method`, `reason`, `request`, tùy chọn `sources`, `output_format` text/html/docx/xlsx/pptx/pdf, `limits`, `needs_compute`,
+  `resources_used`, `lang`) và trả: `brief` (trích nguyên văn mục phương pháp, điều kiện xong, xử lý thiếu của hợp đồng đã bind), `context_refs` (SHA-256 bytes thô của
+  catalog, hợp đồng và skill thực dùng), `inputs_proposal` (digest của nguồn Main nêu, chỉ trong `references/`, `working/`, `output/`, `archive/`), `capabilities` (được yêu
+  cầu / có trong exporter native / grant / quan sát host; grant và host luôn `NOT_INSPECTED`), `held`, `missing`, `profile` (lựa chọn được yêu cầu của vai lõi, nếu có) và
+  `task_fragment` để Main tự ghép vào TASK. `state` là `PREPARED`, `NEEDS_CAPABILITY` (ví dụ `compute`, `office_files` mà adapter lõi không có) hoặc `NEEDS_INPUT`.
+  Mọi kết quả mang `claims = {prepared, invoked: false, content_checked: false}`: đã chuẩn bị giao việc, không phải đã gọi vai, đã có quyền hay đã kiểm nội dung.
+
+Công cụ **không** ghi file, log, receipt hay cache, không tạo TASK, không dùng mạng, không gọi vai, không cấp quyền và không import mã từ dữ liệu project. Guard cấu trúc
+`office.guard_task` được checkpoint ở `roles/README.md` gọi để kiểm marker `OFFICE-METHOD:<mã>:v<phiên bản>` và `context_refs` dưới `roles/office/` ở cả hai phía. Mặt giao việc của bảng điều khiển
+chỉ báo catalog dùng được hay không (`/api/status`, trường `office`); mô tả công việc người dùng nhập chỉ nằm trên trang, không có route nào nhận hay lưu nó.
+
+`compose` có thêm khóa tùy chọn `compute_route` = `{probe, scope}` (V4): không có khóa này thì kết quả và handover giữ nguyên như trên. Có khóa thì `office_compute.py` đối chiếu
+probe (biên nhận `canary`, khớp digest owner và canary) và quyền lab, trả `compute_route` với `ROUTE_READY_UNVERIFIED`/`ROUTE_REFUSED`, và handover Worker nêu công cụ shell của host với đúng một lệnh.
+
+## office_compute.py (V4: công cụ tính hẹp cho vai văn phòng, chỉ đọc)
+
+```text
+python -X utf8 -B tools/office_compute.py run --project ROOT --request FILE|-
+python -X utf8 -B tools/office_compute.py canary [--client C] [--client-version V] [--observed-by WHO]
+```
+
+Chạy từ cây LAW cố định, dữ liệu ở `--project`. `run` nhận yêu cầu JSON `law.office-compute/1` (`actor`, `task{path,task_id,task_revision,digest}`, `scope`, `operation`, `inputs[{path,digest}]`, `params`) và chỉ
+cho thao tác định sẵn: **`aggregate`** (lọc `eq/ne/in`, nhóm, `count_rows`, `sum`, `sum_product`, `weighted_mean`, kiểm trùng khóa) và **`compare_prices`** (khung kỳ/loại giá/tiền tệ/đơn vị, đổi đơn vị theo hệ số
+được nêu). Số học bằng Decimal; ô trống = MISSING, `NA` = NOT_APPLICABLE, `0` = ZERO (vào tổng), chuỗi mơ hồ như `1.234` giữ nguyên chữ, không vào tổng và nêu các cách đọc; không bỏ trùng, không điền thiếu.
+Thứ tự kiểm trước khi đọc nguồn: dạng yêu cầu → TASK hiện hành (bytes, ID, revision, marker `OFFICE-METHOD`, input phải nằm trong `inputs` của TASK với digest khớp) → quyền lab (`permission.status=ALLOWED`,
+`law.office-compute-scope/1`) → thao tác và phương pháp được phép → tham số → đọc CSV (đường dẫn qua `publish_new.path_form_problem`, không liên kết, tối đa 2 MiB, digest phải khớp). Từ chối không dùng
+đường dự phòng. Kết quả JSON ra stdout (`outcome` COMPUTED/REFUSED, `reads`, `writes=[]`, `request_digest`, `result_digest` = SHA-256 của JSON chuẩn tắc `sort_keys`, `separators=(',', ':')`, `ensure_ascii` bỏ
+trường `result_digest`). Công cụ không eval/exec, không shell, không mạng, không ghi file, không import mã từ dữ liệu; `actor` do người gọi khai và không xác thực; không phải sandbox hay grant.
+`canary` chạy một phép tính nhúng sẵn, không đọc file, in biên nhận probe `law.office-compute-probe/1` (digest owner + digest canary + client/phiên bản/người quan sát do người gọi khai): chỉ chứng minh lệnh chạy được
+ở tiến trình gọi, không chứng minh vai chuyên viên có công cụ.
 
 ## current_draft.py (I2, chưa tích hợp ngoài bảng điều khiển)
 
@@ -733,3 +782,14 @@ trợ thêm cú pháp, sửa hàm `convert` và so sánh bằng cách chạy `--
 
 Script được thử trên bộ hướng dẫn hai ngôn ngữ của package (HTML dựng lại khớp từng byte với Markdown). Chưa thử
 trên Markdown viết ngoài các cú pháp nêu trên.
+
+
+## Hồ sơ công việc / Work record (V5)
+
+Ranh giới bản giao V7: `check_package.SCAFFOLD_READMES` là14đường README khung và14mirroren, không suy từ basename/MANIFEST/mirror người dùng. Dữ liệu trong userdirs không là code/docs package để kiểm; cây phát hành vẫn từ chối dữ liệu thừa. Gói nguồn nâng cấp có dữ liệu userdirs trong MANIFEST bị SOURCE_MANIFEST_USER_DATA; entry cũ ở project đích chỉ obsolete/giữ nguyên. Ngoại lệ branding/font và mẫu profile sạch giữ nguyên. EN: Only explicit scaffold README paths ship; private source data is not package code/docs, staged releases still reject extra data, contaminated upgrade source manifests are refused and obsolete target files remain untouched.
+
+`python -B tools/work_status.py --project DIR` chỉ đọc STATE marker `law-work/1`, các TASK/RESULT được dẫn và finite input/context/ledger của chúng. UI `?view=work` và `/api/work/status` dùng cùng owner; không đi qua status/count/recent/merge scan, không AI/ghi lịch sử/đổi nháp. Thiếu hoặc trùng marker thì báo chưa xác định, không tìm file mới nhất. Giữ model quyền và host stop riêng; copy yêu cầu tiếp/dừng không là dispatch hay stop. Marker/định dạng và cách Main ghi nằm `roles/office/MAIN.md`.
+
+`task_checkpoint.py` là owner code của sáu hàm đọc/binding/checkpoint được đưa từ recipe A-11 trong roles/README.md. Recipe workflow còn lại dùng owner này, UI không compile/exec Markdown. Code/checker/schema/policy chỉ từ cây LAW cố định cạnh owner, không import data project. Checkpoint so bytes/metadata/binding, không review nội dung hoặc xác thực grant/actor/host; bounded reads, TOCTOU/cooperative vẫn giới hạn. Owner không ghi, không tự cập nhật STATE hoặc tìm TASK.
+
+EN: work_status reads one explicit STATE navigation marker and the referenced task/result/input/context/ledger files; the direct Work page/API avoid status scans, AI, operation logging and draft selection. Missing/ambiguous refs never fall back to newest-file discovery. Resume/stop only copy a request. task_checkpoint promotes the accepted A-11 core into fixed Python product code; the recipe delegates and the UI never executes project Markdown. Matching is not semantic approval, authority, host state or user acceptance; cooperative/TOCTOU limits remain.

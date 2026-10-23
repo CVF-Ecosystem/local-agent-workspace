@@ -308,7 +308,7 @@ class OwnershipAndCollisions(Base):
     def test_user_edit_after_install_is_kept_and_a_deleted_native_is_only_reported(self):
         root = self.project()
         self.install(root)
-        (root / NATIVE).write_text('---\nname: law-scout\n---\nmy edit\n', encoding='utf-8', newline='')
+        (root / NATIVE).write_bytes('---\nname: law-scout\n---\nmy edit\n'.encode('utf-8'))
         before = tree(root)
         self.assertEqual(na.inspect(root)['state'], 'MODIFIED')
         self.assertEqual(na.plan(root)['reasons'], ['NATIVE_MODIFIED'])
@@ -337,7 +337,7 @@ class DriftAndInterleavings(Base):
         mutations = {
             'profile': lambda r: (r / PROFILE).write_bytes(ep.serialize(scout_profile(model='claude-sonnet-5-5'))),
             'profile_same_meaning_new_bytes': lambda r: (r / PROFILE).write_bytes((r / PROFILE).read_bytes().replace(b'\n', b'\r\n')),
-            'project': lambda r: (r / 'PROJECT.md').write_text(project_text(ep.POINTERS['vi']) + '\nextra\n', encoding='utf-8', newline=''),
+            'project': lambda r: (r / 'PROJECT.md').write_bytes((project_text(ep.POINTERS['vi']) + '\nextra\n').encode('utf-8')),
             'contract': lambda r: (r / 'roles/scout/agent.md').write_text('# changed\n', encoding='utf-8'),
             'checks': lambda r: (r / 'roles/scout/checks.md').write_text('# changed\n', encoding='utf-8'),
             'package_language': lambda r: (r / na.INFO_REL).write_text('{\"language\": \"en\"}', encoding='utf-8'),
@@ -378,7 +378,7 @@ class DriftAndInterleavings(Base):
             'package_language': lambda r: (r / na.INFO_REL).write_text('{\"language\": \"en\"}', encoding='utf-8'),
             'contract': lambda r: (r / 'roles/scout/agent.md').write_text('# changed after capture\n', encoding='utf-8'),
             'profile': lambda r: (r / PROFILE).write_bytes(ep.serialize(scout_profile(model='claude-sonnet-5-5'))),
-            'project': lambda r: (r / 'PROJECT.md').write_text(project_text(LEGACY_VI), encoding='utf-8', newline=''),
+            'project': lambda r: (r / 'PROJECT.md').write_bytes(project_text(LEGACY_VI).encode('utf-8')),
         }
         for name, mutate in mutations.items():
             with self.subTest(name):
@@ -1516,10 +1516,21 @@ class PackagingIsolation(unittest.TestCase):
         self.assertEqual({rel: (adopt / rel).read_bytes() for rel in mine}, mine)
         self.assertEqual([p for p in adopt.rglob('*.new') if '.claude' in p.parts], [])
 
-    def test_the_repository_holds_no_native_and_no_maintainer_profile(self):
-        self.assertFalse((ROOT / '.claude').exists())
-        self.assertFalse((ROOT / PROFILE).exists())
-        self.assertFalse((ROOT / '.agent' / 'runtime' / 'native-agents').exists())
+    def test_repository_delivery_excludes_native_and_uses_a_clean_profile(self):
+        selected = set(cp.delivery_selection(branding=False))
+        self.assertFalse([rel for rel in selected if rel.startswith(('.claude/', '.agent/runtime/'))])
+        self.assertEqual(cp.delivery_bytes(PROFILE), ep.clean_profile_bytes())
+        self.assertFalse((self.pkg / '.claude').exists())
+        self.assertFalse((self.pkg / '.agent' / 'runtime').exists())
+        self.assertEqual((self.pkg / PROFILE).read_bytes(), ep.clean_profile_bytes())
+        manifest = (self.pkg / 'MANIFEST.sha256').read_text(encoding='utf-8')
+        self.assertNotIn('.claude/', manifest)
+        self.assertNotIn('.agent/runtime/', manifest)
+        if (ROOT / '.git').exists() and shutil.which('git'):
+            tracked = subprocess.run(['git', 'ls-files', '--', '.claude', PROFILE, '.agent/runtime'],
+                                     cwd=str(ROOT), capture_output=True, encoding='utf-8')
+            self.assertEqual(tracked.returncode, 0, tracked.stderr)
+            self.assertEqual(tracked.stdout, '')
 
 
 if __name__ == '__main__':

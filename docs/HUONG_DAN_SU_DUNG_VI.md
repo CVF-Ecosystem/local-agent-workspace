@@ -39,6 +39,8 @@ hẹp hơn: trợ lý chỉ tóm tắt, chưa sửa file nào cho tới khi bạ
 Không cần yêu cầu trợ lý AI đọc toàn bộ lịch sử. Khi chưa biết nguồn nằm ở đâu, index
 có thể giúp tìm; khi bạn chỉ đúng file, có thể mở file đó trực tiếp.
 
+Bạn có thể nói "trả lời như lần trước" hoặc "làm báo cáo tuần tiếp". Trợ lý dùng lại phương pháp phù hợp, đọc nguồn hiện hành và giữ các quyết định còn áp dụng trong project này. Khi chuyển sang project khác, phương pháp có thể dùng lại; tài liệu, thông tin tài khoản và quyền riêng của project trước không đi theo.
+
 ## 3. Yêu cầu nháp và yêu cầu file là hai việc khác nhau
 
 | Bạn cần | Cách giao việc |
@@ -169,6 +171,8 @@ trợ lý AI chạy giúp. Bản HTML không tự đồng bộ khi sửa Markdow
 có còn khớp không.
 
 ## 12. Bảng điều khiển (APP.bat)
+
+Trang **Hồ sơ công việc** cho xem phần việc được giao, kết quả, quyết định và phần đang chờ đã được trợ lý lưu. Mở trang này chỉ đọc hồ sơ, không gọi AI hoặc thay bản nháp. "Khớp" chỉ nói dữ liệu đã kiểm còn khớp, chưa xác nhận nội dung đã được duyệt. Nút tiếp/dừng sao chép yêu cầu để bạn gửi Main; chưa dừng ứng dụng đang chạy. Chưa có hồ sơ được dẫn thì nhờ trợ lý cập nhật việc đang làm, không cần tạo lại kết quả.
 
 Bấm đúp `APP.bat` (Windows) hoặc `APP.command` (macOS) để mở bảng điều khiển trong trình duyệt. Mở trong bộ mẫu, trang chính
 là "Tạo dự án mới": nhập tên công việc, bản sao được tạo cạnh bộ mẫu (`tools/new_project.py`), bộ mẫu không đổi. Mở trong

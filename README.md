@@ -37,6 +37,21 @@ flowchart LR
 
 **Mức hoàn thiện:** đã có hợp đồng ba vai, profile chọn host/model và công cụ xuất cấu hình native; luồng gọi Scout, Worker và Reviewer đã được kiểm trong lab Claude Code trên Windows. Phần task/result và xử lý gián đoạn đang hoàn thiện; chưa tự hoạt động trên mọi ứng dụng AI. Vai trò không tự cấp quyền và review không thay việc bạn duyệt nội dung. Xem [hợp đồng vai](roles/README.md) và [tích hợp native](tools/README.md#native_agentspy).
 
+## Phạm vi Prototype văn phòng nội bộ
+
+Phần này mô tả Prototype đang phát triển sau RC2, chưa nằm trong bản tải RC2 ở trên. Với candidate nội bộ, xem báo cáo `.gate.json` đi kèm đúng ZIP để biết nguồn và cổng đã chạy; test đạt không thay việc duyệt nội dung.
+
+| Phần | Phạm vi đã kiểm và giới hạn |
+|---|---|
+| Môi trường | Đã chạy cục bộ trên Windows, ổ NTFS, Python 3.11.9. Python 3.8 mới có kiểm heuristic; chưa nhận hỗ trợ runtime của Prototype trên Python/OS khác. |
+| Công việc nghiệp vụ | Có ca DATAMOCK báo cáo, số liệu CSV/Decimal, so sánh giá và nháp thư được kiểm. Đây là các ca cụ thể; không chứng minh mọi nghiệp vụ hoặc dữ liệu thật. Nháp thư không gửi hay thao tác hộp thư. |
+| Hồ sơ công việc | Xem phần việc, kết quả, quyết định và phần chờ từ hồ sơ được dẫn; tiếp process mới và giữ chờ khi nguồn/revision đổi. Trang chỉ đọc, không gọi AI hoặc đổi nháp; nút tiếp/dừng chỉ sao chép yêu cầu Main, chưa dừng host. |
+| Dùng lại và bảo toàn | Đã thử phương pháp ở project khác và new/adopt/upgrade trên bản sao có dữ liệu riêng: giữ dữ liệu/lựa chọn/native riêng, không mang dữ liệu hoặc quyền project A sang B. Mock không chứng minh trải nghiệm người dùng thật. |
+| Host và quyền | Hợp đồng/profile/công cụ xuất cấu hình không tự chứng minh host đã đăng ký hoặc gọi đúng chuyên viên. Chưa xác nhận enforcement, sandbox hay hỗ trợ mọi ứng dụng AI; thiếu quyền/capability phải giữ chờ. |
+| Phần chưa đo | Liên kết tệp dạng file thật chưa kiểm được trên máy thiếu quyền tạo symlink; TOCTOU và giới hạn hợp tác vẫn còn. Feedback người dùng thật được hoãn đến sau Prototype/MVP. |
+
+Ma trận này giữ phạm vi của Prototype nội bộ; nó không nâng ma trận hỗ trợ chính thức của RC2 hay xác nhận bản final.
+
 ## Bắt đầu
 
 ```mermaid

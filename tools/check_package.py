@@ -35,6 +35,15 @@ USER_FILES = {'PROJECT.md', '.agent/STATE.md', '.agent/HANDOFF.md', '.agent/INDE
 # never in a MANIFEST; what ships is always the clean template. Schema và helper là của package, vào MANIFEST như file thường.
 PROFILE_TEMPLATE = 'release_templates/' + PROFILE_REL  # bản sao kiểm được của mẫu sạch trong kho nguồn / checked mirror of the clean profile
 USER_DIRS = ('working/', 'output/', 'archive/', 'references/', 'assets/', 'skills/external/', 'skills/inbox/', 'skills/local/project/', 'skills/local/packs/')
+# Exact factory paths; project basenames, mirrors and old manifests confer no ownership.
+SCAFFOLD_READMES = frozenset((
+    'archive/README.md', 'assets/README.md', 'assets/fonts/README.md',
+    'output/README.md', 'references/README.md', 'references/legal/README.md',
+    'references/policies/README.md', 'references/source-documents/README.md',
+    'references/templates/README.md', 'skills/external/README.md',
+    'skills/inbox/README.md', 'skills/local/packs/README.md',
+    'skills/local/project/README.md', 'working/README.md',
+))
 OVERLAY_SKIP = {'en/PROJECT_INSTRUCTIONS_SNIPPET.md'}
 PAIRS = [('AGENTS.md', 'en/AGENTS.md'), ('PROJECT.md', 'en/PROJECT.md'),
          ('docs/HUONG_DAN_TAO_PROJECT_MOI_VI.md', 'docs/en/NEW_PROJECT_GUIDE.md'),
@@ -126,20 +135,16 @@ _SCAFFOLD = {}
 
 def package_readme(rel):
     """README.md trong thư mục người dùng có phải của package không: dựa vào đường dẫn thực, không chỉ tên file.
-    - Kho nguồn/gói chưa khởi tạo (chưa có .agent/PACKAGE_INFO.json): mọi README ở đó là khung của package.
-    - Project: chỉ README có trong MANIFEST.sha256 của package; không có MANIFEST thì README có bản en/ tương ứng.
+    Chỉ các đường dẫn factory tường minh, kể cả mirror en/, là khung của package.
     README do người dùng tự tạo trong thư mục riêng (vd. references/khach-hang-a/README.md) thuộc project.
-    Whether a README.md in a user folder belongs to the package, by its real path, not just its name: in the source or an
-    uninitialised package every such README is scaffold; in a project only those listed in the package MANIFEST (or, with
-    no MANIFEST, those with an en/ mirror). A README the user creates in their own folder belongs to the project."""
-    if os.path.basename(rel) != 'README.md':
-        return False
-    if not os.path.exists(P('.agent/PACKAGE_INFO.json')):
-        return True
-    if 'm' not in _SCAFFOLD:
-        _SCAFFOLD['m'] = read_manifest()
-    m = _SCAFFOLD['m']
-    return (rel in m) if m is not None else os.path.isfile(P('en/' + rel))
+    Only explicit factory paths are scaffold. A project README cannot become
+    package content through its name, an English mirror or an old MANIFEST."""
+    return (rel[3:] if rel.startswith('en/') else rel) in SCAFFOLD_READMES
+
+
+def in_user_dir(rel):
+    """Project data directories and their English overlay counterparts."""
+    return (rel[3:] if rel.startswith('en/') else rel).startswith(USER_DIRS)
 
 def user_owned(rel):
     """File do người dùng/project sở hữu (không phải của package): không áp quy tắc phát hành như số phiên bản,
@@ -148,12 +153,12 @@ def user_owned(rel):
     do not apply. Same ownership rule as in_manifest."""
     if rel in USER_FILES:
         return True
-    return rel.startswith(USER_DIRS) and not package_readme(rel)
+    return in_user_dir(rel) and not package_readme(rel)
 
 def in_manifest(rel):
     if rel in GENERATED or rel == PROFILE_REL:
         return False
-    if rel.startswith(USER_DIRS):
+    if in_user_dir(rel):
         return package_readme(rel)
     return True
 
@@ -492,13 +497,16 @@ def source_package_problems(source):
     path = os.path.join(source, 'MANIFEST.sha256')
     if not os.path.isfile(path):
         return [('SOURCE_MANIFEST_MISSING', 'Package mới không có MANIFEST.sha256')]
-    bad, declared = [], set()
+    bad, declared, private = [], set(), []
     with io.open(path, encoding='utf-8', newline='') as f:
         for line in f.read().splitlines():
             if not line.strip() or '  ' not in line:
                 continue
             h, rel = line.split('  ', 1)
             declared.add(rel)
+            if in_user_dir(rel) and not package_readme(rel):
+                private.append(rel)
+                continue
             if rel in USER_FILES or rel == 'MANIFEST.sha256':
                 continue
             full = os.path.join(source, *rel.split('/'))
@@ -510,6 +518,8 @@ def source_package_problems(source):
                 continue
             if sha_bytes(rel, data) != h:
                 bad.append(rel)
+    if private:
+        out.append(('SOURCE_MANIFEST_USER_DATA', 'MANIFEST của package mới chứa đường dẫn dữ liệu project ngoài khung: ' + ', '.join(private[:5])))
     if bad:
         out.append(('SOURCE_MANIFEST_INCONSISTENT', 'MANIFEST của package mới lệch file thật (dùng ZIP hoặc bản dựng RC, không dùng kho nguồn): ' + ', '.join(bad[:5]) + (' ...' if len(bad) > 5 else '')))
     kind, found = cvf_inventory(source)
@@ -712,14 +722,20 @@ def check_py38():
     """Heuristic cho mọi file .py của package: báo lỗi kèm đường dẫn file và số dòng (xem py38_problems)."""
     errs = []
     for f in all_files():
-        if f.endswith('.py'):
+        if f.endswith('.py') and not user_owned(f):
             for ln, msg in py38_problems(rd(f), f):
                 errs.append('%s:%d: không tương thích Python 3.8 — %s.' % (f, ln, msg))
     return errs
 
 def check_all(release=False):
     errs, warns = [], []
-    files = all_files()
+    raw_files = all_files()
+    files = raw_files
+    source_tree = os.path.isdir(P('release_templates'))
+    if source_tree or not release:
+        # Parse package code/docs only. A staged release retains the complete list
+        # so unexpected project data still fails the release boundary below.
+        files = [f for f in files if not user_owned(f) or f in USER_FILES]
     md = [f for f in files if f.endswith('.md')]
     # 1. VERSION
     ver = rd('VERSION').strip() if os.path.isfile(P('VERSION')) else ''
@@ -879,8 +895,9 @@ def check_all(release=False):
         if any(not os.path.isfile(P(f)) or not rd(f).lstrip().startswith('# HANDOFF\n\nNone') for f in handoffs):
             errs.append('Mẫu HANDOFF phát hành thiếu hoặc không ở dạng "None".')
         branding = set(branding_files())  # logo, tên đơn vị, font được phép vào ZIP / organization branding may ship
-        for f in files:
-            if f.startswith(USER_DIRS) and not package_readme(f) and f not in branding:
+        boundary_files = (f for f in raw_files if not source_tree or f.startswith(('assets/', 'en/assets/')))
+        for f in boundary_files:
+            if in_user_dir(f) and not package_readme(f) and f not in branding:
                 errs.append('Có file người dùng trong bản phát hành: %s.' % f)
         # runtime v3: kho nguồn phải giao được (projection áp dụng sạch); cây phát hành phải có đúng closure, không runtime, tham chiếu .cvf thật
         # v3 runtime: the source must be deliverable; a release tree must hold exactly the closure, no runtime data, and resolvable .cvf references

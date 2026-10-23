@@ -259,6 +259,15 @@ def branding_info():
     return {'title': title or None, 'subtitle': sub or None, 'logo': logo_data}
 
 
+def office_info():
+    """Bộ phương pháp văn phòng có dùng được không; chỉ đọc catalog và hợp đồng cố định, không ghi, không lưu nội dung. / Whether the office methods are usable; read only."""
+    try:
+        import office
+        return office.status(ROOT)
+    except Exception:  # noqa: BLE001  (an unreadable helper is shown as unavailable)
+        return {'available': False, 'methods': 0, 'problems': ['OFFICE_UNREADABLE']}
+
+
 def status():
     info, name = project_info()
     lang = info.get('language') or info.get('lang') or ('en' if re.search(r'^- Project name:', rd('PROJECT.md'), re.M) else 'vi')
@@ -297,6 +306,7 @@ def status():
         'history': list(reversed(records))[:HISTORY_SHOWN],
         'history_summary': ops_log.summary(records),
         'branding': branding_info(),
+        'office': office_info(),
     }
 
 
@@ -763,6 +773,17 @@ def library_sync_action(p, apply):
     return {'code': 0, 'out': '\n'.join(library.sync_lines(result, label, True, lang)), 'cmd': '', 'result': env}
 
 
+def work_api(body=None):
+    """Exact-reference work view. No status scan, operations log or writer."""
+    if body is not None and (not isinstance(body, dict) or body):
+        return {'schema': 'law.work-status/1', 'result': 'ERROR', 'problems': ['REQUEST_INVALID'], 'writes': []}
+    try:
+        import work_status
+        return work_status.status(ROOT)
+    except Exception:
+        return {'schema': 'law.work-status/1', 'result': 'ERROR', 'problems': ['WORK_OWNER_UNAVAILABLE'], 'writes': []}
+
+
 def draft_api(path, body):
     """Nháp hiện tại: route riêng, không qua run_api/_record nên không ghi lịch sử thao tác. Chỉ select (apply) ghi, và chỉ một marker STATE qua P-CTX1.
     Current draft: a dedicated route, outside run_api/_record, so the operations log is untouched. Only select/apply writes: one STATE marker via P-CTX1."""
@@ -943,6 +964,8 @@ class Handler(http.server.BaseHTTPRequestHandler):
                 return self._send(200, {'ok': True})
             if path == '/api/status':
                 return self._send(200, status())
+            if path == '/api/work/status':
+                return self._send(200, work_api(body))
             if path == '/api/run':
                 code, payload = run_api(body)
                 return self._send(code, payload)

@@ -3,9 +3,9 @@
 # Thư mục .github/ là của người bảo trì và không bao giờ vào gói phát hành.
 #
 # Ghi chú ma trận / matrix notes:
-# - Python 3.8 và 3.12 trên ubuntu-latest và windows-latest.
+# - Ubuntu: Python 3.8 trên ubuntu-24.04, Python 3.12 trên ubuntu-latest; Windows: 3.8 và 3.12 trên windows-latest.
 # - macOS: chỉ Python 3.12 trên macos-latest (Apple silicon). Image Intel macos-13 đã bị GitHub ngừng nên job
-#   Python 3.8 trên macOS được bỏ; Python 3.8 vẫn được kiểm trên ubuntu-latest và windows-latest. setup-python
+#   Python 3.8 trên macOS được bỏ; Python 3.8 vẫn được kiểm trên ubuntu-24.04 và windows-latest. setup-python
 #   không bảo đảm có bản Python 3.8 cho Apple silicon, nên không chuyển job 3.8 sang macos-latest.
 # - Mỗi cặp (hệ điều hành, Python) là một job riêng; fail-fast tắt để thấy đủ kết quả.
 # - Bước build release candidate chạy lại cổng đầy đủ (kể cả bộ kiểm thử) như bản phát hành thật.
@@ -35,6 +35,11 @@ jobs:
         python: ['3.8', '3.12']
         exclude:
           - os: macos-latest
+            python: '3.8'
+          - os: ubuntu-latest
+            python: '3.8'
+        include:
+          - os: ubuntu-24.04
             python: '3.8'
     steps:
       - name: Checkout
