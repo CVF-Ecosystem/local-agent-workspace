@@ -22,7 +22,8 @@ Phiếu này không đưa cho người thử.
 | Model quan sát được | |
 | Effort quan sát được hoặc "không quan sát được" | |
 | OS và dependency liên quan | |
-| Snapshot candidate: đường dẫn, HEAD, tình trạng dirty, SHA-256 `MANIFEST.sha256` của snapshot | |
+| Artifact thực dùng: release/tag, source commit, ZIP và SHA-256; hash gate/checksum | |
+| Cây đối chiếu đã giải nén: đường dẫn, SHA-256 `MANIFEST.sha256`, thời điểm kiểm; tách khỏi bản chép người thử | |
 | Thư mục pilot của lượt (A, B) | |
 | Mức quen với ứng dụng AI thông thường (tự khai) | |
 | Đã từng dùng LAW? (phải là "chưa") | |

@@ -5,15 +5,17 @@ hay LAW tốt hơn native, và không thay cho nghiệm thu của người dùng
 [WORKORDER_C02_PREP_2026-10-20.md](../../../roadmap/WORKORDER_C02_PREP_2026-10-20.md). Thư mục `feedback/` nằm ngoài gói phát hành
 ([README](../../README.md)). Ba file của bộ: [NGUOI_THU.md](NGUOI_THU.md) (đưa cho người thử), file này, [PHIEU_GHI_NHAN.md](PHIEU_GHI_NHAN.md) (trống).
 
+**Tiếp V6 sau Prototype/MVP — 24/10/2026:** dùng lại bộ C-02 này trên RC4 Windows DATAMOCK đã công bố, không mở pilot/tranche hoặc benchmark mới. Operator trả lời "chưa có" người thử; giữ `PILOT_NOT_RUN`, không mời, không chạy host hoặc phát sinh chi phí. Operator đã là observer; người thử phải là người thật chưa từng dùng LAW, không lấy agent hoặc observer thay. Liên kết acceptance V6: Việc2 ghi khả năng tiếp phiên/đúng revision; Việc3 và DL7–DL9 ghi cách dùng lại và cách ly B; cảm nhận/nghiệm thu chỉ do người thật cung cấp. Các bằng chứng kỹ thuật V6/V7 đã nhận được tái dùng, không chạy mock lại. Chưa có dữ liệu hành vi hoặc kết luận usability.
+
 ## 1. Gate trước khi chạy
 
 Thiếu một dòng dưới đây thì trạng thái giữ NOT_RUN: không mời, không chạy host, không phát sinh chi phí.
 
 | # | Điều kiện | Hiện tại |
 |---|---|---|
-| G1 | Có người thử thật, chưa từng dùng LAW, đã đồng ý bằng ngôn ngữ dễ hiểu (xem NGUOI_THU) | Chưa có người |
+| G1 | Có người thử thật, chưa từng dùng LAW, đã đồng ý bằng ngôn ngữ dễ hiểu (xem NGUOI_THU) | Operator24/10: chưa có người |
 | G2 | Môi trường và giới hạn đã xác nhận (mục 2) | Cần xác nhận |
-| G3 | Snapshot candidate và nguồn đã freeze, có hash (mục 3) | Chưa freeze |
+| G3 | Snapshot candidate và nguồn đã freeze, có hash (mục 3) | RC4/3nguồnA đã đối chiếu; chưa tạo/freeze cây pilot, nguồnB chưa tạo |
 | G4 | Thư mục pilot tách biệt cho từng nhánh và việc (mục 4) | Chưa tạo |
 | G5 | Oracle đã đối chiếu, thứ tự và phạm vi diễn giải theo mục 5; người quan sát đã hiểu | Chưa phổ biến |
 | G6 | Người quan sát biết cách ghi hỗ trợ (mục 8) | Chưa phổ biến |
@@ -31,7 +33,7 @@ Orchestrator đã chốt thiết kế khám phá bên dưới. Chưa có ngườ
 |---|---|---|
 | Q1 | Người thử: tuyển ai, mã ẩn danh, mức quen tự khai | Không tự gán người; không thu dữ liệu cá nhân |
 | Q2 | Host/ứng dụng, loại account, model, effort, OS | Dùng cùng cấu hình cho hai nhánh nếu khả dụng; effort chỉ ghi nếu quan sát được |
-| Q3 | Người quan sát và lịch chạy | Người quan sát không phải người thử |
+| Q3 | Người quan sát và lịch chạy | Operator là observer theo chỉ định đã chốt; lịch chưa có, không hỏi lại vai này |
 | Q4 | Giới hạn thời lượng và chi phí cho phép | Operator chốt trước chạy. Pilot khám phá không có ngưỡng điểm tổng hoặc quyết định LAW thắng native; chấm theo bằng chứng từng tiêu chí |
 | Q5 | Thư mục gốc pilot và freeze artifact | Chọn vị trí thuộc quyền chạy; điều phối ghi thời điểm/hash thực tế, ngoài kho nguồn và snapshot; không cần user phê duyệt từng hash |
 | Q6 | Thiết kế hai nhánh | Đã chốt lượt đầu là khám phá định tính: L trước, N sau, dùng cùng nguồn; không soạn bộ thứ hai trong PREP này. Không tính chênh lệch thành hiệu quả LAW. Nghiên cứu so sánh mạnh hơn cần scope và oracle mới trước khi chạy |
@@ -44,13 +46,23 @@ Orchestrator đã chốt thiết kế khám phá bên dưới. Chưa có ngườ
 
 ## 3. Artifact, nguồn và hash
 
-**Snapshot candidate.** Nguồn hiện tại là source dirty, chưa phải bản phát hành chính thức. Lúc chạy, ghi HEAD (tham chiếu lượt này
-`b13e375d`) và tình trạng dirty, rồi tạo một snapshot bộ mẫu ngoài kho bằng owner `materialize` của
-[check_package.py](../../../tools/check_package.py). Ghi SHA-256 của `MANIFEST.sha256` trong snapshot cùng đường dẫn snapshot. Không
-refresh MANIFEST của kho, không build release, không giả Git sạch. Nhãn version (`VERSION`) không đủ để nhận diện artifact.
+**Artifact chọn cho lượt người thật kế tiếp: RC4 Windows DATAMOCK.** Dùng đúng [prerelease v1.9.0-rc4](https://github.com/CVF-Ecosystem/local-agent-workspace/releases/tag/v1.9.0-rc4) đã công bố; không materialize từ source dirty đang phát triển và không build lại để tổ chức pilot.
 
-Snapshot gốc để nguyên làm bản đối chiếu. Người thử làm việc trên bản chép của snapshot ("bộ mẫu của người thử"), vì cách dùng
-lại ở Việc 3 có thể sửa bộ mẫu đó.
+| Binding đã đối chiếu24/10/2026 | Giá trị |
+|---|---|
+| Source/tag | `2552d7d79558ad360a886239e73df1122122dbcc` / `v1.9.0-rc4` |
+| ZIP local đã phát hành | `working/v7-internal/clean-source-2552d7d/local-agent-workspace-v1.9.0-rc4.zip` |
+| ZIP SHA-256 | `645fe02c5d36f0dd6726cf44bc6f0313083eae2d331f9b6c88d6d34274057129` |
+| Gate JSON SHA-256 | `fc0ebf33875735050d7c26ce0b58fb5f3f1afb95e643b875d5f4b8608e22667e` |
+| File checksum SHA-256 | `c6d281e8ba308c4c66dfdb66f625afdeb984d3009501a146ae95198e413fc766` |
+| `MANIFEST.sha256` bên trong ZIP | `56843b7234301b1c637caec064f602caa87ff2b5351e65651ff7da273b075979` |
+| Cây gốc trong ZIP | `local-agent-workspace-v1.9.0/`; nguồn VI dưới `examples/`, không lấy bản dịch trong `en/examples/` |
+
+Ba nguồn A đúng bytes/hash ở bảng dưới; oracle vẫn khớp. Mẫu B và hash thay đổi có kiểm soát cũng đã tính lại, không tạo file B hoặc áp thay đổi khi chưa có lượt thật. RC4 đã qua4/4gate; CI toàn run39985758160 vẫn FAILURE3/5, Windows3.8/macOS chưa được nhận hỗ trợ. Kết quả đó không thay cho gate người/môi trường của pilot.
+
+Khi đủ G1/G2 và vị trí Q5: kiểm lại hash ZIP/gate/checksum, giải nén vào cây đối chiếu ngoài kho nguồn, ghi đường dẫn và hash MANIFEST thực tế vào phiếu; giữ ZIP và cây đối chiếu nguyên trạng. Người thử chỉ làm trên bản chép ("bộ mẫu của người thử"); Việc3 có thể sửa bản chép đó. Không ghi đè snapshot/lab lịch sử hoặc nhận source Git sạch cho thư mục pilot đã sửa.
+
+**Lịch sử chuẩn bị20/10:** dùng source dirty `b13e375d`/materialize. Các dry-run mục10 chỉ thuộc snapshot cũ, không phải đã chạy pilot RC4. Không refresh MANIFEST kho, không build release/fullsuite hoặc giả Git sạch để thay lịch sử.
 
 **Ba nguồn giả của mẫu** (raw SHA-256 đã so lúc chuẩn bị, trùng với bảng trong workorder; bản dự án tạo từ kho dirty trong thư mục tạm
 giữ đúng bytes này). Nếu hash đổi khi chạy thì đối chiếu lại oracle từ file thật, không khôi phục nguồn theo bảng.
@@ -235,9 +247,11 @@ Nếu thay đổi bị báo ở file khác (báo nhầm), ghi là cảnh báo sa
 3. Điền PHIEU_GHI_NHAN (một bản cho mỗi người thử và nhánh). Thêm dòng vào `feedback/INDEX.md` chỉ khi có bản ghi thật; chuẩn bị này không thêm dòng nào.
 4. Báo cáo cho operator: phần đã đánh giá, phần "chưa đánh giá" và vì sao, điều cần người dùng xác nhận. Không kết luận T37–T38, C-02 hay R6.
 
-## 10. Đã làm và chưa làm trong lượt chuẩn bị
+## 10. Lịch sử lượt chuẩn bị20/10 và cập nhật24/10
 
 - Đã đối chiếu: ba hash nguồn giả với workorder; toàn bộ nội dung ba file nguồn cho oracle; EOL ba nguồn (LF); hash dự kiến của file đã đổi ở Mốc 2 và của nguồn B.
 - Đã dry-run trong thư mục tạm (không phải pilot, không gọi AI, không người thử): xem trước và tạo một dự án từ kho dirty bằng `new_project.py`, kiểm bytes ba nguồn trong dự án; `materialize` một snapshot,
   `check_package.py --verify` đạt trên snapshot, và xem trước `new_project.py` từ snapshot.
 - Chưa kiểm: chạy `APP.bat` hay bảng điều khiển ở snapshot, UI trong trình duyệt, mở bằng ứng dụng AI thật, mục 11 hướng dẫn kỹ năng với người thật, và mọi thứ cần người thử. Không chạy full suite, browser, Office hay release gate.
+
+**Cập nhật24/10 (chỉ chuẩn bị):** đã kiểm hash3asset RC4 và MANIFEST, đọc đủ3nguồnVI và đối chiếu bytes vớiZIP, giữ oracle A/B và phép đổi3→4ngày. Chưa có người thử theo trả lời operator; chưa tạo cây pilot/B, chưa chạy APP/host/L-N, chưa có thời gian/chi phí/cảm nhận/nghiệmthu. PHIEU_GHI_NHAN giữtrống/NOT_RUN; không thêm feedback record hoặc INDEX. Source/artifact/CI/notes RC4 giữnguyên.

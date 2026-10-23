@@ -5,33 +5,34 @@ A local workspace for office work with Claude, Codex, Gemini or another assistan
 **Open `START_HERE.en.html` to read the handbook in English (or `START_HERE.html` for the Vietnamese version; every page has a language switch button).** The page opens directly
 in a browser, with no installation, server, online font or network connection.
 
-**Recommended trial: [1.9.0-rc2](https://github.com/CVF-Ecosystem/local-agent-workspace/releases/tag/v1.9.0-rc2) (prerelease), not final.** RC2 replaces RC1 as the recommended download for feedback; RC1 remains available for reference. The current stable release is [1.8.0](https://github.com/CVF-Ecosystem/local-agent-workspace/releases/latest). The RC package keeps `VERSION` at `1.9.0`; include the tag `v1.9.0-rc2` in feedback.
+**Current trial: [1.9.0-rc4](https://github.com/CVF-Ecosystem/local-agent-workspace/releases/tag/v1.9.0-rc4) — Windows DATAMOCK office Prototype (prerelease).** Published 24 October 2026; stable/final acceptance remains open. RC1/RC2 remain available for reference; stable/latest remains [1.8.0](https://github.com/CVF-Ecosystem/local-agent-workspace/releases/latest). The RC package keeps `VERSION` at `1.9.0`; include the tag `v1.9.0-rc4` in feedback.
 
 [Send feedback on GitHub](https://github.com/CVF-Ecosystem/local-agent-workspace/issues/new?template=phan-hoi.md) or use the [included feedback form](../docs/FEEDBACK_FORM_VI_EN.md). Include the RC tag, OS, Python version, AI app and steps to reproduce; remove names, figures and confidential information before sending.
 
-## Internal office Prototype scope
+## RC4 scope and remaining work
 
-This describes the Prototype being developed after RC2; it is not part of the RC2 download above. For an internal candidate, read the `.gate.json` report accompanying that exact ZIP for its source and gate results; passing tests do not approve the content.
+RC4 is the published Windows office Prototype using DATAMOCK. The download contains the ZIP, its `.gate.json` report bound to source `2552d7d`, and a checksum file. Read the report for that exact ZIP to see which gates ran; passing tests does not approve its content.
 
 | Area | Checked scope and limits |
 |---|---|
-| Environment | Run locally on Windows, local NTFS, Python 3.11.9. Python 3.8 has heuristic checks only; Prototype runtime support on other Python/OS combinations is unconfirmed. |
+| Windows environment | Checked locally on Windows/NTFS/Python 3.11.9 and CI Windows Server 2025/Python 3.12.10. Windows/Python 3.8 and macOS/Python 3.12 still fail and are not accepted as supported Prototype environments. |
+| Gates and CI | The clean RC4 package passed 4/4 gates; the behaviour suite ran 1,622 tests with 6 skips. [CI 39985758160](https://github.com/CVF-Ecosystem/local-agent-workspace/actions/runs/39985758160) has an overall FAILURE result: 3/5 jobs passed (Ubuntu/Python 3.8, Ubuntu/Python 3.12, Windows/Python 3.12). Each Ubuntu suite has 447 skips; these results do not establish full office-work support on Linux. |
 | Office work | Reviewed mock cases cover reports, CSV/Decimal analysis, price comparison and reply drafts. These specific cases do not prove every trade or real-data workflow. Reply drafts never send or touch a mailbox. |
 | Work record | Reads referenced assignments, results, decisions and waiting items; checks fresh-process reopening and holds after source/revision changes. The page is read-only, calls no AI and replaces no draft; continue/stop only copy a request for Main and do not stop a host. |
 | Reuse and preservation | Method reuse in another project and new/adopt/upgrade on copies with private data have been checked: private data, choices and native configuration are kept, without carrying project A's data or authority to B. Mocks do not establish real-user usability. |
 | Hosts and authority | Contracts, profiles and configuration exporters do not by themselves prove host registration or specialist invocation. Enforcement, sandboxing and support across AI apps remain unconfirmed; missing permission/capability holds the affected work. |
-| Unmeasured areas | Real file symlinks remain untested on the machine without symlink privileges; TOCTOU and cooperative limits remain. Real-user feedback is deferred until after Prototype/MVP. |
+| File links and limits | Five real file-symlink cases skipped locally for lack of privileges were observed passing on CI Windows/Python 3.12 at the exact source 2552d7d. This does not establish support in every environment or remove TOCTOU and cooperative-control limits. |
 
-This matrix bounds the internal Prototype; it neither upgrades RC2's official support matrix nor establishes a final release.
+Technical checks of representative workflows and reuse have been accepted with limits. RC4 publication is complete; real-user experience and acceptance remain outstanding, and the pilot has not run. Stable/final release and whole-product acceptance remain open; RC4 or a partly passing CI run does not complete the entire roadmap.
 
 ## Getting started
 
-1. **Keep one template:** download the ZIP from [Releases](https://github.com/CVF-Ecosystem/local-agent-workspace/releases/tag/v1.9.0-rc2) and unzip it once into its own folder. That folder is the template: keep it as is and do not work in it (nor inside the ZIP).
-2. **Make a project for each piece of work:** double-click `APP.bat` (Windows) or `APP.command` (macOS) in the template and type a task name on the "New project" page, press "Preview project creation", then "Apply". A copy is created next to the template, already set up; the template does not change.
+1. **Keep one template:** download the ZIP from [Releases](https://github.com/CVF-Ecosystem/local-agent-workspace/releases/tag/v1.9.0-rc4) and unzip it once into its own folder. That folder is the template: keep it as is and do not work in it (nor inside the ZIP).
+2. **Make a project for each piece of work:** double-click `APP.bat` on Windows in the template and type a task name on the "New project" page, press "Preview project creation", then "Apply". A copy is created next to the template, already set up; the template does not change.
 3. **Add sources and give the task:** copy documents into the project's `references/`, open the project folder in your AI app (Claude, Codex, Gemini) and send the message copied from the project's control panel (fill in the part in square brackets first). Results go to `output/`.
 4. **Continue next time:** open `APP` in the project folder; the "Continue the work" box shows where things stand; the "Review unfinished work" message has the AI assistant summarise before carrying on.
 
-The control panel needs Python 3.8+. Without Python: copy the whole template folder (including the hidden `.agent/` folder), rename it and open it in your AI app; see `docs/en/NEW_PROJECT_GUIDE.md`. Excel checking and the source library also need `openpyxl` (`python -m pip install openpyxl`); tools never install it. To try it first with synthetic data: `examples/demo-project/README.md`, in a trial project.
+RC4 has been checked on Windows with Python 3.11.9 and 3.12.10 as detailed above; launcher files or static compatibility checks do not establish Windows/Python 3.8 or macOS support. Without Python: copy the whole template folder (including the hidden `.agent/` folder), rename it and open it in your AI app; see `docs/en/NEW_PROJECT_GUIDE.md`. Excel checking and the source library also need `openpyxl` (`python -m pip install openpyxl`); tools never install it. To try it first with synthetic data: `examples/demo-project/README.md`, in a trial project.
 
 ## What is it for?
 
@@ -50,7 +51,7 @@ framework or a software development kit.
 
 ## Optional setup and reference guides
 
-Besides the control panel there are two other ways to the same result. `SETUP.bat` / `SETUP.command` asks questions in a command window; run in the template, it asks whether to make a copy (recommended) or set up this folder itself. Or use the command in the template (needs Python 3.8+; nothing else to install):
+Besides the control panel there are two other ways to the same result. `SETUP.bat` on Windows asks questions in a command window; run in the template, it asks whether to make a copy (recommended) or set up this folder itself. Or use the command in the template (uses the Windows/Python environment above; nothing else to install):
 
 ```text
 python tools/new_project.py --name "Task name" --apply
@@ -120,7 +121,7 @@ project/
 ├── packs/                   Domain packs (installed on demand with tools/pack.py)
 ├── .agent/                  STATE, HANDOFF, INDEX, SKILL_INDEX, PENDING_LESSONS
 ├── skills/
-│   ├── local/shared/        Eleven skills and their templates
+│   ├── local/shared/        Fourteen skills and their templates
 │   ├── local/project/       Project-specific guidance, if needed
 │   ├── external/            Outside skills added by the user
 │   └── inbox/               A temporary place, optional
