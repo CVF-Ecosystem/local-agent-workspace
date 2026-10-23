@@ -285,7 +285,7 @@ class LibraryScopeAndRename(unittest.TestCase):
         (self.project / 'MANIFEST.sha256').write_text('%s  en/references/policies/README.md\n' % sha, encoding='utf-8')
         self.assertEqual(library_sync.plan(str(self.project))['changes'], [], 'English package README is not a source')
         (self.project / 'MANIFEST.sha256').write_text('', encoding='utf-8')
-        shipped.write_text(library_sync.library.group_readme('policies'), encoding='utf-8', newline='\n')
+        shipped.write_bytes(library_sync.library.group_readme('policies').encode('utf-8'))
         self.assertEqual(library_sync.plan(str(self.project))['changes'], [], 'README written by init is not a source')
         shipped.write_text('Quy chế do người dùng viết\n', encoding='utf-8')
         planned = library_sync.plan(str(self.project))['changes']

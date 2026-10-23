@@ -6,6 +6,7 @@ from pathlib import Path
 import subprocess
 import sys
 import threading
+import traceback
 import unittest
 from unittest import mock
 
@@ -104,12 +105,23 @@ class WorkStatus(tf.FlowBase):
         os.makedirs(self.abs('.agent/runtime/transactions'), exist_ok=True)
         ws.status(self.project)  # preload schema dependency metadata outside the scan assertion
         before = self.tree()
-        with mock.patch('os.walk', side_effect=AssertionError('scan')), \
+        real_load_v3 = tc.load_v3
+        load_tracebacks = []
+
+        def traced_load_v3(*args, **kwargs):
+            try:
+                return real_load_v3(*args, **kwargs)
+            except Exception:
+                load_tracebacks.append(traceback.format_exc())
+                raise
+
+        with mock.patch.object(tc, 'load_v3', side_effect=traced_load_v3), \
+             mock.patch('os.walk', side_effect=AssertionError('scan')), \
              mock.patch('os.listdir', side_effect=AssertionError('scan')), \
              mock.patch('os.scandir', side_effect=AssertionError('scan')), \
              mock.patch('subprocess.run', side_effect=AssertionError('process')):
             view = ws.status(self.project)
-        self.assertEqual(view['result'], 'READY', view)
+        self.assertEqual(view['result'], 'READY', (view, load_tracebacks))
         self.assertEqual(self.tree(), before)
 
     def test_current_permission_reduction_never_promotes_or_changes_draft(self):

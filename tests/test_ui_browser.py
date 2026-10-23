@@ -117,7 +117,8 @@ class Panel(object):
             self.proc = subprocess.Popen([sys.executable, '-u', '-B', 'tools/app.py', '--no-browser', '--port', str(port)],
                                          cwd=str(self.pkg), env=env, stdout=out, stderr=subprocess.STDOUT,
                                          stdin=subprocess.DEVNULL)
-        text, deadline = '', time.time() + 30
+        started = time.time()
+        text, deadline = '', started + 30
         while time.time() < deadline:
             with open(log, 'rb') as src:
                 text = src.read().decode('utf-8', 'replace')
@@ -130,12 +131,20 @@ class Panel(object):
             if self.proc.poll() is not None:
                 break
             time.sleep(0.1)
+        elapsed = time.time() - started
+        child_exit_before_cleanup = self.proc.poll()
+        cleanup_error = None
         try:
             self.stop()
         except Exception as exc:
-            raise AssertionError('the panel did not print its address: ' + text +
-                                 '\ncleanup failed: ' + repr(exc)) from exc
-        raise AssertionError('the panel did not print its address: ' + text)
+            cleanup_error = exc
+        with open(log, 'rb') as src:
+            final_text = src.read().decode('utf-8', 'replace')
+        message = ('the panel did not print its address: ' + final_text +
+                   '\nelapsed=%.3fs child_exit_before_cleanup=%r' % (elapsed, child_exit_before_cleanup))
+        if cleanup_error is not None:
+            raise AssertionError(message + '\ncleanup failed: ' + repr(cleanup_error)) from cleanup_error
+        raise AssertionError(message)
 
     def stop(self):
         if self.proc is None:
