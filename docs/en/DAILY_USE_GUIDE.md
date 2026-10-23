@@ -37,6 +37,8 @@ do not rewrite the fields already decided. Use HANDOFF if it has content.
 You do not need to ask the assistant to read the whole history. When you do not know where a source
 is, the index can help; when you point to the exact file, it can be opened directly.
 
+You can say “reply as before” or “the next weekly report”. The assistant reuses the suitable method, reads current sources and keeps still-applicable decisions in this project. Methods can be reused in another project; the previous project's documents, account information and authority do not travel with them.
+
 ## 3. A draft request and a file request are different
 
 | What you need | How to ask |
@@ -175,6 +177,8 @@ assistant to run it. The HTML does not sync by itself when you edit Markdown; ad
 whether the HTML still matches.
 
 ## 12. The control panel (APP.bat)
+
+The **Work record** page shows referenced assignments, results, decisions and waiting items saved by the assistant. Viewing it reads records without calling AI or replacing a draft. A match means the checked data still matches, not that the content was approved. Continue/stop buttons copy a request for you to give Main; they do not stop a running application. If no work is referenced, ask the assistant to update the current work record without regenerating results.
 
 Double-click `APP.bat` (Windows) or `APP.command` (macOS) to open the control panel in the browser. Opened in the template,
 its main page is "New project": type a task name and a copy is created next to the template (`tools/new_project.py`); the

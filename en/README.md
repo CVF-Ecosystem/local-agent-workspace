@@ -9,6 +9,21 @@ in a browser, with no installation, server, online font or network connection.
 
 [Send feedback on GitHub](https://github.com/CVF-Ecosystem/local-agent-workspace/issues/new?template=phan-hoi.md) or use the [included feedback form](../docs/FEEDBACK_FORM_VI_EN.md). Include the RC tag, OS, Python version, AI app and steps to reproduce; remove names, figures and confidential information before sending.
 
+## Internal office Prototype scope
+
+This describes the Prototype being developed after RC2; it is not part of the RC2 download above. For an internal candidate, read the `.gate.json` report accompanying that exact ZIP for its source and gate results; passing tests do not approve the content.
+
+| Area | Checked scope and limits |
+|---|---|
+| Environment | Run locally on Windows, local NTFS, Python 3.11.9. Python 3.8 has heuristic checks only; Prototype runtime support on other Python/OS combinations is unconfirmed. |
+| Office work | Reviewed mock cases cover reports, CSV/Decimal analysis, price comparison and reply drafts. These specific cases do not prove every trade or real-data workflow. Reply drafts never send or touch a mailbox. |
+| Work record | Reads referenced assignments, results, decisions and waiting items; checks fresh-process reopening and holds after source/revision changes. The page is read-only, calls no AI and replaces no draft; continue/stop only copy a request for Main and do not stop a host. |
+| Reuse and preservation | Method reuse in another project and new/adopt/upgrade on copies with private data have been checked: private data, choices and native configuration are kept, without carrying project A's data or authority to B. Mocks do not establish real-user usability. |
+| Hosts and authority | Contracts, profiles and configuration exporters do not by themselves prove host registration or specialist invocation. Enforcement, sandboxing and support across AI apps remain unconfirmed; missing permission/capability holds the affected work. |
+| Unmeasured areas | Real file symlinks remain untested on the machine without symlink privileges; TOCTOU and cooperative limits remain. Real-user feedback is deferred until after Prototype/MVP. |
+
+This matrix bounds the internal Prototype; it neither upgrades RC2's official support matrix nor establishes a final release.
+
 ## Getting started
 
 1. **Keep one template:** download the ZIP from [Releases](https://github.com/CVF-Ecosystem/local-agent-workspace/releases/tag/v1.9.0-rc2) and unzip it once into its own folder. That folder is the template: keep it as is and do not work in it (nor inside the ZIP).

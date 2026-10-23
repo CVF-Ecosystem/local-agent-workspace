@@ -129,137 +129,127 @@ import hashlib, importlib, importlib.util, json, os, posixpath, sys
 from pathlib import Path
 
 
+# Core checks live in product code; loading remains explicit from the trusted LAW tree.
+_checkpoint = None
+
+
+def load_v3(law):
+    global _checkpoint
+    law = Path(law).resolve()
+    tools_dir = str(law / 'tools')
+    sys.path[:] = [tools_dir] + [p for p in sys.path if p != tools_dir]
+    owner = importlib.import_module('task_checkpoint')
+    if Path(owner.__file__).resolve() != law / 'tools' / 'task_checkpoint.py':
+        raise RuntimeError('checkpoint owner must come from the fixed LAW tree')
+    _checkpoint = owner
+    return owner.load_v3(law)
+
+
 def sha(data):
     return 'sha256:' + hashlib.sha256(data).hexdigest()
 
 
 def read_file(project, rel):
-    """(bytes, None) hoặc (None, lý do). Đọc một lần; thiếu, đi qua liên kết hay lỗi đọc không bao giờ được coi là 'không đổi'."""
-    import transaction, publish_new  # tools/ của cây LAW cố định, đã kiểm bởi load_v3
-    why = publish_new.path_form_problem(rel)
-    if why:
-        return None, why
-    path = os.path.join(project, *rel.split('/'))
-    try:
-        if not transaction.link_free(path, project) or os.path.islink(path) or not os.path.isfile(path):
-            return None, 'MISSING_OR_NOT_REGULAR'
-        with open(path, 'rb') as fh:
-            return fh.read(), None
-    except OSError:
-        return None, 'UNREADABLE'
-
-
-def load_v3(law):
-    """Nạp package v3 từ cây LAW cố định `law` (có .cvf và tools). Không import gì từ data root hay tests."""
-    law = Path(law).resolve()
-    spec = importlib.util.spec_from_file_location('law_cvf_entry_v3', str(law / '.cvf' / 'checks' / 'control_check_v3.py'))
-    entry = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(entry)
-    entry._load_package()
-    name = entry.PACKAGE_NAME
-    mod = lambda leaf: importlib.import_module(name + '.' + leaf)
-    if str(law / 'tools') not in sys.path:
-        sys.path.insert(0, str(law / 'tools'))
-    library = importlib.import_module('library')
-    for owner in (library, importlib.import_module('transaction'), importlib.import_module('publish_new')):
-        if Path(owner.__file__).resolve().parent != law / 'tools':
-            raise RuntimeError('owner không nạp từ cây LAW cố định')
-    owners = mod('loader').load_owners()
-    return {'pkg': importlib.import_module(name), 'loader': mod('loader'), 'refs': mod('refs'), 'binding': mod('binding'),
-            'canon': mod('canon'), 'owners': owners, 'library': library,
-            'policy_ctx': mod('binding').make_policy_context(owners.policy_bytes)}
+    return _checkpoint.read_file(project, rel)
 
 
 def binding_stub(v3, task):
-    """Main tính khi giao việc; vai nhận chép nguyên văn vào RESULT.binding rồi thêm `outputs`."""
-    d = v3['canon'].binding_digests(task, v3['owners'].policy)
-    pkg = v3['pkg']
-    return {'bind_version': pkg.BIND_VERSION, 'evaluation_basis': pkg.EVALUATION_BASIS, 'task_id': task['task_id'],
-            'task_revision': task['task_revision'], 'intent_digest': d['intent_digest'],
-            'accepted_task_digest': d['accepted_task_digest'], 'context_digest': d['context_digest'],
-            'policy_version': pkg.POLICY_VERSION, 'policy_digest': d['policy_digest'],
-            'inputs': json.loads(json.dumps(task['inputs']))}
+    return _checkpoint.binding_stub(v3, task)
 
 
 def read_record(v3, project, rel, want):
-    """(record, digest bytes thô, None) hoặc (None, None, lý do): strict parse, literal, schema và miền canonical của owner."""
-    data, why = read_file(project, rel)
-    if data is None:
-        return None, None, 'RECORD_%s %s' % (want.upper(), why)
-    bundle, out = v3['loader'].inspect_structure(data, v3['owners'])
-    if bundle is None or bundle.get('record_type') != want:
-        return None, None, 'RECORD_REJECTED %s %s' % (want, ','.join(sorted(out.reasons)) or 'WRONG_TYPE')
-    return bundle, sha(data), None
+    return _checkpoint.read_record(v3, project, rel, want)
 
 
 def checkpoint(v3, project, task_rel, result_rel, staged=None):
-    """Danh sách `problems` rỗng nghĩa là các quan hệ ĐÃ KIỂM khớp; không phải PASS, quyền hay nghiệm thu của người dùng."""
-    problems, cp = [], {'problems': [], 'candidate': None, 'ledger_snapshot': None}
-    cp['problems'] = problems
-    task, task_raw, why_t = read_record(v3, project, task_rel, 'task')
-    result, result_raw, why_r = read_record(v3, project, result_rel, 'result')
-    problems.extend(w for w in (why_t, why_r) if w)
-    if problems:
-        return cp
-    cp.update(task=task, result=result, raw={'task': task_raw, 'result': result_raw})
-    # 1. binding RESULT <-> TASK hiện hành
-    index = v3['refs'].build_index([task, result])
-    report = v3['binding'].compare_binding(index, 1, v3['policy_ctx'])
-    states = {r.name: r.state for r in report.relations}
-    if not report.applicable:
-        problems.append('BINDING_NOT_APPLICABLE')
-    problems.extend('BINDING %s=%s' % (n, s) for n, s in states.items() if s not in ('MATCH', 'NOT_BOUND', 'NOT_APPLICABLE'))
-    if states.get('B-OUT-RESULT') != 'MATCH':
-        problems.append('BINDING B-OUT-RESULT=%s' % states.get('B-OUT-RESULT'))
-    # 2. bytes hiện tại của input và context_refs đúng digest đã bound
-    for obj in task['inputs'] + task.get('context_refs', []):
-        data, why = read_file(project, obj['path'])
-        if data is None:
-            problems.append('INPUT %s %s' % (obj['path'], why))
-        elif sha(data) != obj['digest']:
-            problems.append('INPUT_CHANGED %s' % obj['path'])
-    # 3. metadata sổ cho input có source_id
-    library, wanted = v3['library'], [o for o in task['inputs'] + task.get('context_refs', []) if 'source_id' in o]
-    if wanted:
-        import transaction
-        ledger_path = os.path.join(project, 'references', '_INDEX.xlsx')
-        if not transaction.link_free(ledger_path, project) or os.path.islink(ledger_path):
-            book = {'ok': False, 'kind': 'unsafe_path'}
-        else:
-            book = library.read_book(project)
-        if not book['ok']:
-            problems.append('LEDGER_UNREADABLE %s' % book['kind'])
-        else:
-            cp['ledger_snapshot'] = book['snapshot']
-            counts = library.id_counts(book['data'])
-            records = [library.record(r, counts) for r in book['data']]
-            for obj in wanted:
-                hits = [x for x in records if x['id'] == obj['source_id']]
-                if len(hits) != 1:
-                    problems.append('LEDGER_ID_COUNT %s=%d' % (obj['source_id'], len(hits)))
-                elif hits[0]['identity'] != 'ok' or str(hits[0]['revision']) != obj.get('revision') or hits[0]['file'] != obj['path']:
-                    problems.append('LEDGER_METADATA_CHANGED %s' % obj['source_id'])
-    # 4. candidate: đọc một lần, so SHA đầy đủ với RESULT.artifacts; staged phải là chính bytes đó
-    slot, arts = posixpath.dirname(result_rel), result['artifacts']
-    targets = [t for a in task['effects']['actions'] for t in a['targets']] + [a['path'] for a in arts]
-    import publish_new  # owner cú pháp đường dẫn đã có, không tự chuẩn hóa alias
-    if any(publish_new.path_form_problem(t) for t in targets):
-        problems.append('TARGET_UNSUPPORTED_FORM')
-    if any(not t.startswith(slot + '/') for t in targets):
-        problems.append('TARGET_OUTSIDE_SLOT')
-    if len(arts) != 1:
-        problems.append('ARTIFACTS_COUNT')  # ví dụ này nhận đúng một candidate; nhiều candidate thì lặp theo từng artifact
+    return _checkpoint.checkpoint(v3, project, task_rel, result_rel, staged)
+
+
+def observe_candidate(v3, project, task_rel, candidate_rel, result_rel, task_raw_digest):
+    """Main quan sát digest của ĐÚNG candidate bằng `artifacts.observe_file` (chỉ đọc) để Worker ghi `outputs`/`artifacts` của RESULT; Worker không tự băm.
+    `task_raw_digest` là digest thô của TASK Main đã giữ từ lúc chốt giao (không lấy digest vừa đọc thay cho nó). Chỉ cho TASK Worker có marker VÀ context office.
+    `observed` True chỉ khi mọi điều kiện đạt; quan sát này là digest bytes của một file, không là PASS, quyền, nguồn mới hay snapshot nguyên tử, và không ghi gì, không tạo RESULT hay binding."""
+    out = {'observed': False, 'problems': [], 'observation': None}
+    problems = out['problems']
+    if not all(k in v3 for k in ('loader', 'owners', 'office')):
+        problems.append('OWNER_UNAVAILABLE')  # không có owner thì từ chối, không tự phân tích record
+        return out
+    if not (isinstance(task_raw_digest, str) and task_raw_digest.startswith('sha256:')):
+        problems.append('TASK_RAW_DIGEST_REQUIRED')
+        return out
+    try:
+        import publish_new, transaction
+    except ImportError:
+        problems.append('OWNER_UNAVAILABLE')
+        return out
+    if (publish_new.path_form_problem(task_rel) or not isinstance(task_rel, str)
+            or len(task_rel.split('/')) != 4 or task_rel.split('/')[0] != 'working' or task_rel.split('/')[-1] != 'TASK.json'):
+        problems.append('TASK_PATH_NOT_CURRENT')
+        return out
+    task, raw, why = read_record(v3, project, task_rel, 'task')
+    if why:
+        problems.append(why)
+        return out
+    if task_rel != 'working/%s/%s/TASK.json' % (task['work_id'], task['task_id']):
+        problems.append('TASK_PATH_NOT_CURRENT')
+        return out
+    if raw != task_raw_digest:
+        problems.append('TASK_CHANGED_SINCE_DISPATCH')
+        return out
+    office = v3['office']
+    if {task['authority']['subject'].get('role'), task['envelope'].get('role')} != {'worker'}:
+        problems.append('TASK_NOT_WORKER')
+    has_marker = any(str(r.get('req_id', '')).casefold().startswith('office-method') for r in task['acceptance']['requirements'])
+    has_context = any(str(o.get('path', '')).casefold().startswith(office.OFFICE_DIR + '/') for o in task.get('context_refs', []))
+    if not (has_marker and has_context):
+        problems.append('OFFICE_MARKER_AND_CONTEXT_REQUIRED')  # TASK legacy: guard_task rỗng không đủ cho đường này
     else:
-        data, why = read_file(project, arts[0]['path'])
-        if data is None:
-            problems.append('CANDIDATE %s' % why)
-        elif sha(data) != arts[0]['digest']:
-            problems.append('CANDIDATE_CHANGED')
-        else:
-            cp['candidate'] = data
-        if staged is not None and (cp['candidate'] is None or sha(bytes(staged)) != arts[0]['digest']):
-            problems.append('STAGED_NOT_CANDIDATE')
-    return cp
+        problems.extend(office.guard_task(task, lambda rel: read_file(project, rel)))
+    slot = posixpath.dirname(result_rel) if isinstance(result_rel, str) else ''
+    if any(publish_new.path_form_problem(p) for p in (candidate_rel, result_rel)):
+        problems.append('PATH_UNSUPPORTED_FORM')
+        return out
+    elif (posixpath.basename(result_rel) != 'RESULT.json' or posixpath.dirname(slot) != 'working/%s/%s/assignments' % (task['work_id'], task['task_id'])
+          or posixpath.dirname(candidate_rel) != slot + '/candidate'):
+        problems.append('SLOT_LAYOUT')  # RESULT.json và candidate/<file> cùng một slot của đúng work/task
+    actions = task['effects']['actions']
+    targets = [t for a in actions for t in a.get('targets', [])]
+    if (any(a.get('operation') != 'create_new' or a.get('tool') != 'Write' or a.get('write_zone') != 'working' for a in actions)
+            or len(targets) != 2 or set(targets) != {candidate_rel, result_rel}):
+        problems.append('TARGETS_NOT_CANDIDATE_AND_RESULT')
+    if not problems:
+        result_path = os.path.join(project, *result_rel.split('/'))
+        if not transaction.link_free(result_path, project):
+            problems.append('RESULT_PATH_LINK')
+        elif os.path.lexists(result_path):
+            problems.append('RESULT_ALREADY_EXISTS')
+    if problems:
+        return out
+    try:
+        tools_dir = Path(office.__file__).resolve().parent
+        for name in ('artifacts', 'library_sync'):
+            cached = sys.modules.get(name)
+            origin = getattr(cached, '__file__', None) if cached is not None else getattr(importlib.util.find_spec(name), 'origin', None)
+            if not origin or Path(origin).resolve().parent != tools_dir:
+                problems.append('OWNER_NOT_FIXED_TREE')
+                return out
+        artifacts = importlib.import_module('artifacts')
+        if Path(artifacts.__file__).resolve().parent != tools_dir:
+            problems.append('OWNER_NOT_FIXED_TREE')
+            return out
+        seen, why = artifacts.observe_file(project, candidate_rel)
+    except Exception as exc:  # owner không nạp được hoặc từ chối: giữ chờ, không có digest giả
+        problems.append('OBSERVER_ERROR %s' % type(exc).__name__)
+        return out
+    if seen is None:
+        problems.append('CANDIDATE_%s' % str(why).upper())
+        return out
+    out['observed'] = True
+    out['observation'] = {'task': {'path': task_rel, 'task_id': task['task_id'], 'task_revision': task['task_revision'], 'raw_digest': raw},
+                          'candidate': {'path': candidate_rel, 'digest': 'sha256:' + seen['sha256'], 'size': seen['size'], 'identity': seen['identity']},
+                          'result_path': result_rel, 'observed_by': 'artifacts.observe_file',
+                          'limits': ['BYTES_DIGEST_ONLY', 'NOT_PASS_NOT_GRANT_NOT_CONTENT_CHECK', 'NOT_ATOMIC_SNAPSHOT']}
+    return out
 
 
 def publish_inputs(cp, task_rel, result_rel):
@@ -422,10 +412,30 @@ def integration_gate(cp, main_review, review='NOT_REQUIRED'):
 ```
 
 Cách dùng: `v3 = load_v3(<thư mục gốc LAW>)`, `cp = checkpoint(v3, <project>, task_rel, result_rel)`; chỉ khi `cp['problems']` rỗng mới lập request.
-Khối mã này là ví dụ Worker tạo đúng một candidate trong slot; chưa nhận luồng Scout trả delta/read-only như một checkpoint thực thi chung.
+Kết quả khớp chỉ là quan sát hợp tác, không phải PASS, quyền hay nghiệm thu. Phần đọc/checkpoint dùng owner `tools/task_checkpoint.py`, không thực thi Markdown khi ứng dụng xem việc. Khối mã này là ví dụ Worker tạo đúng một candidate trong slot; chưa nhận luồng Scout trả delta/read-only như một checkpoint thực thi chung.
 Năm hàm cuối khối (`record_before_effect`, `void_assignment`, `reconcile_publish`, `next_step`, `integration_gate`) phục vụ mục B-03 bên dưới.
 Scout trả delta kèm snapshot để Main kiểm trước khi lập preview sổ hiện hành. Trong project thật, cây LAW và project là cùng một thư mục. Chuỗi này dùng helper nội bộ của checker v3 (trạng thái candidate, không có API công khai khác
 ngoài `check_bytes`), nên coi nó là hướng dẫn trình tự, không phải API ổn định.
+
+### Hai pha: Main quan sát digest, Worker ghi RESULT (V2-B)
+
+Worker native chỉ có Read, Grep, Glob, Write và không có công cụ băm; tranche này không thêm Bash hay compute cho Worker. Đường hỗ trợ: Worker ghi candidate, **Main dùng công cụ thật quan sát digest**
+(`observe_candidate` trong khối mã trên, gọi `artifacts.observe_file` của cây LAW cố định), rồi **Worker tự ghi RESULT** từ quan sát đó. Main không viết RESULT dưới tên Worker và Worker không khai đã tự băm.
+
+1. **Main chốt gói giao.** TASK Worker có marker và context office, mọi action là `create_new`/`Write`/`working`, targets chỉ gồm `candidate/<file>` và `RESULT.json` trong slot mới của lần giao;
+   `expected_outputs` chỉ là candidate (RESULT là metadata, không là artifact của chính nó). Main giữ digest thô của TASK, tính `binding_stub` từ chính TASK đó, kiểm grant/host riêng,
+   rồi giao brief, TASK path/revision, binding, candidate path và RESULT path. Thiếu đường gọi helper ở phiên của Main thì giữ chờ.
+2. **Worker pha 1** ghi đúng một candidate và báo cần Main quan sát digest; chưa ghi RESULT.
+3. **Main quan sát:** `observe_candidate(v3, project, task_rel, candidate_rel, result_rel, task_raw_digest)`. Từ chối (không digest, không ghi) khi thiếu hoặc đổi digest TASK, TASK không phải Worker
+   office, đích khác hai path của slot, action khác, RESULT đã tồn tại, path/link/hardlink/file không thường hoặc observer lỗi. Kết quả `observation` gồm TASK path/id/revision/digest thô,
+   candidate path/`sha256:`/size/identity và `observed_by`. Main chuyển nguyên văn nó cho Worker qua kênh tiếp việc thật; không đưa vào `inputs`/`context_refs` của TASK (làm binding đổi) và không bắt thêm sidecar.
+4. **Worker pha 2** ghi `RESULT.json`: `binding` giao nguyên văn cộng `outputs` = `[{path, digest, role: ACTUAL_BYTES}]`, `artifacts` là cùng object đó, `evidence` ghi `kind: TOOL_OBSERVED` với `scope`
+   nêu digest do Main quan sát bằng `artifacts.observe_file` và Worker không tự băm, `requirements` giữ `UNKNOWN`, `acceptance_states: [CANDIDATE]`, `produced_by`/`state_set_by` là Worker.
+5. **Main nhận** bằng `checkpoint` như trên. Candidate đổi sau quan sát bị chặn (`CANDIDATE_CHANGED`); không sửa digest RESULT để ghép. TASK/nguồn/scope đổi thì tăng revision và slot mới, giữ candidate/RESULT cũ.
+
+Quan sát chỉ là digest bytes của một file: không là PASS, quyền, nguồn mới, nội dung đúng hay snapshot nguyên tử, và chưa chứng minh host hay actor được xác thực. Hai pha là trình tự logic: host phải thật sự
+tiếp việc đúng child, hoặc có mapping hai invocation vào cùng một lần giao trong quyền đã cấp. Gợi ý SendMessage trong trace cũ chưa là bằng chứng tool khả dụng hay tiếp việc thành công; không suy
+`Agent.resume` hay `--resume` của CLI cha là tiếp việc child. Chỉ có hai instance thì khai đúng hai invocation. Chưa đủ điều kiện thì giữ chờ, không bịa identity hay provenance.
 
 ### Ghi kết quả: một writer, kiểm ngay trước mỗi lần gọi
 
@@ -505,6 +515,16 @@ acceptance. Paths first use the existing `publish_new.path_form_problem`; unsupp
 `request.inputs`; P-CTX1 with `expected_before` for STATE/HANDOFF; `library_sync.apply(..., expected_preview=...)` for the ledger). The protocol is cooperative: native Write has no path
 sandbox or new-only mode, a final TOCTOU window remains, and there is no atomicity across writers.
 
+Two phases for the digest (V2-B): the native Worker has no hashing tool and none is added. The Worker writes one candidate; Main observes its digest with a real tool
+(`observe_candidate` in the recipe, a read-only wrapper over `artifacts.observe_file` of the fixed LAW tree) and passes the observation verbatim; then the Worker writes its own RESULT from it. Main never writes a
+RESULT under the Worker's name and the Worker never claims to have hashed. The helper takes the raw TASK digest Main kept at dispatch and refuses, writing nothing, when it is missing or changed, when
+the TASK is not an Office Worker TASK (marker and context both required), when the write targets are not exactly `candidate/<file>` and `RESULT.json` of one slot under `create_new`/`Write`/`working`,
+when the RESULT already exists, or when the path, link, hardlink, non-regular file or the observer fails. The RESULT carries the delivered binding plus `outputs` = `artifacts` = `[{path, digest, role: ACTUAL_BYTES}]`,
+`evidence` of kind `TOOL_OBSERVED` scoped to the digest Main observed, requirements `UNKNOWN`, and `CANDIDATE` only. The observation is a bytes digest, not a PASS, a grant, fresh source, correct content or an atomic
+snapshot; it is not added to the TASK (the binding must not change), a candidate changed afterwards is stopped by the checkpoint, and the digest in a RESULT is never edited to fit. The phases are a logical sequence:
+the host must really continue the same child, or map two invocations onto one assignment inside the grant. A hint to SendMessage in an old trace does not prove the tool is available, and neither `Agent.resume` nor the parent
+CLI `--resume` is a child continuation; with two instances declare two invocations; otherwise hold and invent no identity or provenance.
+
 Stop, timeout, late results and reopening (B-03): a stop, timeout or cancelled assignment is handled by voiding first. Main raises `task_revision` on the current TASK (`void_assignment`,
 read back through the owner loader) before accepting or integrating anything else, even when the request and the sources did not change; otherwise the old TASK and a late RESULT still MATCH.
 The old RESULT and candidate keep their bytes. Until the read-back shows the new revision Main reports the assignment as not voided and integrates nothing related. Stopping and effects are
@@ -516,6 +536,62 @@ the grant (a required independent review that is missing stays pending). A reope
 content: mandatory requirements need Main's own content judgement, a Worker RESULT stays a CANDIDATE, a published, selected or opened draft is not `USER_ACCEPTED`, and the user's acceptance of draft A
 does not carry over to draft B (the v3 `user_acceptance` is bound to task, revision, result and artifacts). All of this is cooperative; the probe uses labelled simulations and proves nothing about a
 real host. Lineage belongs to B-01/B-02.
+
+## Phương pháp văn phòng trên vai lõi (V1-A) / Office methods on the core roles
+
+`roles/office/` giữ danh mục `catalog.json` (`law.office-methods/1`), sáu hợp đồng phương pháp và `MAIN.md` (hướng dẫn cho Main). Đây là
+**phương pháp của nhiệm vụ**, không phải vai mới: người nhận vẫn là Scout, Worker hoặc Reviewer lõi, chịu quy tắc và grant của project.
+Không có schema, pack, trường profile hay model riêng cho từng phương pháp (`preset_mode = INHERIT_CORE_PROFILE`); model và effort theo
+profile của vai lõi. Không tự được native nạp: vai nhận đọc hợp đồng vì brief và `context_refs` chỉ đúng file.
+
+| Mã | Vai lõi | Việc |
+|---|---|---|
+| `research-assistant` | scout | khảo sát độ đủ, đúng kỳ, đúng loại của căn cứ |
+| `executive-secretary` | worker | tổng hợp báo cáo/biên bản theo kỳ và người đọc |
+| `correspondence` | worker | nháp thư trả lời cục bộ, không gửi, không chạm hộp thư |
+| `market-analyst` | worker | so sánh/nhận định thị trường đúng kỳ, đơn vị, loại giá |
+| `data-analyst` | worker | tính toán có truy vết trên dữ liệu; cần công cụ tính thật |
+| `evidence-reviewer` | reviewer | mở nguồn kiểm candidate/claim trọng yếu |
+
+- **Helper chỉ đọc** `python tools/office.py list|validate|compose`: kiểm catalog/hợp đồng và soạn MỘT brief cho method ID mà Main đã chọn,
+  kèm `context_refs` (SHA-256 bytes thô của catalog, hợp đồng và skill thực dùng), checklist khả năng và phần thiếu. Không phân loại yêu cầu
+  bằng từ khóa, không ghi file, không tạo TASK, không dùng mạng, không gọi vai, không cấp quyền. `PREPARED` chỉ là đã chuẩn bị giao việc.
+- `inputs_proposal` và `task_fragment.inputs` chỉ đề xuất path/digest bytes. Trước khi ghi TASK, Main dùng owner thư viện hiện có để bổ sung
+  hoặc giữ `source_id`/`revision` cho nguồn đã đăng ký; checkpoint ở trên đối chiếu đúng một ID, locator, revision và bytes. Nguồn thực sự
+  chưa đăng ký phải khai rõ; lỗi sổ không phải bằng chứng chưa đăng ký và phần phụ thuộc phải chờ. Không tự tạo ID.
+- **Khả năng tách bốn chiều:** được yêu cầu / có trong exporter native (Scout, Reviewer: Read, Grep, Glob; Worker thêm Write) / grant / quan sát
+  host. Grant và host luôn `NOT_INSPECTED` ở helper. Khả năng bắt buộc mà adapter lõi không có (`compute`, `office_files`) cho `NEEDS_CAPABILITY`:
+  giữ chờ phần phụ thuộc, không cấp shell, không suy từ việc máy có Python.
+- **Tuyến compute host-session (V4, chủ động chọn):** chỉ khi yêu cầu compose có thêm khóa `compute_route` = `{probe, scope}`; mặc định và exporter
+  native không đổi. `tools/office_compute.py` (công cụ tính hẹp, chỉ đọc CSV trong `inputs` của TASK, `aggregate`/`compare_prices` trên Decimal)
+  chuẩn bị ra `ROUTE_READY_UNVERIFIED` hoặc `ROUTE_REFUSED` từ probe phía Main và quyền lab (`permission.status=ALLOWED`); chiều `specialist_call`
+  luôn `NOT_OBSERVED` khi chuẩn bị. Khi sẵn sàng, handover Worker nêu công cụ shell của host với đúng một lệnh thay vì bảo chỉ có bốn công cụ;
+  handover mặc định không đổi. Đây là quyền bảo trì ở host-session, không phải native `law-worker`, sandbox hay grant sản phẩm. Hai pha
+  (Worker ghi candidate, Main quan sát digest, Worker ghi RESULT) giữ nguyên; lệnh tính không băm candidate. Chuyên viên phải tự gọi và lời gọi
+  được quan sát mới là "tính thật bằng công cụ của chuyên viên"; Main không tính hộ rồi ghi dưới tên chuyên viên.
+- **Ràng buộc vào TASK:** Main bind catalog, hợp đồng và skill đã dùng qua `context_refs`, và thêm đúng một requirement bắt buộc
+  `OFFICE-METHOD:<mã>:v<phiên bản>` vào `acceptance.requirements`. Checkpoint ở trên gọi `office.guard_task`: chỉ cần thấy marker hoặc một context
+  dưới `roles/office/` là phải đủ cả hai phía (một marker hợp lệ; một catalog và đúng một hợp đồng khớp; mã, phiên bản, vai lõi, bytes còn khớp;
+  hợp đồng đủ các mục). Marker lạ hoặc trùng, mất marker còn refs, mất refs còn marker đều chặn, không rơi về legacy. TASK không marker và không
+  context office là legacy, chạy như trước. Xóa đồng thời marker và refs làm RESULT cũ không còn khớp binding. Guard chỉ kiểm cấu trúc và bytes,
+  không kiểm đúng ngữ nghĩa nghề hay grant; người sửa được toàn bộ record vẫn nằm trong giới hạn hợp tác, không phải chống giả mạo.
+- **Giới hạn:** `PREPARED` ≠ đã gọi vai ≠ nội dung đã kiểm. Gói này không chứa dấu vết host rằng một vai thật đã đọc hợp đồng và dùng công cụ.
+  Review không thay quyền và không nhận bản thay người dùng.
+
+Office methods in short (EN): `roles/office/` holds a catalog, six method contracts and the Main guide. They are task methods on the three
+core roles, not new roles, and carry no schema, pack, profile field or model of their own (models follow the core-role profile). `tools/office.py`
+is read-only: it validates the catalog and composes one brief for the method Main chose, with `context_refs` over raw bytes, a four-dimension
+capability checklist (requested / in the exporter / granted / observed on the host, the last two never inspected) and the missing parts; a
+missing required capability such as `compute` is `NEEDS_CAPABILITY`. Only when the compose request opts in with `compute_route` = `{probe, scope}`
+does `tools/office_compute.py` (read-only, CSV in the TASK `inputs`, `aggregate`/`compare_prices` on Decimal) prepare a `ROUTE_READY_UNVERIFIED` or `ROUTE_REFUSED`
+host-session route from Main's probe and the lab permission; `specialist_call` stays `NOT_OBSERVED` at preparation, the Worker hand-over then names the host shell tool
+with one command, and the default hand-over is unchanged. It is maintenance authority, not a native law-worker, sandbox or product grant. A TASK binds the catalog, contract and skills through `context_refs`
+while input proposals contain only byte path/digest; before writing the TASK, Main uses the existing library owner to retain/add `source_id`
+and `revision` for registered sources, checks unique ID, locator, revision and bytes, identifies genuinely unregistered sources, and holds on
+ledger errors without inventing an ID. The TASK also carries exactly one mandatory `OFFICE-METHOD:<id>:v<n>` requirement, and the checkpoint
+above blocks a lone marker, lone refs, duplicate or foreign
+markers, a version/role/locator mismatch and changed bytes, while a legacy task without either passes unchanged. `PREPARED` is not invoked and
+not content-checked; no live host trace is part of this package.
 
 Core role contracts live here; domain extensions remain in accepted packs.
 Main and every role follow `.cvf/rules/CONTROL_RULES.md` and its routing policy;

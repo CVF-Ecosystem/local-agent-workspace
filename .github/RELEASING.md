@@ -21,6 +21,14 @@ Maintainer guide for the source repository. The `.github/` folder is never packa
 
 Chỉ coi một ô là hỗ trợ chính thức khi job CI tương ứng đã chạy xanh trên commit sắp phát hành.
 
+### Prototype văn phòng nội bộ sau RC2
+
+Ma trận Prototype nằm trong README VI/EN và phải đi cùng đúng source/artifact được kiểm. Evidence hiện có là chạy local Windows/NTFS/Python 3.11.9 và các ca DATAMOCK; không nâng các ô CI, runtime 3.8, OS/host khác hoặc usability thật thành đã đạt. Liên kết tệp thật còn chưa đo khi không có quyền symlink; giữ các skip và giới hạn hợp tác trong báo cáo.
+
+Trước khi giao phần V7, đối chiếu toàn bộ điều kiện mốc và khoảng trống theo AGENTS quy tắc10/mục8.3 roadmap. Hướng dẫn hoặc matrix đổi sau candidate thì gate cũ chỉ có giá trị cho snapshot cũ; bản giao mới phải có gate đúng bytes và review boundary liên quan. Dùng evidence còn hiệu lực khi review, không chạy lại nghiệp vụ chỉ để lặp proof.
+
+Candidate từ worktree dirty chỉ phục vụ kiểm nội bộ, không là nguồn sạch để công bố. Công bố vẫn phải theo quyền operator, source sạch, gate và ma trận đã xác nhận bên dưới. Giữ candidate cũ; không thay tag/asset RC2 hoặc coi bản nội bộ là public RC mới. Feedback thật vẫn sau Prototype/MVP theo operator.
+
 ## 2. Chính sách phiên bản
 
 Số phiên bản nằm trong `VERSION` (MAJOR.MINOR.PATCH). Đó là nguồn duy nhất.
@@ -91,6 +99,14 @@ Anything without evidence of a run is listed as unconfirmed. A CI configuration 
 | Any other combination (for example Python 3.9, 3.10, 3.13) | — | Untested; not officially supported. |
 
 A cell counts as officially supported only when its CI job has passed on the commit being released.
+
+### Internal office Prototype after RC2
+
+The Prototype matrix is in the Vietnamese and English READMEs and belongs to the exact source/artifact checked. Existing evidence covers local Windows/NTFS/Python 3.11.9 and mock cases; it does not establish passing CI cells, Python 3.8 runtime, other OS/host support or real-user usability. Real file symlinks remain unmeasured without symlink privileges; preserve skips and cooperative limits in the report.
+
+Before a V7 assignment, account for every milestone condition and gap under AGENTS rule10/roadmap section8.3. Guide or matrix changes after a candidate leave its gate valid only for the old snapshot; a new deliverable needs a gate for its own bytes and review of the relevant boundary. Reuse valid evidence in review without replaying office work just to reproduce proof.
+
+A candidate from a dirty worktree is for internal checking, not a clean publication source. Publication still needs the operator's authority, a clean source, gates and the confirmed matrix below. Keep earlier candidates; do not replace RC2 tags/assets or label an internal build a new public RC. Real-user feedback remains after Prototype/MVP as instructed.
 
 ## 2. Version policy
 

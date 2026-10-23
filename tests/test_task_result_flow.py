@@ -1164,6 +1164,21 @@ class ReviewRegressions(FlowBase):
         facts['no_call_observed'] = True  # SIMULATED positive observation in the same live context, not a historical note
         self.assertEqual(self.r.next_step(facts), {'step': 'REASSIGN', 'reasons': []})
 
+    def test_the_digest_observation_refuses_a_legacy_task_whose_layout_is_otherwise_valid(self):
+        slot = self.slot('t-legacy', 'a1')
+        cand, res = slot + '/candidate/draft.txt', slot + '/RESULT.json'
+        task = self.task_record('t-legacy', 1, 'a1', targets=[cand, res])
+        task['effects']['expected_outputs'] = [cand]
+        task_rel = self.put_task(task)
+        self.write(cand, b'ban nhap legacy')
+        self.assertEqual(self.v3['office'].guard_task(task, lambda rel: self.r.read_file(self.project, rel)), [], 'the guard alone accepts a legacy task')
+        before = self.tree()
+        with mock.patch.object(art, 'observe_file') as spy:
+            got = self.r.observe_candidate(self.v3, self.project, task_rel, cand, res, sha(self.read(task_rel)))
+        spy.assert_not_called()
+        self.assertEqual((got['observed'], got['observation'], got['problems']), (False, None, ['OFFICE_MARKER_AND_CONTEXT_REQUIRED']))
+        self.assertEqual(self.tree(), before)
+
 
 @unittest.skipUnless(wf.CAN_RUN, 'the P-CN1 owner supports Windows NTFS local only: skipped, not passed')
 class AcceptanceAB(wf.Loop):
@@ -1249,6 +1264,26 @@ class Docs(unittest.TestCase):
         self.assertFalse([w for w in ('native_agents', 'subprocess', 'socket', 'urllib', 'os.kill', 'retire', 'taskkill') if w in recipe])
         self.assertNotIn('pn.publish(', recipe)
         self.assertNotRegex(recipe, r'publish_new\.(publish|recover|discard_staged)\(')
+
+
+    def test_the_digest_observation_is_documented_and_the_helper_only_reads_through_the_owners(self):
+        text = (ROOT / 'roles' / 'README.md').read_text(encoding='utf-8')
+        recipe = MARKER.findall(text)[0]
+        body = re.search(r'(?ms)^def observe_candidate\(.*?(?=^def )', recipe)
+        self.assertIsNotNone(body, 'the helper lives in the recipe block, not in a second file')
+        body = body.group(0)
+        self.assertIn('artifacts.observe_file', body)
+        self.assertIn('read_record(', body)
+        self.assertIn('guard_task(', body)
+        # reads only, through owners: no hashing of its own, no write, no ledger, no registry, no scan
+        self.assertFalse([w for w in ('hashlib', 'sha(', "'wb'", "'xb'", '.write(', 'makedirs', 'os.replace', 'os.remove', 'rmtree', 'read_book', '_INDEX', 'listdir', 'walk(', 'glob',
+                                       'register', 'prepare', 'relate') if w in body])
+        for needle in ('Hai pha: Main quan sát digest, Worker ghi RESULT (V2-B)', 'Two phases for the digest (V2-B)', 'TOOL_OBSERVED', 'ACTUAL_BYTES', 'SendMessage', 'Agent.resume'):
+            self.assertIn(needle, text)
+        if openpyxl is None:
+            self.skipTest('openpyxl missing: the executable part was not run')
+        v3 = recipe_from_docs().load_v3(ROOT)
+        self.assertEqual(Path(importlib.import_module('artifacts').__file__).resolve().parent, Path(v3['office'].__file__).resolve().parent)
 
 
 if __name__ == '__main__':

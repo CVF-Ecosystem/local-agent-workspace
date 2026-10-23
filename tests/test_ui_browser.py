@@ -634,6 +634,108 @@ CONTROLS_JS = """() => {
 }"""
 
 
+@unittest.skipUnless(HAVE_BROWSER, SKIP_REASON or 'browser tests need playwright and Chromium')
+class OfficeTask(BrowserCase):
+    """V1-A: the task surface takes a plain-words description, prepares a message that points at the Main guide and the catalog, and copies it.
+    The state says prepared / copied, never assigned or running; the text is shown as text, kept in page memory only and sent nowhere."""
+
+    HOSTILE = '<img src=x onerror="window.__pwned=1"> Báo cáo tuần & <b>ghi chú</b> {{x}} %s %t'
+
+    def open_ready(self):
+        init_project(self.pkg)
+        self.sent = []
+        p = self.open_panel()
+        p.on('request', lambda r: self.sent.append((r.url, r.post_data or '')))
+        self.context.grant_permissions(['clipboard-read', 'clipboard-write'], origin=self.panel.base)
+        return p
+
+    def test_describe_prepare_copy_flow_escapes_markup_names_the_guide_and_claims_no_run(self):
+        p = self.open_ready()
+        expect(p.locator('#ag-task-box')).to_be_visible()
+        expect(p.locator('#ag-state')).to_be_hidden()
+        p.fill('#ag-task', self.HOSTILE)
+        p.click('#ag-prepare')
+        expect(p.locator('#ag-state')).to_contain_text('Đã chuẩn bị lời nhắc')
+        expect(p.locator('#ag-state')).to_contain_text('chưa có việc nào được phân công hay đang chạy')
+        prompt = p.locator('#ag-prompt')
+        for needle in ('«Test»', 'Báo cáo tuần', 'roles/office/MAIN.md', 'roles/office/catalog.json', 'python tools/office.py list', 'cần xác nhận'):
+            expect(prompt).to_contain_text(needle)
+        text = prompt.text_content()
+        self.assertIn(self.HOSTILE, text, 'the description is inserted literally, including %s / %t and braces')
+        self.assertEqual(p.locator('#ag-prompt img, #ag-prompt b, #ag-state img').count(), 0)
+        self.assertIsNone(p.evaluate('window.__pwned'))
+        p.click('#ag-copy')
+        expect(p.locator('#ag-state')).to_contain_text('Đã sao chép lời nhắc')
+        expect(p.locator('#ag-state')).to_contain_text('Chưa gửi')
+        self.assertEqual(p.evaluate('navigator.clipboard.readText()').replace('\r\n', '\n'), text)  # the Windows clipboard turns LF into CRLF
+        self.assertFalse([u for u, body in self.sent if '/api/' in u and ('Báo cáo tuần' in body or 'onerror' in body)], 'the description is sent nowhere')
+        needle = 'Báo cáo tuần'.encode('utf-8')
+        leaked = [str(f) for f in (self.pkg / '.agent').rglob('*') if f.is_file() and needle in f.read_bytes()]
+        self.assertEqual(leaked, [], 'no history, diagnostics or state file stores the description')
+
+    def test_empty_description_is_not_prepared_and_an_edit_marks_the_prepared_message_stale(self):
+        p = self.open_ready()
+        before = p.text_content('#ag-prompt')
+        p.click('#ag-prepare')
+        expect(p.locator('#ag-state')).to_contain_text('Hãy mô tả công việc')
+        self.assertEqual(p.text_content('#ag-prompt'), before)
+        p.fill('#ag-task', 'Làm biên bản họp tuần')
+        p.click('#ag-prepare')
+        expect(p.locator('#ag-state')).to_contain_text('Đã chuẩn bị lời nhắc')
+        p.fill('#ag-task', 'Làm biên bản họp tháng')
+        expect(p.locator('#ag-state')).to_contain_text('Mô tả đã đổi sau khi chuẩn bị')
+        self.assertIn('biên bản họp tuần', p.text_content('#ag-prompt'))  # still the prepared text until prepared again
+        p.click('#ag-prepare')
+        expect(p.locator('#ag-prompt')).to_contain_text('biên bản họp tháng')
+        expect(p.locator('#ag-state')).to_contain_text('Đã chuẩn bị lời nhắc')
+
+    def test_review_mode_hides_the_box_and_keeps_the_old_message_and_english_text_follows_the_language(self):
+        p = self.open_ready()
+        p.fill('#ag-task', 'Tóm tắt ghi chú')
+        p.click('#ag-prepare')
+        p.click('#ag-mode button[data-v="cont"]')
+        expect(p.locator('#ag-task-box')).to_be_hidden()
+        expect(p.locator('#ag-state')).to_be_hidden()
+        expect(p.locator('#ag-prompt')).to_contain_text('Tiếp tục công việc')
+        p.click('#ag-mode button[data-v="start"]')
+        expect(p.locator('#ag-prompt')).to_contain_text('Tóm tắt ghi chú')
+        p.click('.lang [data-lang="en"]')
+        expect(p.locator('#ag-state')).to_contain_text('Message prepared. Not sent to the assistant')
+        expect(p.locator('#ag-prompt')).to_contain_text('roles/office/MAIN.md')
+        expect(p.locator('label[for="ag-task"]')).to_have_text('Describe the work in plain words')
+        p.click('#ag-copy')
+        expect(p.locator('#ag-state')).to_contain_text('Message copied. Not sent')
+
+    def test_a_folder_without_the_office_methods_says_so_and_the_message_holds_only_the_description(self):
+        init_project(self.pkg)
+        shutil.rmtree(str(self.pkg / 'roles' / 'office'))
+        p = self.open_panel()
+        expect(p.locator('#ag-office-off')).to_be_visible()
+        expect(p.locator('#ag-office-off')).to_contain_text('chưa có hoặc lỗi')
+        p.fill('#ag-task', 'Việc thử')
+        p.click('#ag-prepare')
+        expect(p.locator('#ag-prompt')).to_contain_text('Việc thử')
+        self.assertNotIn('MAIN.md', p.text_content('#ag-prompt'))
+
+    def test_the_default_message_and_the_status_are_unchanged_and_no_route_takes_a_description(self):
+        init_project(self.pkg)
+        p = self.open_panel()
+        expect(p.locator('#ag-office-off')).to_be_hidden()
+        expect(p.locator('#ag-prompt')).to_contain_text('[mô tả việc và kết quả cần nhận')
+        for path, body in (('/api/status', b'{}'), ('/api/office/compose', b'{"request": "x"}'), ('/api/office/prepare', b'{}')):
+            req = urllib.request.Request(self.panel.base + path, data=body, method='POST',
+                                         headers={'Content-Type': 'application/json', 'X-Panel-Token': self.panel.token})
+            try:
+                data = json.loads(urllib.request.urlopen(req, timeout=20).read().decode('utf-8'))
+                code = 200
+            except urllib.error.HTTPError as e:
+                data, code = json.loads(e.read().decode('utf-8')), e.code
+            if path == '/api/status':
+                self.assertEqual((code, data['office']), (200, {'available': True, 'methods': 6, 'problems': []}))
+            else:
+                self.assertEqual((code, data), (404, {'error': 'not found'}), path)
+
+
 @unittest.skipUnless(HAVE_BROWSER and os.name == 'nt', SKIP_REASON or 'the current draft card needs a browser and Windows NTFS')
 class CurrentDraft(BrowserCase):
     """I2: the Current draft card and its history, driven in a browser. Revisions are written by the real P-CN1 writer.

@@ -3,6 +3,12 @@
 Định dạng phiên bản: `MAJOR.MINOR.PATCH`. Số phiên bản nằm trong `VERSION`; hướng dẫn nâng cấp ở
 `docs/HUONG_DAN_CHUYEN_DOI_PROJECT_CO_SAN_VI.md`.
 
+## Chưa phát hành / Unreleased — Prototype văn phòng
+
+- Bộ phương pháp chuyên môn, công cụ tính CSV/Decimal hẹp và trang Hồ sơ công việc chỉ đọc; tiếp phiên và tái dùng project được kiểm bằng DATAMOCK. Binding khớp không là nội dung đã duyệt, quyền gọi vai hoặc host enforcement. Feedback người thật sau Prototype/MVP; chưa tuyên usability hoặc hỗ trợ toàn host.
+- Gói chỉ giao README khung theo đường dẫn tường minh; README riêng trong thư mục dữ liệu, kể cả bản en/, không vào bản giao. Nâng cấp giữ file và cấu hình riêng; nguồn nâng cấp có dữ liệu project trong MANIFEST bị từ chối.
+- EN: Office methods, bounded CSV/Decimal computation and a read-only Work record, with mock session/project reuse checks. Matching does not grant authority, approve content or establish host enforcement/usability. Only explicit scaffold READMEs ship, including English mirrors; private target data/configuration stays intact and a source manifest containing project data is refused. These changes have not been publicly released.
+
 ## v1.9.0 — 2026-10-21 — RC2 (prerelease)
 
 Bản dùng thử 1.9.0-rc2 để thu phản hồi, chưa phải bản final; thay RC1 trong khuyến nghị tải. Giữ `VERSION` là `1.9.0` theo chính sách RC. Xem [bản RC2](https://github.com/CVF-Ecosystem/local-agent-workspace/releases/tag/v1.9.0-rc2) và [phiếu phản hồi](docs/FEEDBACK_FORM_VI_EN.md).

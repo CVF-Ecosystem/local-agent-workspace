@@ -319,6 +319,9 @@ textarea{min-height:68px;resize:vertical}
 .flow li b{color:var(--ink);font-weight:600}
 .flow li .sub{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
 .flow li .hact{margin-top:6px}
+.work-list{margin:4px 0;padding-left:19px}.work-list li{margin:4px 0;overflow-wrap:anywhere}
+.work-subhead{margin:16px 0 6px;font-size:14px;color:var(--ink)}.work-mainhead{margin:18px 0 10px;font-size:16px;color:var(--ink)}
+.work-assignment{margin:10px 0 0;border:1px solid var(--line-2);border-radius:var(--r);padding:10px 12px}
 .prompt{margin:10px 0;background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;font-size:13px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--ink)}
 .hint{font-size:12.5px;color:var(--muted);margin:8px 0 0}
 .flist{display:grid}
@@ -428,11 +431,27 @@ textarea{min-height:68px;resize:vertical}
           <ol class="flow" id="ag-steps"></ol>
           <div class="seg" role="group" id="ag-mode" data-tt="ag_mode"><button aria-pressed="true" data-v="start" data-t="ag_start"></button><button aria-pressed="false" data-v="cont" data-t="ag_cont"></button></div>
           <p class="hint" id="ag-mode-h"></p>
+          <div id="ag-task-box">
+            <div class="field"><label for="ag-task" data-t="ag_task"></label><textarea id="ag-task" maxlength="2000" autocomplete="off"></textarea><span class="hint" style="margin:0" data-t="ag_task_note"></span></div>
+            <div class="hact"><button class="btn" type="button" id="ag-prepare"><span data-ico="spark"></span><span data-t="ag_prepare"></span></button></div>
+            <p class="hint" id="ag-office-off" hidden></p>
+          </div>
+          <p class="hint" id="ag-state" role="status" aria-live="polite" hidden></p>
           <div class="prompt" id="ag-prompt"></div>
           <div class="hact"><button class="btn pri" id="ag-copy"><span data-ico="copy"></span><span data-t="ag_copy"></span></button></div>
           <p class="hint" id="ag-verify"></p></div></div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- WORK: read-only view of explicitly referenced work records -->
+  <section class="page" id="pg-work">
+    <div class="ph"><h1 data-t="work_title"></h1><p data-t="work_lead"></p></div>
+    <div class="note warn mb" data-t="work_readonly"></div>
+    <div class="card">
+      <div class="card-h"><span data-ico="list"></span><h2 data-t="work_summary"></h2><div class="r"><button class="btn" id="work-refresh"><span data-ico="refresh"></span><span data-t="work_refresh"></span></button></div></div>
+      <div class="card-b" id="work-box" aria-live="polite"><p class="hint" data-t="work_loading"></p></div>
     </div>
   </section>
 
@@ -695,6 +714,15 @@ var D={
  ag_s3:['Sao chép nội dung bên dưới, điền phần trong [ ] nếu có, rồi gửi cho trợ lý AI.','Copy the message below, fill in any text in [ ], then send it to your AI assistant.'],ag_s3d:['Khi trợ lý đã lưu file vào output/, bạn sẽ thấy file trong mục Kết quả.','Once the assistant saves a file in output/, it appears under Results.'],
  ag_verify:['Đối chiếu tên dự án «%s» và các file trợ lý liệt kê với thư mục bạn đã mở và mục Tài liệu nguồn. Nếu sai hoặc thiếu nguồn, kiểm tra lại thư mục đã cấp quyền cho ứng dụng.','Compare the project name “%s” and the files listed by the assistant with the folder you opened and with Source documents. If the name or sources do not match, check which folder the app has access to.'],
  pr_start:['Đây là thư mục dự án «%s». Trước khi làm:\n1. Đọc AGENTS.md, PROJECT.md và .agent/STATE.md.\n2. Nhắc lại tên dự án và liệt kê tài liệu nguồn bạn thấy trong references/.\n\nViệc cần làm: [mô tả việc và kết quả cần nhận, ví dụ: lập biên bản họp từ ghi chú trong references/]\n\nLưu kết quả vào output/. Chỗ nguồn không có thông tin thì ghi "cần xác nhận", không đoán. Không sửa file nguồn. Cuối phiên cập nhật .agent/STATE.md bằng lời văn công việc dễ hiểu.','This is the project folder “%s”. Before you start:\n1. Read AGENTS.md, PROJECT.md and .agent/STATE.md.\n2. Repeat the project name and list the source documents you find in references/.\n\nTask: [describe the task and the result you need, e.g. write meeting minutes from the notes in references/]\n\nSave the result in output/. Where the sources lack information, write “to be confirmed” instead of guessing. Do not edit the source files. At the end, update .agent/STATE.md in plain work language.'],
+ ag_task:['Mô tả công việc bằng lời thường','Describe the work in plain words'],ag_task_note:['Không cần chọn trợ lý hay viết lời nhắc kỹ thuật: trợ lý chính tự chọn cách làm. Đừng ghi mật khẩu hay dữ liệu nhạy cảm; phần mô tả này chỉ nằm trên trang, không được lưu.','You do not pick assistants or write technical prompts: the main assistant chooses how to work. Do not type passwords or sensitive data; this text stays on the page and is not saved.'],
+ ag_prepare:['Chuẩn bị lời nhắc','Prepare message'],ag_task_need:['Hãy mô tả công việc trước khi chuẩn bị lời nhắc.','Describe the work before preparing the message.'],
+ ag_state_prep:['Đã chuẩn bị lời nhắc. Chưa gửi cho trợ lý; chưa có việc nào được phân công hay đang chạy.','Message prepared. Not sent to the assistant; nothing has been assigned or started.'],
+ ag_state_copied:['Đã sao chép lời nhắc. Chưa gửi; trợ lý chưa nhận việc, chưa có việc nào được phân công hay đang chạy.','Message copied. Not sent; the assistant has not received the task and nothing has been assigned or started.'],
+ ag_state_stale:['Mô tả đã đổi sau khi chuẩn bị. Bấm «Chuẩn bị lời nhắc» để cập nhật trước khi chép.','The description changed after preparing. Press “Prepare message” to update it before copying.'],
+ ag_office_off:['Bộ phương pháp văn phòng chưa có hoặc lỗi trong thư mục này nên lời nhắc chỉ gồm mô tả việc của bạn.','The office methods are missing or invalid in this folder, so the message holds only your description.'],
+ pr_prep:['Đây là thư mục dự án «%s». Trước khi làm:\n1. Đọc AGENTS.md, PROJECT.md và .agent/STATE.md.\n2. Nhắc lại tên dự án và liệt kê tài liệu nguồn bạn thấy trong references/.\n\nViệc cần làm:\n%t\n\n','This is the project folder “%s”. Before you start:\n1. Read AGENTS.md, PROJECT.md and .agent/STATE.md.\n2. Repeat the project name and list the source documents you find in references/.\n\nTask:\n%t\n\n'],
+ pr_office:['Nếu việc có nhiều bước hoặc cần giao phần việc cho vai khác, mở roles/office/MAIN.md và làm theo: tự nhận mục tiêu và đầu ra, chọn phương pháp từ roles/office/catalog.json (python tools/office.py list), lập brief và TASK. Việc nhỏ thì làm trực tiếp. Tôi không cần chọn trợ lý hay viết lời nhắc nghề.\n\n','If the work has several steps or parts for other roles, open roles/office/MAIN.md and follow it: take the goal and output yourself, choose a method from roles/office/catalog.json (python tools/office.py list), then brief and set up the TASK. Do small jobs directly. I do not need to pick assistants or write trade prompts.\n\n'],
+ pr_end:['Lưu kết quả vào output/. Chỗ nguồn không có thông tin thì ghi "cần xác nhận", không đoán. Không sửa file nguồn. Nói rõ phần nào chưa kiểm hoặc còn thiếu công cụ. Cuối phiên cập nhật .agent/STATE.md bằng lời văn công việc dễ hiểu.','Save the result in output/. Where the sources lack information, write “to be confirmed” instead of guessing. Do not edit the source files. Say plainly what is unchecked or lacks a tool. At the end, update .agent/STATE.md in plain work language.'],
  pr_cont:['Tiếp tục công việc trong dự án «%s». Đọc .agent/STATE.md và PROJECT.md, rồi cho tôi biết: mục tiêu, bản kết quả hiện hành trong output/, việc đang dở và bước tiếp theo. Chưa sửa file nào cho tới khi tôi xác nhận.','Continue the work in project “%s”. Read .agent/STATE.md and PROJECT.md, then tell me: the goal, the current result in output/, what is unfinished and the next step. Do not change any file until I confirm.'],
  src_t:['Tài liệu nguồn','Source documents'],out_t:['Kết quả','Results'],open_dir:['Mở thư mục','Open folder'],src_open:['Mở thư mục tài liệu nguồn','Open source documents folder'],out_open:['Mở thư mục kết quả','Open results folder'],
  src_empty:['Chưa có tài liệu nguồn. Chép file cần dùng vào thư mục references/ (bản gốc để nguyên chỗ cũ).','No source documents yet. Copy the files you need into the references/ folder (leave the originals where they are).'],
@@ -702,8 +730,14 @@ var D={
  f_more:['và %d file khác trong thư mục','and %d more files in the folder'],drafts_n:['Bản nháp trong working/: %d file','Drafts in working/: %d files'],n_files:['%d file','%d file(s)'],open_file:['Mở file','Open file'],
  purpose_none:['Chưa có mô tả dự án. Bạn có thể bổ sung sau.','No project description yet. You can add one later.'],
  panel:['Bảng điều khiển','Control panel'],g_work:['Làm việc','Work'],g_setup:['Thiết lập','Setup'],
- nav_home:['Công việc','The work'],nav_check:['Kiểm tra trước khi giao','Check before delivery'],nav_merges:['Chờ hợp nhất','Pending merges'],nav_packs:['Quản lý kỹ năng','Manage skills'],nav_skills:['Cài kỹ năng vào ứng dụng','Install skills into apps'],
+ nav_home:['Công việc','The work'],nav_work:['Hồ sơ công việc','Work record'],nav_check:['Kiểm tra trước khi giao','Check before delivery'],nav_merges:['Chờ hợp nhất','Pending merges'],nav_packs:['Quản lý kỹ năng','Manage skills'],nav_skills:['Cài kỹ năng vào ứng dụng','Install skills into apps'],
  nav_setup:['Thiết lập thư mục này','Set up this folder'],nav_library:['Thư viện nguồn','Source library'],
+ work_title:['Hồ sơ công việc','Work record'],work_summary:['Công việc được tham chiếu','Referenced work'],work_lead:['Đọc TASK, kết quả, quyết định và phần chờ từ hồ sơ đã lưu. Trạng thái khớp không xác nhận nội dung, quyền hay việc host đã chạy.','Read tasks, results, decisions and waiting items from saved records. A match does not confirm content, permission, or a host run.'],
+ work_refresh:['Làm mới hồ sơ','Refresh record'],work_loading:['Đang đọc hồ sơ công việc…','Reading the work record…'],work_readonly:['Chỉ xem: trang này không gọi AI, không quét thư mục và không ghi hồ sơ. Tiếp việc hoặc dừng chỉ sao chép yêu cầu gửi Main; chưa giao việc và chưa dừng host.','View only: this page does not call AI, scan folders, or write records. Continue or stop only copies a request for Main; it does not assign work or stop a host.'],
+ work_status_READY:['Đã đọc hồ sơ được tham chiếu','Referenced records were read'],work_status_NO_WORK:['Chưa có công việc hiện hành được tham chiếu','No current work is referenced'],work_status_HELD:['Hồ sơ đang chờ Main kiểm tra','The record is waiting for Main to review'],work_status_ERROR:['Không đọc được hồ sơ công việc','The work record could not be read'],work_status_MATCHED:['Khớp dữ liệu đã kiểm','Matches checked data'],work_status_STALE:['Không còn khớp','No longer matches'],work_status_MISSING:['Chưa có RESULT','No RESULT yet'],work_status_UNSUPPORTED:['Chưa hỗ trợ đối chiếu','Check not supported'],
+ work_workspace:['Workspace','Workspace'],work_readonly_short:['Chỉ xem','View only'],work_not_pass:['Khớp binding chỉ là đối chiếu dữ liệu; không xác nhận nội dung, quyền, việc đã chạy hoặc nghiệm thu.','A matching binding only checks record relationships; it does not confirm content, permission, execution, or acceptance.'],work_unknown:['Chưa xác định','Unknown'],work_applied:['Trạng thái áp dụng','Applied status'],work_registration:['Đăng ký','Registration'],work_task_path:['Đường dẫn TASK','TASK path'],work_value_CLAIMS_UNVERIFIED:['Chỉ có khai báo, chưa xác minh quyền','Claims only; authority unverified'],work_value_GRANT_CLAIMED:['Có khai báo cấp quyền, chưa xác minh','Grant claimed, unverified'],
+ work_id:['Mã công việc','Work ID'],work_state_digest:['Dấu kiểm STATE','STATE digest'],work_tasks:['Các phần việc','Tasks'],work_task:['TASK','TASK'],work_revision:['Lần sửa','Revision'],work_actor:['Vai được giao','Assigned role'],work_method:['Phương pháp','Method'],work_intent:['Yêu cầu','Request'],work_requirements:['Điều kiện','Requirements'],work_assignments:['Lần giao','Assignments'],work_result_path:['Đường dẫn RESULT','RESULT path'],work_assignment_state:['Đối chiếu','Check status'],work_candidate:['Kết quả được khai báo','Declared result'],work_digest:['Digest','Digest'],work_declared_states:['Trạng thái khai báo','Declared states'],work_gaps:['Phần còn thiếu','Gaps'],work_problems:['Điểm cần kiểm tra','Items to review'],work_decisions:['Quyết định đã lưu','Saved decisions'],work_waiting:['Đang chờ','Waiting'],work_permission:['Quyền theo hồ sơ','Recorded permissions'],work_permission_state:['Tình trạng quyền','Permission status'],work_host_stop:['Dừng host','Host stop'],work_host_unconfirmed:['Chưa xác nhận host đã dừng','Host stop is unconfirmed'],work_limits:['Giới hạn','Limits'],work_operations:['Tính chất lần xem','View behavior'],work_write:['Ghi hồ sơ','Record writes'],work_scan:['Quét thư mục','Folder scan'],work_ai:['Gọi AI','AI call'],work_none:['Không có mục nào được ghi','No items recorded'],work_no_candidate:['Chưa có candidate được ghi','No candidate recorded'],work_copy_resume:['Chép yêu cầu tiếp việc','Copy continue request'],work_copy_stop:['Chép yêu cầu dừng','Copy stop request'],work_copy_note:['Đã chép. Chưa gửi cho Main.','Copied. Not sent to Main.'],work_role_main:['Main','Main'],work_role_worker:['Worker','Worker'],work_role_scout:['Scout','Scout'],work_role_reviewer:['Reviewer','Reviewer'],work_value_UNKNOWN:['Chưa xác định','Unknown'],work_value_NOT_INSPECTED:['Chưa kiểm tra','Not inspected'],work_value_NO_GRANT:['Chưa có quyền được ghi nhận','No grant recorded'],work_value_NOT_GRANTED:['Chưa được cấp quyền','Not granted'],work_value_NOT_REGISTERED:['Chưa đăng ký','Not registered'],work_value_REDUCED:['Quyền đã thu hẹp','Permission reduced'],work_value_ALLOWED:['Được khai báo cho phép','Declared allowed'],work_value_UNCONFIRMED:['Chưa xác nhận','Unconfirmed'],work_value_MATCH:['Khớp','Match'],work_value_MISMATCH:['Không khớp','Mismatch'],work_value_TRUE:['Có','Yes'],work_value_FALSE:['Không','No'],work_value_READY:['Sẵn sàng theo hồ sơ','Ready per record'],work_value_BLOCKED:['Đang chặn','Blocked'],work_value_HELD:['Đang chờ','Held'],work_value_UNAVAILABLE:['Chưa khả dụng','Unavailable'],work_value_DECLARED:['Đã khai báo','Declared'],work_value_APPLIED:['Đã áp dụng','Applied'],work_value_REGISTERED:['Đã đăng ký','Registered'],work_value_CANDIDATE:['Bản dự kiến','Candidate'],work_value_MET:['Đạt theo khai báo','Declared met'],
+ work_empty:['Chưa có dữ liệu hiển thị.','No data to display.'],
  lb_p:['Văn bản pháp luật, quy chế nội bộ, mẫu biểu của dự án trong references/, ghi trong một chỉ mục references/_INDEX.xlsx. Trợ lý AI tra ở đây trước khi trích dẫn; không có toàn văn thì không trích nguyên văn.','The project\u2019s legal documents, internal rules and templates in references/, recorded in one index references/_INDEX.xlsx. The assistant looks here before quoting; without full text there are no verbatim quotes.'],
  lb_none_t:['Chưa có chỉ mục thư viện','No library index yet'],lb_none_p:['Tạo khung thư mục (legal, policies, templates, source-documents) và file chỉ mục mẫu. Không ghi đè gì đã có.','Create the folders (legal, policies, templates, source-documents) and the index template. Nothing existing is overwritten.'],lb_init:['Tạo khung thư viện','Create the library'],
  lb_k1:['Dòng trong sổ','Rows in the index'],lb_k2:['Sổ ghi có toàn văn','Index says full text'],lb_k3:['Sổ không ghi toàn văn','Index has no full text'],lb_k4:['Ghi “Cần đối chiếu”','Marked “needs checking”'],
@@ -933,11 +967,14 @@ why_tk:['Python này không có tkinter','This Python has no tkinter'],why_py:['
 };
 var PACK_ICON={'phap-ly':'scale','van-thu-luu-tru':'archive','cang-logistics':'anchor','hanh-chinh-nhan-su':'users','ke-toan-noi-bo':'calc'};
 // Thanh bên theo vai trò thư mục: việc hằng ngày ở trên, quản lý/bảo trì gom vào nhóm thu gọn / Sidebar by folder role
-var NAV_ALL={home:['home','nav_home'],check:['check','nav_check'],library:['library','nav_library'],merges:['merge','nav_merges'],packs:['box','nav_packs'],skills:['monitor','nav_skills'],upgrade:['up','nav_upgrade'],setup:['plus','nav_setup'],maintain:['gear','nav_maintain'],health:['activity','nav_health']};
+var WORK_ONLY=(new URLSearchParams(window.location.search).get('view')==='work');
+var WORK=null,WORK_ERROR='';
+var NAV_ALL={home:['home','nav_home'],work:['list','nav_work'],check:['check','nav_check'],library:['library','nav_library'],merges:['merge','nav_merges'],packs:['box','nav_packs'],skills:['monitor','nav_skills'],upgrade:['up','nav_upgrade'],setup:['plus','nav_setup'],maintain:['gear','nav_maintain'],health:['activity','nav_health']};
 function navLists(){var kind=S?(S.workspace_kind||'unknown'):'project',m=S?(S.merges||[]).length:0;
+  if(WORK_ONLY)return[['work'],[]];
   if(kind==='template')return[['home'],['skills','upgrade','setup','maintain','health']];
   if(kind==='unknown')return[['home'],['setup','upgrade','maintain','health']];
-  return[['home','check','library'].concat(m?['merges']:[]),['packs','skills'].concat(m?[]:['merges']).concat(['upgrade','setup','maintain','health'])];}
+  return[['home','work','check','library'].concat(m?['merges']:[]),['packs','skills'].concat(m?[]:['merges']).concat(['upgrade','setup','maintain','health'])];}
 function navLabel(id){var kind=S?(S.workspace_kind||'unknown'):'project';if(id==='home')return t(kind==='template'?'nav_new':kind==='unknown'?'nav_start':'nav_home');return t(NAV_ALL[id][1]);}
 var navOpen=null;
 var lang='vi',S=null,files=[],pending=null,page='home',skFilter='all';
@@ -960,22 +997,116 @@ function paint(){
   document.querySelectorAll('.nav button').forEach(function(b){b.addEventListener('click',function(){go(b.dataset.page);});});
   // nhóm quản lý thu gọn, tự mở khi đang ở một trang của nhóm / the management group stays collapsed unless one of its pages is open
   var inMore=lists[1].indexOf(page)>=0,open=navOpen===null?(inMore||store('panel.more')==='1'):(navOpen||inMore);
-  $('nav2').hidden=!open;$('nav-more').setAttribute('aria-expanded',open?'true':'false');
+  $('nav2').hidden=WORK_ONLY||!open;$('nav-more').hidden=WORK_ONLY;$('nav-more').setAttribute('aria-expanded',open?'true':'false');
   var att=S?((S.transactions||[]).length+(lists[1].indexOf('merges')>=0?(S.merges||[]).length:0)):0;$('nav-more-b').hidden=!att||open;$('nav-more-b').textContent=att;
   $('cr-page').textContent=NAV_ALL[page]?navLabel(page):'';
   if(LB){lbChips();lbDraw();}
-  if(S)render();
+  if(WORK_ONLY){renderWorkShell();drawWork();}
+  else if(S)render();
 }
 document.querySelectorAll('[data-ico]').forEach(function(el){el.insertAdjacentHTML('afterbegin',ico(el.dataset.ico));});
 $('b-quit').innerHTML=ico('power');$('sh-x').innerHTML=ico('x');$('sh-cc').innerHTML=ico('copy');
 function themeIcon(){var d=document.documentElement.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');$('b-theme').innerHTML=ico(d==='dark'?'sun':'moon');}
-function go(p){if(p==='library'){setTimeout(function(){lbLoad();},0);}if(p==='health')setTimeout(refresh,0);page=p;document.querySelectorAll('.page').forEach(function(x){x.classList.toggle('on',x.id==='pg-'+p);});store('panel.page',p);paint();window.scrollTo(0,0);}
+function go(p){if(p==='library'){setTimeout(function(){lbLoad();},0);}if(p==='health')setTimeout(refresh,0);page=p;document.querySelectorAll('.page').forEach(function(x){x.classList.toggle('on',x.id==='pg-'+p);});if(p==='work')setTimeout(workLoad,0);else if(p!=='work')store('panel.page',p);paint();window.scrollTo(0,0);}
 document.addEventListener('click',function(e){var g=e.target.closest('[data-goto]');if(g){e.preventDefault();go(g.dataset.goto);}var o=e.target.closest('[data-open]');if(o)openPath(o.dataset.open);});
 function openPath(p){api('/api/open',{path:p}).then(function(r){if(r.input_error)toast(r.out);});}
 $('b-guide').addEventListener('click',function(){openPath(lang==='en'?'START_HERE.en.html':'START_HERE.html');});
 $('nav-more').addEventListener('click',function(){var o=$('nav-more').getAttribute('aria-expanded')!=='true';navOpen=o;store('panel.more',o?'1':'0');paint();});
 $('unk-tpl').addEventListener('click',function(){openPath(lang==='en'?'docs/en/NEW_PROJECT_GUIDE.html':'docs/HUONG_DAN_TAO_PROJECT_MOI_VI.html');});
-function copyText(x){(navigator.clipboard?navigator.clipboard.writeText(x):Promise.reject()).then(function(){toast(t('copied'));},function(){toast(t('copy_fail'));});}
+function copyText(x,ok){(navigator.clipboard?navigator.clipboard.writeText(x):Promise.reject()).then(function(){toast(t('copied'));if(ok)ok();},function(){toast(t('copy_fail'));});}
+function renderWorkShell(){
+  var name=t('work_workspace');document.title=t('work_title')+' · Workspace';
+  $('sb-name').textContent=name;$('sb-name').title=name;$('sb-av').textContent=initials(name);
+  $('sb-dot').className='dot';$('sb-st').textContent=t('work_readonly_short');$('sb-st').title=t('work_readonly_short');
+  $('sb-ver').textContent='';$('cr-proj').textContent=name;$('cr-page').textContent=t('work_title');
+  document.querySelector('.top .acts').hidden=true;$('b-quit').hidden=true;
+}
+function workValue(v){
+  if(v===null||v===undefined||v==='')return esc(t('work_empty'));
+  if(typeof v==='object'){try{return esc(Object.keys(v).sort().map(function(k){var x=v[k];return k+': '+(x&&typeof x==='object'?JSON.stringify(x):String(x));}).join(' · '));}catch(_e){return esc(t('work_unknown'));}}
+  return esc(String(v));
+}
+function workRoleValue(v){var k='work_role_'+String(v||'').toLowerCase();return D[k]?esc(t(k)):workValue(v);}
+function workPermissionValue(v){
+  if(v===null||v===undefined||v==='')return esc(t('work_unknown'));
+  var k='work_value_'+String(v).toUpperCase();
+  return esc(D[k]?t(k):String(v).replace(/_/g,' '));
+}
+function workList(title,values){
+  var a=Array.isArray(values)?values:[];
+  return'<div class="it"><dt>'+esc(title)+'</dt><dd>'+(a.length?'<ul class="work-list">'+a.map(function(x){return'<li>'+workValue(x)+'</li>';}).join('')+'</ul>':'<span class="hint">'+esc(t('work_none'))+'</span>')+'</dd></div>';
+}
+function workBullets(values){
+  var a=Array.isArray(values)?values:[];
+  return a.length?'<ul class="work-list">'+a.map(function(x){return'<li>'+workValue(x)+'</li>';}).join('')+'</ul>':'<p class="hint">'+esc(t('work_none'))+'</p>';
+}
+function workTag(value,kind){
+  var key=String(value||'UNKNOWN').toUpperCase(),label=kind==='assignment'?t('work_status_'+key):t('work_status_'+key),tone=kind==='assignment'?(key==='MATCHED'?'ok':key==='MISSING'?'info':key==='STALE'?'warn':'err'):(key==='READY'?'ok':key==='NO_WORK'?'info':key==='ERROR'?'err':'warn');
+  if(!D['work_status_'+key])label=workPermissionValue(key);
+  return'<span class="tag '+tone+'">'+esc(label)+'</span>';
+}
+function workTaskHtml(task,index){
+  task=task||{};var assigns=Array.isArray(task.assignments)?task.assignments:[];
+  var head='<div class="card mb"><div class="card-h"><span>'+ico('file')+'</span><h2>'+esc(t('work_task'))+' '+(index+1)+'</h2></div><div class="card-b">'
+    +'<dl class="dl"><div class="it"><dt>'+esc(t('work_id'))+'</dt><dd><code class="mono">'+workValue(task.task_id)+'</code></dd></div>'
+    +'<div class="it"><dt>'+esc(t('work_task_path'))+'</dt><dd><code class="mono">'+workValue(task.task_path)+'</code></dd></div>'
+    +'<div class="it"><dt>'+esc(t('work_revision'))+'</dt><dd>'+workValue(task.task_revision)+'</dd></div>'
+    +'<div class="it"><dt>'+esc(t('work_actor'))+'</dt><dd>'+workRoleValue(task.actor)+'</dd></div>'
+    +'<div class="it"><dt>'+esc(t('work_method'))+'</dt><dd>'+workValue(task.method)+'</dd></div>'
+    +'<div class="it"><dt>'+esc(t('work_intent'))+'</dt><dd>'+workValue(task.intent)+'</dd></div></dl>'
+    +workList(t('work_requirements'),task.requirements)+workList(t('work_problems'),task.problems);
+  if(assigns.length){head+='<h3 class="work-subhead">'+esc(t('work_assignments'))+'</h3>'+assigns.map(workAssignmentHtml).join('');}
+  else{head+='<p class="hint">'+esc(t('work_none'))+'</p>';}
+  return head+'</div></div>';
+}
+function workAssignmentHtml(a){
+  a=a||{};var c=a.candidate||null,decl=Array.isArray(a.declared_states)?a.declared_states:[];
+  return'<div class="work-assignment"><div class="hrow"><div class="hmain"><b>'+esc(t('work_result_path'))+'</b><span class="hsub mono">'+workValue(a.result_path)+'</span></div>'+workTag(a.state,'assignment')+'</div>'
+    +'<dl class="dl"><div class="it"><dt>'+esc(t('work_candidate'))+'</dt><dd>'+(c?'<code class="mono">'+workValue(c.path)+'</code>':'<span class="hint">'+esc(t('work_no_candidate'))+'</span>')+'</dd></div>'
+    +(c?'<div class="it"><dt>'+esc(t('work_digest'))+'</dt><dd><code class="mono">'+workValue(c.digest)+'</code></dd></div>':'')
+    +'<div class="it"><dt>'+esc(t('work_declared_states'))+'</dt><dd>'+(decl.length?decl.map(workValue).join(' · '):'<span class="hint">'+esc(t('work_none'))+'</span>')+'</dd></div></dl>'
+    +workList(t('work_gaps'),a.gaps)+workList(t('work_problems'),a.problems)+'</div>';
+}
+function workPermissionHtml(permission){
+  permission=permission||{};var roles=permission.roles&&typeof permission.roles==='object'?permission.roles:{},names=Object.keys(roles).sort();
+  var rows=names.map(function(role){var v=roles[role]||{},rk='work_role_'+String(role).toLowerCase(),rlabel=D[rk]?t(rk):String(role).replace(/_/g,' ');
+    return'<div class="hrow"><div class="hmain"><b>'+esc(rlabel)+'</b><span class="hsub">'+esc(t('work_permission'))+': '+workPermissionValue(v.permission)+' · '+esc(t('work_applied'))+': '+workPermissionValue(v.applied)+' · '+esc(t('work_registration'))+': '+workPermissionValue(v.registration)+'</span></div></div>';}).join('');
+  return'<div class="card mb"><div class="card-h"><span>'+ico('shield')+'</span><h2>'+esc(t('work_permission'))+'</h2><div class="r">'+workTag(permission.state,'permission')+'</div></div><div class="card-b">'+(rows||'<p class="hint">'+esc(t('work_none'))+'</p>')+(permission.problem?'<p class="hint">'+workValue(permission.problem)+'</p>':'')+'</div></div>';
+}
+function workBehaviorHtml(data){
+  var writes=Array.isArray(data.writes)?(data.writes.length?t('work_value_TRUE'):t('work_value_FALSE')):t('work_unknown');
+  var hostStop=data.host_stop==='UNCONFIRMED'?t('work_host_unconfirmed'):workPermissionValue(data.host_stop||'UNCONFIRMED');
+  return'<div class="card mb"><div class="card-h"><span>'+ico('activity')+'</span><h2>'+esc(t('work_operations'))+'</h2></div><div class="card-b"><dl class="dl">'
+    +'<div class="it"><dt>'+esc(t('work_write'))+'</dt><dd>'+esc(writes)+'</dd></div>'
+    +'<div class="it"><dt>'+esc(t('work_scan'))+'</dt><dd>'+workPermissionValue(data.scan===false?'FALSE':data.scan===true?'TRUE':'UNKNOWN')+'</dd></div>'
+    +'<div class="it"><dt>'+esc(t('work_ai'))+'</dt><dd>'+workPermissionValue(data.ai_calls===false?'FALSE':data.ai_calls===true?'TRUE':'UNKNOWN')+'</dd></div>'
+    +'<div class="it"><dt>'+esc(t('work_host_stop'))+'</dt><dd>'+esc(hostStop)+'</dd></div></dl>'
+    +workList(t('work_limits'),data.limits)+'</div></div>';
+}
+function drawWork(){
+  var box=$('work-box');if(!box)return;
+  if(WORK_ERROR){box.innerHTML='<div class="note warn"><span class="ic">'+ico('alert')+'</span><span>'+esc(t('work_error'))+' <code class="mono">'+esc(WORK_ERROR)+'</code></span></div>';return;}
+  if(!WORK){box.innerHTML='<p class="hint">'+esc(t('work_loading'))+'</p>';return;}
+  var result=String(WORK.result||'ERROR').toUpperCase(),tasks=Array.isArray(WORK.tasks)?WORK.tasks:[],badge=workTag(result,'overall');
+  var html='<div class="note '+(result==='READY'?'':'warn')+'" id="work-result-note"><span class="ic">'+ico(result==='READY'?'check':'alert')+'</span>'+badge+'</div>'
+    +'<dl class="dl"><div class="it"><dt>'+esc(t('work_id'))+'</dt><dd><code class="mono">'+workValue(WORK.work_id)+'</code></dd></div>'
+    +'<div class="it"><dt>'+esc(t('work_state_digest'))+'</dt><dd><code class="mono">'+workValue(WORK.state_digest)+'</code></dd></div></dl>'
+    +'<p class="hint">'+esc(t('work_not_pass'))+'</p>';
+  if(tasks.length)html+='<h2 class="work-mainhead">'+esc(t('work_tasks'))+'</h2>'+tasks.map(workTaskHtml).join('');
+  else html+='<p class="hint">'+esc(t('work_empty'))+'</p>';
+  html+=workPermissionHtml(WORK.permission)+workBehaviorHtml(WORK)
+    +'<div class="card mb"><div class="card-h"><span>'+ico('check')+'</span><h2>'+esc(t('work_decisions'))+'</h2></div><div class="card-b">'+workBullets(WORK.decisions)+'</div></div>'
+    +'<div class="card mb"><div class="card-h"><span>'+ico('alert')+'</span><h2>'+esc(t('work_waiting'))+'</h2></div><div class="card-b">'+workBullets(WORK.waiting)+'</div></div>'
+    +'<div class="hact">'+(typeof WORK.reopen_prompt==='string'&&WORK.reopen_prompt?'<button class="btn" data-work-copy="resume">'+ico('copy')+esc(t('work_copy_resume'))+'</button>':'')
+    +(typeof WORK.stop_prompt==='string'&&WORK.stop_prompt?'<button class="btn ghost" data-work-copy="stop">'+ico('copy')+esc(t('work_copy_stop'))+'</button>':'')+'</div>';
+  box.innerHTML=html;
+  box.querySelectorAll('[data-work-copy]').forEach(function(button){button.addEventListener('click',function(){var prompt=button.dataset.workCopy==='stop'?WORK.stop_prompt:WORK.reopen_prompt;if(typeof prompt==='string'&&prompt)copyText(prompt,function(){toast(t('work_copy_note'));});});});
+}
+function workLoad(){
+  WORK_ERROR='';WORK=null;drawWork();
+  return api('/api/work/status',{}).then(function(data){WORK=data||{};drawWork();}).catch(function(err){WORK_ERROR=String(err||'').replace(/^Error:\s*/,'');drawWork();if(WORK_ERROR.indexOf('forbidden')>=0)$('off').classList.add('on');});
+}
+$('work-refresh').addEventListener('click',function(){workLoad();});
 $('ov-path').addEventListener('click',function(){if(S)copyText(S.root);});
 function seg(id,cb){var g=$(id);g.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){g.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});if(cb)cb(b.dataset.v);});});}
 function segVal(id){var b=$(id).querySelector('[aria-pressed="true"]');return b?b.dataset.v:'vi';}
@@ -993,7 +1124,10 @@ function npDone(res){if(!res||!res.target||res.status!=='success')return;var tg=
   $('np-done').querySelectorAll('[data-po]').forEach(function(b){b.addEventListener('click',function(){api('/api/run',{action:'project_open',params:{target:tg,what:b.dataset.po}}).then(function(r){toast(r.code===0?(b.dataset.po==='panel'?t('np_opening'):r.out):r.out);});});});
   $('np-done').querySelector('[data-pc]').addEventListener('click',function(){copyText(tg);});
   $('np-name').value='';npWhere();}
-$('ag-copy').addEventListener('click',function(){copyText($('ag-prompt').textContent);});seg('su-mode',function(v){$('su-new').hidden=v!=='new';$('su-adopt').hidden=v!=='adopt';});
+$('ag-copy').addEventListener('click',function(){copyText($('ag-prompt').textContent,function(){if(AGP!==null&&AGS==='ag_state_prep'){AGS='ag_state_copied';if(S)drawAgent();}});});
+// mô tả việc chỉ nằm trong bộ nhớ trang: không lưu, không ghi lịch sử, không gửi đi / the description stays in page memory: not stored, not logged, not sent
+$('ag-prepare').addEventListener('click',function(){var v=$('ag-task').value.trim();if(!v){AGP=null;AGS='ag_task_need';}else{AGP=v;AGS='ag_state_prep';}if(S)drawAgent();});
+$('ag-task').addEventListener('input',function(){if(AGP!==null&&AGS!=='ag_state_stale'&&$('ag-task').value.trim()!==AGP){AGS='ag_state_stale';if(S)drawAgent();}});seg('su-mode',function(v){$('su-new').hidden=v!=='new';$('su-adopt').hidden=v!=='adopt';});
 document.querySelectorAll('[data-pick]').forEach(function(b){b.addEventListener('click',function(){b.disabled=true;
   api('/api/pick',{kind:'dir'}).then(function(r){b.disabled=false;if(r.paths&&r.paths.length){$(b.dataset.pick).value=r.paths[0];if(b.dataset.pick==='a-dir')autoName();}else if(r.error)toast(t('pick_fail'));}).catch(function(){b.disabled=false;toast(t('pick_fail'));});});});
 // result sheet
@@ -1377,7 +1511,7 @@ function render(){
   $('su-inited').hidden=!s.initialized;$('su-tpl').hidden=!(s.template_folder&&!s.initialized);
   if(s.project_name&&!$('f-name').value)$('f-name').value=s.project_name;
   document.querySelectorAll('[data-pick]').forEach(function(b){b.hidden=!s.picker;});$('ck-drop').hidden=!s.picker;
-  drawFiles();
+  drawFiles();if(page==='work')drawWork();
 }
 function drawList(k,data,emptyKey,icon,drafts){data=data||{items:[],total:0};
   $(k+'-n').textContent=data.total?t('n_files').replace('%d',data.total):'';
@@ -1386,12 +1520,19 @@ function drawList(k,data,emptyKey,icon,drafts){data=data||{items:[],total:0};
   var more=data.total>data.items.length?'<div class="more">'+esc(t('f_more').replace('%d',data.total-data.items.length))+'</div>':'';
   var dr=drafts&&drafts.total?'<div class="more">'+esc(t('drafts_n').replace('%d',drafts.total))+'</div>':'';
   $(k+'-list').innerHTML=rows?rows+more+dr:'<div class="empty"><div class="ic">'+ico(icon)+'</div><span>'+esc(t(emptyKey))+'</span></div>'+dr;}
+var AGP=null,AGS='';  // mô tả đã chuẩn bị và nhãn trạng thái / the prepared description and its state label
+function agPrompt(name,mode,off){if(mode==='cont'||AGP===null)return t(mode==='cont'?'pr_cont':'pr_start').replace('%s',name);
+  return t('pr_prep').replace(/%s|%t/g,function(m){return m==='%s'?name:AGP;})+(off?t('pr_office'):'')+t('pr_end');}
 function drawAgent(){var s=S,name=s.project_name||s.folder,n=(s.sources||{}).total||0,mode=segVal('ag-mode');
   $('ag-steps').innerHTML='<li><span><b>'+esc(t('ag_s1'))+'</b><span class="sub">'+esc(n?t('ag_s1_n').replace('%d',n):t('ag_s1_0'))+'</span></span></li>'
     +'<li><span><b>'+esc(t('ag_s2'))+'</b><span class="sub">'+esc(t('ag_s2d'))+'</span><span class="hact"><button class="btn" id="ag-path">'+ico('copy')+esc(t('np_copy_path'))+'</button></span></span></li>'
     +'<li><span><b>'+esc(t('ag_s3'))+'</b><span class="sub">'+esc(t('ag_s3d'))+'</span></span></li>';
   $('ag-path').addEventListener('click',function(){copyText(s.root);});
-  $('ag-prompt').textContent=t(mode==='cont'?'pr_cont':'pr_start').replace('%s',name);
+  var off=!!(s.office&&s.office.available);
+  $('ag-task-box').hidden=mode==='cont';
+  $('ag-office-off').hidden=off;$('ag-office-off').textContent=off?'':t('ag_office_off');
+  $('ag-prompt').textContent=agPrompt(name,mode,off);
+  $('ag-state').hidden=mode==='cont'||!AGS;$('ag-state').textContent=AGS?t(AGS):'';
   $('ag-mode-h').textContent=t(mode==='cont'?'ag_cont_h':'ag_start_h');
   $('ag-verify').textContent=t('ag_verify').replace('%s',name);}
 function drawMerges(){var rows=S.merges||[];$('mg-count').textContent=rows.length;
@@ -1609,17 +1750,17 @@ function drawSkills(){var q=($('sk-q').value||'').toLowerCase(),rows=S.skills.fi
     return'<tr><td class="id">'+esc(r.id)+st+'</td><td><span class="tag '+c+'">'+esc(r.scope==='SHARED'?t('f_shared'):r.scope==='PACK'?t('f_pack'):r.scope==='PROJECT'?t('f_proj'):r.scope)+'</span></td><td>'+esc(r.use)+'</td></tr>';}).join('')
     :'<tr><td colspan="3"><div class="empty" style="padding:14px">'+esc(t('no_match'))+'</div></td></tr>';}
 $('sk-q').addEventListener('input',function(){if(S)drawSkills();});
-function refresh(){return api('/api/status').then(function(s){S=s;paint();cdLoad();}).catch(function(e){if(String(e).indexOf('forbidden')>=0)$('off').classList.add('on');});}
+function refresh(){if(WORK_ONLY||page==='work')return workLoad();return api('/api/status').then(function(s){S=s;paint();cdLoad();}).catch(function(e){if(String(e).indexOf('forbidden')>=0)$('off').classList.add('on');});}
 function setTheme(v){if(v)document.documentElement.setAttribute('data-theme',v);else document.documentElement.removeAttribute('data-theme');themeIcon();}
 setTheme(store('panel.theme'));
 $('b-theme').addEventListener('click',function(){var c=document.documentElement.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');var n=c==='dark'?'light':'dark';setTheme(n);store('panel.theme',n);});
 document.querySelectorAll('.lang button').forEach(function(b){b.addEventListener('click',function(){lang=b.dataset.lang;store('panel.lang',lang);closeSheet();paint();});});
 $('b-quit').addEventListener('click',function(){api('/api/quit').finally(function(){$('off').classList.add('on');});});
-setInterval(function(){api('/api/ping').catch(function(){$('off').classList.add('on');});},20000);
+if(!WORK_ONLY)setInterval(function(){if(page!=='work')api('/api/ping').catch(function(){$('off').classList.add('on');});},20000);
 document.addEventListener('visibilitychange',function(){if(!document.hidden)refresh();});
-lang=store('panel.lang')||'vi';page=store('panel.page')||'home';if(!$('pg-'+page))page='home';
+lang=store('panel.lang')||'vi';page=WORK_ONLY?'work':store('panel.page')||'home';if(!$('pg-'+page))page='home';
 paint();go(page);
-refresh().then(function(){if(!store('panel.lang')&&S&&S.lang){lang=S.lang;paint();}});
+if(!WORK_ONLY)refresh().then(function(){if(!store('panel.lang')&&S&&S.lang){lang=S.lang;paint();}});
 })();
 </script>
 </body>

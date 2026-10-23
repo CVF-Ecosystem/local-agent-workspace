@@ -1516,10 +1516,21 @@ class PackagingIsolation(unittest.TestCase):
         self.assertEqual({rel: (adopt / rel).read_bytes() for rel in mine}, mine)
         self.assertEqual([p for p in adopt.rglob('*.new') if '.claude' in p.parts], [])
 
-    def test_the_repository_holds_no_native_and_no_maintainer_profile(self):
-        self.assertFalse((ROOT / '.claude').exists())
-        self.assertFalse((ROOT / PROFILE).exists())
-        self.assertFalse((ROOT / '.agent' / 'runtime' / 'native-agents').exists())
+    def test_repository_delivery_excludes_native_and_uses_a_clean_profile(self):
+        selected = set(cp.delivery_selection(branding=False))
+        self.assertFalse([rel for rel in selected if rel.startswith(('.claude/', '.agent/runtime/'))])
+        self.assertEqual(cp.delivery_bytes(PROFILE), ep.clean_profile_bytes())
+        self.assertFalse((self.pkg / '.claude').exists())
+        self.assertFalse((self.pkg / '.agent' / 'runtime').exists())
+        self.assertEqual((self.pkg / PROFILE).read_bytes(), ep.clean_profile_bytes())
+        manifest = (self.pkg / 'MANIFEST.sha256').read_text(encoding='utf-8')
+        self.assertNotIn('.claude/', manifest)
+        self.assertNotIn('.agent/runtime/', manifest)
+        if (ROOT / '.git').exists() and shutil.which('git'):
+            tracked = subprocess.run(['git', 'ls-files', '--', '.claude', PROFILE, '.agent/runtime'],
+                                     cwd=str(ROOT), capture_output=True, encoding='utf-8')
+            self.assertEqual(tracked.returncode, 0, tracked.stderr)
+            self.assertEqual(tracked.stdout, '')
 
 
 if __name__ == '__main__':
