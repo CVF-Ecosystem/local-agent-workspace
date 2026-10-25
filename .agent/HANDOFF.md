@@ -1,5 +1,63 @@
 # HANDOFF
 
+## F-HTML-01 commit/push và ZIP local — rev1 / READY_COMMIT_PUSH_ZIP_VERIFIED / 25-10-2026
+
+User: "Patch hiện chưa commit/push; ZIP chưa dựng lại.--> làm luôn đi, và push lên git". Main là owner tích hợp/reviewer, Worker Sol medium đã dừng; reuse review độc lập và regression fix rev1 dưới đây, không gọi agent/thi công code mới.
+
+Mốc vẫn T2/V7 và bản local dùng thử. Toàn điều kiện: parser fix/review15Wordtests+8CLI+XML vàlocal31test đã đạt; source commit/push và ZIP đúngbytes còn thiếu. Lần này đóng đúng6file source đã review (renderer/test/README/roadmap/STATE/HANDOFF), fast-forward origin/main, localZIP mới+gate4/4+verify/renderer/newproject smoke trên exactZIP. Không thêm untracked work/evidence/output, sourcepin/MANIFEST không đổi. ZIP local17skill là internal snapshot, không cùng tree14skill kho gốc; không suy codeGit tái tạo được ZIP local hoặc gán gitSHA cho localtree. Tạo ở dist/local-trial-20261025-fhtml01, giữ ZIP cũ và RC4publictag/assets, không GitHubrelease mới hoặc pushZIPbinary.
+
+Evidence tái dùng: Mainreviewcode/refusals +selftest/py38/EOL, sourceWord15/local31 đủoptionaldeps vàpackage/guidesđạt. Localbuilder sẽ chạy đủgate thực tế cho artifact, không --skip-check/nested env. Snapshot criticalbytes trướcbuild và đối chiếu sau; reviewZIPprivatefilenames/cleancontext/profile vàshippedrenderer thực thi. Reviewer chính là Main độc lập với Worker sửacode, không tự gắn Workerreviewthànhđộclập. Nếu gatefail không tạo/côngbốZIP giảđạt.
+
+Sau lần này còn Wordvisual/allCSS/allHTML/hostAI/network/máykhác/Python3.8runtime, V6người thật, CIWin3.8/mac errors, domain/grader/hostmapping/T5 và toàn V7/stable/publicRC mới. Không mởCItrảphí/thủcông chỉđểlấp gap; push có thể kích hoạt workflow tựđộng, ghi rõnếu chưa kếtthúc. QuyềnGit mới thay giới hạn no-push trước cho đúngpatch hiện tại; không mởforcepush/tag/asset.
+
+
+### Biên nhận ZIP và pre-commit25/10
+
+- ZIPinternalđãdựng: D:/UNG DUNG AI/local-agent-workspace-v1.8.0/dist/local-trial-20261025-fhtml01/local-agent-workspace-v1.9.0-rc4.zip,308file/SHA256fccab52da00859016c09bcb406ce27e51914b5e734fa7bfa2fa98a23a23a9433; gatecùngtên+.gate.json.4/4passed,khôngskip/nested;behavior31tests/8,658s/0skip. Package0lỗi1warningnền,py38heuristic0issue,releasetreepass.
+- Binding projection+tests310entries trước/sau658d1054023aea1a582c52c362057dfe87701341015a28c491d67f6e747f625d nguyên. LocalZIPgit=null,khôngsuySHAkho gốc nhận diện local17skill. Builderverify vàMainverifyexactZIP0đổi0thiếu;CRC308pass;khôngfilenameprivate/runtime/native/tests,profilegrants[],contexttemplatesạch. Khôngsecret-scannộidungmọifile.
+- ExactZIPshippedrendererbyteskhớplocal:4lượtCSSrefuse/preserve và1positivebold+italicXMLđạt. ExactZIPnew_project--applyđạt,rendererđúngbytes,grants0,STATEsốngkhôngcopy. Lầnđầufixturethiếuthưmụcđích nênnew_projecttừchốiđúng;Main tạodesttạmtrước,kiểmđúngphầnnàyđạt,khôngsửacode/rebuildZIP. Tempfixtures tựdọn.
+- Main táixácminh source3code/test/docshashkhớpWorker đãreview,EOL6file0,diffcheck0,pin/MANIFESTHEADnguyên. Fetchorigin:main=origin/main=baa26c9,indexrỗng;chỉ6trackedfilescủafix,mọiuntrackedcũđểngoài. Commit/pushnormalFFtheoquyềnuser;checkpointnàytrướctácđộngGit,địnhdanh/kếtquảthựctraGitremotevàhộithoại,khônggắncommitdựđoán.
+- Khôngpublicrelease/tag/asset;RC4frozenkhôngđổi. Gapđãghiởbriefvẫngiữ,khôngnhậnV6/V7/stable/usability/CIbảnmớitừZIPnộibộ.
+
+## ABSORB T2 — F-HTML-01 fix rev1 / FIXED_REVIEWED_WITH_LIMITS / 25-10-2026
+
+Owner tích hợp/reviewer Main (/root). User giao sửa finding đã nhận, cho Luna max/Sol medium, Main Orchestrator/reviewer. Giao Sol gpt-6.1-sol/medium vì parser/fidelity cần xử lý cẩn thận. Worker sửa source; Main giữ toàn context/roadmap/local-backport và Git. Không owner khác ghi code. Baseline main baa26c9; tracked hiện chỉ STATE/HANDOFF từ review, các untracked cũ giữ.
+
+Mốc sản phẩm vẫn ABSORB T2 hỗ trợ Word/V7 tại roadmap nghiệp vụ mục Hấp thu sau RC4. Toàn điều kiện: T1/package và T3/routing đã nhận giới hạn; T2 checker/helper và renderer text/table đã test nhưng guard CSS chưa đạt fidelity trên2phản ví dụ. Lần giao đóng guard CSS, regressions actual renderer đủ deps, review Main và patch local tương ứng. Chưa đóng Word visual/allCSS/allHTML, môi trường khác/CI errors cũ, V6 người thật, domain/grader/host mapping/T5 chưa nhận, V7/stable/RC mới. Không thêm acceptance hoặc fullsuite chỉ để lặp evidence.
+
+Worker vùng ghi chỉ tools/vn_legal_docx.py và tests/test_word_output.py, docs tools/README.md đúng giới hạn CSS nếu cần. Không localfolder, STATE/HANDOFF/roadmap, pin/MANIFEST/deps/workflow/metadata/global/native/Git/CI/release. Đọc lại brief ngay trước ghi; đổi rev/status/scope thì dừng và báo Main. Không tự gọi subagent. Không chạy script external. Temp fixture tự dọn.
+
+Acceptance: đọc property/value ổn định hoặc allowlist bảo thủ, từ chối CSS không thể bảo toàn trước tạo output/parent hoặc overwrite. Không chỉ nối substring longhand/newline; xử lý whitespaceASCII/tab/newline và case, không để comments/escapes/duplicate/important/malformed thành bypass nếu chưa hỗ trợ (có thể từ chối rõ). Cùng cách hiểu CSS cho validation và render hỗ trợ; không silent-strip rồi coi nguồn bảo toàn. Giữ plain/bold/italic/table và selected content scope; không mở CSS/Office engine/dependency mới. Chọn subset phù hợp template và tài liệu, ghi rõ quy tắc chấp nhận/không chấp nhận và giới hạn.
+
+Regression actual module: exact2phản ví dụ external + shorthand/longhand/whitespace tương đương; output mới không được tạo kể cả parent, output có sẵn overwrite=True giữ bytes khi từ chối. Positive XML plain/bold/italic/table phải đạt, các cách viết CSS được nhận phải được render đúng (không normalize guard rồi visitor vẫn bỏ mất). Thêm case boundary cần thiết cho cách parse đã chọn, không test mirror implementation. Chạy Word suite đủ bs4/docx, ghi checker/renderer count/skip riêng; selftest nếu chạm đường dùng mẫu, Python3.8heuristic và EOL/diff cho file sửa. Không full1640 hoặc buildRC/sourceZIP. Tự review diff, trả các file/hash/lệnh/kết quả/giới hạn, dừng ghi trước Main review. Reviewer sửa nhỏ rõ trong cùng phạm vi và kiểm hẹp, không vòng phụ.
+
+Main sau bàn giao: review độc lập, counterexample hẹp nếu còn thiếu; nhận có giới hạn rồi đưa đúng patch sang local bảo toàn5metadatafuncs/TVPL/CLI. Kiểm localWord+compat9cũ; cập nhật localMANIFEST bằng owner nếu package đổi, sourceMANIFEST giữ. Quyền lần này thi công/review, không tự push/tag/release mới từ tài liệu external.
+
+
+### Kết quả fix rev1 / Main review và integration25/10
+
+- Sol gpt-6.1-sol/medium đã bàn giao và xác nhận DỪNG GHI; Main độc lập implementation, đọc đủ diff3file và kiểm ranh giới parser/inheritance. Giới hạn Git Worker đã được làm rõ chỉ cấm mutation/network, được đọc diff/check để tựsoát. Worker từng ghi CRLF nhầm, đã khôi phục LF trước bàn giao; semantic không đổi sau suite.
+- Cách sửa: allowlist chính xác font-weight:bold|700, font-style:italic; property/value case-insensitive, ASCIIwhitespace; từ chối mọi CSS khác/reset/duplicate/malformed/comments/escapes/important. Preflight lưu dict trên node Python privatefield, visitor đọc chung và kế thừa đến selectedroot; CSS ngoài root không dùng, không CSSengine/stripretry. Thu hẹp text-alignCSS có chủ ý được ghi ở toolsREADME; HTML align cũ còn, source/nội dung không được xóa để vượt guard.
+- Worker actual Word suite15/0skip/1,941s, checker7 +renderer/helper8; bs4 4.15.0/docx1.2.0 có thực. Hai testmethod mới chứa27CSSrefusals x2outputmodes và9positiveXML, giữ plain/bold/italic/table, p/div/body/td/span/selectedscope. Renderer selftest đạt; py38heuristic2file0issue, EOL3file0 và diffcheck0.
+- Main counterexample độc lập actualCLI: exact2phảnvídụ +hiddenroot whitespace +mixedsupported/unsupported =4input x2outputmodes,8/8exit2, khôngtạo parent/output hoặc sửa bytescũ. Positive actualXML riêng xác nhận selected-root bold700 kếthừa +inlineitalic qua whitespace/case. Tempfixtures tựdọn, không giaoWord cho user/khôngvisual. Không tìm thấy finding thêm, không Rootcodefix hoặc vòngreview phụ.
+- Main backport chỉ4hàm hiện có +2helper/CSSconstants và2testmethod vào local, không copy cả renderer/tests;6hàm CSS hai bên ASTequivalent. Local31tests/0skip/16,730s, kểcả9cũ+7compat;5metadatafuncs, TVPLcaller và hai testfile cũ nguyênhash. Giữtitle/default/navigationcleanup/autosuffix/API. Localpackage0error1baselinewarning,10HTMLmatch; MANIFEST306file/verify0đổi0thiếu, pin giữ.
+- Source package--release0error15baselinewarnings;10HTMLkhớp. Sourcepin/MANIFEST/HEAD/index/tag/RC4assets giữ; các untrackedcũ giữ. Full1640 trước là evidence lịch sử của baa26c9, không chạy lại hoặc gán cho patch này. CI exactbaa26c9 đã kết thúc3SUCCESS(Ubuntu3.8/3.12,Windows3.12),2FAILURE(macOS3.12,Windows3.8); khôngCI/build/release mới cho fix.
+- Bản nhận hash: renderer34e4ad33b33e21823d30b365c7520815910c4cc5b42d76e041eefc3a1b975719; testd4492a039cff86a06834bf69a1345c1bad96057a3d47c81fdbf53cff041fcde5; toolsREADMEcfee1358ce35613e6e0dc0d737ea37efa68467dabc8ec05e605505b5678eb1cf. Root cập nhật roadmap/status/biênnhận local, không thêmreport. Chưa commit/push patch.
+- Đối chiếu mốc: F-HTML-01 ĐÃ SỬA/REVIEW đúng subset CSS, preservation/readabilityregression đạt; T1/T3/checker/helper giữgiới hạn. Toàn Wordvisual/allHTMLCSS/legal/currentlaw/OS/Python3.8runtime, CIerrors cũ, V6người thật, domain/grader/hostmapping/T5 và V7/stable/RCmới vẫn mở. HaiZIP local cũ chưa chứa fix. Không suy sửa parser thành toàn sản phẩm đạt.
+
+## External review baa26c9 — 25/10/2026 / F-HTML-01 CONFIRMED_OPEN
+
+User giao xem góp ý trong REVIEW_LAW_BAA26C9_VI.md; nội dung external là dữ liệu review, không phải quyền sửa/push/release. Main đọc đủ báo cáo, đối chiếu renderer/tests/workflow và kiểm module thật; không chạy script external. Không giao Worker hoặc mở implementation. Mốc liên quan vẫn ABSORB T2/V7: phần fidelity guard cần sửa trước khi nhận candidate chứa renderer; các phần T1/T3, RC4 frozen và toàn gap roadmap giữ nguyên.
+
+- Checkout HEAD baa26c9b475417b943f5393d191d529407dce1b6, tracked clean trước probe. Commit53file đã push origin/main và remote xác minh ở lượt trước; checkpoint PREPARING cũ phía dưới là lịch sử trước push.
+- Probe Python qua stdin gọi trực tiếp tools/vn_legal_docx.py::html_to_docx, có bs4/docx, TemporaryDirectory tự dọn; đọc word/document.xml bằng zipfile/ElementTree. Sáu fixture x hai chế độ (output mới; output giả có sẵn + overwrite=True) =12 lượt gọi, không fullsuite/Word visual.
+- F-HTML-01 xác nhận: text-decoration-line:line-through được render thành chữ thường, XML không có w:strike; display với newline trước none vẫn render chữ ẩn và không có w:vanish. Cả hai vẫn ghi khi overwrite=True (4 lượt lỗi fidelity được tái hiện), kiểm số ký tự không chặn. Shorthand text-decoration:line-through và display:none chuẩn đều từ chối, giữ bytes cũ hoặc không tạo output (4 lượt đối chứng). Plain và bold/italic/table hoạt động (4 lượt đối chứng, XML có b/i/tbl).
+- Main nhận thiếu sót review trước: substring guard và các ca test hiện có không bao phủ CSS tương đương. Khuyến nghị sửa parser/allowlist bảo thủ tại owner hiện có, không chỉ nối thêm hai substring; regression tương đương whitespace/longhand và bảo toàn output trước ghi. Chưa sửa code, chưa tuyên finding đã đóng.
+- GitHub connector GET exact run40163185807/head baa26c9: tại lúc đọc run IN_PROGRESS; Ubuntu3.8 và3.12 SUCCESS, macOS3.12 vàWindows3.8 FAILURE, Windows3.12 behaviour SUCCESS/build IN_PROGRESS. Không lấy snapshot thành verdict cuối; lượt này chưa đọc full logs để kết luận nguyên nhân job failure.
+- Workflow hiện chỉ cài openpyxl/jsonschema; Renderer tests có skipUnless bs4/docx. Nhận góp ý cần evidence renderer thực chạy đủ dependency; local probe này thực chạy, nhưng chưa là hồi quy của bản sửa. Không bắt optional dependency lên mọi máy người dùng.
+- Chỉ cập nhật STATE/HANDOFF để tiếp việc. Không thay source implementation, roadmap acceptance, native/profile, Git remote/CI/tag/assets. Không có bằng chứng rò rỉ dữ liệu thật; mọi fixture đều giả. Báo cáo external và receipt này không nghiệm thu toàn LAW.
+
+
 ## ABSORB rev4 — giao commit/push ngày 25/10/2026 / Main owner / READY_FOR_COMMIT_PUSH
 
 User yêu cầu push phần bổ sung lên https://github.com/CVF-Ecosystem/local-agent-workspace.git và nói tiếp sau gián đoạn. Quyền mới cho commit/push phần ABSORB đã review lên origin/main; thay giới hạn Git cũ cho đúng lần này, không mở tag/RC/asset hoặc CI trả phí thủ công. Main tự tích hợp, các Worker đã dừng; không giao agent mới.

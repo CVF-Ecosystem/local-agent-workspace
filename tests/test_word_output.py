@@ -146,6 +146,67 @@ class Renderer(unittest.TestCase):
                 render.html_to_docx(source, existing, quiet=True, overwrite=True)
             self.assertEqual(existing.read_bytes(), b'preserve unsupported')
 
+    def test_inline_css_refused_before_any_write(self):
+        styles = [
+            'text-decoration-line:line-through', 'display:\nnone',
+            'text-decoration: line-through', 'TEXT-DECORATION-LINE : LINE-THROUGH',
+            'display:\t none', 'visibility:\r\n hidden',
+            'font-weight:normal', 'font-weight:400', 'font-style:normal',
+            'font-weight:bold!important', 'font-weight:bold ! IMPORTANT',
+            'font-weight:bo/**/ld', r'font-weight:b\6fld',
+            'font-weight:bold;font-weight:700', 'font-weight:bold;FONT-WEIGHT:bold',
+            'font-weight:bold;;font-style:italic', ';font-weight:bold', ';',
+            'font-weight', 'font-weight:bold:italic', 'font-weight:bold garbage',
+            '--font-weight:bold', 'x-font-style:italic', 'font-weight:7000',
+            'text-align:center', 'color:red', 'font-weight:\u00a0bold',
+        ]
+        for i, style in enumerate(styles):
+            source = '<p><b><i><span style="%s">CSS semantic content.</span></i></b></p>' % style
+            out = self.root / ('css-missing%d' % i) / 'out.docx'
+            with self.subTest(style=style):
+                with self.assertRaises(render.UnsupportedHTML):
+                    render.html_to_docx(source, out, quiet=True)
+                self.assertFalse(out.parent.exists())
+                existing = self.root / 'css-preserved.docx'
+                existing.write_bytes(b'original bytes retained')
+                with self.assertRaises(render.UnsupportedHTML):
+                    render.html_to_docx(source, existing, quiet=True, overwrite=True)
+                self.assertEqual(existing.read_bytes(), b'original bytes retained')
+
+    def test_inline_css_positive_xml_and_inheritance(self):
+        cases = [
+            ('<p>plain body text.</p>', {'plain body text.': (False, False)}, False),
+            ('<p><b>tag bold</b> <i>tag italic</i></p>',
+             {'tag bold': (True, False), 'tag italic': (False, True)}, False),
+            ('<p style=" FONT-WEIGHT : BoLd ; font-STYLE :\tITALIC ; ">paragraph css.</p>',
+             {'paragraph css.': (True, True)}, False),
+            ('<body style="font-style:italic"><div style="font-weight:700"><p>nested paragraph.</p><p>next paragraph.</p></div></body>',
+             {'nested paragraph.': (True, True), 'next paragraph.': (True, True)}, False),
+            ('<table style="font-weight: bold"><tr style="font-style: italic"><td><p>cell block.</p></td><td>cell inline.</td></tr></table>',
+             {'cell block.': (True, True), 'cell inline.': (True, True)}, True),
+            ('<p><span style="font-weight:\n700;\tfont-style:italic">span css.</span></p>',
+             {'span css.': (True, True)}, False),
+            ('<body style="display:none"><div id="toanvancontent" style="font-style:italic"><div style="font-weight:bold"><p>selected scope.</p></div></div></body>',
+             {'selected scope.': (True, True)}, False),
+            ('<div style="font-weight:bold"><div id="toanvancontent"><p>outside style ignored.</p></div></div>',
+             {'outside style ignored.': (False, False)}, False),
+            ('<p style=" \t\r\n\f">empty style.</p>', {'empty style.': (False, False)}, False),
+        ]
+        for i, (source, expected, has_table) in enumerate(cases):
+            with self.subTest(source=source):
+                out = self.root / ('css-positive%d.docx' % i)
+                render.html_to_docx(source, out, quiet=True)
+                with zipfile.ZipFile(out) as z:
+                    doc = ET.fromstring(z.read('word/document.xml'))
+                observed = {}
+                for r in doc.iter(W + 'r'):
+                    text = ''.join(t.text or '' for t in r.iter(W + 't')).strip()
+                    if text:
+                        observed[text] = (r.find('./' + W + 'rPr/' + W + 'b') is not None,
+                                          r.find('./' + W + 'rPr/' + W + 'i') is not None)
+                self.assertEqual(observed, expected)
+                self.assertEqual(doc.find('.//' + W + 'tbl') is not None, has_table)
+
     def test_selected_content_ignores_external_logo(self):
         p = self.root / 'selected.docx'
         render.html_to_docx('<img src="logo"><div id="toanvancontent"><p>Selected text remains.</p></div>', p, quiet=True)

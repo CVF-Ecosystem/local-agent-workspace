@@ -64,6 +64,39 @@ def norm(s):
     return re.sub(r'\s+', ' ', s)
 
 
+# Deliberately not a CSS engine: only monotone bold/italic declarations are
+# accepted. Validation and every render path share this parsed representation.
+_CSS_VALUES = {'font-weight': {'bold', '700'}, 'font-style': {'italic'}}
+_CSS_SPACE = ' \t\r\n\f'
+
+
+def _parse_inline_css(raw):
+    raw = raw.strip(_CSS_SPACE)
+    if not raw:
+        return {}
+    declarations = raw.split(';')
+    if declarations[-1].strip(_CSS_SPACE) == '':
+        declarations.pop()  # one optional trailing semicolon
+    result = {}
+    for declaration in declarations:
+        match = re.fullmatch(r'[ \t\r\n\f]*([a-zA-Z-]+)[ \t\r\n\f]*:[ \t\r\n\f]*([a-zA-Z0-9]+)[ \t\r\n\f]*', declaration)
+        if match is None:
+            raise UnsupportedHTML('Unsupported/malformed inline CSS')
+        key, value = (part.lower() for part in match.groups())
+        if key in result or value not in _CSS_VALUES.get(key, set()):
+            raise UnsupportedHTML('Unsupported/duplicate inline CSS: %s:%s' % (key, value))
+        result[key] = value
+    return result
+
+
+def _inline_flags(node, bold, italic):
+    # Private Python metadata, never an HTML attribute. Only validated nodes have
+    # this field, so inheritance stops at the selected content boundary.
+    css = node.__dict__.get('_law_inline_css', {})
+    return (bold or node.name in ('b', 'strong') or 'font-weight' in css,
+            italic or node.name in ('i', 'em') or 'font-style' in css)
+
+
 def _visit(ch, bold, italic, out):
     if isinstance(ch, Comment):
         return
@@ -78,13 +111,7 @@ def _visit(ch, bold, italic, out):
     if name == 'br':
         out.append(['\n', False, False])
         return
-    b = bold or name in ('b', 'strong')
-    i = italic or name in ('i', 'em')
-    st = (ch.get('style') or '').lower().replace(' ', '')
-    if 'font-weight:bold' in st or 'font-weight:700' in st:
-        b = True
-    if 'font-style:italic' in st:
-        i = True
+    b, i = _inline_flags(ch, bold, italic)
     for c in ch.children:
         _visit(c, b, i, out)
     if name in ('td', 'th', 'tr'):
@@ -94,7 +121,12 @@ def _visit(ch, bold, italic, out):
 def collect_runs(nodes):
     out = []
     for n in nodes:
-        _visit(n, False, False, out)
+        bold, italic = False, False
+        parent = n.parent
+        while parent is not None and '_law_inline_css' in parent.__dict__:
+            bold, italic = _inline_flags(parent, bold, italic)
+            parent = parent.parent
+        _visit(n, bold, italic, out)
     return finalize_runs(out)
 
 
@@ -219,11 +251,6 @@ def align_hint(node):
     if isinstance(node, list):
         return ''
     a = (node.get('align') or '').lower()
-    st = (node.get('style') or '').lower().replace(' ', '')
-    if 'text-align:center' in st:
-        a = 'center'
-    elif 'text-align:right' in st:
-        a = 'right'
     return a
 
 
@@ -816,9 +843,7 @@ def _validate_content(box):
     for node in nodes:
         if node.name not in allowed:
             raise UnsupportedHTML('Unsupported HTML content: <%s>' % node.name)
-        style = (node.get('style') or '').lower().replace(' ', '')
-        if any(x in style for x in ('display:none', 'visibility:hidden', 'background', 'position:', 'vertical-align:', 'text-decoration:')):
-            raise UnsupportedHTML('Unsupported HTML presentation: %s' % style)
+        node.__dict__['_law_inline_css'] = _parse_inline_css(node.get('style') or '')
         if node.has_attr('hidden'):
             raise UnsupportedHTML('Hidden content cannot be preserved')
     for tbl in box.find_all('table'):

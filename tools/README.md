@@ -623,7 +623,13 @@ cho chữ/bảng HTML đơn giản. Cần optional `beautifulsoup4`, `python-doc
 Chọn khung `toanvancontent`/`divContentDoc`/`content1`, nếu không có dùng body; kiểm cấu trúc trong đúng khung đã chọn.
 Ảnh/bảng lồng/list tự đánh số/cấu trúc không hỗ trợ/span không hợp lệ bị từ chối trước ghi; span tối đa64,
 bảng tối đa1000hàng/64cột. Giữ chữ trong khung (kể cả dòng giống điều hướng), bỏ gạch trang trí để dựng đường kẻ;
-kiểm số ký tự không trắng trước ghi không thay đối chiếu nội dung. Không tải URL, không bảo toàn CSS/link/ảnh.
+kiểm số ký tự không trắng trước ghi không thay đối chiếu nội dung. Không tải URL, không bảo toàn link/ảnh.
+CSS inline chỉ nhận `font-weight:bold|700` và `font-style:italic`, kế thừa trong khung đã chọn;
+property/value không phân biệt hoa thường, cho phép khoảng trắng ASCII quanh dấu `:`/`;` và một `;` cuối.
+CSS khác (kể cả `text-align`, reset `normal`/`400`), khai báo trùng/rỗng ở giữa/sai cú pháp,
+comment, escape và `!important` đều bị từ chối trước tạo thư mục/file hoặc ghi đè. Không có CSS cascade engine;
+stylesheet trong khung không hỗ trợ, CSS ngoài khung không được dùng. Bố cục vẫn theo mẫu cục bộ.
+Đây là giới hạn chủ động: HTML ngoài subset nên dùng công cụ native hoặc mẫu đơn vị; không xóa CSS rồi thử lại để coi là bảo toàn nguồn.
 API `html_to_docx(..., overwrite=False)` và CLI mặc định từ chối file tồn tại; `--overwrite` cần quyền người dùng.
 Helper `skills/local/shared/office-documents/scripts/docx_helpers.py` có `new_document()` portable sau copy/export;
 `new_nd30_document()` chỉ dùng trong workspace có renderer. Không quảng bá hàm ND30 cho export độc lập.
