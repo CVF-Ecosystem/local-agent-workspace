@@ -44,3 +44,8 @@ Kinh nghiệm đã kiểm chứng với `.docx`; mở khi dựng hoặc sửa fi
   loi không, tiêu đề có mồ côi không, ảnh có bị co quá nhỏ không, số trang khớp chưa.
 - Phông thay thế trong môi trường kiểm tra (không có Times New Roman thật) có thể vẽ chữ "Đ" đậm đứng đầu từ trông như bị gạch ngang. Đọc XML của run đó: nếu không có
   `w:strike` thì chỉ là lỗi hiển thị của phông thay thế; không đổi chữ, bỏ đậm hay đổi phông để "sửa".
+
+## Helper tùy chọn
+
+Xem mục Công cụ Word bổ sung trong `../SKILL.md` để chọn native, helper portable hoặc renderer chỉ trong workspace.
+Helper nằm ở `../scripts/docx_helpers.py`; không có dependency mạng, cần python-docx.

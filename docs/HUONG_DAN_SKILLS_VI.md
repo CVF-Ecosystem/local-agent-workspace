@@ -15,7 +15,7 @@ một từ khóa giống tên kỹ năng.
 |---|---|
 | Sửa một câu trong thông báo | Làm trực tiếp. |
 | Soạn SOP từ quy định và mẫu nội bộ | Dùng nguồn/mẫu của dự án; tham khảo `office-documents` khi hữu ích. |
-| Soạn đề xuất hoặc báo cáo dài cần trao đổi sâu | Cân nhắc `doc-coauthoring`; hỏi trước khi dùng. |
+| Soạn đề xuất hoặc báo cáo dài cần trao đổi sâu | Cân nhắc `doc-coauthoring` khi người dùng muốn cùng trao đổi và soạn từng phần; nếu đã đủ nguồn có thể soạn trực tiếp. |
 | Tạo Word/PDF từ nội dung đã duyệt | Dùng công cụ hoặc kỹ năng sẵn có (native) định dạng phù hợp; không phải soạn lại nội dung. |
 | Vẽ biểu đồ từ bảng số liệu | Cân nhắc `data-charts`; kiểm tra bảng bằng `spreadsheet-check` nếu dữ liệu chưa sạch. |
 | Làm báo cáo HTML từ dữ liệu | Cân nhắc `html-reports`, kỹ năng sẵn có (native) hoặc báo cáo cũ đang có. |
@@ -25,7 +25,7 @@ một từ khóa giống tên kỹ năng.
 | Mô tả quy trình, phân vai, sơ đồ | Cân nhắc `process-mapping`, kết hợp `office-documents` khi viết thành tài liệu. |
 | Báo cáo tuần, thông báo, bản tin, FAQ, báo cáo sự cố | Cân nhắc `internal-comms`. |
 | Công văn, tờ trình, báo cáo gửi cơ quan khác hoặc trình ký | Cân nhắc `vn-admin-documents`; dùng quy chế văn thư của đơn vị trước nếu có. |
-| Dựng sổ theo dõi, form nhập liệu hoặc phụ lục tính bằng Excel | Cân nhắc `excel-workbooks`; kiểm tra file có sẵn bằng `spreadsheet-check`. |
+| Dựng sổ theo dõi, form nhập liệu hoặc phụ lục tính bằng Excel | Cân nhắc `excel-workbooks` khi cần công thức và báo cáo tự cập nhật; kiểm tra dữ liệu có sẵn bằng `spreadsheet-check`. |
 | Dashboard offline đọc file Excel của người dùng | Cân nhắc `excel-html-viewer`; biểu đồ theo `data-charts`. |
 
 Đây là ví dụ lựa chọn, không phải bảng định tuyến bắt buộc. Trợ lý AI có thể kết hợp
@@ -110,7 +110,7 @@ Chín kỹ năng này ngắn, mỗi kỹ năng có phần “khi nào dừng” 
 | `internal-comms` | Cần viết cho người trong đơn vị đọc nhanh. | Báo cáo tiến độ (Tiến độ - Kế hoạch - Vấn đề), thông báo, bản tin, FAQ, báo cáo sự cố. |
 | `doc-coauthoring` | Tài liệu lớn, muốn trao đổi sâu từng bước. | Dàn ý đã duyệt, các mục soạn theo từng phần, một lượt soát cuối. |
 | `vn-admin-documents` | Cần văn bản hành chính đúng thể thức. | Bản nháp có đủ thành phần thể thức; số, ngày, người ký để `[cần xác nhận]`. |
-| `excel-workbooks` | Cần sổ theo dõi, form nhập liệu hoặc phụ lục tính bằng Excel. | File Excel có sheet nhập, sheet báo cáo bằng công thức, dữ liệu mẫu tách riêng; đã tính lại không lỗi. |
+| `excel-workbooks` | Cần sổ theo dõi, form nhập liệu hoặc phụ lục tính bằng Excel. | File có sheet nhập, báo cáo bằng công thức và dữ liệu mẫu tách riêng; cần tính lại và kiểm không lỗi. Nếu chưa tính lại, ghi rõ chưa kiểm, không coi file đã đạt. |
 | `excel-html-viewer` | Muốn xem số liệu trực quan từ file Excel mà không cài phần mềm. | Một file HTML mở offline, đọc Excel, có tab kiểm tra dữ liệu; nêu rõ giới hạn khi giao. |
 | `source-library` | Lưu và tra văn bản pháp luật, quy chế, mẫu biểu của dự án; cần biết văn bản còn hiệu lực, đã xác minh tới đâu. | Khung `references/` theo nhóm và lĩnh vực, chỉ mục `_INDEX.xlsx`, lệnh `tools/library.py` (init, check, find); trích dẫn chỉ từ file có trong thư viện. |
 
@@ -123,8 +123,9 @@ Chín kỹ năng này ngắn, mỗi kỹ năng có phần “khi nào dừng” 
 `openpyxl`; thêm `--lang en` để báo cáo bằng tiếng Anh). `vn-admin-documents` chỉ là điểm xuất phát về thể thức: quy định văn thư có thể đã đổi và đơn vị
 có thể có quy chế riêng, nên kiểm bản hiện hành trước khi ban hành.
 
-`doc-coauthoring` chỉ dùng khi bạn muốn; trợ lý AI sẽ hỏi trước, và nếu bạn từ chối thì soạn
-thẳng. Các kỹ năng còn lại không cần xin phép trước khi dùng.
+`doc-coauthoring` phù hợp khi bạn muốn trao đổi sâu và soạn từng phần; nếu yêu cầu đã đủ nguồn, trợ lý AI có thể soạn thẳng.
+Nếu cách làm này chưa được chọn, trợ lý chỉ đề xuất một lần để bạn chọn; không hỏi lại khi bạn đã chọn cùng soạn từng phần.
+Các kỹ năng khác chỉ được dùng khi phù hợp với yêu cầu và trong phạm vi đã giao.
 
 ## 7. Cách trợ lý AI tìm kỹ năng
 

@@ -1,12 +1,12 @@
 ---
 name: process-mapping
 description: >-
-  Suggestions for describing a process as a step table, a responsibility table (RACI) and a flow
-  diagram when needed. Useful when writing or reviewing a procedure, organising work, or handovers
-  between departments; never adds steps, people or deadlines that are not in the source.
-  Triggers when the user says: "process diagram", "step table", "RACI", "flowchart", "who does what at which step".
+  Turn supplied process information into a step table, responsibility table (RACI) or flow
+  diagram to write or review procedures and handovers. Do not add steps, people or
+  deadlines absent from the source. Triggers when the user says: “process diagram”, “step
+  table”, “RACI”, “flowchart”, “who does what at which step”.
 metadata:
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Describing a process with tables and diagrams

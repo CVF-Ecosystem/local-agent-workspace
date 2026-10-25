@@ -15,7 +15,7 @@ task contains a word similar to its name.
 |---|---|
 | Fix one sentence in an announcement | Do it directly. |
 | Draft a procedure from a regulation and an internal template | Use the project's sources/templates; consult `office-documents` when helpful. |
-| Draft a long proposal or report that needs deep discussion | Consider `doc-coauthoring`; ask before using it. |
+| Draft a long proposal or report that needs deep discussion | Consider `doc-coauthoring` when the user wants to work through sections together; draft directly when the request and sources are clear. |
 | Create Word/PDF from approved content | Use a suitable formatting tool or native skill; no need to rewrite the content. |
 | Draw a chart from a table of figures | Consider `data-charts`; check the table with `spreadsheet-check` if the data is not clean. |
 | Make an HTML report from data | Consider `html-reports`, a native skill or an existing report. |
@@ -25,7 +25,7 @@ task contains a word similar to its name.
 | Describe a process, roles, a diagram | Consider `process-mapping`, combined with `office-documents` when writing it up as a document. |
 | Weekly update, announcement, newsletter, FAQ, incident report | Consider `internal-comms`. |
 | Official letter, submission or report to another body or for signature | Consider `vn-admin-documents`; use the organisation's own records-management rules first if it has them. |
-| Build a tracking workbook, data-entry form or calculation appendix in Excel | Consider `excel-workbooks`; check an existing file with `spreadsheet-check`. |
+| Build a tracking workbook, data-entry form or calculation appendix in Excel | Consider `excel-workbooks` for formulas and self-updating reports; check existing data with `spreadsheet-check`. |
 | An offline dashboard that reads the user's Excel files | Consider `excel-html-viewer`; charts follow `data-charts`. |
 
 These are examples of choices, not a mandatory routing table. The assistant can combine skills when
@@ -113,7 +113,7 @@ These nine skills are short, and each has a “when to stop” part so the assis
 | `internal-comms` | You need to write something people in the organisation read quickly. | A progress update (Progress - Plans - Problems), announcement, newsletter, FAQ, incident report. |
 | `doc-coauthoring` | A large document where you want to work through it step by step. | An approved outline, sections drafted one at a time, one final review. |
 | `vn-admin-documents` | You need a correctly formatted administrative document. | A draft with all format components; numbers, dates and signatory left as `[needs confirmation]`. |
-| `excel-workbooks` | You need a tracking workbook, data-entry form or calculation appendix in Excel. | An Excel file with an input sheet, a formula-only report sheet and separate sample data; recalculated with no errors. |
+| `excel-workbooks` | You need a tracking workbook, data-entry form or calculation appendix in Excel. | A file with input and formula-based report sheets and separate sample data; recalculate and check for errors. If not recalculated, state that it remains unchecked and do not mark it passed. |
 | `excel-html-viewer` | You want to see figures from Excel files visually without installing software. | One HTML file that opens offline, reads Excel and has a data-check tab; limits stated on delivery. |
 | `source-library` | Store and look up the project's legal documents, company rules and templates; know what is in force and how well it is verified. | A `references/` layout by group and domain, an `_INDEX.xlsx` index, the `tools/library.py` command (init, check, find); quotes only from files in the library. |
 
@@ -126,8 +126,9 @@ prioritising figures, deadlines and roles. Where the impact is unclear, write "n
 Excel needs `openpyxl`; add `--lang en` for English output). `vn-admin-documents` is only a starting point for format: records-management rules may
 have changed and an organisation may have its own, so check the current version before issuing.
 
-`doc-coauthoring` is only used when you want it; the assistant will ask first, and if you decline it
-simply drafts directly. The other skills do not need permission before use.
+`doc-coauthoring` fits when you want an in-depth discussion and section-by-section drafting; when the request and sources are clear, the assistant can draft directly.
+If that approach has not been chosen, the assistant offers it once for you to choose; it does not ask again after you have chosen to co-author section by section.
+Other skills should be used only when they fit the request and its scope.
 
 ## 7. How the assistant finds skills
 

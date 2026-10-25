@@ -1,12 +1,12 @@
 ---
 name: data-charts
 description: >-
-  Gợi ý chọn và dựng biểu đồ từ dữ liệu bảng thành một file HTML mở offline (SVG thuần):
-  cột, đường, cột xếp chồng, vành khuyên, thẻ KPI, bảng kèm thanh. Có mẫu thư viện biểu đồ
-  để lấy cấu trúc. Dùng khi cần "vẽ biểu đồ"; báo cáo nhiều phần dùng thêm html-reports.
-  Kích hoạt khi người dùng nói: “vẽ biểu đồ”, “trực quan hóa số liệu”, “biểu đồ cột/đường/tròn”, “thẻ KPI”.
+  Chọn dạng và dựng biểu đồ SVG từ bảng số liệu thành một file HTML mở offline; kèm bảng
+  dữ liệu khi hữu ích. Dùng cho trực quan hóa một vài thông điệp; báo cáo nhiều phần có
+  thể dùng html-reports. Kích hoạt khi người dùng nói: “vẽ biểu đồ”, “trực quan hóa số
+  liệu”, “biểu đồ cột/đường/tròn”, “thẻ KPI”.
 metadata:
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Biểu đồ từ dữ liệu

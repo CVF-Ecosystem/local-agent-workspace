@@ -1,12 +1,14 @@
 ---
 name: source-library
 description: >-
-  Gợi ý tổ chức và tra cứu thư viện nguồn của project trong `references/` (văn bản pháp luật, quy chế, nội quy, quy định nội bộ,
-  mẫu biểu, tài liệu nguồn) với một chỉ mục Excel `references/_INDEX.xlsx`: đặt file, đặt tên, điền chỉ mục, kiểm tình trạng hiệu
-  lực, tra trước khi trích dẫn. Kích hoạt khi người dùng nói "thư viện văn bản", "lưu văn bản pháp luật", "chỉ mục tài liệu",
-  "quy chế công ty", "văn bản nào còn hiệu lực", hoặc trước khi trích dẫn một văn bản pháp luật hay quy định nội bộ.
+  Tổ chức và tra cứu nguồn của dự án trong references/ bằng chỉ mục _INDEX.xlsx, gồm văn
+  bản pháp luật, quy định nội bộ, biểu mẫu và tài liệu nguồn. Dùng khi lập/tìm trong thư
+  viện, kiểm tình trạng nguồn hoặc trước khi trích dẫn; trích nguyên văn chỉ từ file có
+  trong thư viện. Kích hoạt khi người dùng nói “thư viện văn bản”, “lưu văn bản pháp
+  luật”, “chỉ mục tài liệu”, “quy chế công ty”, “văn bản nào còn hiệu lực”, hoặc trước khi
+  trích dẫn văn bản pháp luật hay quy định nội bộ.
 metadata:
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Thư viện nguồn của project

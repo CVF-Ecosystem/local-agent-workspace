@@ -1,12 +1,12 @@
 ---
 name: vietnamese-editing
 description: >-
-  Biên tập văn bản tiếng Việt khi người dùng cần viết rõ hơn, ngắn hơn, bớt sáo rỗng
-  hoặc theo giọng văn có sẵn. Hữu ích cho đoạn văn, thông báo và báo cáo; không phải
-  bước hậu xử lý mặc định hay công cụ xác định văn bản do AI viết.
-  Kích hoạt khi người dùng nói: “chỉnh văn”, “viết lại cho gọn”, “bớt giọng máy”, “đọc tự nhiên hơn”.
+  Biên tập văn bản tiếng Việt theo yêu cầu để câu rõ hơn, ngắn hơn, bớt sáo rỗng hoặc theo
+  giọng văn có sẵn; giữ nghĩa và mức độ chắc chắn. Không phải bước hậu xử lý mặc định hay
+  công cụ xác định văn bản do AI viết. Kích hoạt khi người dùng nói: “chỉnh văn”, “viết
+  lại cho gọn”, “bớt giọng máy”, “đọc tự nhiên hơn”.
 metadata:
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Biên tập tiếng Việt theo ngữ cảnh

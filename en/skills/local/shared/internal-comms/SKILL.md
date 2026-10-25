@@ -1,12 +1,13 @@
 ---
 name: internal-comms
 description: >-
-  Suggestions for writing short internal communication in Vietnamese: weekly/monthly progress reports
-  (Progress - Plans - Problems), announcements, newsletters, frequently asked questions (FAQ) and
-  incident reports. Useful when the reader should grasp the main points in a few dozen seconds.
-  Triggers when the user says: "weekly/monthly report", "progress report", "internal announcement", "newsletter", "FAQ", "incident report".
+  Write short internal communication in Vietnamese so readers can quickly grasp the main
+  point or action: weekly/monthly updates, announcements, newsletters, FAQs and incident
+  reports. Use for brief updates; longer or reusable documents may fit office-documents.
+  Triggers when the user says: “weekly/monthly report”, “progress report”, “internal
+  announcement”, “newsletter”, “FAQ”, “incident report”.
 metadata:
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Internal communication

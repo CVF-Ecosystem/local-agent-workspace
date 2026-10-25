@@ -1,12 +1,13 @@
 ---
 name: html-reports
 description: >-
-  Gợi ý tạo hoặc cập nhật báo cáo HTML tiếng Việt, báo cáo định kỳ và trang tổng quan
-  KPI từ dữ liệu được cung cấp. Có hai mẫu một-file offline để tham khảo khi phù hợp;
-  không dành cho xây ứng dụng web, backend hay hệ thống dashboard triển khai.
-  Kích hoạt khi người dùng nói: “báo cáo HTML”, “dashboard”, “trang tổng quan chỉ số”, “báo cáo định kỳ dạng web”.
+  Tạo hoặc cập nhật báo cáo HTML tiếng Việt, báo cáo định kỳ hoặc trang tổng quan KPI từ
+  dữ liệu được cung cấp; có hai mẫu một-file offline để tham khảo khi phù hợp. Dùng cho
+  báo cáo nhiều phần, không phải ứng dụng web hoặc dashboard triển khai. Kích hoạt khi
+  người dùng nói: “báo cáo HTML”, “dashboard”, “trang tổng quan chỉ số”, “báo cáo định kỳ
+  dạng web”.
 metadata:
-  version: "1.2"
+  version: "1.3"
 ---
 
 # Báo cáo HTML gọn nhẹ

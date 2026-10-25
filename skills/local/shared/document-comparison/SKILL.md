@@ -1,12 +1,12 @@
 ---
 name: document-comparison
 description: >-
-  Gợi ý đối chiếu hai phiên bản của quy định, quy trình, biểu mẫu, hợp đồng hoặc báo cáo
-  và lập bảng thay đổi có ý nghĩa. Hữu ích khi cần biết bản mới khác bản cũ ở đâu và
-  ảnh hưởng gì đến người thực hiện; không dùng để đánh giá đúng/sai pháp lý.
-  Kích hoạt khi người dùng nói: “so sánh hai bản”, “bản mới khác bản cũ chỗ nào”, “đối chiếu quy định cũ và mới”.
+  So sánh hai phiên bản của quy định, quy trình, biểu mẫu, hợp đồng hoặc báo cáo để chỉ ra
+  thay đổi có ý nghĩa và ảnh hưởng có căn cứ đến người thực hiện; không kết luận đúng sai
+  pháp lý. Kích hoạt khi người dùng nói: “so sánh hai bản”, “bản mới khác bản cũ chỗ nào”,
+  “đối chiếu quy định cũ và mới”.
 metadata:
-  version: "1.2"
+  version: "1.3"
 ---
 
 # Đối chiếu hai phiên bản tài liệu

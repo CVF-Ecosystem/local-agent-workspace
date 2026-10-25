@@ -1,13 +1,13 @@
 ---
 name: vn-admin-documents
 description: >-
-  Gợi ý soạn văn bản hành chính tiếng Việt đúng thể thức (công văn, tờ trình, báo cáo, thông báo,
-  biên bản, quyết định): các thành phần thể thức, cách ghi số và ký hiệu, địa danh, ngày tháng, trích
-  yếu, nơi nhận, và thông số trình bày thường gặp. Dùng khi đơn vị áp dụng thể thức theo quy định về
-  công tác văn thư hoặc theo quy chế văn thư riêng; không thay thế quy định hiện hành hay ý kiến pháp chế.
-  Kích hoạt khi người dùng nói: “soạn công văn”, “soạn tờ trình”, “đúng thể thức văn bản”, “số và ký hiệu”, “nơi nhận”.
+  Soạn hoặc rà soát thể thức văn bản hành chính tiếng Việt (công văn, tờ trình, báo cáo,
+  thông báo, biên bản, quyết định) theo quy chế của đơn vị hoặc quy định nhà nước mà đơn
+  vị áp dụng. Dùng khi cần trình ký hoặc gửi chính thức; không thay thế việc kiểm tra quy
+  định hiện hành hay ý kiến pháp chế. Kích hoạt khi người dùng nói: “soạn công văn”, “soạn
+  tờ trình”, “đúng thể thức văn bản”, “số và ký hiệu”, “nơi nhận”.
 metadata:
-  version: "1.1"
+  version: "1.2"
 ---
 
 # Văn bản hành chính đúng thể thức
@@ -66,3 +66,15 @@ Khi dựng file Word: phần đầu (tên cơ quan bên trái, quốc hiệu bê
 Văn bản gửi ra ngoài hoặc trình ký thuộc "Mức thận trọng cao" trong `AGENTS.md`: đối chiếu từng số,
 ngày, tên, tên cơ quan, số và ngày của văn bản căn cứ với nguồn; nêu rõ phần chưa đối chiếu được.
 Nhận định pháp lý trong văn bản chỉ là gợi ý để người có thẩm quyền xác nhận.
+
+## Dựng và kiểm Word trong workspace
+
+Có thể dùng native/mẫu đơn vị hoặc helper Word của `office-documents` (xem mục Công cụ Word bổ sung).
+`new_nd30_document()` và renderer HTML là tùy chọn chỉ trong workspace LAW; helper generic export
+độc lập không tự cung cấp đầy đủ cấu hình ND30. Renderer chỉ nhận chữ/bảng đơn giản, từ chối ảnh,
+bảng lồng và span không hỗ trợ trước ghi; không ghi đè mặc định.
+
+Chạy `python tools/check_output.py FILE.docx --profile nd30` khi cần ép kiểm mẫu hành chính. `auto`
+nhận qua Quốc hiệu; `none` bỏ kiểm bố cục khi dùng mẫu khác. Đây là kiểm cơ học section cuối và
+phông/cỡ chủ đạo, không thay đối chiếu từng thành phần, mở/render xem từng trang hoặc kiểm văn bản
+hiện hành. Kết quả ĐẠT không xác nhận pháp lý hay toàn thể thức.

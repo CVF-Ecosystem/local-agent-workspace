@@ -14,3 +14,12 @@ assets/branding.js
 assets/logo.*
 assets/fonts/*
 !assets/fonts/README.md
+
+# Credentials and key material are ignored as a source-control safeguard; package selection enforces its own boundary.
+*[cC][rR][eE][dD][eE][nN][tT][iI][aA][lL][sS]*[.][jJ][sS][oO][nN]
+[.][eE][nN][vV]
+[.][eE][nN][vV].*
+*.[pP][eE][mM]
+*.[kK][eE][yY]
+!*.[eE][xX][aA][mM][pP][lL][eE]
+!*.[eE][xX][aA][mM][pP][lL][eE].[jJ][sS][oO][nN]

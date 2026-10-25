@@ -1,12 +1,13 @@
 ---
 name: office-documents
 description: >-
-  Suggestions for drafting or editing Vietnamese business documents from existing sources and
-  templates: procedures/SOPs, forms, guidance, announcements or progress reports. Useful for
-  organising content around the reader and the work; simple sentence edits can be done directly.
-  Triggers when the user says: "draft a procedure", "SOP", "form", "internal guidance", "adjust the document to the template".
+  Draft or edit Vietnamese business documents from sources and templates: procedures/SOPs,
+  forms, internal guidance or structured reports, as Word files or text. Use when content
+  needs structure around its readers and tasks; short edits can be done directly. For
+  administrative format, consider vn-admin-documents. Triggers when the user says: “draft
+  a procedure”, “SOP”, “form”, “internal guidance”, “adjust the document to the template”.
 metadata:
-  version: "1.1"
+  version: "1.2"
 ---
 
 # Business documents
@@ -71,3 +72,26 @@ reader-testing with another agent or multi-option brainstorming is needed if the
 
 When the content fits the scope, the reader can use it and the gaps are stated, stop. Do not add an
 explanatory note, a comparison or a round of style editing on your own.
+
+## Supplementary Word tools
+
+Use native tools or the unit's template when suitable. Optional `scripts/docx_helpers.py` uses
+`python-docx` for paragraphs/tables and can be copied or exported with the skill. `new_document()`
+works independently. `new_nd30_document()` is LAW-workspace-only and requires `tools/vn_legal_docx.py`;
+for standalone export, use native tools/a verified template. The generic helper does not provide
+all ND30 settings.
+
+Inside LAW, `python tools/vn_legal_docx.py INPUT.html OUTPUT.docx` converts supported HTML text and
+simple tables with the local administrative template. Optional dependencies are `beautifulsoup4`
+and `python-docx`; nothing is installed automatically. Images, nested tables, automatically numbered
+lists, unsupported structure and invalid/oversized spans refuse before writing. This is not a way
+to preserve every structure of an existing document. Existing output is refused by default;
+`--overwrite` requires the user's permission. No inferred document type/issuer is added to metadata.
+
+Before delivery run `python tools/check_output.py FILE.docx`: text checks use stdlib; `auto` applies
+A4/margins/font/size only when the national title is present, `nd30` forces those checks, `none` skips
+layout checks. Final-section dimensions/margins, dominant font/size with style inheritance, suspicious
+line breaks/duplicate text and page-number warnings on long files are mechanical checks only.
+Other sections, per-paragraph spacing/alignment, images, comments, tracked changes and visual rendering
+are not verified. Resolve findings and open/render the result; PASS does not certify legal compliance,
+current validity or visual quality. See `references/word-technical-notes.md`.

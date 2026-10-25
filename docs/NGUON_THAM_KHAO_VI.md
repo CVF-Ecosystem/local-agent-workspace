@@ -117,3 +117,28 @@ và mẫu `basic-charts.html` trong trình duyệt Chromium local (không lỗi 
 không cuộn ngang ở chiều rộng điện thoại). Bản dịch tiếng Anh do agent viết, chưa được người bản ngữ rà soát.
 Script `check_spreadsheet.py` được chạy thử trên file mẫu tự tạo (xlsx và csv), chưa trên dữ liệu thật. Chưa chạy thử các skill mới trong Claude Desktop, Codex Desktop hay Antigravity, không đo mức
 giảm token hay mức giảm vòng lặp, và không chứng nhận tương thích native trên mọi phiên bản.
+
+## Bổ sung chọn lọc sau RC4 — 24/10/2026
+
+Nhận vào 14 skill hiện có phần mô tả phạm vi/kích hoạt đã biên tập; giữ phần nghiệp vụ trước đó.
+Hai skill Word nhận thêm checker và helper tùy chọn. Nguồn là bản làm việc local sau RC4 do người dùng cung cấp;
+renderer nguồn trước chọn lọc có SHA-256: c5b9c2f77b770596ec3296467660464f8f110b5119a15c43909cd1132c9d6020. Đã đọc và sửa chọn lọc, không nhập downloader, credential, cấu hình host hay ba skill riêng.
+
+Phân loại **SUPPLEMENT**: cấu hình và phép kiểm trình bày nghiệp vụ bổ sung cho native/mẫu đơn vị, không thay native và không tuyên bố tốt hơn native.
+
+| Điều kiện tiếp nhận | Kết quả trong phạm vi đã nhận |
+|---|---|
+| Nhu cầu/tăng thêm | Đạt: bổ sung kiểm XML bố cục và helper đoạn/bảng; định tuyến phân biệt việc nhỏ với tài liệu nghiệp vụ. |
+| Xuất xứ | Đạt: bản local ngày 24/10/2026, chỉnh chọn lọc và review trong kho gốc; không chép dữ liệu riêng hoặc gán giấy phép mới cho nguồn người dùng. |
+| Quyền/an toàn | Đạt: người dùng cho cập nhật gốc; không mạng/cài đặt; output mặc định tạo độc quyền, cấu trúc đã biết không bảo toàn được bị từ chối trước ghi. |
+| Hiệu quả | Đạt cho ca cơ học tổng hợp đúng/sai/ngoài phạm vi, xung đột output và thiếu dependency; chưa kiểm thị giác Word, luật hiện hành hoặc hiệu quả hơn native. |
+| Dùng được | Checker DOCX dùng thư viện chuẩn; helper generic cần python-docx và dùng được khi export. Hàm ND30/renderer chỉ trong LAW, renderer thêm beautifulsoup4; không tự cài. |
+| Tái dùng | Phạm vi chung text/table và quy tắc nguồn được giữ; không thêm skill ID, quyền sản phẩm hoặc đăng ký native. |
+
+Kết luận **ROOT_ELIGIBLE trong phạm vi trên**, đã có quyền cập nhật gốc từ người dùng. Trạng thái AVAILABLE của 14 skill hiện có được giữ;
+việc này không cấp quyền vào project mới hoặc chứng minh host tự nạp skill. Ảnh, bảng lồng và cấu trúc không hỗ trợ phải dùng công cụ khác.
+Checker chỉ kiểm section cuối và phông/cỡ chủ đạo; PASS không chứng nhận đầy đủ thể thức, pháp lý hay cách hiển thị.
+
+Không nhận bộ skill_regression local phiên bản này: đối chiếu trích đoạn/ngữ cảnh, ca thiếu và tình trạng tính Excel chưa đủ để làm cổng đáng tin.
+Bộ kiểm và test Word được nhận riêng; chưa thử routing trên host AI hoặc người dùng thật. Ánh xạ host trong installer, tích hợp TVPL/ttport,
+skill riêng và các script sửa XML Excel chưa được tiếp nhận trong lần này.

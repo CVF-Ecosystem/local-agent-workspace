@@ -217,6 +217,21 @@ RC4 mới dựng trên sạch2552d7d:4/4gate đạt,1622test/1006.437s/6skip; pa
 
 **Đối chiếu toàn mốc và phần còn lại:** (1) preservation trước–sau/refusal nguồn/schema lạ, (2) projectB/native isolation, (3) package boundary và rule10, (4) hướng dẫn VI/EN cùng support claim có giới hạn, (5) cleancommit/gate/actualartifact/review đã được nhận đúng subset; evidence còn hiệu lực tái dùng,272shippingbytes/Rootmain-index giữ. (6) Công bố vẫn chờ grant riêng cho tag `v1.9.0-rc4` đúng2552 và đúng3asset, prerelease=true/latest=false; chưa tạo tag/draft/release. Sau grant phải kiểm lại remote/source/hash, kiểm draftasset rồi publish và tải3asset đối chiếu, giữ stable/latest1.8.0 vàRC1/RC2. V0–V5 giữ WITH_LIMITS; V6 realfeedback/usability DEFERRED sau Prototype/MVP, host enforcement và môi trường chưa đo không được nhận; Windows3.8/macOS chưa hỗ trợ. Không coi xong Git/CI/localgate là toànV7/MVP/roadmap hoàn tất. Receipt chỉ cập nhật metadata workspace gốc, không đổi snapshot roadmap trong source sạch hoặc thêm commit.
 
+## Hấp thu sau RC4 — ABSORB-20261024 (operator24/10, đã nhận delta có giới hạn)
+
+Owner Main giữ Orchestrator/reviewer; user cho Luna max thi công, Sol medium khi khó. Nguồn đề xuất là bản local v1.8.0 nâng cấp tại chỗ; tiếp nhận chọn lọc, không chép cây hoặc thay RC4 đã công bố. Brief hiện hành/revision/owner và toàn điều kiện mốc tại đầu HANDOFF.
+
+| Phần bổ sung cho V7/V1 | Điều kiện nhận delta | Trạng thái |
+|---|---|---|
+| T1 an toàn dữ liệu riêng khi đóng gói | Filter chung manifest/ZIP/new/adopt + từ chối cây bẩn + regression giả, không thay user data/pin/routing | ABSORBED_WITH_LIMITS; Root Path fix + integration1640/6skip |
+| T2 Word nghiệp vụ | Checker/helper/renderer generic có test semantic, thiếu dependency báo đúng, xuất skill không đứt dependency; intake SUPPLEMENT phạm vi hẹp | ABSORBED_WITH_LIMITS; checker/helper/renderer có giới hạn + integration |
+| T3 định tuyến14skill và hồi quy mẫu | Trigger hẹp, không nhận3skill riêng/host mapping chưa kiểm; case/chấm có giới hạn, docs/index/VI-EN khớp | ROUTING_ACCEPTED_WITH_LIMITS; grader local REJECT_VERSION, giữ14skillIDs |
+| Integration/review | Main đọc diff/test/EOL; targeted trước, integration cuối theo delta; không coi local9test thay suite source | PASS1640tests/6skip; package0error15baselinewarnings; rev4 |
+
+Kết quả cuối24/10: fullsourceunittest1640/1263.338s/6skip/0failure-error; hash package+test316entries trước/sau khớp.5skip do file-symlink1314,1non-Windows; không đổi historicalCI. Log working/absorb-20261024/full-suite.log; hash/receipt tại HANDOFF. HEAD/index/pins giữ, chưacommit/RCmới.
+
+Ngoài lần hấp thu: TVPL/ttport và skill riêng chờ intake riêng; T5 chưa có patch được review. Commit/CI/RC mới/publication không được mở bởi quyền sửa này. V0–V5WITH_LIMITS, V6 người thậtNOT_RUN, V7 RC4subset đãcôngbố, CI3/5 và host/môi trường chưa đo giữ nguyên; hoàn tất delta không đóng toàn V7/roadmap/stable. Bộ bảo vệ source/template/userdata hiện có phải được giữ, mọi điều kiện chưa kiểm vẫn ghi rõ trong HANDOFF.
+
 ## Nghiệm thu và giữ hướng
 
 **Bắt buộc khi giao việc:** áp dụng quy tắc10 của AGENTS và mục8.3 roadmap nền: nêu mốc sản phẩm/đầu ra/điều kiện đạt; đối chiếu toàn bộ phần đã đạt và còn thiếu của mốc, kể cả bị chặn/hoãn/chưa kiểm hoặc ngoài lần giao; chỉ rõ lần giao đóng phần nào và toàn bộ phần còn lại sau bàn giao. Ghi ngay tại hàng/brief trong HANDOFF, không lập sổ hay tranche mới. Brief thiếu đối chiếu thì hoàn thiện trước khi giao thi công; nhận kết quả phải cập nhật trạng thái mốc, không đồng nhất xong tranche với đạt mốc.

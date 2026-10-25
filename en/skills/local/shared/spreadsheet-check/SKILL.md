@@ -1,12 +1,13 @@
 ---
 name: spreadsheet-check
 description: >-
-  Suggestions for a quick check of an Excel/CSV file before its figures are used for a report,
-  summary or HTML dashboard: structure, empty cells, duplicates, data types, units, totals that do
-  not match. Reports findings only and never edits the original data.
-  Triggers when the user says: "check the Excel/CSV file", "is the data clean", "check before making the report".
+  Check an Excel/CSV file read-only before using its figures in a report, summary or
+  dashboard: structure, blanks, duplicates, data types, units, totals and formula errors.
+  Do not edit the source; a simple question about one cell or figure can be checked
+  directly. Triggers when the user says: “check the Excel/CSV file”, “is the data clean”,
+  “check before making the report”.
 metadata:
-  version: "1.3"
+  version: "1.4"
 ---
 
 # Checking a spreadsheet before use

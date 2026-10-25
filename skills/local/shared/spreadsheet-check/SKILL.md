@@ -1,12 +1,13 @@
 ---
 name: spreadsheet-check
 description: >-
-  Gợi ý kiểm tra nhanh một file Excel/CSV trước khi dùng số liệu cho báo cáo, tổng hợp
-  hoặc dashboard HTML: cấu trúc, ô trống, trùng lặp, kiểu dữ liệu, đơn vị, tổng không khớp.
-  Chỉ báo phát hiện, không tự sửa dữ liệu gốc.
-  Kích hoạt khi người dùng nói: “kiểm tra file Excel/CSV”, “dữ liệu có sạch không”, “kiểm trước khi làm báo cáo”.
+  Kiểm tra chỉ đọc file Excel/CSV trước khi dùng số liệu cho báo cáo, tổng hợp hoặc
+  dashboard: cấu trúc, ô trống, trùng lặp, kiểu dữ liệu, đơn vị, tổng và lỗi công thức.
+  Không sửa dữ liệu gốc; câu hỏi về một ô hoặc con số đơn giản có thể kiểm tra đúng phần
+  liên quan. Kích hoạt khi người dùng nói: “kiểm tra file Excel/CSV”, “dữ liệu có sạch
+  không”, “kiểm trước khi làm báo cáo”.
 metadata:
-  version: "1.3"
+  version: "1.4"
 ---
 
 # Kiểm tra bảng tính trước khi dùng

@@ -1,14 +1,14 @@
 ---
 name: vn-admin-documents
 description: >-
-  Suggestions for drafting Vietnamese administrative documents in the proper format (official letter,
-  submission, report, notice, minutes, decision): the format components, how to write the number and
-  symbol, place, date, summary line, recipients, and the usual layout parameters. Use when the
-  organisation applies the format of the state records-management rules or its own records-management
-  regulation; it does not replace current regulations or legal advice.
-  Triggers when the user says: "draft an official letter", "draft a submission", "in the proper document format", "number and symbol", "recipients".
+  Draft or review the format of Vietnamese administrative documents (official letters,
+  submissions, reports, notices, minutes and decisions) under the organisation’s rules or
+  the government rules it applies. Use for documents to be signed or sent formally; this
+  does not replace checking current rules or legal advice. Triggers when the user says:
+  “draft an official letter”, “draft a submission”, “in the proper document format”,
+  “number and symbol”, “recipients”.
 metadata:
-  version: "1.1"
+  version: "1.2"
 ---
 
 # Administrative documents in the proper format
@@ -71,3 +71,15 @@ When building a Word file: the heading block (agency name on the left, national 
 A document going outside or for signature falls under "High-caution mode" in `AGENTS.md`: check each
 figure, date, name, body name, and the number and date of basis documents against the source; state what
 could not be checked. Legal observations in the document are suggestions for a person with authority to confirm.
+
+## Building and checking Word inside LAW
+
+Use native tools/the unit's template or the optional Word helpers in `office-documents` (see
+Supplementary Word tools). `new_nd30_document()` and the HTML renderer are LAW-workspace-only;
+the portable generic helper does not provide every ND30 setting. The renderer supports simple
+text/tables, refusing images, nested tables and unsupported spans before writing. No overwrite by default.
+
+Run `python tools/check_output.py FILE.docx --profile nd30` to force the administrative profile.
+`auto` detects the national title; `none` skips layout checks for another template. Mechanical checks
+cover the final section and dominant font/size; they do not replace checking each component,
+opening/rendering every page, or checking current law. PASS does not certify legal compliance or the full format.

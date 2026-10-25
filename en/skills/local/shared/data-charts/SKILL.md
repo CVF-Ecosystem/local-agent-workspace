@@ -1,13 +1,12 @@
 ---
 name: data-charts
 description: >-
-  Suggestions for choosing and building charts from tabular data as a single offline-openable HTML
-  file (plain SVG): bars, lines, stacked bars, donuts, KPI cards, tables with bars. Includes a chart
-  library template to take structure from. Use when asked to "draw a chart"; for multi-section
-  reports also use html-reports.
-  Triggers when the user says: "draw a chart", "visualise the figures", "bar/line/pie chart", "KPI card".
+  Choose chart types and build SVG charts from tabular data in one offline HTML file,
+  adding a data table when useful. Use for visualising a few messages; a multi-section
+  report may use html-reports. Triggers when the user says: “draw a chart”, “visualise the
+  figures”, “bar/line/pie chart”, “KPI card”.
 metadata:
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Charts from data

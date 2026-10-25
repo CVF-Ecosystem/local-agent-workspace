@@ -1,13 +1,13 @@
 ---
 name: doc-coauthoring
 description: >-
-  A process for co-authoring a large or important document with the user (proposal, long report, set
-  of procedures, submission): gather context once, settle the outline, draft section by section,
-  review at the end. Use only when the user wants to work through it in depth; when sources are
-  already enough, draft directly.
-  Triggers when the user says: "let's write it together", "draft it section by section", "help me write a long submission/proposal/report" and wants in-depth discussion.
+  Co-author a large or important document step by step: gather context, settle an outline,
+  draft sections and review at the end. Use when the user wants an in-depth discussion;
+  work directly when the sources are enough or the edit is short. Triggers when the user
+  says: “let’s write it together”, “draft it section by section”, “help me write a long
+  submission/proposal/report” and wants in-depth discussion.
 metadata:
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Co-authoring a document

@@ -1,12 +1,12 @@
 ---
 name: html-reports
 description: >-
-  Suggestions for creating or updating Vietnamese HTML reports, periodic reports and KPI overview
-  pages from supplied data. Two single-file offline templates are included as references when they
-  fit; not for building web apps, backends or deployed dashboard systems.
-  Triggers when the user says: "HTML report", "dashboard", "metrics overview page", "periodic report as a web page".
+  Create or update Vietnamese HTML reports, periodic reports or KPI overview pages from
+  supplied data; two single-file offline templates are available when they fit. Use for
+  multi-section reports, not web apps or deployed dashboards. Triggers when the user says:
+  “HTML report”, “dashboard”, “metrics overview page”, “periodic report as a web page”.
 metadata:
-  version: "1.2"
+  version: "1.3"
 ---
 
 # Lightweight HTML reports

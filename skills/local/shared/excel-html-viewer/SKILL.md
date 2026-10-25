@@ -1,12 +1,13 @@
 ---
 name: excel-html-viewer
 description: >-
-  Gợi ý dựng công cụ HTML một file, chạy offline, đọc file Excel của người dùng để xem số liệu trực quan
-  (thẻ chỉ số, bộ lọc, biểu đồ, danh sách việc cần chú ý, tab kiểm tra dữ liệu). Chịu được tên sheet, tên cột
-  và giá trị gõ tay không chuẩn. Không dành cho báo cáo từ dữ liệu cố định (xem `html-reports`) hay kiểm tra file (xem `spreadsheet-check`).
-  Kích hoạt khi người dùng nói: “dashboard đọc file Excel”, “xem số liệu trực quan từ Excel”, “công cụ HTML chạy offline”, “bảng điều hành đọc Excel”.
+  Dựng một file HTML mở offline để đọc và trực quan hóa file Excel của người dùng (thẻ chỉ
+  số, bộ lọc, biểu đồ, mục cần chú ý, tab kiểm tra dữ liệu). Dùng khi cần xem tương tác từ
+  workbook; báo cáo dữ liệu cố định dùng html-reports, còn biểu đồ độc lập dùng
+  data-charts. Kích hoạt khi người dùng nói: “dashboard đọc file Excel”, “xem số liệu trực
+  quan từ Excel”, “công cụ HTML chạy offline”, “bảng điều hành đọc Excel”.
 metadata:
-  version: "1.2"
+  version: "1.3"
 ---
 
 # Công cụ HTML đọc file Excel

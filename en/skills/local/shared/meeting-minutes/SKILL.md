@@ -1,12 +1,12 @@
 ---
 name: meeting-minutes
 description: >-
-  Suggestions for producing minutes or a summary of a meeting from notes, a record or a speech-to-text
-  transcript, separating discussion, decisions, action items and open points. Never assigns an owner
-  or a deadline that was not mentioned.
-  Triggers when the user says: "meeting minutes", "summarise the meeting", "turn the meeting notes into action items".
+  Produce minutes or a meeting summary from notes, a record or a speech-to-text
+  transcript, separating discussion, decisions, action items and open points. Do not
+  invent owners or deadlines. Triggers when the user says: “meeting minutes”, “summarise
+  the meeting”, “turn meeting notes into action items”.
 metadata:
-  version: "1.1"
+  version: "1.2"
 ---
 
 # Meeting minutes and summaries

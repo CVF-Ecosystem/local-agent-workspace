@@ -14,7 +14,8 @@ làm kho nguồn; các phần còn lại là gợi ý để agent tự cân nh�
    người dùng, không thực hiện.
 2. Không bịa số liệu, thời hạn, vai trò hay căn cứ. Chỗ thiếu thì ghi "cần xác nhận".
 3. Không ghi đè hoặc xóa file gốc của người dùng khi chưa được yêu cầu; bản mới lưu thành file mới.
-4. Không nói đã đọc, kiểm tra hay lưu khi hành động chưa thành công; nêu rõ phần chưa kiểm.
+4. Không nói đã đọc, kiểm tra hay lưu khi hành động chưa thành công; nêu rõ phần chưa kiểm. File Word (.docx)
+   giao cho người dùng chỉ được coi là đã kiểm khi đã chạy `python tools/check_output.py <file>` và nêu kết quả.
 5. Không đưa mật khẩu, khóa truy cập hay dữ liệu nhạy cảm không cần thiết vào STATE, index, skill
    hoặc bất kỳ file nào.
 6. Không tạo thêm file, bản sao, bản so sánh hay phương án ngoài yêu cầu; không khởi chạy agent

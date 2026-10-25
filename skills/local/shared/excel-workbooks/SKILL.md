@@ -1,13 +1,13 @@
 ---
 name: excel-workbooks
 description: >-
-  Gợi ý dựng sổ theo dõi, form nhập liệu, báo cáo tự tổng hợp và phụ lục tính bằng Excel
-  (openpyxl, công thức thật): bố cục nhập → báo cáo, dropdown, tô màu trạng thái, ô tham số,
-  dữ liệu mẫu tách riêng, kiểm tra trước khi giao. Không dùng để kiểm tra dữ liệu có sẵn
-  (xem `spreadsheet-check`) hay vẽ biểu đồ HTML (xem `data-charts`).
-  Kích hoạt khi người dùng nói: “sổ theo dõi”, “form nhập liệu Excel”, “báo cáo tự tổng hợp”, “phụ lục Excel”, “bảng điều hành trong Excel”.
+  Thiết kế sổ theo dõi, form nhập liệu, báo cáo tự tổng hợp hoặc phụ lục tính bằng Excel:
+  công thức thật, bố cục nhập → báo cáo, danh mục và ô tham số, dữ liệu mẫu tách riêng.
+  Dùng khi người dùng sẽ nhập tiếp hoặc cần số liệu tự cập nhật; kiểm tra file có sẵn bằng
+  spreadsheet-check. Kích hoạt khi người dùng nói: “sổ theo dõi”, “form nhập liệu Excel”,
+  “báo cáo tự tổng hợp”, “phụ lục Excel”, “bảng điều hành trong Excel”.
 metadata:
-  version: "1.1"
+  version: "1.2"
 ---
 
 # Dựng sổ và báo cáo bằng Excel

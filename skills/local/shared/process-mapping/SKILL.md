@@ -1,12 +1,12 @@
 ---
 name: process-mapping
 description: >-
-  Gợi ý mô tả quy trình thành bảng bước, bảng phân vai (RACI) và sơ đồ luồng khi cần.
-  Hữu ích khi viết hoặc rà soát quy trình, sơ đồ tổ chức công việc, điểm chuyển giao giữa
-  các bộ phận; không tự thêm bước, người hoặc thời hạn không có trong nguồn.
-  Kích hoạt khi người dùng nói: “sơ đồ quy trình”, “bảng bước”, “RACI”, “flowchart”, “ai làm gì ở bước nào”.
+  Mô tả thông tin quy trình thành bảng bước, bảng phân vai (RACI) hoặc sơ đồ luồng để viết
+  hay rà soát cách làm và điểm bàn giao. Không tự thêm bước, người hoặc thời hạn ngoài
+  nguồn. Kích hoạt khi người dùng nói: “sơ đồ quy trình”, “bảng bước”, “RACI”,
+  “flowchart”, “ai làm gì ở bước nào”.
 metadata:
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Mô tả quy trình bằng bảng và sơ đồ

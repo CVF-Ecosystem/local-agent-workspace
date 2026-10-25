@@ -119,17 +119,39 @@ def rd(rel):
     with io.open(P(rel), encoding='utf-8', newline='') as f:
         return f.read()
 
-def all_files():
+def private_file(name):
+    """Tên file tài khoản/khóa thật không được giao. Mẫu kết thúc .example.json hoặc .example vẫn được giữ.
+    Real credentials/key filenames are never shipped; public example templates remain eligible."""
+    n = name.lower()
+    if n.endswith(('.example.json', '.example')):
+        return False
+    return ('credentials' in n and n.endswith('.json')) or n == '.env' or n.startswith('.env.') or n.endswith(('.pem', '.key'))
+
+
+def _walk(base, skip_private=True):
+    base = os.fspath(base)
     out = []
-    for d, dirs, files in os.walk(ROOT):
-        dirs[:] = sorted(x for x in dirs if x not in SKIP_DIRS and not (d == ROOT and x in ROOT_ONLY_SKIP)
-                         and os.path.relpath(os.path.join(d, x), ROOT).replace(os.sep, '/') != RUNTIME_DIR)
+    for d, dirs, files in os.walk(base):
+        dirs[:] = sorted(x for x in dirs if x not in SKIP_DIRS and not (d == base and x in ROOT_ONLY_SKIP)
+                         and os.path.relpath(os.path.join(d, x), base).replace(os.sep, '/') != RUNTIME_DIR)
         for f in sorted(files):
-            rel = os.path.relpath(os.path.join(d, f), ROOT).replace(os.sep, '/')
+            rel = os.path.relpath(os.path.join(d, f), base).replace(os.sep, '/')
             if f.endswith(('.pyc', '.bak')) or '.bak-' in f or f == '.git':  # '.git' là file khi dùng git worktree / a file in a git worktree
+                continue
+            if skip_private and private_file(f):
                 continue
             out.append(rel)
     return out
+
+
+def all_files():
+    return _walk(ROOT)
+
+
+def private_files(base=None):
+    """Các file riêng trong cây được duyệt, bỏ qua runtime/native như selection chung.
+    Private files from the shared traversal, with the same runtime/native exclusions."""
+    return [r for r in _walk(base or ROOT, skip_private=False) if private_file(r.rsplit('/', 1)[-1])]
 
 _SCAFFOLD = {}
 
@@ -547,6 +569,8 @@ def tree_problems():
             out.append('Bản phát hành có file .cvf ngoài closure v3 (v1/v2, fixtures, evidence hoặc runtime): %s.' % ', '.join(extra[:8]))
         if missing:
             out.append('Bản phát hành thiếu file closure .cvf v3: %s.' % ', '.join(missing[:8]))
+    for rel in private_files():
+        out.append('Bản phát hành có file tài khoản/khóa thật %s (không được đóng gói).' % rel)
     rt = P(RUNTIME_DIR)
     if os.path.lexists(rt):
         out.append('Bản phát hành có dữ liệu vận hành %s (không được đóng gói).' % RUNTIME_DIR)
@@ -821,6 +845,8 @@ def check_all(release=False):
             if anc: cands.append(anc + '/' + tok)
             cands += [shared + d + '/' + tok for d in sk]
             if tok in GENERATED or any(os.path.exists(P(c)) for c in cands): continue
+            if tok.endswith('.json') and private_file(tok.rsplit('/', 1)[-1]) and os.path.isfile(P(tok[:-5] + '.example.json')):
+                continue  # Link tài liệu tới credentials thật chỉ hợp lệ khi có mẫu .example.json tương ứng.
             if tok.rstrip('/') in ('dist', 'dist/'): continue
             errs.append('%s: đường dẫn `%s` không tồn tại.' % (f, tok))
     # mẫu issue GitHub (kho nguồn, không vào gói) phải cùng nội dung phiếu phản hồi

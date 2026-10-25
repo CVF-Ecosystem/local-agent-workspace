@@ -1,5 +1,159 @@
 # HANDOFF
 
+## ABSORB rev4 — giao commit/push ngày 25/10/2026 / Main owner / READY_FOR_COMMIT_PUSH
+
+User yêu cầu push phần bổ sung lên https://github.com/CVF-Ecosystem/local-agent-workspace.git và nói tiếp sau gián đoạn. Quyền mới cho commit/push phần ABSORB đã review lên origin/main; thay giới hạn Git cũ cho đúng lần này, không mở tag/RC/asset hoặc CI trả phí thủ công. Main tự tích hợp, các Worker đã dừng; không giao agent mới.
+
+Mốc vẫn là bổ sung source cho V7/V1 theo hàng Hấp thu sau RC4 của roadmap nghiệp vụ. T1/T2/T3 routing/intake và review đã đạt WITH_LIMITS; full suite 1640/6skip và log còn đó. Lần này đóng phần commit/push source đã nhận: đúng remote, 50 file tracked delta đã xác định + đúng 3 file implementation/test mới; không thêm work/evidence/output untracked lịch sử hoặc log test. Trước push kiểm diff/EOL, package/guides, targeted Word/boundary và upstream. Không đổi pin/MANIFEST, code hoặc profile để dọn cảnh báo. Nếu upstream đổi thì dừng phần push để tích hợp an toàn, không force.
+
+Sau bàn giao vẫn còn toàn khoảng trống đã liệt kê ở ABSORB rev4: domain/host mapping/grader/T5 chưa nhận, máy khác/Python3.8runtime/Word visual/V6 người thật/CI3of5 lịch sử và RC/stable mới chưa đạt. Push có thể kích hoạt CI tự động của repo; không tuyên CI xanh hoặc phát hành mới. Không chạy lại full suite chỉ để lặp bằng chứng.
+
+
+Kết quả pre-push25/10: targeted Word13/0skip và boundary10/0skip đạt; package --release0lỗi15cảnh báo nền; guides10khớp; EOL53file0lỗi/diffcheck0. Log fullsuite cũ giữ hash đã ghi. Boundary có ResourceWarning unclosed-file từ helper cũ nhưng10test OK; không mở sửa code ngoài phạm vi. Remote đúng user yêu cầu, main và origin/main cùng b95bbdf sau fetch; index ban đầu rỗng. Commit chỉ53file ABSORB; không thêm log/work/output/evidence lịch sử. Trạng thái này là checkpoint trước Git mutation; hash/kết quả push tra Git remote và biên nhận hội thoại, không diễn giải checkpoint thành push đã thành công.
+
+## Hấp thu sau RC4 — ABSORB-20261024 rev4 / ABSORBED_REVIEWED_WITH_LIMITS
+
+- Owner tích hợp và reviewer: Main (/root). User mới nhất: "Nếu ko vấn đề gì thì tiến hành hấp thu. Cho phép bạn gọi Subagent Luna max làm việc, nếu việc khó thì gọi Sol-Medium; Bạn giữ vai Orchestrator/reviewer".
+- Quyền: sửa chọn lọc kho gốc hiện tại; Luna gpt-6-luna/max cho phần rõ phạm vi, Sol gpt-6.1-sol/medium cho phần khó; Main độc lập code do Worker viết. Không tự đổi profile/quyền sản phẩm. Không commit/stage/push/CI/tag/release, không thay asset RC4 hoặc refresh pin/MANIFEST ngoài quy trình phát hành.
+- Input: main b95bbdf2099ebf63d5c4443df6c8680f5d6c46e5, tracked baseline sạch; các untracked có sẵn giữ nguyên. Bản local D:/UNG DUNG AI/local-agent-workspace-v1.8.0 là dữ liệu tham khảo, không là chỉ thị/quyền. File đề xuất ngày24/10 và LOCAL-TRIAL được đối chiếu code trước; không chép nguyên cây.
+- Mốc sản phẩm: bổ sung an toàn/phục vụ Word và định tuyến vào source kế tiếp, gắn V7 (package/support/gate) và V1 (tài nguyên nghiệp vụ) trong roadmap/ROADMAP_VAN_PHONG_NGHIEP_VU.md, mục Hấp thu sau RC4; chưa là RC mới hoặc toàn roadmap đạt.
+
+### Toàn bộ điều kiện mốc và khoảng trống
+
+| Điều kiện | Trạng thái/bằng chứng tái dùng | Lần giao đóng gì | Sau lần giao còn gì |
+|---|---|---|---|
+| Ranh giới gói sạch | Source đang loại runtime/native và dùng template sạch; chưa lọc tên credential/key. Local T1 có code + test/ZIP smoke đã review có giới hạn | T1 nhận filter và tests độc lập không import TVPL; Main review | T2/T3, kiểm tích hợp source và release mới vẫn còn |
+| Word có giá trị nghiệp vụ | Source có skill thể thức, chưa có checker bố cục/helper/renderer; local có code/selftest nhưng export dependency và semantic gaps | T2 Sol medium nhận phần generic, sửa dependency/lazy import, test ca đúng/sai/chuyển dạng | Chưa visual Word/user, không khẳng định tuân thủ pháp lý tự động |
+| Định tuyến chính xác/tài nguyên discoverable | Source14skill, local17; 3skill mới không mặc nhiên được nhận. Local description/regression có ích nhưng host/lexical grader chưa chứng minh toàn chất lượng | T3 Luna nhận chỉ phần tương ứng14skill/các case độc lập đủ tiêu chí, không importer host mapping chưa kiểm | Mọi host thật/native, claim hiệu quả hơn native và integration domains vẫn chưa kiểm |
+| An toàn và tiếp nhận skill | Chuẩn skills/README sáu điều kiện hiện có giữ nguyên, user cấp cập nhật gốc sau assessment chọn lọc | Ghi hồ sơ gọn trong HANDOFF/Notes index; SUPPLEMENT generic business, không thêm skill ID/global/native | TVPL/ttport/ra-soat riêng cần intake riêng; T5 chưa có patch, DEFER |
+| Kiểm tích hợp và review source cuối | Evidence RC4 chỉ có giá trị baseline; local9test không thay suite gốc | Main review từng delta; targeted tests trước, một full integration suite cuối nếu ảnh hưởng đủ rộng; package/guides/EOL/diffcheck | Commit sạch/fullgate actual ZIP/CI/quyền RC mới là bước phát hành riêng, chưa được grant ở đây |
+| Toàn mốc sản phẩm cũ | V0-V5 WITH_LIMITS; V6 kỹ thuật nhận/người thật NOT_RUN; V7 RC4 subset công bố, CI3/5 | Không giao lại/pilot/paid demo để lấp chờ; chỉ nhận delta mới | User/GUI/máy khác/host enforcement/x14 tổng quát/môi trường chưa đo/stablefinal giữ nguyên trạng thái |
+
+### Phân công, thứ tự và vùng ghi
+
+- Một phần thi công chính mỗi lúc. T1 Luna max: tools/check_package.py, .gitignore, phần T1 tools/README.md, tests/test_package_user_boundary.py hoặc test đóng gói độc lập mới trong tests. Không import TVPL/ttport/test_local_trial nguyên file.
+- T2 Sol medium sau T1 dừng và review: tools/check_output.py, tools/vn_legal_docx.py generic nếu đạt intake, office-documents/scripts/docx_helpers.py và reference liên quan, hai skill office-documents/vn-admin-documents VI/EN đúng phần, tests Word độc lập. Không tải web/pháp luật; input tổng hợp không tên người thật. Không sửa shared policy/contract/pin. Body semantic/standalone export cần kiểm; thiếu source/dependency trả NOT_CHECKED thay success.
+- T3 Luna max sau T2 review: description/Use when/Notes cho14skill đã có (không3skill mới), doc hướng dẫn kỹ năng VI/EN; tools/skill_regression.py + fixture/doc chỉ nhận phần generic chứng minh được và không cần tích hợp domain. Không host/global installer mapping hoặc auto-load claim chưa kiểm; không thêm universal rules nặng vào AGENTS chỉ theo tên file.
+- Main độc quyền HANDOFF/STATE/roadmap và tổng hợp intake/CHANGELOG nếu cần. Worker không ghi context hay tự gọi agent, không stage/commit. Worker tự đọc baseline/diff và brief ngay trước ghi; rev/status đổi hoặc chồng file thì dừng báo Main, không sửa/chi phí tiếp.
+- Runtime chưa thay chỉ do proposal. Không copy MANIFEST/START_HERE/project/state/profile/.cvf/roles projection/README local/ZIP/data nguồn. Không đọc credential thật. Temp fixture tự dọn được; không đụng untracked hiện có.
+
+### Acceptance T1 hiện giao
+
+1. Lọc *credentials*.json, .env/.env.*, *.pem/*.key (không phân biệt hoa/thường); giữ các mẫu .example.json/.example theo đúng policy đã chọn. Cùng selection dùng cho manifest, ZIP, new/adopt. Không mở rộng scan userdirs/native/runtime hoặc thay thứ tự hiện có.
+2. --release từ chối cây phát hành có file riêng; không coi gitignore là bộ lọc package. Ngoại lệ doc path chỉ cho credentials json có example template tương ứng, không miễn link hỏng rộng.
+3. Tests độc lập dữ liệu giả: direct selection/manifest, build hoặc stage ZIP/verify, new_project/adopt liên quan; đối chứng mẫu được giao, injection cây phát hành bị chặn, nguồn người dùng giữ nguyên. Không hạ assertion/skip; không recursive full gate trong test.
+4. Kiểm hẹp module package user boundary/workflows chịu ảnh hưởng; test mới chạy; EOL --check-eol đúng file chạm + git diff --check. Không chạy full suite/buildRC gốc mỗi lượt. Main xem delta, sửa nhỏ rõ nguyên nhân trong phạm vi review và kiểm hẹp, không thêm vòng reviewer chỉ cho sửa nhỏ.
+5. Trả file đổi/hash/diff summary, commands/count/skip/finding và chưa kiểm; model/effort requested so quan sát thật, lỗi/vòng sửa. Bàn giao dừng ghi để Main review; kết quả code là candidate đến khi Main nhận.
+
+### PRE_EFFECT / hiện giao
+
+Main đã review T1 plan/code delta local so source: thay đổi nhỏ ở selection, không schema/quyền/pins; accept triển khai trong scope trên. Root chưa viết implementation. T1 Worker Luna đã bàn giao và xác nhận dừng ghi. Root review nhận WITH_LIMITS; T2 giao Sol medium rev2 như phần bổ sung dưới đây, T3/integration và toàn khoảng trống bảng trên vẫn còn hiệu lực.
+
+### T1 đã nhận đúng delta / 24-10
+
+- Luna/max sửa4file .gitignore/check_package/toolsREADME/test_package_user_boundary, đọc diff và chạy10tests/OK/0skip trước sửa Git cuối; sau rút gọn rule chạy1Git fixture/OK/0skip/core.ignorecase=false. EOL0, diffcheck0. Model/effort là requested, không có attestation runtime độc lập.
+- Root đọc toàn diff4file, tái hiện Path-vs-str private_files làm lọt tests/hidden.key trong vùng quét; tự sửa nhỏ _walk normalize os.fspath + thêm đối chứng Path vào ca shared selection. Root chạy đúng1target/OK/0skip/0.929s, EOL4file0/diffcheck0. Không cần vòng reviewer thêm cho sửa nhỏ này.
+- T1 code/tests/docs REVIEW_ACCEPTED_WITH_LIMITS; final integration/workflows vẫn chờ. Test ZIP/new/adopt dùng builder --skip-check trên fixture tạm để tránh recursion; đây không phải gate phát hành source thật. ResourceWarning filehandles cũ không được sửa ngoài scope.
+
+### T2 hiện giao / PRE_EFFECT Main nhận kế hoạch có điều kiện dưới đây
+
+Nguồn local chỉ là candidate; Main chưa viết implementation Word. Phân loại SUPPLEMENT: cấu hình trình bày nghiệp vụ và checker deterministic thêm vào14skill sẵn có, không thay native Word hoặc tự chứng nhận pháp lý. User đã cấp cập nhật gốc chọn lọc; sáu điều kiện skills/README phải ghi kết quả/giới hạn cuối trong HANDOFF + Notes index. Worker đọc mã ứng viên đầy đủ trước chạy.
+
+Vùng ghi T2: tools/check_output.py; tools/vn_legal_docx.py nếu đạt điều kiện; skills/local/shared/office-documents/scripts/docx_helpers.py; phần Word của hai skill office-documents/vn-admin-documents VI/EN + reference cần thiết; tools/README.md phần Word; tests Word độc lập mới. Có thể đưa refactored constants dùng chung tối thiểu trong module sẵn có, không tạo framework/engine. Main giữ intake/index/roadmap/context. Không đưa TVPL/ttport, không copy cả test_local_trial, không installer/global/native/mạng thật.
+
+Acceptance T2:
+1. Check_output đọc DOCX bằng stdlib XML/zip như trước; kiểm .md/.txt/.html và DOCX không cần import python-docx/bs4/renderer, không đổi encoding stdout khi import. Cập nhật --profile auto|nd30|none có opt-out rõ, giữ generic DOCX hợp lệ (kể cả Letter khi không chọn profile) dùng được. Profile hành chính từ Quốc hiệu hoặc ép; A4/lề/font/cỡ/số trang là kiểm cơ học hỗ trợ, không chứng nhận toàn thể thức/pháp lý. Thiếu/corrupt/unsupported phải phân biệt với pass.
+2. Helper dùng độc lập sau copy/export: new_document generic phải hoạt động khi không có tools/ ở cha. Với new_nd30_document, giải quyết dependency bằng resource tự đủ hoặc hạn chế workspace-only được ghi rõ và không quảng bá hàm đó cho chế độ export; không im lặng tạo sai style, không nhân bản renderer. Native path luôn là lựa chọn.
+3. Renderer nếu nhận: đọc đầy đủ1177dòng để đánh giá trước chạy; chỉ HTML text/table hỗ trợ. Hiện local bỏ img và làm phẳng nested table: phải từ chối cấu trúc đã biết mất trước ghi; kiểm trong content được chọn để không chặn logo ngoài nội dung. Giới hạn span lỗi/quá mức rõ; không mất nguồn hoặc ghi đè output có sẵn mặc định ở CLI/API. Không mang metadata subject sai loại cho tài liệu generic; không đổi nguồn. Không thể bảo toàn/kiểm thì báo Main để không nhận nhánh đó, không cảnh báo sau khi đã biết mất dữ liệu.
+4. Tests independent observable XML/content: valid profile, wrong dimensions/margins/font, inherited styles khi khả thi, generic+none compatibility; header/sign table, KT/TL split, amendment câu Chương/Mục không thành heading; colspan/rowspan đủ chữ, unsupported img/nested/span từ chối trước file; output tồn tại giữ bytes; thiếu deps/error code; copy helper ra temp ngoài workspace. Dùng tổng hợp, không hai Nghị định output làm bằng chứng pháp luật, không tên người thật. Không mock chính checker/renderer khi chứng minh behavior.
+5. CLI thiếu dependency báo rõ và khác0, không tự cài. Nêu optionaldeps hiện có, tương thích Python3.8 heuristic và runtime3.11 thực phải tách. Test có thể ghi skip khi môi trường thật không có optional dependency, nhưng mọi ca T2 bắt buộc phải thực chạy trên máy này trước nhận; skip không làm bằng chứng đạt.
+6. Chỉ targeted Word/module bị ảnh hưởng, không full suite/source build. Tự đọc diff/EOL/diffcheck, báo hashes/results/skip/bugs chưa kiểm; xác nhận dừng ghi khi giao. Main reviewer độc lập sẽ sửa nhỏ rõ và kiểm hẹp, rồi T3 mới được giao. Nếu parser/source/dependency cần sửa lớn vượt phạm vi, dừng phần đó báo Main.
+
+Sau T2 còn T3, hồ sơ intake/Notes, source integration cuối; mọi gap V6người thật/V7host/môi trường/CI3of5, x14 tổng quát, RC/commit/quyền công bố vẫn giữ. T1 giữ nguyên ngoại trừ finding concrete ảnh hưởng T2 phải báo Main.
+
+### T2 review nhận delta / Main 24-10
+
+- Sol/medium bàn giao11file rồi dừng ghi. 13ca Word mới +3workflow đã thực chạy,0skip; renderer/helper selftest đạt, EOL11file0/diffcheck0, py38heuristic4file0; actualPython3.11.9/docx1.2.0/bs4 4.15.0. Quickvalidate4skill đạt sau retryUTF8 ba lượt đọc cp1252. Các lỗi newlinefixture/helperstdout/stylefallback đã sửa trong cùng T2.
+- Main đọc diff checker/4skill/2reference/toolsREADME, code boundary/preflight/emission và tests; renderer chỉ nhận text/table và từ chối unsupported/ảnh/nested/list/span trước ghi, serialization trước exclusive-create. Metadata không suy loại/cơ quan. Helper generic portable, ND30 workspace-only có giới hạn rõ.
+- Main tái hiện hidden attr ở root selected HTML vẫn ghi output và plaintext PAGE header làm mất pagewarning. Reviewer tự sửa nhỏ: đưa root node vào preflight; chỉ nhận PAGE từ instrText/fldSimple, không văn bản thường; thêm controls vào2test. Hai target đạt/0skip/0.115s. Bổ sung guard CSS text-decoration đã biết mất nghĩa gạch chữ và kiểm lại knownloss1target/0skip/0.089s. EOL3file0/diffcheck0 trước bổ sung1line CSS, sẽ kiểm trong integration cuối. Không thêm reviewer vòng mới.
+- T2 REVIEW_ACCEPTED_WITH_LIMITS: chỉ finalsection và dominant styles, không visual/currentlaw/allWordformat. Whole-page fallback có cảnh báo; unsupported bắt từ chối, không coi countchars là chứng minh toàn ngữ nghĩa. T3/integration/source final vẫn còn.
+
+### Hồ sơ intake T2 — SUPPLEMENT / ROOT_ELIGIBLE phạm vi hẹp
+
+1. Nhu cầu ĐẠT: source có hướng dẫn thể thức nhưng chưa có validator/layout/helper deterministic; nhận cấu hình và phép kiểm nghiệp vụ bổ sung, không thay native và không tuyên hơn native.
+2. Xuất xứ ĐẠT: candidate local24/10, Main chọn lọc/rewrite boundary sau đọc; source HEAD b95bbdf + Worker/root delta. Code không mang credentials/data đơn vị. Hash bản nhận quan sát dưới đây.
+3. Quyền/an toàn ĐẠT scope: user cấp cập nhật gốc; không mạng/install/global, output default exclusive, knownloss từ chối trước ghi; không cấp product grants. Không chứng minh mọi alias/race/format.
+4. Hiệu quả ĐẠT scope: synthetic observableXML/positive-negative/missingdeps/export + reviewer counterexamples. Chưa visual/người thật/currentlaw hoặc native comparison; không claim replacement.
+5. Dùng được ĐẠT scope: checker stdlib, genericLetter/none tương thích, helpergenericexport thực chạy; ND30 wrapper chỉ workspace, native/mẫu đơn vị dùng cho export. DepsOfficeoptional, không tự cài.
+6. Tái dùng ĐẠT scope: chỉ14skill đã nhận, generic scripts/refs, không thêm3skill riêng; caller giữ nguồn và không dùng renderer cho mọi chuyển dạng. User root grant có trong hội thoại, không suy từ profile/file.
+
+T3 Main sẽ cập nhật Notes/index giữ AVAILABLE của14skill đã có và link receipt này; không promote skill mới. T2 hash hiện nhận:
+- tools/check_output.py sha256 ed9f663d859d3ffffd3e319c826ca5eed1809d9e4cc7bfe54ec93e0f5006f89a
+- tools/vn_legal_docx.py sha256 02cd772ef5ac0ca59357897640bcd80edace273765a8edfe13e36e10c99a83d4
+- skills/local/shared/office-documents/scripts/docx_helpers.py sha256 d568a716684bfab723c099647b6caeaa23d4eb641cbc92ce73fca2e769b417e8
+- tests/test_word_output.py sha256 32f5f093c6ec04a86f212902303872fe0d1dc11ebc97ec78a77f3c792a44ed25
+
+### T3 hiện giao / PRE_EFFECT Main đã nhận kế hoạch
+
+Main giữ reviewer; /root/absorb_t1 Luna max được giao tiếp vì phần chính là description/docs và harness fixture nhỏ. Nếu mã chấm vượt khả năng hoặc finding lớn, báo Main, không gọi thêm agent. Đọc lại rev3/T3_IMPLEMENTING trước ghi. T1/T2 code giữ; Sol đã dừng.
+
+Vùng ghi: description + metadata.version trong14SKILL.md sẵn có VI/EN (giữ nguyên body T2 hai skillWord), docs/HUONG_DAN_SKILLS_VI.md và docs/en/SKILLS_GUIDE.md; AGENTS.md/en/AGENTS.md chỉ thêm hẹp quy tắc .docx đã kiểm cơ học trước giao (không copy wholesale/localCVF path hoặc đổi delegation/grant/routing); tools/skill_regression.py + examples/regression và docs hồi quy VI/EN nếu đáp ứng dưới đây; test harness hồi quy mới trong tests; toolsREADME chỉ phần harness. Main độc quyền index/Notes/intake/STATE/HANDOFF/roadmap/CHANGELOG. Không installer host mapping,3skill mới, xlsx_xml_tools/mo_hinh/check_offline_html chưa intake, policy/pins/manifest, global/native, stage/commit/network/CI. Không viết hoặc tham chiếu skill TVPL/ttport không có trong source.
+
+Acceptance T3:
+1. Mô tả routing theo sản phẩm và giá trị nghiệp vụ thực, ngắn/phân biệt, giữ native/tác vụ nhỏ linh hoạt. Không nhét điều kiện đọc mọi tài nguyên hay workflow nặng. Cùng14skillIDs, body nghiệp vụ/capabilities/grant giữ nguyên, bump version có ý nghĩa và VI/EN khớp. Hai bodyWord T2 được giữ.
+2. Hồi quy chỉ là rubric chấm file mẫu, không chứng minh agent dùng skill/host hay compliance. Bỏ claim "fail nghĩa bỏ skill" và "works mọihost"; không bắt chạy lại mọi lần đổi prose. Raw sourcefixture là minh họa không luật thật.
+3. Nếu nhận skill_regression: đọc đủ candidate, adapt API Word source mới, không import domain hoặc soi credentials. PASS chỉ trong scope rõ; missingrequestedcase/dependency/tool error không thành toànđạt. Lexical quote40 là quá yếu: kiểm đúng trích đoạn mục tiêu nếu dùng, và ghi không kiểm ngữ nghĩa/provenance đầy đủ; falsepositive negativecontrol. Case Excel không tuyên đã tính lại khi chỉ cóformula hoặc dữ liệu tự nhétcache; thiếu LibreOffice/calc engine báo chưa kiểm riêng, không nhận đủ6ca khi chỉ5. Selftest của grader không là host invocation.
+4. Meaningful unit tests cho grader: file thiếu/corrupt/unsupported/childcode73 không falsepass; samplepositive/negative trên Word/quote thực, không mock chính grader khi chứng minh detection. Fixtures không có thông tin/tên thật. Không máy thật/native registration/paidproof.
+5. Docs nguồn mẫu/quote không bypass source-library: dùng project thử/dữ liệu giả, nếu kiểm workflow nguồn thì setupcopy/sync trong thư viện theo grantuser; nếu chỉ literalfixture thì ghi không chứng minh quy trình thư viện. Không biến samplequotes thành xác minh pháp lý.
+6. Ghi lệnh/thư mục output rõ; pathchecker source/staged release phải nhận docs không kéo tests vàoZIP. Chạy targetedunit/selftest trong scope (report missing calc coverage honest), quickvalidate các skill chạm bằng -Xutf8, EOL/diffcheck. Không fullsuite/buildsource, Main sẽ integration cuối một lần. Phần nào không đạt điều kiện thì để ngoài nhập, báo rõ thay vì lách tiêu chí.
+7. Trả file/hash/count/skip/errors/limits, dừng ghi trước Mainreview. Main có quyền sửa nhỏ rõ và kiểm hẹp trong cùng T3, không vòngreview phụ.
+
+Toàn bảng mốc đầubrief vẫn là baseline/gaps: T1/T2 đã nhận targeted đúng scope, chưa fullsource cuối; T3/intakeNotes/docs integration còn làm. V6người thậtNOT_RUN, V7publicRC4subset/CI3of5/hostenforcement/OSchưađo, domainintake/T5/commit/CI/release mới vẫn ngoài lần này. Không tự nhận toàn roadmap.
+
+### T3 nhận chọn lọc / Main review 24-10
+
+- Luna/max xác nhận dừng ghi32file:28frontmatter descriptions/version +2guide+AGENTS VI/EN. Validator native skill-creator28/28 đạt; consistency14/14, EOL32file0 và diffcheck0. Không chạyfullgate. Script validator ở native, không copy vào source; Root đã chỉ đường dẫn khi Worker chỉ tìm source tools.
+- Main đọc đủ28description, diff AGENTS/guide và phạm vi bản thân; không thấy thêm skillID hoặc hostmapping. Body28SKILL giữ như sau T2; metadata tăngminor theo nội dung. Root review nhận routing/docs WITH_LIMITS, không chứng minh hostusage.
+- Root sửa nhỏ guideVI/EN: giữ điều kiện Excel phải tính lại/kiểm lỗi; nếu chưa tính thì chưađạt, không chỉ báo trạng thái rồi coi xong. Đồngsoạn chỉ đềxuất1lần khi chưa chọn; không hỏi lại nếu user đãchọn, khớp body gốc. Không sửa body/code.
+- Grader/fixtures/regressiondocs/tests local KHÔNG NHẬN PHIÊN BẢN NÀY: falsegreen khi thiếu nguồn/ca, literal40yếu, claimfail=>bỏskill và hostall không bằng chứng, không chứng minh Excel recalc. Không dựng grader mới vì trùng bộchecker T2. Installer hostmapping/3skill riêng/xlsxXML extras/T5 vẫn chưa nhận theo disposition đã chốt; không hạ tiêu chí để nhận.
+- Main cập nhật14UseWhen/Notes VI/EN, giữAVAILABLE và provenance cũ; ghi hồsơ intakeSUPPLEMENT sáu điều kiện cógiới hạn vào docs/NGUON_THAM_KHAO_VI.md + docs/en/SOURCES_AND_REFERENCES.md để receipt đi cùng tài nguyên, không trỏ người nhận ZIP tới HANDOFF mẫu rỗng.
+
+### Chuyển integration source cuối / Main owner
+
+- T1/T2/T3 phần được chọn đã nhận targeted/delta review; Worker/Sol đãdừng, không còn owner ghi code song song. Main không viết implementation gốc, chỉ các sửa nhỏ reviewer đã khai. Không yêu cầu reviewer vòng thêm cho sửa nhỏ.
+- Phần lần này đóng: đồngbộ HTML owner hiện có, packagecheck/release-tree/py38heuristic, EOL/diff và một fullunittest integration source trên bytes cuối. Không refresh MANIFEST/pin hoặc dựng/phát hành RC mới. Tạo đúng1log fullsuite trong working/absorb-20261024 phục vụ evidence, không workorder/sổ mới.
+- Sau kiểm vẫn còn cleancommit/actualRC/CI mới khi user cấp, máy khác/GUI/người thật/host thật/currentlaw và mọi gap V0–V7 cũ; không gọi số test là nghiệmthu toànV7/roadmap. T1 đãthửbuilder trênfixturechứkhôngbuildsourceproduction. Source Word optionaldepskhácmôi trường có thểskip cần báothật.
+- Root giữ HEAD/index; untracked lịch sử nguyên. User grant mới chỉ mở code/asset tài nguyên/thử nội bộ và nativeLuna/max+Sol/medium, không network/Gitpublication/global admin.
+
+### Integration đã hoàn tất — receipt source cuối
+
+- Full unittest source đã mở, session exec43691; log working/absorb-20261024/full-suite.log (file mới, không ghi đè). Không chạy gate lặp. Source package --release đã đạt0lỗi/15cảnh báo baseline; EOL mọi file chạm0 và diffcheck0; HTML owner cập nhật4trang/6trang không đổi.
+- Binding trước chạy SHA256 6c3c755bcd1880ea2fa236e85da3b085ab4cb3c83a79a5269f52a3c6cfd1c87a trên316entries (projection package không branding + file test, không phải mọi OS/dependency/legacy input). Parent đối chiếu lại cùng tập sau khi child xong. Context live và runtime không thuộc projection; các dòng ghi vận hành không thay code đã test.
+- Session43691 đã kết thúc exit0. Không poll hoặc chạy lại suite; kết quả cuối và giới hạn ở receipt dưới.
+
+### Nhận kết quả cuối / 24-10 — cùng ABSORB rev4
+
+- Một full unittest integration: python -B -m unittest discover -s tests -v. Ran1640tests trong1263.338s; OK,6skip,0failure/error; parentexit0/1270.109s. Log working/absorb-20261024/full-suite.log SHA256 f3922ea3c8081df0e0d7a80053d94af0628ef40314c781e7787fa87dedf5ef64 giữ nguyên raw. Không có fullsuite vòng hai.
+- 6skip:5ca file-symlink không tạo được trên máy này (WinError1314/non-admin: context_update target, execution_profile linktarget, library_sync2lockleaf và transactions journalleaf);1ca non-Windows refusal không áp dụng Windows. Không gọi5ca đó đãkiểm và không lấy hardlink/junction thay. EvidenceCI cũ riêng không đổi lịch sửlocal.
+- Binding316entries (279deliveryfiles khôngbranding +37testfiles) trước/sau 6c3c755bcd1880ea2fa236e85da3b085ab4cb3c83a79a5269f52a3c6cfd1c87a khớp. Tập này không bao hàm mọi OS/dependency/legacyinput; HEAD/index và protectedpins được kiểm riêng. pin_problems=[]; HEAD giữ b95bbdf2099ebf63d5c4443df6c8680f5d6c46e5; index không đổi.
+- Package --release/py38heuristic/guide sync:0lỗi15cảnh báo baseline (14README khôngliệtkêIDskill +CRLF10filelịchsử), khôngđổi pin/MANIFEST để dọnwarning. HTML owner cậpnhật4trang,6khôngđổi. EOL toànfilechạm +3file mới0/diffcheck0; SourceIndex14hàng mỗi ngôn ngữ, AVAILABLE giữ.
+- Delta source:50trackedfiles modified +3new implementation/testfiles: tools/vn_legal_docx.py, skills/local/shared/office-documents/scripts/docx_helpers.py, tests/test_word_output.py; thêm1log evidence trongworking. Untracked lịch sử khác giữ. Khôngstage/commit/push/CI/RC/tag/release/global/native/productgrant.
+
+### Đối chiếu mốc sau hấp thu
+
+- T1 ĐẠT delta: selection chung lọc nhóm tên file private, sample vẫn giao, tree bẩn từ chối, regressions qua source/fullsuite. Mainreview/rootPathfix đã kiểm; không hứa quét được mọi secret theo nội dung.
+- T2 ĐẠT delta SUPPLEMENT: checkerstd, helperportablegeneric/ND30workspaceonly, renderertexttable từ chối knownloss trước ghi, defaultnooverwrite, testsemantic/missingdeps +reviewerfixes +fullsuite. Không visualWord/luật hiện hành/allformat/race.
+- T3 ĐẠT phần routing/docs14skill VI/EN, bodyT2 giữ; grader/fixtures local REJECT_VERSION và không có trong source, không coi phần đó đãthi công. Root giữ acceptanceExcel và nguồn cấp phươngpháp đồngsoạn trongguide. Hồsơintake/Notes được cậpnhật.
+- Mốc code hấp thu chọn lọc trongsource kế tiếp ĐẠT CÓ GIỚI HẠN sau review/integration; mốc sản phẩm V7/toànroadmap/stable không được đóng bởi delta này.
+- Còn ngoài lần này/chưa nhận: TVPL/ttport/ra-soat riêng, installer hostmapping, xlsxXML extras, T5 chưapatch; grader cần thiết kế/kiểm đủ mới nhận. T4 candidate cũ còn gọi hàm suy metadata đã bỏ khỏi genericrenderer nguồn, không drop-in bằng chép file.
+- Còn chưa kiểm: nativeAIhost/nguời thật/V6pilot/máy khác/visualWordExcel/Python3.8runtime/5file-symlinklocal, môi trường Win3.8/mac vàCI3of5 cũ. Khôngmởpaidproof/CI/RC mới đểlấpchờ; commit/phát hành cần grant riêng.
+
+### Cấu hình và chất lượng thi công
+
+- User yêu cầu Luna/max cho worker và Sol/medium khi khó; T1/T3 giao /root/absorb_t1 gpt-6-luna/max; T2 parser/dependency giao /root/absorb_word gpt-6.1-sol/medium. Main giữ Orchestrator/reviewer độc lập implementation. Host chỉ xác nhận cấu hình dispatch, không attestation actualmodel/effort hoặc chi phí; không suy0USD.
+- Luna corrections: anchorREADME/UTF8fixture, Gitignorecase/negation được strictGitfixture bắt; Root sửa nhỏ Path-vs-str traversal. T3giữbody, xácnhận28validator/14consistency; Root sửa2guide đểkhônghạacceptanceExcel vàkhôngasklặp. Sol corrections: newlinefixture/helperstdout/stylefallback; Rootcounterexamples hiddenroot/PAGEplaintext/CSSstrike đãfix vàkiểm hẹp. Không tạo reviewer vòng bổ sung cho các sửa nhỏ đã rõ.
+- Bàn giao còn lại chỉ reviewdiff/commit/RC khi usergiao và các phạm vi chưa nhận; không còn Worker đang ghi hoặc phép kiểm integration đang chạy.
+
 ## Codex — README VI/EN sau công bố / V7_DOC_SYNC_DONE_LOCAL_ONLY, 24/10/2026
 
 - Kết quả Root tự soát: README.md SHA25673a7df95801c76b0cc83b64b4794eeee9e4c2a291abcb8d9223a77541e714fc6; en/README.md SHA256b3c3d3bc2aff785011b490e6dcd7176b20180e015dcd913cafb8871f79f8aaec. Link tải/currenttrial sangRC4, scopeWindowsDATAMOCK đãpháthành, source2552,gate4/4/1622test6skip,CIoverallFAILURE3/5 vàUbuntu447skip,Win/Python3.8+macOS/Python3.12chưa hỗtrợ;5symlinkCIproof cógiớihạn;V6ngườithậtNOT_RUN/stablefinal/toànroadmapcònmở. VI bổsungbộphươngpháp/luồngđạidiệnđãkiểm; startupRC4chỉWindows. EN sửa lỗiđếmskill Eleven→Fourteen ngaytrongcâyREADME theo14skillđãliệtkê. Khôngđổiacceptance hoặcclaimhost/usability. Đãxemdiffcả2so frozen2552; tựsửakhoảngtrắng vànhãnOS/Python rõràng; kiểmmetrics/relativeMarkdownlinksđạt,EOL0lỗi/diffcheck0,giữEOLgốc. Remote metadata readonlykiểmRC4published/exact2552/3assetdigest vàlatest1.8đúng. Sourcecheckout2552vẫnclean/Rootmain-index giữ. Chỉdocsworkspace+context; khôngcommit/push/tag/releasewrite/asset/HTML/build/test/CI/paid. ChưapreviewrenderMarkdowntrênGitHub; bảnREADMEtrongZIPpháthànhgiữnguyên. STATE8mục60dòng, khôngthêmtranche hoặcvòngreviewcho sửa tài liệu này.

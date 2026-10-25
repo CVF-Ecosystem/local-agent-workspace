@@ -612,7 +612,22 @@ mẫu minh họa, `isDemo`, tài nguyên mạng trong HTML) và chuyển `.csv`/
 Mã thoát: **0** đã kiểm đạt trong phạm vi hỗ trợ; **1** đã kiểm có vấn đề/cần xem xét; **2** có file chưa kiểm được.
 Kiểm nhiều file lấy trạng thái nghiêm trọng nhất, đồng thời báo từng file. Caller cũ cần cập nhật cách hiểu mã 1 và 2.
 Word: đọc thân bài, đầu/chân trang, chú thích chân trang/cuối tài liệu, kể cả chữ chia thành nhiều đoạn định dạng.
-Chưa kiểm bố cục, chữ trong ảnh, bình luận và thay đổi được theo dõi. File lỗi hoặc định dạng không hỗ trợ không được báo đạt.
+Thêm kiểm cơ học bố cục bằng stdlib: `--profile auto|nd30|none`. `auto` nhận Quốc hiệu rồi kiểm A4/lề section cuối,
+phông/cỡ chủ đạo có kế thừa style; `nd30` ép kiểm, `none` chỉ kiểm chữ. Generic DOCX khổ Letter vẫn dùng được.
+Cảnh báo ngắt dòng giữa câu, lặp chữ sau bảng, dòng trống; tài liệu hành chính dài được nhắc khi thiếu số trang.
+Chưa kiểm section khác, giãn đoạn/canh lề từng đoạn, chữ trong ảnh, bình luận, tracked changes hoặc hiển thị Word.
+File lỗi hoặc định dạng không hỗ trợ không được báo đạt; ĐẠT không chứng nhận toàn thể thức/pháp lý.
+
+`python tools/vn_legal_docx.py INPUT.html OUTPUT.docx [--title TITLE] [--overwrite]` là renderer mẫu hành chính cục bộ
+cho chữ/bảng HTML đơn giản. Cần optional `beautifulsoup4`, `python-docx`; thiếu báo lỗi khác0, không tự cài/mạng.
+Chọn khung `toanvancontent`/`divContentDoc`/`content1`, nếu không có dùng body; kiểm cấu trúc trong đúng khung đã chọn.
+Ảnh/bảng lồng/list tự đánh số/cấu trúc không hỗ trợ/span không hợp lệ bị từ chối trước ghi; span tối đa64,
+bảng tối đa1000hàng/64cột. Giữ chữ trong khung (kể cả dòng giống điều hướng), bỏ gạch trang trí để dựng đường kẻ;
+kiểm số ký tự không trắng trước ghi không thay đối chiếu nội dung. Không tải URL, không bảo toàn CSS/link/ảnh.
+API `html_to_docx(..., overwrite=False)` và CLI mặc định từ chối file tồn tại; `--overwrite` cần quyền người dùng.
+Helper `skills/local/shared/office-documents/scripts/docx_helpers.py` có `new_document()` portable sau copy/export;
+`new_nd30_document()` chỉ dùng trong workspace có renderer. Không quảng bá hàm ND30 cho export độc lập.
+`python tools/vn_legal_docx.py --selftest` chỉ kiểm mẫu tổng hợp/thông số local, không kiểm pháp luật hiện hành hay hiển thị.
 The same exit codes apply in English: 0 passed within scope, 1 findings/review, 2 not fully checked.
 `python tools/check_output.py --declaration <file>` kiểm một câu trả lời của agent đã lưu thành file: có khối "Khai báo thực hiện" / "Execution declaration" với đủ mục Cách làm, Nguồn, File, Chưa kiểm hay không; cảnh báo khi nói "sai lệch" mà không có con số.
 
@@ -645,6 +660,11 @@ nếu lệch LF/CRLF hoặc lẫn dòng kết thúc; file `-text` được nêu 
 Không tự chuẩn hóa, không kiểm toàn kho hoặc đổi gate hiện có; chế độ kiểm package thông thường không cần Git.
 Sau mỗi tranche ghi kết quả kiểm EOL cùng `git diff --check` trong phần tự soát HANDOFF; không coi diff sạch
 là đã chứng minh EOL. Đọc/ghi bằng Python phải giữ newline từ lúc đọc đến lúc ghi; file mới theo attributes (thường LF, riêng .bat dùng CRLF).
+
+Các file *credentials*.json, .env/.env.*, *.pem và *.key (không phân biệt hoa thường) bị loại khỏi
+selection chung nên không vào MANIFEST, ZIP, project mới hay bản adopt; hậu tố .example.json và .example vẫn được giữ.
+Cây phát hành có file riêng thực tế bị --release từ chối; .gitignore chỉ giúp tránh theo dõi file, không thay bộ lọc package.
+Liên kết tài liệu tới credentials JSON chỉ được xem là mẫu hợp lệ khi có file sibling .example.json tương ứng.
 
 **Bản giao (projection, I3).** `check_package.py` là owner chung của "file nào được giao" và "giao bytes nào" cho `build_release.py`, `new_project.py`, `adopt_project.py` và MANIFEST của bản giao
 (`delivery_selection`, `delivery_bytes`, `delivery_manifest`, `materialize`). Một runtime duy nhất được giao: `.cvf` chỉ gồm closure v3 liệt kê tên file (schema, policy, quy tắc/hợp đồng đọc được, entry, tám module và một README

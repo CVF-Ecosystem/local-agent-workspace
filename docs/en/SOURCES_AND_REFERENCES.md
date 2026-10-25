@@ -118,3 +118,29 @@ horizontal scrolling at phone width). The English translation was written by an 
 reviewed by a native speaker. The script `check_spreadsheet.py` was run on self-made sample files (xlsx and csv), not on real data. The new skills have not been
 run in Claude Desktop, Codex Desktop or Antigravity, no token savings or loop reduction were measured, and
 native compatibility on every version is not certified.
+
+## Selected post-RC4 additions — 24 October 2026
+
+The descriptions and activation scopes of the existing 14 skills were edited while preserving their business guidance.
+The two Word skills gained optional checks/helpers. The source is the user-provided local working copy after RC4;
+the original renderer before selection has SHA-256: c5b9c2f77b770596ec3296467660464f8f110b5119a15c43909cd1132c9d6020. It was read and adapted; downloaders, credentials, host configuration and three private skills were not imported.
+
+Classification: **SUPPLEMENT**, adding business presentation settings/checks to native tools or the organisation's template.
+This does not replace native tools or claim superiority over them.
+
+| Intake condition | Outcome within the accepted scope |
+|---|---|
+| Need and added value | XML layout checks and paragraph/table helpers supplement the existing tools; routing distinguishes small edits from business documents. |
+| Provenance | Local working copy dated 24 October 2026, selectively adapted and reviewed in the source repository; no private data or new licence imposed on user sources. |
+| Authority and safety | The user authorised the source update; no network/install; outputs use exclusive creation by default and known unsupported structures refuse before writing. |
+| Demonstrated effect | Synthetic positive/negative/out-of-scope cases, existing-output protection and missing dependencies were exercised; visual Word, current law and superiority over native tools were not tested. |
+| Usability | DOCX checking uses stdlib; the generic python-docx helper works after export. ND30/renderer routes require LAW, with beautifulsoup4 additionally needed by the renderer; nothing installs itself. |
+| Reuse | The shared text/table scope and source rules remain; no new skill ID, product grant or native registration was added. |
+
+Conclusion: **ROOT_ELIGIBLE within this scope**, with the user's source-update authority. The existing 14 AVAILABLE statuses remain;
+this grants no authority to a new project and proves no host auto-loading. Images, nested tables and unsupported structure need another tool.
+Checks cover the final section and dominant font/size; PASS certifies neither full format/legal compliance nor visual rendering.
+
+The local skill_regression grader version was not accepted: quotation/context checks, missing scenarios and Excel recalculation status
+were not strong enough to serve as a reliable gate. Word checks/tests were accepted separately. Real AI-host routing and real users remain untested.
+Installer host mappings, TVPL/ttport integrations, private skills and Excel-XML editing scripts were not accepted in this intake.

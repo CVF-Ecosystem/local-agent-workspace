@@ -1,12 +1,13 @@
 ---
 name: office-documents
 description: >-
-  Gợi ý soạn hoặc chỉnh tài liệu nghiệp vụ tiếng Việt từ nguồn và mẫu có sẵn:
-  quy trình/SOP, biểu mẫu, hướng dẫn, thông báo hoặc báo cáo tiến độ. Hữu ích khi
-  cần tổ chức nội dung theo người đọc và công việc; sửa câu đơn giản có thể làm trực tiếp.
-  Kích hoạt khi người dùng nói: “soạn quy trình”, “SOP”, “biểu mẫu”, “hướng dẫn nội bộ”, “chỉnh tài liệu theo mẫu”.
+  Soạn hoặc chỉnh tài liệu nghiệp vụ tiếng Việt từ nguồn và mẫu: quy trình/SOP, biểu mẫu,
+  hướng dẫn nội bộ hoặc báo cáo có cấu trúc, bằng Word hay văn bản. Dùng khi cần tổ chức
+  nội dung theo người đọc và công việc; câu ngắn có thể sửa trực tiếp. Văn bản hành chính
+  cần thể thức có thể dùng thêm vn-admin-documents. Kích hoạt khi người dùng nói: “soạn
+  quy trình”, “SOP”, “biểu mẫu”, “hướng dẫn nội bộ”, “chỉnh tài liệu theo mẫu”.
 metadata:
-  version: "1.1"
+  version: "1.2"
 ---
 
 # Tài liệu nghiệp vụ
@@ -72,3 +73,23 @@ brainstorm nhiều phương án nếu nhiệm vụ không cần.
 
 Khi nội dung đúng phạm vi, người đọc sử dụng được và điểm thiếu đã nêu rõ, dừng.
 Không tự thêm bản giải trình, bản so sánh hoặc vòng biên tập văn phong.
+
+## Công cụ Word bổ sung
+
+Ưu tiên native hoặc mẫu đơn vị khi phù hợp. `scripts/docx_helpers.py` là helper tùy chọn dùng
+`python-docx` cho đoạn/bảng; có thể chép riêng hoặc export cùng skill. `new_document()` dùng độc lập.
+`new_nd30_document()` chỉ dùng trong workspace LAW có `tools/vn_legal_docx.py`; khi export độc lập,
+dùng native/mẫu đã kiểm, không coi helper generic là cấu hình ND30 đầy đủ.
+
+Trong workspace, `python tools/vn_legal_docx.py INPUT.html OUTPUT.docx` chỉ chuyển chữ và bảng HTML
+đơn giản sang mẫu hành chính cục bộ; cần `beautifulsoup4` và `python-docx`, không tự cài. Ảnh, bảng
+lồng, danh sách đánh số tự động, cấu trúc không hỗ trợ hoặc span lỗi/quá mức bị từ chối trước ghi.
+Không dùng để giữ nguyên mọi cấu trúc của một tài liệu có sẵn. Mặc định từ chối output đã tồn tại;
+`--overwrite` chỉ dùng khi người dùng đã cho phép. Thông tin loại/cơ quan không được suy thêm vào metadata.
+
+Trước giao Word chạy `python tools/check_output.py FILE.docx`: kiểm chữ bằng stdlib; profile `auto`
+chỉ áp A4/lề/phông/cỡ khi có Quốc hiệu, `nd30` ép kiểm, `none` bỏ kiểm bố cục. Kiểm khổ/lề section cuối,
+phông/cỡ chủ đạo (có kế thừa style), cảnh báo ngắt dòng/lặp chữ và số trang của tài liệu dài chỉ là
+kiểm cơ học. Chưa kiểm toàn bộ section, giãn đoạn/canh lề từng đoạn, ảnh, bình luận, tracked changes
+hoặc hiển thị thực. Đọc kết quả, sửa phát hiện và mở/render xem trước; không suy ĐẠT thành chứng nhận
+pháp lý, hiệu lực văn bản hay chất lượng thị giác. Chi tiết: `references/word-technical-notes.md`.

@@ -1,12 +1,12 @@
 ---
 name: doc-coauthoring
 description: >-
-  Quy trình đồng soạn tài liệu lớn hoặc quan trọng cùng người dùng (đề xuất, báo cáo dài,
-  bộ quy trình, tờ trình): gom ngữ cảnh một lần, chốt dàn ý, soạn từng phần, soát cuối.
-  Chỉ dùng khi người dùng muốn trao đổi sâu; việc đã đủ nguồn thì soạn trực tiếp.
-  Kích hoạt khi người dùng nói: “cùng soạn”, “soạn từng phần”, “giúp tôi viết tờ trình/đề xuất/báo cáo dài” và muốn trao đổi sâu.
+  Hỗ trợ đồng soạn tài liệu dài hoặc quan trọng theo từng phần: gom ngữ cảnh, chốt dàn ý,
+  soạn từng phần, soát cuối. Phù hợp khi người dùng muốn trao đổi sâu; nếu đã đủ nguồn
+  hoặc chỉ sửa ngắn, có thể làm trực tiếp. Kích hoạt khi người dùng nói: “cùng soạn”,
+  “soạn từng phần”, “giúp tôi viết tờ trình/đề xuất/báo cáo dài” và muốn trao đổi sâu.
 metadata:
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Đồng soạn tài liệu

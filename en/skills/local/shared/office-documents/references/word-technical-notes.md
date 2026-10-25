@@ -44,3 +44,8 @@ Experience verified on `.docx`; open when building or editing a real file. It do
   is a heading orphaned, is an image shrunk too small, do the page numbers match.
 - A substitute font in the checking environment (no real Times New Roman) can draw a bold "Đ" at the start of a word so it looks struck through. Read that run's XML: if there is no
   `w:strike`, it is only a display quirk of the substitute font; do not change the text, remove bold or change the font to "fix" it.
+
+## Optional helpers
+
+See Supplementary Word tools in `../SKILL.md` for native tools, the portable helper and the workspace-only renderer.
+The shared implementation is `skills/local/shared/office-documents/scripts/docx_helpers.py` from the project root; it needs python-docx and no network.

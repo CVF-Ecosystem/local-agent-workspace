@@ -1,12 +1,13 @@
 ---
 name: internal-comms
 description: >-
-  Gợi ý soạn thông tin nội bộ ngắn gọn bằng tiếng Việt: báo cáo tiến độ tuần/tháng
-  (Tiến độ - Kế hoạch - Vấn đề), thông báo, bản tin nội bộ, câu hỏi thường gặp (FAQ) và
-  báo cáo sự cố. Hữu ích khi cần người đọc nắm ý chính trong vài chục giây.
-  Kích hoạt khi người dùng nói: “báo cáo tuần/tháng”, “báo cáo tiến độ”, “thông báo nội bộ”, “bản tin”, “FAQ”, “báo cáo sự cố”.
+  Soạn thông tin nội bộ ngắn bằng tiếng Việt để người đọc nắm ý chính hoặc việc cần làm
+  nhanh: báo cáo tiến độ tuần/tháng, thông báo, bản tin, FAQ và báo cáo sự cố. Dùng cho
+  cập nhật ngắn; tài liệu nhiều mục hoặc dùng lâu dài có thể cần office-documents. Kích
+  hoạt khi người dùng nói: “báo cáo tuần/tháng”, “báo cáo tiến độ”, “thông báo nội bộ”,
+  “bản tin”, “FAQ”, “báo cáo sự cố”.
 metadata:
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Thông tin nội bộ

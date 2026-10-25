@@ -1,12 +1,14 @@
 ---
 name: excel-html-viewer
 description: >-
-  Suggestions for building a single-file, offline HTML tool that reads the user's Excel files to show figures visually
-  (metric cards, filters, charts, a list of items needing attention, a data-check tab). Tolerates non-standard sheet names, column
-  names and hand-typed values. Not for reports from fixed data (see `html-reports`) or for checking a file (see `spreadsheet-check`).
-  Triggers when the user says: "dashboard that reads an Excel file", "see Excel figures visually", "offline HTML tool", "control board that reads Excel".
+  Build one offline HTML file that reads and visualises the user’s Excel workbook (metric
+  cards, filters, charts, items needing attention and a data-check tab). Use for an
+  interactive view of a workbook; use html-reports for fixed-data reports and data-charts
+  for standalone charts. Triggers when the user says: “dashboard that reads an Excel
+  file”, “see Excel figures visually”, “offline HTML tool”, “control board that reads
+  Excel”.
 metadata:
-  version: "1.2"
+  version: "1.3"
 ---
 
 # HTML tool that reads Excel files

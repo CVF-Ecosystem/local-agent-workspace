@@ -1,12 +1,12 @@
 ---
 name: meeting-minutes
 description: >-
-  Gợi ý lập biên bản hoặc tóm tắt cuộc họp từ ghi chú, bản ghi chép hoặc bản chuyển giọng
-  nói thành văn bản, tách rõ nội dung thảo luận, quyết định, việc cần làm và vấn đề chưa
-  chốt. Không tự gán người phụ trách hay thời hạn chưa được nói tới.
-  Kích hoạt khi người dùng nói: “biên bản họp”, “tóm tắt cuộc họp”, “ghi chú họp thành việc cần làm”.
+  Lập biên bản hoặc tóm tắt cuộc họp từ ghi chú, bản ghi hay bản chuyển giọng nói thành
+  văn bản; tách rõ thảo luận, quyết định, việc cần làm và điểm chưa chốt. Không tự gán
+  người phụ trách hoặc thời hạn. Kích hoạt khi người dùng nói: “biên bản họp”, “tóm tắt
+  cuộc họp”, “ghi chú họp thành việc cần làm”.
 metadata:
-  version: "1.1"
+  version: "1.2"
 ---
 
 # Biên bản và tóm tắt họp

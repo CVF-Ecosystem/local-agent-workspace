@@ -15,7 +15,8 @@ mandatory for source-repository work; the other sections are guidance for the ag
 2. Do not invent figures, deadlines, roles or legal bases. Mark gaps as "needs confirmation".
 3. Do not overwrite or delete the user's original files unless asked; save new versions as new files.
 4. Do not claim to have read, checked or saved something when the action did not succeed;
-   say plainly what was not checked.
+   say plainly what was not checked. A Word file (.docx) handed to the user counts as checked only
+   after `python tools/check_output.py <file>` has been run and its result reported.
 5. Keep passwords, access keys and unnecessary sensitive data out of STATE, indexes, skills
    and every other file.
 6. Do not create extra files, copies, comparisons or alternatives that were not requested; do

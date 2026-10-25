@@ -1,13 +1,14 @@
 ---
 name: source-library
 description: >-
-  Suggestions for organising and searching the project's source library in `references/` (legal documents, company rules and
-  regulations, internal decisions, templates, source documents) with one Excel index `references/_INDEX.xlsx`: where files go,
-  naming, filling the index, checking whether a document is in force, looking it up before quoting. Triggers when the user says
-  "document library", "store legal documents", "document index", "company regulations", "which documents are in force", or
+  Organise and search project sources in references/ using the _INDEX.xlsx, including
+  legal documents, internal rules, forms and source material. Use when setting up or
+  searching the library, checking source status, or before quoting; quote verbatim only
+  from a file in the library. Triggers when the user says “document library”, “store legal
+  documents”, “document index”, “company regulations”, “which documents are in force”, or
   before quoting a legal document or internal regulation.
 metadata:
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Project source library

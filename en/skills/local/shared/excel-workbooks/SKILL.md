@@ -1,13 +1,14 @@
 ---
 name: excel-workbooks
 description: >-
-  Suggestions for building tracking workbooks, data-entry forms, self-summarising reports and calculation
-  appendices in Excel (openpyxl, real formulas): an input → report layout, dropdowns, status colours, parameter
-  cells, separate sample data, checks before delivery. Not for checking existing data (see `spreadsheet-check`)
-  or drawing HTML charts (see `data-charts`).
-  Triggers when the user says: "tracking workbook", "Excel data-entry form", "self-summarising report", "Excel appendix", "dashboard inside Excel".
+  Design Excel tracking workbooks, data-entry forms, self-summarising reports or
+  calculation appendices with real formulas, an input-to-report layout, lookup lists and
+  parameters, and separate sample data. Use when users will keep entering data or need
+  figures to update; check an existing file with spreadsheet-check. Triggers when the user
+  says: “tracking workbook”, “Excel data-entry form”, “self-summarising report”, “Excel
+  appendix”, “dashboard inside Excel”.
 metadata:
-  version: "1.1"
+  version: "1.2"
 ---
 
 # Building workbooks and reports in Excel

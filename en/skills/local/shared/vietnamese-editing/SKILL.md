@@ -1,12 +1,13 @@
 ---
 name: vietnamese-editing
 description: >-
-  Editing Vietnamese text when the user needs it clearer, shorter, less cliched or in an existing
-  voice. Useful for paragraphs, announcements and reports; not a default post-processing step and not
-  a tool for deciding whether text was written by AI.
-  Triggers when the user says: "edit the wording", "rewrite it tighter", "less machine-like", "make it read more naturally".
+  Edit Vietnamese text on request to make it clearer, shorter, less cliched or closer to
+  an existing voice, while keeping its meaning and level of certainty. Not a default
+  post-processing step or a tool for deciding whether text was written by AI. Triggers
+  when the user says: “edit the wording”, “rewrite it tighter”, “less machine-like”, “make
+  it read more naturally”.
 metadata:
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Editing Vietnamese in context

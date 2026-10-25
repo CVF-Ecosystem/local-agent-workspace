@@ -1,12 +1,12 @@
 ---
 name: document-comparison
 description: >-
-  Suggestions for comparing two versions of a regulation, procedure, form, contract or report and
-  producing a table of meaningful changes. Useful for knowing where the new version differs from the
-  old and what it means for those carrying it out; not for judging legal right or wrong.
-  Triggers when the user says: "compare the two versions", "where does the new version differ from the old", "compare the old and new regulation".
+  Compare two versions of a regulation, procedure, form, contract or report to identify
+  meaningful changes and their supported impact on the people carrying them out; it does
+  not decide legal correctness. Triggers when the user says: “compare the two versions”,
+  “where does the new version differ from the old”, “compare the old and new regulation”.
 metadata:
-  version: "1.2"
+  version: "1.3"
 ---
 
 # Comparing two versions of a document
