@@ -72,8 +72,8 @@ charts and reports (`data-charts`, `html-reports`), processes and meetings (`pro
 `meeting-minutes`), correctly formatted administrative documents (`vn-admin-documents`), Excel workbooks and tools (`excel-workbooks`, `excel-html-viewer`) to editing
 (`vietnamese-editing`) and the source library (`source-library`). You do not have to call them by name.
 
-There are also five domain packs to install when needed (legal, records management, ports and logistics, HR and administration,
-internal accounting), each with a dated legal-basis table. The assistant uses installed packs by itself and suggests installing a
+There are also six trial domain packs to install when needed: legal, records management, ports and logistics, HR and administration,
+internal accounting and academic research. Packs with legal requirements include a basis table to check; the research pack provides methods and source-checking rules. The assistant uses installed packs by itself and suggests installing a
 missing one.
 
 The assistant can use a native skill, a workspace skill, a combination, or no skill at all. The

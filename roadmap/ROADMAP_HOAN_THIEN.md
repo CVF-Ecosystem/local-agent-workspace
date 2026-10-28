@@ -6,6 +6,12 @@ Cập nhật: **21/10/2026**. MVP `v1.9.0-rc2` đã công bố dạng prerelease
 
 Người dùng quyết định mục tiêu; agent làm việc trong kho chịu trách nhiệm đối chiếu code và triển khai trong phạm vi được giao. Trạng thái hiện hành ở mục 0; các snapshot và bằng chứng lịch sử bên dưới không thay kết luận nghiệm thu hiện tại. Đã công bố prerelease v1.9.0-rc2; chưa final.
 
+## Trách nhiệm nghiệm thu nội bộ — chỉ định 28/10/2026
+
+Áp dụng toàn LAW core, packages, skills, templates và các project phát triển kế thừa: đội agents dev chịu trách nhiệm biến mục tiêu nghiệp vụ thành roadmap có mốc sản phẩm, chuẩn đầu ra, bộ ca/đáp án kỳ vọng có căn cứ, kiểm và review trước khi giao bản dùng được. Noncoder cung cấp mục tiêu, quyết định nghiệp vụ và quyền tác động; không phải viết test, oracle, cấu hình kỹ thuật hoặc làm QA để đội phát triển hoàn tất sản phẩm. Feedback độ phù hợp đến sau nghiệm thu nội bộ, không chặn việc chuẩn bị/kiểm sản phẩm.
+
+Chuẩn hiện hành và phân trách nhiệm cụ thể ở mục "Trách nhiệm dev trên toàn LAW" của [roadmap văn phòng](ROADMAP_VAN_PHONG_NGHIEP_VU.md). Giữ các mốc M/R/V hiện có, toàn bộ yêu cầu bắt buộc và lịch sử bằng chứng; không tạo tranche/gate cho từng phép kiểm. Internal readiness, user feedback/tiếp nhận nghiệp vụ và quyền install/publish là các quyết định khác nhau. Chưa đủ bằng chứng vẫn chưa đạt; không đổi scope đã cam kết thành N/A/thử nghiệm chỉ để ship. Academic tiếp tục PAUSED theo operator.
+
 ## 0. Lộ trình đóng roadmap và nghiệm thu — chốt điều phối 21/10/2026
 
 Mục 0 ghi lộ trình đóng **MVP/RC2** và bằng chứng lịch sử. Phát triển văn phòng

@@ -1042,9 +1042,10 @@ def cmd_content(cmd, rest):
 
 
 def main(argv):
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(encoding='utf-8', errors='replace')
     global LANG
-    if hasattr(sys.stdout, 'reconfigure'):
-        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
     try:
         info = json.load(io.open(os.path.join(ROOT, '.agent', 'PACKAGE_INFO.json'), encoding='utf-8'))
         LANG = 'en' if info.get('language') == 'en' else 'vi'

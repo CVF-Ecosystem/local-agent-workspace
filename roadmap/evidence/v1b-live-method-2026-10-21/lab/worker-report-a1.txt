@@ -1,0 +1,35 @@
+ROLE_REPORT — do Main lưu, không phải RESULT hay verdict
+Vai: law-worker (executive-secretary v1), assignment a1. Nguyên văn phản hồi:
+
+Tôi đã soạn xong bản nháp báo cáo kỳ 12–16/10/2026. Kết quả chỉ là CANDIDATE, chưa kiểm và chưa được chấp nhận.
+
+File đã Read:
+- roles/office/executive-secretary.md
+- roles/office/catalog.json
+- working/v1b/report/TASK.json
+- references/source-documents/LAB-V1B-ghi-chu-ky.txt (SRC-000001, revision 1)
+
+Tôi không tự tính lại sha256 của các file, nên chưa đối chiếu được giá trị brief nêu.
+
+Trước khi viết, tôi dùng Glob xác nhận đường dẫn đích chưa tồn tại.
+
+File đã tạo: working/v1b/report/assignments/a1/candidate/draft.txt
+Tôi không ghi file nào khác. Brief đủ và không mâu thuẫn với TASK, nên tôi không phải trả lại.
+
+Căn cứ theo mục:
+- Mục 1, điều đã ghi nhận: M1 (kiểm kê K-07 xong ngày 14/10/2026, 48 mặt hàng) và M3 (họp ngày 15/10/2026, 6 người).
+- Mục 2, điều còn thiếu: M2.
+- Mục 3, mâu thuẫn: M4 và M5.
+- Mục 4, đề xuất chưa quyết định: M6.
+
+Mâu thuẫn và điều còn thiếu trả Main:
+1. M2: số mặt hàng lệch sau kiểm kê chưa có giá trị, đang chờ bảng tổng hợp. Người phụ trách và thời hạn nguồn không nêu, nên bản nháp ghi "cần xác nhận".
+2. M4 và M5 mâu thuẫn: ngày giao nhận đợt 1 là 20/10/2026 theo M4 và 22/10/2026 theo M5. Bản nháp nêu cả hai, không chọn bên nào. Ngày giao nhận đợt 1 để "cần xác nhận".
+3. M6: đề xuất thêm người trực kho thứ Sáu hằng tuần, chưa có quyết định. Người quyết định, thời hạn và người được bổ sung đều nguồn không nêu, nên ghi "cần xác nhận".
+4. Mục "quyết định đã chốt": bản nháp không báo cáo mục nào là quyết định đã chốt. M4 được nguồn mô tả là "thống nhất tại buổi họp" nhưng đang mâu thuẫn với M5, nên tôi không nâng thành quyết định. Đây là cách hiểu của tôi, Main nên xem lại.
+5. Việc chờ: người phụ trách và thời hạn của ba việc chờ (M2, M4/M5, M6) đều "cần xác nhận".
+6. Suy luận: bản nháp có một đoạn suy luận mang nhãn riêng ở mục 3, về khả năng M4 và M5 được ghi ở hai thời điểm khác nhau hoặc một dòng có sai sót. Nguồn không đủ căn cứ để xác định.
+7. Người đọc: brief không nêu người đọc rõ ràng. Tôi suy từ yêu cầu của người dùng rằng người đọc là chính người yêu cầu. Main xác nhận giúp.
+8. Đối chiếu căn cứ: sổ ghi nguồn là "Cần đối chiếu". Bản nháp chỉ dùng một nguồn và chưa đối chiếu M1–M6 với tài liệu gốc nào ngoài ghi chú này. Phần "đối chiếu lại căn cứ" người dùng nhờ chưa làm và để cho bước Reviewer riêng.
+9. Chỉ thị trong nguồn: nguồn không chứa chỉ thị nào cần báo.
+agentId: a9b4a983cf65ce04c

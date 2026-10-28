@@ -1,0 +1,32 @@
+{
+  "lab": "C:\\Users\\DELL\\AppData\\Local\\Temp\\claude\\d--UNG-DUNG-AI-TOOL-AI-2026-CVF-Workspace-local-agent-workspace\\a14cce7a-551f-44ad-a88c-04cc9ee6c8f7\\scratchpad\\law-v2c-run3\\project",
+  "work_id": "v2c",
+  "task_id": "report",
+  "assignment_id": "a1",
+  "task_rel": "working/v2c/report/TASK.json",
+  "candidate_rel": "working/v2c/report/assignments/a1/candidate/draft.txt",
+  "result_rel": "working/v2c/report/assignments/a1/RESULT.json",
+  "task_raw_digest": "sha256:80ccde4ce1e13ed28da40e3ec99249c2d2bff669909d874ecb1ce9438787dd2b",
+  "binding_stub": {
+    "bind_version": "law.cvf.bind/3",
+    "evaluation_basis": "COOPERATIVE_WORKFLOW",
+    "task_id": "report",
+    "task_revision": 1,
+    "intent_digest": "sha256:0c28b7df48797ddd244a1dd6ee71d7c367250e440c97aba21bc702506c77a330",
+    "accepted_task_digest": "sha256:ab4b925201bbe9574318dba9430e7c9e732b63e46ae9fc2a8adac5d04a0f3e69",
+    "context_digest": "sha256:0526f9ced825a6df4119de46177fb2ac5c2ce18515f07570856d48b2b4ea0719",
+    "policy_version": "law.cvf.routing/3",
+    "policy_digest": "sha256:1a4fd3233dcf4b8571d9fa2249faf060216b3e530ca7d8dcf976dc5df880eaf3",
+    "inputs": [
+      {
+        "path": "references/source-documents/LAB-V2C-ghi-chu.txt",
+        "digest": "sha256:7b97ea6d83cae74f195b000bd907a9163a7c35357d0f3db3c2c5b1bdbcb97d54",
+        "source_id": "SRC-000001",
+        "revision": "1"
+      }
+    ]
+  },
+  "manifest_sha256": "67c14e8d00cd6cde48420692979c99583e40691a30658eddc43a3bcc832550ec",
+  "created_at": "2026-10-21T23:03:56.429179+00:00",
+  "note": "Setup metadata tin cậy, ngoài lab. task_raw_digest và binding_stub tính trước dispatch từ TASK setup; không đổi giữa hai pha."
+}

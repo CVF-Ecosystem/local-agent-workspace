@@ -17,3 +17,10 @@ tools/context_update.py -text
 .cvf/rules/CONTROL_RULES.md -text
 .cvf/checks/control_check.py -text
 tests/test_control_check.py -text
+
+# Historical review receipts retain original bytes through source checkpoints.
+archive/maintainer/** -text
+roadmap/archive/** -text
+roadmap/evidence/** -text
+working/an-c2-repair-20261028/*.log -text
+working/acceptance-repair-20261029/* -text

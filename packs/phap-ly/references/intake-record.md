@@ -39,3 +39,11 @@ Nhận xét riêng của gói: Có đáp án đã biết; cả hai bản đều 
    tự đọc hồ sơ rồi chạy một lệnh (`pack.py add <tên> --confirm` hoặc `pack.py confirm <tên>`) thì skill mới thành `AVAILABLE`.
 
 Giới hạn của phép thử này: một model, mỗi ô 2 lần, tiêu chí cơ học nên bỏ sót chất lượng diễn đạt; agent tự chấm không phải nghiệm thu của người dùng. Kết quả không nói gì về model khác.
+
+## Ghi nhận bổ sung 28/10/2026 — checklist kích hoạt theo yêu cầu người dùng
+
+Người dùng yêu cầu chuẩn bị bộ câu hỏi và điều kiện kích hoạt cho agent khi có yêu cầu pháp lý, dự kiến tìm luật sư thử sau. Người dùng sẽ duyệt/tiếp nhận; hiện chưa có câu trả lời chuẩn được duyệt và chưa xác định luật sư thử nghiệm.
+
+skills/legal-research-vn/SKILL.md được bổ sung điều kiện kích hoạt có yêu cầu trực tiếp và liên kết tới skills/legal-research-vn/references/legal-review-checklist.md; metadata của skill đổi từ 0.2 sang 0.2.1. Checklist tách câu hỏi intake, cổng sẵn sàng, giới hạn trích dẫn và điều kiện dừng. Đây là cập nhật nội dung ứng viên để chuẩn bị thử nghiệm, không phải kết luận về chất lượng hay nghiệm thu.
+
+Trạng thái gói DEFER, quan hệ SUPPLEMENT, phiên bản gói 0.2.0 và trạng thái REVIEW giữ nguyên. Không xác nhận, cài đặt, xuất hay đổi quyết định intake. Nguồn đất đai người dùng cung cấp được chuẩn bị riêng trong hồ sơ làm việc; tình trạng ghi trong CSV chưa được xác minh độc lập và không được dùng làm khẳng định hiệu lực.

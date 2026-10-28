@@ -1,0 +1,914 @@
+"""V2-D: dựng lab dữ liệu giả, kiểm bridge, chuẩn bị/chạy MỘT lượt Claude CLI (hai native invocation tuần tự) và thu evidence. Script hỗ trợ bài đo, không phải công cụ sản phẩm.
+
+Dùng (đường Windows có drive tuyệt đối): / Usage:
+  python -B v2d.py setup --base <thu-muc-moi>          dựng lab + hai fixture + manifest + setup.json (offline, không gọi AI)
+  python -B v2d.py anchor                              chốt EXPECTED_SETUP_SHA256/EXPECTED_LAB vào bridge D (sau setup, trước pin bridge)
+  python -B v2d.py selftest                            kiểm bridge trên fixture tách khỏi slot live (offline)
+  python -B v2d.py prepare --evidence <dir>            preflight, ghi request.json BEFORE_CALL; chưa gọi model
+  python -B v2d.py run --evidence <dir>                gọi đúng MỘT lần claude; cổng init; không retry
+  python -B v2d.py collect --evidence <dir>            sao chép evidence sau lượt (không sửa RESULT)
+"""
+import argparse
+import copy
+import datetime
+import hashlib
+import importlib.util
+import json
+import os
+import re
+import shutil
+import subprocess
+import sys
+import threading
+from pathlib import Path
+
+sys.dont_write_bytecode = True
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+REPO = os.path.normpath(os.path.join(HERE, '..', '..', '..'))
+META = os.path.join(HERE, '..', 'meta')
+SETUP_PATH = os.path.normpath(os.path.join(META, 'setup.json'))
+MANIFEST_PATH = os.path.normpath(os.path.join(META, 'bridge_manifest.json'))
+BRIDGE = os.path.join(HERE, 'main_bridge.py')
+CLAUDE_BASELINE = {'size': 242411680, 'sha256': '6d34836bf4d62f4bd5221fb69899ed5b2edc380d35fb0f23218c62fae94e28b9', 'version': '2.1.81 (Claude Code)'}
+CLAUDE = r'C:\Users\DELL\AppData\Local\Microsoft\WinGet\Packages\Anthropic.ClaudeCode_Microsoft.Winget.Source_8wekyb3d8bbwe\claude.EXE'
+MODEL = 'claude-sonnet-5-5'
+TIMEOUT = 300
+BUDGET = '0.75'
+ENV_ADDED = {'PYTHONUTF8': '1', 'PYTHONIOENCODING': 'utf-8', 'PYTHONDONTWRITEBYTECODE': '1'}
+TOOLS = 'Agent,Read,Grep,Glob,Write,Bash'
+PROMPT_FILE = os.path.join(HERE, 'prompt-v2d.txt')
+BRIDGE_FWD = BRIDGE.replace('\\', '/')
+CMD_OBSERVE = 'python -I -B "%s" observe' % BRIDGE_FWD
+CMD_CHECKPOINT = 'python -I -B "%s" checkpoint' % BRIDGE_FWD
+ALLOWED = 'Agent,Read,Grep,Glob,Write,Bash(%s),Bash(%s)' % (CMD_OBSERVE, CMD_CHECKPOINT)
+BASELINE = {'roles/README.md': '2f42490f39ed16a4ad30310da28f1bf1764ee3bed48a501f62cc54b842e73ef5',
+            'tools/office.py': 'ffd7f5cc1651f2e4fac53d03761760510f1d23714cbab68ddc9e09147362c600',
+            'roles/office/MAIN.md': '16202be5a815683b0459dcc8cf909f5b564e669577af609222593e88aa7fb40e',
+            'tools/artifacts.py': 'be315aff047b0d73d0a9d15693ac72049edfbb15e9499bb0163687906f782c1a',
+            'tools/native_agents.py': 'e5405e3a971739e0e44741a27d8d9f03ed3b9ed901972806faaa300d9a3aad8e'}
+WORK, TASK_ID, AID = 'v2d', 'report', 'a1'
+TASK_REL = 'working/v2d/report/TASK.json'
+SLOT = 'working/v2d/report/assignments/a1'
+CAND_REL = SLOT + '/candidate/draft.txt'
+RESULT_REL = SLOT + '/RESULT.json'
+SOURCE_REL = 'references/source-documents/LAB-V2D-ghi-chu.txt'
+REQUEST_REL = 'working/v2d/request/user-request.txt'
+DISPATCH_REL = 'working/v2d/setup/dispatch-package.json'
+BRIEF_REL = 'working/v2d/setup/worker-brief.md'
+WORKER = {'actor_id': 'worker-v2d', 'role': 'worker'}
+MAIN = {'actor_id': 'main', 'role': 'main'}
+DRIVE_ABS = re.compile(r'^[A-Za-z]:\\')
+REPARSE = 0x400
+SOURCE_TEXT = ('DỮ LIỆU GIẢ — KHÔNG PHÁT HÀNH\n'
+               'Ghi chú V2D (nhóm giả LAB-V2D, chỉ dùng cho bài đo kỹ thuật)\n\n'
+               '[N1] Kiểm kê kho giả Z-04 xong ngày 09/11/2026; số lô đã kiểm: 12.\n'
+               '[N2] Số lô lệch sau kiểm kê: chưa có giá trị cụ thể (chờ bảng tổng hợp).\n')
+USER_REQUEST = ('Từ ghi chú LAB-V2D (references/source-documents/LAB-V2D-ghi-chu.txt), soạn giúp một đoạn báo cáo nội bộ rất ngắn về kiểm kê kho giả Z-04, '
+                'nêu rõ điều còn thiếu.\n')
+
+
+def now():
+    return datetime.datetime.now(datetime.timezone.utc).isoformat()
+
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def file_sha(path):
+    with open(path, 'rb') as fh:
+        return sha(fh.read())
+
+
+def load(path):
+    with open(path, encoding='utf-8') as fh:
+        return json.load(fh)
+
+
+def save(path, doc):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, 'w', encoding='utf-8', newline='\n') as fh:
+        json.dump(doc, fh, ensure_ascii=False, indent=2)
+        fh.write('\n')
+
+
+def write_bytes(path, data):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, 'wb') as fh:
+        fh.write(data)
+
+
+def tree(root):
+    files, dirs = {}, []
+    for d, subdirs, names in os.walk(root):
+        dirs.extend(os.path.relpath(os.path.join(d, n), root).replace('\\', '/') for n in subdirs)
+        for n in names:
+            p = os.path.join(d, n)
+            files[os.path.relpath(p, root).replace('\\', '/')] = file_sha(p)
+    return {'files': files, 'dirs': sorted(dirs)}
+
+
+def tree_digest(t):
+    return sha(json.dumps(t, sort_keys=True).encode('utf-8'))
+
+
+def inside(base, p):
+    nb, np_ = os.path.normcase(os.path.realpath(base)), os.path.normcase(os.path.realpath(p))
+    return np_ == nb or np_.startswith(nb + os.sep)
+
+
+def form_problem(p):
+    if not isinstance(p, str) or not p:
+        return 'EMPTY'
+    if '/' in p:
+        return 'FORWARD_SLASH_OR_POSIX_STYLE'
+    if not DRIVE_ABS.match(p):
+        return 'NOT_DRIVE_ABSOLUTE'
+    if any(ord(c) < 32 for c in p) or p.rstrip() != p or p.endswith('.'):
+        return 'CONTROL_OR_TRAILING'
+    if any(x in ('..', '.') for x in p.split('\\')[1:]) or ':' in p[2:] or '?' in p or '*' in p:
+        return 'DOT_SEGMENT_OR_RESERVED'
+    return None
+
+
+def reparse_chain(p):
+    bad, cur = [], os.path.splitdrive(p)[0] + '\\'
+    for part in [x for x in p[len(cur):].split('\\') if x]:
+        cur = os.path.join(cur, part)
+        try:
+            st = os.lstat(cur)
+        except FileNotFoundError:
+            break
+        if os.path.islink(cur) or getattr(st, 'st_file_attributes', 0) & REPARSE:
+            bad.append(cur)
+    return bad
+
+
+def import_path(name, path):
+    spec = importlib.util.spec_from_file_location(name, path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def bridge_module():
+    b = import_path('v2d_main_bridge', BRIDGE)
+    b.EXEMPT.add(Path(os.path.abspath(__file__)).resolve())  # driver này không phải mã owner; chỉ dùng cho self-test/discover / this driver is not owner code
+    return b
+
+
+def pyrun(args, cwd, check=True):
+    env = dict(os.environ, **ENV_ADDED)
+    r = subprocess.run([sys.executable, '-B'] + args, cwd=cwd, capture_output=True, env=env, stdin=subprocess.DEVNULL, timeout=300)
+    out = (r.stdout + r.stderr).decode('utf-8', 'replace')
+    if check and r.returncode != 0:
+        sys.exit('command failed (%s): %s\n%s' % (r.returncode, args, out))
+    return r.returncode, out
+
+
+# ---------------------------------------------------------------- setup (offline)
+def setup(base):
+    why = form_problem(base)
+    if why:
+        sys.exit('base refused: ' + why)
+    if os.path.lexists(base) or reparse_chain(base) or os.path.normcase(os.path.realpath(base)) != os.path.normcase(os.path.abspath(base)):
+        sys.exit('base exists, resolves elsewhere or has a reparse component: refusing')
+    sys.path.insert(0, os.path.join(REPO, 'tools'))
+    import check_package as cp
+    os.makedirs(base)
+    tmpl = os.path.join(base, 'template')
+    cp.materialize(tmpl, branding=False)
+    pyrun([os.path.join(tmpl, 'tools', 'new_project.py'), '--name', 'project', '--dest', base, '--apply', '--lang', 'vi'], tmpl)
+    lab = os.path.join(base, 'project')
+    if not os.path.isdir(lab) or form_problem(lab) or reparse_chain(lab):
+        sys.exit('lab not created at a plain drive-absolute path: ' + lab)
+    write_bytes(os.path.join(lab, *SOURCE_REL.split('/')), SOURCE_TEXT.encode('utf-8'))
+    write_bytes(os.path.join(lab, *REQUEST_REL.split('/')), USER_REQUEST.encode('utf-8'))
+    pyrun([os.path.join('tools', 'library.py'), 'init'], lab)
+    pyrun([os.path.join('tools', 'library.py'), 'sync', '--apply'], lab)
+    # profile + native (owner tools); full model ID, grants=[]
+    choices = {'host': 'claude-code',
+               'roles': {'scout': {'model': None, 'tier': None, 'effort': None}, 'worker': {'model': MODEL, 'tier': None, 'effort': None},
+                         'reviewer': {'model': None, 'tier': None, 'effort': None}},
+               'fallback': {'model': None, 'tier': None, 'effort': None, 'allowed': False}, 'requested_limits': {'max_concurrency': None, 'max_depth': None}}
+    cf = os.path.join(base, 'choices.json')
+    save(cf, choices)
+    _, prev = pyrun([os.path.join('tools', 'execution_profile.py'), 'preview-config', '--choices', cf], lab, check=False)
+    plan = re.search(r'"plan_sha256"\s*:\s*"([0-9a-f]{64})"', prev)
+    args = [os.path.join('tools', 'execution_profile.py'), 'apply-config', '--choices', cf]
+    if plan:
+        args += ['--expect-plan', plan.group(1)]
+    _, applied = pyrun(args, lab)
+    _, nprev = pyrun([os.path.join('tools', 'native_agents.py'), 'preview', '--role', 'worker'], lab, check=False)
+    nplan = re.search(r'"plan_sha256"\s*:\s*"([0-9a-f]{64})"', nprev) or re.search(r'([0-9a-f]{64})', nprev)
+    if not nplan:
+        sys.exit('no native plan token:\n' + nprev)
+    _, napplied = pyrun([os.path.join('tools', 'native_agents.py'), 'apply', '--role', 'worker', '--expect-plan', nplan.group(1)], lab)
+    # TASK / dispatch package from the owners (setup, not Main)
+    bridge = bridge_module()
+    recipe = bridge.load_recipe(REPO)
+    v3 = recipe['load_v3'](REPO)
+    import office
+    comp = office.compose({'method': 'executive-secretary', 'reason': 'Smoke kỹ thuật V2-D: phương pháp do setup chọn rõ, không phải routing tự nhiên.',
+                           'request': USER_REQUEST.strip(), 'sources': [{'path': SOURCE_REL, 'note': 'ghi chú giả LAB-V2D'}], 'output_format': 'text', 'lang': 'vi'}, root=lab)
+    if comp['outcome'] != 'COMPOSED' or comp['state'] != 'PREPARED':
+        sys.exit('compose not PREPARED: %s' % json.dumps({k: comp[k] for k in ('outcome', 'state', 'problems', 'held', 'missing')}, ensure_ascii=False))
+    book = v3['library'].read_book(lab)
+    counts = v3['library'].id_counts(book['data'])
+    recs = [v3['library'].record(r, counts) for r in book['data']]
+    hit = [r for r in recs if r['file'] == SOURCE_REL]
+    if len(hit) != 1 or hit[0]['identity'] != 'ok':
+        sys.exit('source not registered once in the ledger: %s' % hit)
+    frag = comp['task_fragment']
+    inp = copy.deepcopy(frag['inputs'])
+    if len(inp) != 1:
+        sys.exit('expected one input')
+    inp[0]['source_id'], inp[0]['revision'] = hit[0]['id'], str(hit[0]['revision'])
+    task = {'schema_version': 'law.cvf.control/3', 'record_type': 'task', 'evaluation_basis': 'COOPERATIVE_WORKFLOW', 'work_id': WORK, 'task_id': TASK_ID, 'task_revision': 1,
+            'proposed_by': dict(MAIN),
+            'intent': {'refs': [{'ref_id': 'intent-1', 'kind': 'user_intent', 'locator': REQUEST_REL, 'digest': 'sha256:' + file_sha(os.path.join(lab, *REQUEST_REL.split('/'))),
+                                 'attribution': {'source_class': 'UNVERIFIED', 'channel': 'NONE', 'recorded_by': dict(MAIN),
+                                                 'note': 'yêu cầu là fixture lab giả do setup viết, không phải xác nhận của người dùng thật'}}],
+                       'main_interpretation': frag['main_interpretation'] + ' TASK này do setup chuẩn bị cho bài đo V2-D (không phải Main tự nhận yêu cầu); lab dữ liệu giả, không có grant sản phẩm.'},
+            'authority': {'grant_refs': [], 'subject': dict(WORKER)},
+            'inputs': inp,
+            'effects': {'actions': [{'operation': 'create_new', 'tool': 'Write', 'targets': [CAND_REL, RESULT_REL], 'write_zone': 'working'}],
+                        'expected_outputs': [CAND_REL], 'on_missing': 'RETURN_TO_MAIN'},
+            'acceptance': {'requirements': [frag['acceptance_requirement']]},
+            'context_refs': frag['context_refs'], 'envelope': {'role': 'worker'}}
+    raw = json.dumps(task, ensure_ascii=False, indent=2).encode('utf-8')
+    write_bytes(os.path.join(lab, *TASK_REL.split('/')), raw)
+    task_raw = 'sha256:' + sha(raw)
+    parsed, raw_digest, why = recipe['read_record'](v3, lab, TASK_REL, 'task')
+    if why or raw_digest != task_raw:
+        sys.exit('loader rejected the TASK: %s' % why)
+    guard = v3['office'].guard_task(parsed, lambda rel: recipe['read_file'](lab, rel))
+    if guard:
+        sys.exit('office guard: %s' % guard)
+    stub = recipe['binding_stub'](v3, parsed)
+    write_bytes(os.path.join(lab, *BRIEF_REL.split('/')), comp['brief'].encode('utf-8'))
+    dispatch = {'note': 'Gói giao do SETUP chuẩn bị cho bài đo V2-D (không phải Main tự lập). Binding tính bằng recipe binding_stub từ TASK này, trước dispatch.',
+                'task_path': TASK_REL, 'task_id': TASK_ID, 'task_revision': 1, 'task_raw_digest': task_raw, 'binding': stub,
+                'candidate_path': CAND_REL, 'result_path': RESULT_REL, 'brief_path': BRIEF_REL, 'worker_logical_actor': dict(WORKER),
+                'result_id': 'r-v2d-report-a1', 'invocation_plan': {'phase1': 'Worker invocation 1: chỉ Write candidate, chưa RESULT', 'phase2': 'Worker invocation 2 (mới, không resume): Read lại hồ sơ, Write RESULT; agentId thực chỉ điền từ trace vào assessment, không sửa TASK sau dispatch', 'logical_actor_both': dict(WORKER)}, 'method_contract': 'roles/office/executive-secretary.md', 'source_path': SOURCE_REL}
+    save(os.path.join(lab, *DISPATCH_REL.split('/')), dispatch)
+    os.makedirs(os.path.join(lab, *(SLOT + '/candidate').split('/')))
+    # fixture lab (tách khỏi slot live) + manifest discovery in a fresh interpreter
+    fx_lab = os.path.join(base, 'fixture', 'project')
+    fx_lab2 = os.path.join(base, 'fixture2', 'project')  # lab KHÁC, tồn tại, cùng TASK bytes: dùng cho ca anchor sai lab / another existing lab with the same TASK bytes
+    shutil.copytree(lab, fx_lab)
+    shutil.copytree(lab, fx_lab2)
+    setup_doc = {'lab': lab, 'work_id': WORK, 'task_id': TASK_ID, 'assignment_id': AID, 'task_rel': TASK_REL, 'candidate_rel': CAND_REL, 'result_rel': RESULT_REL,
+                 'task_raw_digest': task_raw, 'binding_stub': stub, 'manifest_sha256': None, 'created_at': now(),
+                 'note': 'Setup metadata tin cậy, ngoài lab. task_raw_digest và binding_stub tính trước dispatch từ TASK setup; không đổi giữa hai pha.'}
+    fx_setup = dict(setup_doc, lab=fx_lab)
+    write_bytes(os.path.join(fx_lab, *CAND_REL.split('/')), 'Ứng viên fixture\n'.encode('utf-8'))
+    fx_setup_path = os.path.join(base, 'fixture', 'setup.json')
+    save(fx_setup_path, fx_setup)
+    code, out = pyrun(['-I', os.path.join(HERE, 'v2d.py'), 'discover-inner', fx_setup_path], base)
+    loaded = json.loads(out.strip().splitlines()[-1])
+    files = {rel: file_sha(os.path.join(REPO, *rel.split('/'))) for rel in sorted(set(loaded) | {'.cvf/checks/control_check_v3.py'} | set(bridge.DATA_PINS))}
+    manifest = {'schema': 'law.v2d.bridge-manifest/1', 'created_at': now(), 'law_root': REPO, 'readme_sha256': file_sha(os.path.join(REPO, 'roles', 'README.md')),
+                'baseline_five': {k: file_sha(os.path.join(REPO, *k.split('/'))) for k in BASELINE}, 'files': files}
+    save(MANIFEST_PATH, manifest)
+    setup_doc['manifest_sha256'] = file_sha(MANIFEST_PATH)
+    save(SETUP_PATH, setup_doc)
+    print(json.dumps({'lab': lab, 'fixture_lab': fx_lab, 'fixture2_lab': fx_lab2, 'task_raw_digest': task_raw, 'pinned_files': len(files), 'manifest_sha256': setup_doc['manifest_sha256'],
+                      'profile_apply_tail': applied.strip()[-300:], 'native_apply_tail': napplied.strip()[-300:]}, ensure_ascii=False, indent=2))
+
+
+def anchor():
+    """Chốt hằng anchor vào bridge D SAU setup, TRƯỚC khi driver pin hash bridge. Chỉ ghi hai hằng; hash setup lấy từ bytes thô setup.json. / Fix the two anchor constants in the D bridge."""
+    setup_doc = load(SETUP_PATH)
+    lab = setup_doc['lab']
+    want_sha = file_sha(SETUP_PATH)
+    with open(BRIDGE, 'rb') as fh:
+        text = fh.read().decode('utf-8')
+    a1, a2 = 'EXPECTED_SETUP_SHA256 = None  #', 'EXPECTED_LAB = None  #'
+    if text.count(a1) != 1 or text.count(a2) != 1:
+        sys.exit('anchor already set or bridge shape changed: refusing')
+    text = text.replace(a1, 'EXPECTED_SETUP_SHA256 = %r  #' % want_sha).replace(a2, 'EXPECTED_LAB = %r  #' % lab)
+    write_bytes(BRIDGE, text.encode('utf-8'))
+    b = import_path('v2d_main_bridge_check', BRIDGE)
+    if b.EXPECTED_SETUP_SHA256 != want_sha or b.EXPECTED_LAB != lab:
+        sys.exit('anchor not read back')
+    print(json.dumps({'expected_setup_sha256': want_sha, 'expected_lab': lab, 'bridge_sha256': file_sha(BRIDGE)}, ensure_ascii=False, indent=2))
+
+
+def discover_inner(setup_path):
+    """Chạy trong interpreter mới (-I): nạp owner như bridge và in tập file LAW đã nạp. / Fresh interpreter: load the way the bridge does and print the loaded LAW files."""
+    b = bridge_module()
+    fx = load(setup_path)
+    r = b.run('observe', setup=fx, manifest={}, discover=True)
+    if not r.get('ok'):
+        sys.exit('discover observe refused: %s' % r.get('problems'))
+    obs = r['observation']
+    cand = obs['candidate']
+    outputs = [{'path': cand['path'], 'digest': cand['digest'], 'role': 'ACTUAL_BYTES'}]
+    binding = dict(fx['binding_stub'], outputs=outputs)
+    marker = None
+    task = json.loads(open(os.path.join(fx['lab'], *fx['task_rel'].split('/')), encoding='utf-8').read())
+    reqs = [{'req_id': q['req_id'], 'mandatory': q['mandatory'], 'status': 'UNKNOWN'} for q in task['acceptance']['requirements']]
+    result = {'schema_version': 'law.cvf.control/3', 'record_type': 'result', 'evaluation_basis': 'COOPERATIVE_WORKFLOW', 'result_id': 'r-fixture', 'binding': binding,
+              'produced_by': dict(WORKER), 'artifacts': outputs, 'evidence': [{'evidence_id': 'ev-1', 'req_id': reqs[0]['req_id'], 'locator': 'main-observation:artifacts.observe_file',
+                                                                              'kind': 'TOOL_OBSERVED', 'scope': 'fixture only'}],
+              'requirements': reqs, 'gaps': ['fixture'], 'acceptance_states': ['CANDIDATE'], 'state_set_by': dict(WORKER)}
+    write_bytes(os.path.join(fx['lab'], *fx['result_rel'].split('/')), json.dumps(result, ensure_ascii=False, indent=2).encode('utf-8'))
+    c = b.run('checkpoint', setup=fx, manifest={}, discover=True)
+    if not c.get('ok'):
+        sys.exit('discover checkpoint problems: %s' % c.get('problems'))
+    print(json.dumps(sorted(b.law_loaded_files(REPO))))
+
+
+def make_fixture_result(fx, obs, bad=None):
+    """RESULT fixture (KHÔNG phải Worker native): chỉ dựng từ binding giao + quan sát. / Test-driver RESULT, not a native Worker."""
+    cand = obs['candidate']
+    outputs = [{'path': cand['path'], 'digest': cand['digest'], 'role': 'ACTUAL_BYTES'}]
+    task = load(os.path.join(fx['lab'], *fx['task_rel'].split('/')))
+    reqs = [{'req_id': q['req_id'], 'mandatory': q['mandatory'], 'status': 'UNKNOWN'} for q in task['acceptance']['requirements']]
+    return {'schema_version': 'law.cvf.control/3', 'record_type': 'result', 'evaluation_basis': 'COOPERATIVE_WORKFLOW', 'result_id': 'r-fixture',
+            'binding': dict(fx['binding_stub'], outputs=outputs), 'produced_by': dict(WORKER), 'artifacts': outputs,
+            'evidence': [{'evidence_id': 'ev-1', 'req_id': reqs[0]['req_id'], 'locator': 'main-observation:artifacts.observe_file', 'kind': 'TOOL_OBSERVED', 'scope': 'fixture only'}],
+            'requirements': reqs, 'gaps': ['fixture'], 'acceptance_states': ['CANDIDATE'], 'state_set_by': dict(WORKER)}
+
+
+# ---------------------------------------------------------------- selftest (offline, fixture only)
+def selftest():
+    """Kiểm delta D trên fixture tách khỏi slot live (offline, không gọi AI). / Delta checks on fixtures only."""
+    import types
+    b = bridge_module()
+    setup_doc, manifest = load(SETUP_PATH), load(MANIFEST_PATH)
+    live = setup_doc['lab']
+    base = os.path.dirname(live)
+    fx_lab = os.path.join(base, 'fixture', 'project')
+    fx_lab2 = os.path.join(base, 'fixture2', 'project')
+    live_before = tree(live)
+    results = []
+    anchor_const = (b.EXPECTED_SETUP_SHA256, b.EXPECTED_LAB)
+
+    def case(name, ok, detail=None):
+        results.append({'case': name, 'ok': bool(ok), 'detail': detail})
+
+    def fx_setup(**over):
+        d = dict(setup_doc, lab=fx_lab)
+        d.update(over)
+        return d
+
+    def reset(lab):
+        for rel in (CAND_REL, RESULT_REL):
+            p = os.path.join(lab, *rel.split('/'))
+            if os.path.lexists(p):
+                os.remove(p)
+
+    reset(fx_lab)
+    reset(fx_lab2)
+    task_fx = os.path.join(fx_lab, *TASK_REL.split('/'))
+    task_orig = open(task_fx, 'rb').read()
+    pyc_before = sorted(os.path.join(d, n) for d, _, ns in os.walk(REPO) for n in ns if d.endswith('__pycache__'))
+    # 0. anchor hằng của bridge D khớp setup live
+    case('anchor constants in the D bridge equal the live setup raw SHA256 and lab', b.EXPECTED_SETUP_SHA256 == file_sha(SETUP_PATH) and b.EXPECTED_LAB == live,
+         {'expected_setup_sha256': b.EXPECTED_SETUP_SHA256, 'expected_lab': b.EXPECTED_LAB})
+    # --- dict-injected fixture cases (owner behaviour on the fixture lab)
+    t0 = tree(fx_lab)
+    r = b.run('observe', setup=fx_setup(), manifest=manifest)
+    case('observe: candidate missing is refused, nothing written', (not r['ok']) and any('CANDIDATE' in p for p in r['problems']) and tree(fx_lab) == t0, r['problems'])
+    r = b.run('checkpoint', setup=fx_setup(), manifest=manifest)
+    case('checkpoint: RESULT missing is refused, nothing written', (not r['ok']) and tree(fx_lab) == t0, r['problems'])
+    body = 'Ứng viên fixture\r\ndòng hai ✓\n'.encode('utf-8')
+    write_bytes(os.path.join(fx_lab, *CAND_REL.split('/')), body)
+    t1 = tree(fx_lab)
+    r = b.run('observe', setup=fx_setup(), manifest=manifest)
+    obs = r.get('observation')
+    case('observe: positive, digest equals an independent hash, read-only', r['ok'] and obs['candidate']['digest'] == 'sha256:' + sha(body) and tree(fx_lab) == t1,
+         {'problems': r['problems'], 'digest': obs and obs['candidate']['digest']})
+    case('observe: result has no binding/RESULT/receipt', set(r) >= {'op', 'ok', 'problems', 'observation'} and 'binding' not in r.get('observation', {}) and not os.path.exists(os.path.join(fx_lab, *RESULT_REL.split('/'))))
+    r = b.run('observe', setup=fx_setup(task_raw_digest='sha256:' + '0' * 64), manifest=manifest)
+    case('observe: expected TASK digest mismatch is refused', (not r['ok']) and 'TASK_CHANGED_SINCE_DISPATCH' in r['problems'] and tree(fx_lab) == t1, r['problems'])
+    r = b.run('observe', setup=fx_setup(candidate_rel=SLOT + '/candidate/other.txt'), manifest=manifest)
+    case('observe: another target is refused', (not r['ok']) and any(p.startswith('TARGETS_NOT_CANDIDATE_AND_RESULT') for p in r['problems']) and tree(fx_lab) == t1, r['problems'])
+    r = b.run('observe', setup=fx_setup(candidate_rel='tools/office.py'), manifest=manifest)
+    case('observe: a path outside the slot is refused', (not r['ok']) and tree(fx_lab) == t1, r['problems'])
+    # owner / manifest drift
+    m1 = copy.deepcopy(manifest)
+    m1['files']['tools/artifacts.py'] = '0' * 64
+    r = b.run('observe', setup=fx_setup(), manifest=m1)
+    case('owner drift (pin mismatch) refused before the operation', (not r['ok']) and r.get('refused_before_operation') and any(p.startswith('PIN_DRIFT') for p in r['problems']) and tree(fx_lab) == t1, r['problems'])
+    m2 = copy.deepcopy(manifest)
+    m2['readme_sha256'] = '0' * 64
+    r = b.run('observe', setup=fx_setup(), manifest=m2)
+    case('manifest README pin drift refused', (not r['ok']) and r.get('refused_before_operation') and 'MANIFEST_README_PIN_DRIFT' in r['problems'], r['problems'])
+    m3 = copy.deepcopy(manifest)
+    del m3['files']['tools/library_sync.py']
+    r = b.run('observe', setup=fx_setup(), manifest=m3)
+    case('a loaded LAW module that is not pinned is refused', (not r['ok']) and r.get('refused_before_operation') and any(p.startswith('UNPINNED_LAW_MODULE') for p in r['problems']), r['problems'])
+    fake_lab = types.ModuleType('v2d_fake_lab_mod')
+    fake_lab.__file__ = os.path.join(fx_lab, 'tools', 'office.py')
+    fake_out = types.ModuleType('v2d_fake_outside_mod')
+    fake_out.__file__ = os.path.join(os.path.dirname(base), 'v2d_outside.py')
+    sys.modules['v2d_fake_lab_mod'], sys.modules['v2d_fake_outside_mod'] = fake_lab, fake_out
+    try:
+        mp = b.loaded_module_problems(REPO, fx_lab, manifest)
+    finally:
+        sys.modules.pop('v2d_fake_lab_mod', None)
+        sys.modules.pop('v2d_fake_outside_mod', None)
+    case('modules resolved from the lab or outside the trusted trees are reported', any(p.startswith('MODULE_FROM_LAB') for p in mp) and any(p.startswith('MODULE_OUTSIDE_TRUSTED_TREE') for p in mp), mp)
+    # --- checkpoint: positive, then HOLD cases
+    res = make_fixture_result(fx_setup(), obs)
+    res_path = os.path.join(fx_lab, *RESULT_REL.split('/'))
+    write_bytes(res_path, json.dumps(res, ensure_ascii=False, indent=2).encode('utf-8'))
+    t2 = tree(fx_lab)
+    r = b.run('checkpoint', setup=fx_setup(), manifest=manifest)
+    case('checkpoint: fixture RESULT (test driver, not a native Worker) gives problems=[] and CHECKED_NOT_PASS',
+         r['ok'] and r['problems'] == [] and r.get('verdict') == 'CHECKED_NOT_PASS' and r['identity']['task_equals_dispatch_digest'] is True
+         and r['identity']['result_binding_equals_dispatch_stub_before_outputs'] is True and tree(fx_lab) == t2, r['problems'])
+    r = b.run('observe', setup=fx_setup(), manifest=manifest)
+    case('observe after a RESULT exists is refused', (not r['ok']) and 'RESULT_ALREADY_EXISTS' in r['problems'] and tree(fx_lab) == t2, r['problems'])
+    r = b.run('checkpoint', setup=fx_setup(task_raw_digest='sha256:' + '0' * 64), manifest=manifest)
+    case('checkpoint: TASK differing from the dispatch digest is HOLD', (not r['ok']) and r.get('verdict') == 'HOLD' and 'TASK_CHANGED_SINCE_DISPATCH' in r['problems'], r['problems'])
+    write_bytes(task_fx, task_orig + b' ')  # raw TASK bytes changed after dispatch, same parsed record
+    r = b.run('checkpoint', setup=fx_setup(), manifest=manifest)
+    write_bytes(task_fx, task_orig)
+    case('checkpoint: raw TASK changed in the lab after dispatch is HOLD', (not r['ok']) and r.get('verdict') == 'HOLD' and 'TASK_CHANGED_SINCE_DISPATCH' in r['problems'] and tree(fx_lab) == t2, r['problems'])
+    bad_res = copy.deepcopy(res)
+    bad_res['binding']['intent_digest'] = 'sha256:' + '1' * 64
+    write_bytes(res_path, json.dumps(bad_res, ensure_ascii=False, indent=2).encode('utf-8'))
+    r = b.run('checkpoint', setup=fx_setup(), manifest=manifest)
+    case('checkpoint: binding (minus outputs) different from the dispatch stub is HOLD, not an ok flag only',
+         (not r['ok']) and r.get('verdict') == 'HOLD' and 'BINDING_DIFFERS_FROM_DISPATCH_STUB' in r['problems'], r['problems'])
+    other_stub = fx_setup(binding_stub=dict(setup_doc['binding_stub'], intent_digest='sha256:' + '2' * 64))
+    write_bytes(res_path, json.dumps(res, ensure_ascii=False, indent=2).encode('utf-8'))
+    r = b.run('checkpoint', setup=other_stub, manifest=manifest)
+    case('checkpoint: stub delivered differs from the RESULT binding is HOLD', (not r['ok']) and r.get('verdict') == 'HOLD' and 'BINDING_DIFFERS_FROM_DISPATCH_STUB' in r['problems'], r['problems'])
+    write_bytes(os.path.join(fx_lab, *CAND_REL.split('/')), body + b'x')
+    r = b.run('checkpoint', setup=fx_setup(), manifest=manifest)
+    case('checkpoint: candidate changed after the RESULT is HOLD', (not r['ok']) and r.get('verdict') == 'HOLD' and 'CANDIDATE_CHANGED' in r['problems'], r['problems'])
+    write_bytes(os.path.join(fx_lab, *CAND_REL.split('/')), body)
+    # --- anchor via the real file path (setup/manifest on disk), constants patched in-process to the fixture
+    fxdir = os.path.join(base, 'fixture')
+    fx_setup_file = os.path.join(fxdir, 'setup-anchor.json')
+    save(fx_setup_file, fx_setup())
+    fx2_setup_file = os.path.join(fxdir, 'setup-lab2.json')
+    save(fx2_setup_file, fx_setup(lab=fx_lab2))  # coherent: its own lab, same manifest hash, valid TASK bytes
+    case('the second lab exists and holds a TASK with the same bytes', os.path.isfile(os.path.join(fx_lab2, *TASK_REL.split('/'))) and file_sha(os.path.join(fx_lab2, *TASK_REL.split('/'))) == file_sha(task_fx), None)
+    reset(fx_lab)
+    write_bytes(os.path.join(fx_lab, *CAND_REL.split('/')), body)
+    write_bytes(os.path.join(fx_lab2, *CAND_REL.split('/')), body)
+    t_a, t_b = tree(fx_lab), tree(fx_lab2)
+    try:
+        b.EXPECTED_SETUP_SHA256, b.EXPECTED_LAB = file_sha(fx_setup_file), fx_lab
+        r = b.run('observe', setup_path=fx_setup_file)
+        case('anchor: the anchored fixture setup file and lab give a positive read-only observe', r['ok'] and not r['refused_before_operation'] and tree(fx_lab) == t_a, r['problems'])
+        r = b.run('observe', setup_path=fx2_setup_file)
+        case('anchor: a coherent setup for ANOTHER existing lab with a valid TASK is refused before the operation (setup raw SHA)',
+             (not r['ok']) and r['refused_before_operation'] and r['problems'] == ['ANCHOR_SETUP_SHA_MISMATCH'] and tree(fx_lab2) == t_b, r['problems'])
+        b.EXPECTED_SETUP_SHA256, b.EXPECTED_LAB = file_sha(fx2_setup_file), fx_lab
+        r = b.run('observe', setup_path=fx2_setup_file)
+        case('anchor: even with the setup hash matching, a lab different from the fixed lab is refused before the operation',
+             (not r['ok']) and r['refused_before_operation'] and r['problems'] == ['ANCHOR_LAB_MISMATCH'] and tree(fx_lab2) == t_b, r['problems'])
+        b.EXPECTED_SETUP_SHA256, b.EXPECTED_LAB = file_sha(fx_setup_file), fx_lab
+        tampered = dict(fx_setup(), task_raw_digest='sha256:' + '3' * 64)
+        tampered_file = os.path.join(fxdir, 'setup-tampered.json')
+        save(tampered_file, tampered)
+        r = b.run('observe', setup_path=tampered_file)
+        case('anchor: any byte change of the setup file is refused before the operation', (not r['ok']) and r['problems'] == ['ANCHOR_SETUP_SHA_MISMATCH'], r['problems'])
+        b.EXPECTED_SETUP_SHA256, b.EXPECTED_LAB = None, None
+        r = b.run('observe', setup_path=fx_setup_file)
+        case('anchor: constants not set -> refused', (not r['ok']) and r['problems'] == ['ANCHOR_NOT_SET'], r['problems'])
+    finally:
+        b.EXPECTED_SETUP_SHA256, b.EXPECTED_LAB = anchor_const
+    reset(fx_lab)
+    reset(fx_lab2)
+    # --- the exact commands, as subprocesses from the lab cwd, against the LIVE setup: read-only refusals expected (no candidate yet)
+    live_pre = tree(live)
+    cmds = {}
+    for name in ('observe', 'checkpoint'):
+        argv_ = [sys.executable, '-I', '-B', BRIDGE, name]
+        p = subprocess.run(argv_, cwd=live, capture_output=True, stdin=subprocess.DEVNULL, timeout=120)
+        out = json.loads(p.stdout.decode('utf-8')) if p.stdout.strip() else {}
+        cmds[name] = {'exit': p.returncode, 'ok': out.get('ok'), 'refused_before_operation': out.get('refused_before_operation'), 'problems': out.get('problems')}
+    case('exact commands from the live cwd (sys.executable subprocess; NOT a Bash allow-rule proof): anchor passes, read-only refusals while the slot is empty',
+         cmds['observe']['ok'] is False and cmds['checkpoint']['ok'] is False and cmds['observe']['refused_before_operation'] is False
+         and cmds['checkpoint']['refused_before_operation'] is False and tree(live) == live_pre == live_before, cmds)
+    # --- phase brief / mapping must not accept missing facts
+    prompt_text = render_prompt().decode('utf-8')
+    needed = [CMD_OBSERVE, CMD_CHECKPOINT, 'agentId', 'KHÔNG gửi agentId', 'Worker 2', 'pha 1', 'pha 2', TASK_REL, CAND_REL, RESULT_REL, 'BƯỚC']
+    missing = [x for x in needed if x not in prompt_text]
+    case('rendered prompt carries both commands, both phases, paths and the no-resume rule; no placeholder left', not missing and '{OBSERVE}' not in prompt_text and '{CHECKPOINT}' not in prompt_text, missing)
+    disp = load(os.path.join(live, *DISPATCH_REL.split('/')))
+    need_d = ['task_path', 'task_revision', 'task_raw_digest', 'binding', 'candidate_path', 'result_path', 'brief_path', 'worker_logical_actor', 'result_id', 'method_contract', 'source_path']
+    case('dispatch package has every fact the phase briefs need', not [k for k in need_d if k not in disp] and disp['binding'] == setup_doc['binding_stub'] and disp['task_raw_digest'] == setup_doc['task_raw_digest'], [k for k in need_d if k not in disp])
+    syn = assess_stream([])  # an empty trace must be reported as incomplete
+    case('assessment of an empty trace is NOT complete', syn['complete'] is False and syn['status'] != 'IMPLEMENTED_PENDING_REVIEW', syn)
+    pyc_after = sorted(os.path.join(d, n) for d, _, ns in os.walk(REPO) for n in ns if d.endswith('__pycache__'))
+    case('no bytecode was added to the source tree', pyc_before == pyc_after, {'before': len(pyc_before), 'after': len(pyc_after)})
+    case('TASK in the first fixture lab is restored to its bytes', open(task_fx, 'rb').read() == task_orig)
+    case('the live lab is unchanged by the whole self-test', tree(live) == live_before, tree_digest(live_before))
+    print(json.dumps({'passed': sum(r['ok'] for r in results), 'failed': [r for r in results if not r['ok']], 'cases': results}, ensure_ascii=False, indent=2))
+    return 0 if all(r['ok'] for r in results) else 1
+
+
+def _norm(p):
+    return os.path.normcase(os.path.normpath(p)) if isinstance(p, str) else None
+
+
+def assess_stream(events, lab=None):
+    """Đọc trace stream-json và dựng mapping hai invocation <-> pha. Chỉ dùng điều quan sát được; thiếu mắt xích thì complete=False. / Build the two-invocation mapping from the trace only."""
+    lab = lab or ''
+    def rel(p):
+        if lab and isinstance(p, str) and os.path.isabs(p):
+            try:
+                r = os.path.relpath(p, lab).replace('\\', '/')
+            except ValueError:  # khác ổ đĩa: giữ đường tuyệt đối nguyên văn / different drive: keep the absolute path
+                return p
+            return p if r.startswith('..') else r
+        return p
+    uses, results = [], {}
+    init = None
+    final = None
+    for i, ev in enumerate(events):
+        t = ev.get('type')
+        if t == 'system' and ev.get('subtype') == 'init' and init is None:
+            init = {'tools': ev.get('tools'), 'agents': ev.get('agents'), 'model': ev.get('model'), 'claude_code_version': ev.get('claude_code_version'),
+                    'permissionMode': ev.get('permissionMode'), 'mcp_servers': ev.get('mcp_servers')}
+        if t == 'result':
+            final = {k: ev.get(k) for k in ('subtype', 'is_error', 'total_cost_usd', 'num_turns', 'duration_ms', 'duration_api_ms', 'stop_reason', 'modelUsage', 'permission_denials', 'errors')}
+        content = (ev.get('message') or {}).get('content')
+        if not isinstance(content, list):
+            continue
+        for it in content:
+            if not isinstance(it, dict):
+                continue
+            if t == 'assistant' and it.get('type') == 'tool_use':
+                inp = it.get('input') or {}
+                row = {'event': i, 'id': it.get('id'), 'parent': ev.get('parent_tool_use_id'), 'name': it.get('name')}
+                if it.get('name') in ('Read', 'Write', 'Grep', 'Glob'):
+                    row['path'] = rel(inp.get('file_path') or inp.get('path'))
+                if it.get('name') == 'Write':
+                    c = inp.get('content')
+                    row['content_sha256'] = sha(c.encode('utf-8')) if isinstance(c, str) else None
+                    row['content_chars'] = len(c) if isinstance(c, str) else None
+                if it.get('name') == 'Bash':
+                    row['command'] = inp.get('command')
+                if it.get('name') in ('Agent', 'Task'):
+                    row['subagent_type'] = inp.get('subagent_type')
+                    row['model_override'] = inp.get('model')
+                    row['run_in_background'] = inp.get('run_in_background')
+                    row['other_keys'] = sorted(k for k in inp if k not in ('description', 'subagent_type', 'prompt', 'model', 'run_in_background'))
+                    row['prompt_sha256'] = sha(inp.get('prompt', '').encode('utf-8')) if isinstance(inp.get('prompt'), str) else None
+                    row['prompt_chars'] = len(inp.get('prompt') or '')
+                if it.get('name') == 'SendMessage':
+                    row['to'] = inp.get('to')
+                uses.append(row)
+            if t == 'user' and it.get('type') == 'tool_result':
+                cont = it.get('content')
+                text = cont if isinstance(cont, str) else ' '.join(x.get('text', '') for x in cont if isinstance(x, dict)) if isinstance(cont, list) else ''
+                results[it.get('tool_use_id')] = {'event': i, 'is_error': it.get('is_error'), 'text_head': text[:1500], 'text_full': text, 'text_sha256': sha(text.encode('utf-8')), 'text_chars': len(text),
+                                                  'agent_id': (re.search(r'agentId:\s*([0-9A-Za-z_-]+)', text) or [None, None])[1]}
+    top = [u for u in uses if not u['parent']]
+    agents = [u for u in top if u['name'] in ('Agent', 'Task')]
+    bash = [u for u in top if u['name'] == 'Bash']
+    problems = []
+    if init is None:
+        problems.append('NO_INIT_EVENT')
+    if len(agents) != 2:
+        problems.append('AGENT_CALLS=%d (expected 2)' % len(agents))
+    ids = [results.get(a['id'], {}).get('agent_id') for a in agents]
+    if len(agents) == 2 and (not all(ids) or ids[0] == ids[1]):
+        problems.append('AGENT_IDS_MISSING_OR_EQUAL %s' % ids)
+    for a in agents:
+        if a.get('subagent_type') != 'law-worker' or a.get('model_override') or a.get('run_in_background') or a.get('other_keys'):
+            problems.append('AGENT_CALL_NOT_PLAIN_FOREGROUND_LAW_WORKER event=%s' % a['event'])
+    banned = sorted({u['name'] for u in uses if u['name'] not in ('Agent', 'Task', 'Read', 'Grep', 'Glob', 'Write', 'Bash')})
+    if banned:
+        problems.append('UNEXPECTED_TOOLS %s' % banned)
+    if [u for u in top if u['name'] == 'Write']:
+        problems.append('MAIN_WROTE')
+    cmds = [(b['command'] or '').strip() for b in bash]
+    if len(bash) != 2 or cmds[0] != CMD_OBSERVE or cmds[1] != CMD_CHECKPOINT:
+        problems.append('MAIN_BASH_NOT_OBSERVE_THEN_CHECKPOINT %s' % cmds)
+    outcomes = []
+    for bsh in bash:
+        txt = (results.get(bsh['id']) or {}).get('text_full') or ''
+        try:
+            doc = json.loads(txt[txt.index('{'):]) if '{' in txt else {}
+        except ValueError:
+            doc = {}
+        outcomes.append({'event': bsh['event'], 'command': bsh['command'], 'is_error': (results.get(bsh['id']) or {}).get('is_error'), 'ok': doc.get('ok'), 'verdict': doc.get('verdict'),
+                         'problems': doc.get('problems'), 'refused_before_operation': doc.get('refused_before_operation')})
+    if len(outcomes) == 2:
+        if outcomes[0]['ok'] is not True:
+            problems.append('OBSERVE_NOT_OK %s' % outcomes[0]['problems'])
+        if outcomes[1]['ok'] is not True:
+            problems.append('CHECKPOINT_NOT_OK verdict=%s problems=%s' % (outcomes[1]['verdict'], outcomes[1]['problems']))
+    by_parent = {}
+    for u in uses:
+        if u['parent']:
+            by_parent.setdefault(u['parent'], []).append(u)
+    phases = []
+    for n, a in enumerate(agents[:2]):
+        kids = by_parent.get(a['id'], [])
+        writes = [k['path'] for k in kids if k['name'] == 'Write']
+        reads = [k['path'] for k in kids if k['name'] == 'Read']
+        other = sorted({k['name'] for k in kids if k['name'] not in ('Read', 'Grep', 'Glob', 'Write')})
+        phases.append({'phase': n + 1, 'agent_tool_use_id': a['id'], 'agent_tool_name': a['name'], 'agent_id': ids[n] if n < len(ids) else None, 'writes': writes, 'reads': reads, 'other_tools': other,
+                       'terminal_result': {k: v for k, v in (results.get(a['id']) or {}).items() if k in ('event', 'is_error', 'text_sha256', 'text_chars')}})
+    if len(phases) == 2:
+        p1, p2 = phases
+        if p1['writes'] != [CAND_REL]:
+            problems.append('PHASE1_WRITES %s' % p1['writes'])
+        if p2['writes'] != [RESULT_REL]:
+            problems.append('PHASE2_WRITES %s' % p2['writes'])
+        for need in (TASK_REL, CAND_REL, SOURCE_REL, 'roles/office/executive-secretary.md'):
+            if not any(_norm(r) == _norm(need) for r in p2['reads']):
+                problems.append('PHASE2_NO_READ ' + need)
+        for need in (TASK_REL, SOURCE_REL):
+            if not any(_norm(r) == _norm(need) for r in p1['reads']):
+                problems.append('PHASE1_NO_READ ' + need)
+        if p1['other_tools'] or p2['other_tools']:
+            problems.append('CHILD_OTHER_TOOLS %s %s' % (p1['other_tools'], p2['other_tools']))
+        order = [agents[0]['event'], bash[0]['event'] if bash else None, agents[1]['event'], bash[1]['event'] if len(bash) > 1 else None]
+        if None in order or order != sorted(order):
+            problems.append('ORDER_NOT_AGENT1_OBSERVE_AGENT2_CHECKPOINT %s' % order)
+        t1 = results.get(agents[0]['id'], {}).get('event')
+        if t1 is None or (bash and bash[0]['event'] < t1):
+            problems.append('OBSERVE_BEFORE_PHASE1_TERMINAL_RESULT')
+        t2 = results.get(agents[1]['id'], {}).get('event')
+        if t2 is None or (len(bash) > 1 and bash[1]['event'] < t2):
+            problems.append('CHECKPOINT_BEFORE_PHASE2_TERMINAL_RESULT')
+    complete = not problems and final is not None
+    status = 'IMPLEMENTED_PENDING_REVIEW' if complete else ('LIVE_NOT_RUN' if not uses else 'PARTIAL')
+    return {'complete': complete, 'status': status, 'problems': problems, 'init': init, 'result_event': final, 'phases': phases,
+            'main_bash': outcomes, 'tool_use_count': len(uses),
+            'tool_use_names': sorted({u['name'] for u in uses}), 'agent_calls': [{k: v for k, v in a.items() if k != 'parent'} for a in agents],
+            'note': 'Mapping hai actual agentId <-> pha là khai báo cooperative suy từ trace; không xác thực danh tính/quyền của host. Terminal result không là bằng chứng remote stop.'}
+
+
+def assess(evidence):
+    path = os.path.join(evidence, 'request.json')
+    req = load(path)
+    events = []
+    with open(os.path.join(evidence, 'stream.jsonl'), 'rb') as fh:
+        for raw in fh:
+            try:
+                events.append(json.loads(raw.decode('utf-8', 'replace')))
+            except ValueError:
+                pass
+    a = assess_stream(events, req.get('lab'))
+    req['assessment_machine'] = a
+    save(path, req)
+    print(json.dumps({k: a[k] for k in ('complete', 'status', 'problems')}, ensure_ascii=False, indent=2))
+    for ph in a['phases']:
+        print(json.dumps({k: ph[k] for k in ('phase', 'agent_id', 'writes', 'reads')}, ensure_ascii=False))
+    print(json.dumps(a['result_event'], ensure_ascii=False))
+
+
+# ---------------------------------------------------------------- driver: prepare / run / collect
+def claude_processes():
+    cmd = ['powershell', '-NoProfile', '-Command',
+           "Get-CimInstance Win32_Process | Where-Object { $_.ExecutablePath -like '*Anthropic.ClaudeCode_Microsoft.Winget*' } | "
+           "Select-Object ProcessId,ParentProcessId,CreationDate | ConvertTo-Json -Compress"]
+    r = subprocess.run(cmd, capture_output=True, timeout=60)
+    return json.loads(r.stdout.decode('utf-8', 'replace').strip() or '[]')
+
+
+def argv():
+    return [CLAUDE, '-p', '--model', MODEL, '--tools', TOOLS, '--allowedTools', ALLOWED, '--setting-sources', 'project',
+            '--strict-mcp-config', '--mcp-config', '{"mcpServers":{}}', '--permission-mode', 'default', '--disable-slash-commands',
+            '--no-session-persistence', '--max-budget-usd', BUDGET, '--output-format', 'stream-json', '--verbose']
+
+
+def render_prompt():
+    with open(PROMPT_FILE, encoding='utf-8', newline='') as fh:
+        text = fh.read()
+    return text.replace('{OBSERVE}', CMD_OBSERVE).replace('{CHECKPOINT}', CMD_CHECKPOINT).encode('utf-8')
+
+
+def baseline_view():
+    out = {}
+    for rel, want in BASELINE.items():
+        got = file_sha(os.path.join(REPO, *rel.split('/')))
+        out[rel] = {'sha256': got, 'baseline': want, 'equal': got == want}
+    return out
+
+
+def prepare(evidence):
+    setup_doc, manifest = load(SETUP_PATH), load(MANIFEST_PATH)
+    lab = setup_doc['lab']
+    problems = []
+    why = form_problem(lab)
+    if why:
+        problems.append('LAB_' + why)
+    if not os.path.isdir(lab) or reparse_chain(lab) or os.path.normcase(os.path.realpath(lab)) != os.path.normcase(os.path.abspath(lab)):
+        problems.append('LAB_MISSING_REPARSE_OR_RESOLVE_DIFFERS')
+    if inside(REPO, lab):
+        problems.append('LAB_INSIDE_SOURCE_TREE')
+    if os.path.lexists(evidence) and os.listdir(evidence):
+        problems.append('EVIDENCE_DIR_NOT_EMPTY')
+    if not inside(REPO, evidence) or reparse_chain(evidence):
+        problems.append('EVIDENCE_DIR_OUTSIDE_REPO_OR_REPARSE')
+    for rel in (CAND_REL, RESULT_REL):
+        if os.path.lexists(os.path.join(lab, *rel.split('/'))):
+            problems.append('TARGET_EXISTS ' + rel)
+    cdir = os.path.join(lab, *(SLOT + '/candidate').split('/'))
+    if not os.path.isdir(cdir) or os.listdir(cdir):
+        problems.append('SLOT_CANDIDATE_DIR_NOT_EMPTY_OR_MISSING')
+    b = bridge_module()
+    pins = b.pin_problems(REPO, manifest)
+    if b.EXPECTED_SETUP_SHA256 != file_sha(SETUP_PATH) or b.EXPECTED_LAB != lab:
+        problems.append('BRIDGE_ANCHOR_NOT_FIXED_TO_SETUP_AND_LAB')
+    exe_size, exe_sha = os.path.getsize(CLAUDE), file_sha(CLAUDE)
+    if exe_size != CLAUDE_BASELINE['size'] or exe_sha != CLAUDE_BASELINE['sha256']:
+        problems.append('CLI_BINARY_DIFFERS_FROM_BASELINE size=%s sha256=%s' % (exe_size, exe_sha))
+    task_raw = 'sha256:' + file_sha(os.path.join(lab, *TASK_REL.split('/')))
+    if task_raw != setup_doc['task_raw_digest']:
+        problems.append('TASK_DIGEST_DIFFERS_FROM_SETUP')
+    if file_sha(MANIFEST_PATH) != setup_doc['manifest_sha256']:
+        problems.append('MANIFEST_HASH_DIFFERS_FROM_SETUP')
+    base = baseline_view()
+    if problems or pins:
+        sys.exit('prepare refused: %s %s' % (problems, pins))
+    ver = subprocess.run([CLAUDE, '--version'], capture_output=True, timeout=60).stdout.decode('utf-8', 'replace').strip()
+    if ver != CLAUDE_BASELINE['version']:
+        sys.exit('prepare refused: CLI version %r differs from baseline %r (no update, no other host)' % (ver, CLAUDE_BASELINE['version']))
+    prompt = render_prompt()
+    before = tree(lab)
+    os.makedirs(evidence, exist_ok=True)
+    write_bytes(os.path.join(evidence, 'prompt.txt'), prompt)
+    profile = load(os.path.join(lab, '.agent', 'EXECUTION_PROFILE.json'))
+    req = {
+        'phase': 'BEFORE_CALL', 'recorded_at': now(), 'envelope': 'V2-D (roadmap/WORKORDER_V2D_2026-10-22.md)', 'host_version': ver, 'executable': CLAUDE,
+        'executable_size_bytes': exe_size, 'executable_sha256': exe_sha, 'executable_baseline': CLAUDE_BASELINE, 'lab': lab,
+        'authorization': 'PROJECT maintainer lab exception 18/10 + work order V2-D 22/10 handed to Claude by the operator; not product authority, no product grant in the lab (grants=[])',
+        'models_requested': {'main': MODEL, 'worker1': MODEL, 'worker2': MODEL},
+        'model_basis': 'Operator named no model/effort in the handover message (budget, timeout, sequence only). Lab choice: the model id of the Claude session handed this work order (claude-sonnet-5-5, as stated by that session); the same id for Main and both Worker invocations; not a product preset, to be confirmed by the operator in review',
+        'effort_requested': {'main': None, 'worker1': None, 'worker2': None},
+        'operator_selection_before_call': {'budget_usd_cli_requested': float(BUDGET), 'timeout_seconds': TIMEOUT, 'parent_attempts': 1, 'workers': 2, 'sequence': 'sequential', 'on_missing_evidence': 'PARTIAL, no retry', 'handover': 'wait for Codex review, do not close all of V2', 'model': 'not stated', 'effort': 'not stated'},
+        'limits': {'ai_attempts': 1, 'sessions': 1, 'parent_attempt_number_overall': 4, 'native_invocations': 2, 'child': 'law-worker', 'send_message_calls': 0, 'main_bash_commands': 2,
+                   'max_budget_usd_cli_requested': float(BUDGET), 'timeout_seconds': TIMEOUT, 'paid_retry': False},
+        'cumulative_before': {'attempts': 3, 'telemetry_usd_known': 1.52532435, 'c_telemetry': 'UNKNOWN',
+                              'note': 'V1-B 0.7669449 + B2 0.75837945 = 1.52532435; V2-C attempt 3 telemetry NOT_OBSERVED; D is attempt 4, recorded separately; the full total stays UNKNOWN; budget is a requested parameter, not an invoice or a hard cap'},
+        'scope': {
+            'read': ['AGENTS.md', 'roles/**', 'working/v2d/setup/*', 'working/v2d/report/TASK.json', 'working/v2d/request/*', 'references/source-documents/LAB-V2D-ghi-chu.txt', '.cvf/**'],
+            'worker1_create_new': [CAND_REL], 'worker2_create_new': [RESULT_REL], 'main_writes': 'none (the Write tool is present only so the child can have it; not a grant)',
+            'main_shell': [CMD_OBSERVE, CMD_CHECKPOINT]},
+        'argv_without_prompt': argv(), 'allowed_tools_rules': ALLOWED.split(','), 'tools_flag': TOOLS, 'prompt_via': 'stdin (UTF-8), saved as prompt.txt', 'prompt_sha256': sha(prompt),
+        'env_added': ENV_ADDED, 'env_note': 'Environment otherwise inherited, not copied into the record',
+        'init_gate': {'rule': 'terminate the process unless the init event lists Read, Write, Bash, a start tool (Agent or Task, raw name kept) and the native law-worker; SendMessage is NOT required; inventory is not an invocation proof',
+                      'enforcement': 'driver reads stdout line by line and kills the process tree on the init event; stdout buffering may let the model act before the kill, which is recorded if it happens'},
+        'preflight': {
+            'lab_path_problems': problems, 'lab_reparse_chain': reparse_chain(lab), 'baseline_five': base, 'bridge_sha256': file_sha(BRIDGE), 'manifest_sha256': file_sha(MANIFEST_PATH),
+            'setup_json_sha256': file_sha(SETUP_PATH), 'pin_problems': pins, 'pinned_files': len(manifest['files']), 'task_raw_digest': task_raw,
+            'dispatch_package_sha256': file_sha(os.path.join(lab, *DISPATCH_REL.split('/'))),
+            'profile': {'sha256': file_sha(os.path.join(lab, '.agent', 'EXECUTION_PROFILE.json')), 'grants': profile.get('grants'), 'authority_owner': profile.get('authority_owner'),
+                        'host': profile.get('host'), 'worker_model': profile['roles']['worker']['model']},
+            'native_worker_sha256': file_sha(os.path.join(lab, '.claude', 'agents', 'law-worker.md')),
+            'native_receipt_sha256': file_sha(os.path.join(lab, '.agent', 'runtime', 'native-agents', 'claude-code', 'law-worker.json')),
+            'native_inventory_note': 'disk configuration only; whether the host loads and can invoke it is decided by the init event and the trace',
+            'winget_claude_processes_before_call': claude_processes(),
+            'D_c_dir': {'exists': os.path.isdir('D:\\c'), 'entries': len(os.listdir('D:\\c')) if os.path.isdir('D:\\c') else None, 'touched': False},
+            'parent_child_local_state': 'NOT_OBSERVED (no-session-persistence; nothing saved by the CLI is read or relied on)'},
+        'static_audit_not_host_proof': {
+            'what': 'Work order V2-D section 1: official changelog 2.1.77 (Agent resume removed, SendMessage replaces it); readonly audit of the current binary bytes (Agent/Task alias, no resume in the schema, SendMessage gated by agent teams). This run uses two independent invocations and does not use resume/SendMessage/teams.',
+            'status': 'static evidence on bytes; not an API or remote-state test'},
+        'before_tree': before}
+    save(os.path.join(evidence, 'request.json'), req)
+    print('prepared', len(before['files']), 'files', len(before['dirs']), 'dirs; prompt', sha(prompt))
+
+
+def kill_tree(proc):
+    subprocess.run(['taskkill', '/PID', str(proc.pid), '/T', '/F'], capture_output=True)
+
+
+def run(evidence):
+    path = os.path.join(evidence, 'request.json')
+    req = load(path)
+    if req.get('phase') != 'BEFORE_CALL':
+        sys.exit('phase is not BEFORE_CALL: refusing a second attempt')
+    setup_doc = load(SETUP_PATH)
+    lab = setup_doc['lab']
+    with open(os.path.join(evidence, 'prompt.txt'), 'rb') as fh:
+        prompt = fh.read()
+    pf = req['preflight']
+    if (sha(prompt) != req['prompt_sha256'] or tree(lab) != req['before_tree'] or lab != req['lab'] or file_sha(BRIDGE) != pf['bridge_sha256']
+            or file_sha(MANIFEST_PATH) != pf['manifest_sha256'] or file_sha(SETUP_PATH) != pf['setup_json_sha256']
+            or any(not v['equal'] for v in baseline_view().values()) or os.path.getsize(CLAUDE) != CLAUDE_BASELINE['size'] or file_sha(CLAUDE) != CLAUDE_BASELINE['sha256']):
+        sys.exit('prompt, lab, bridge, manifest, baseline or CLI binary changed since prepare: refusing')
+    req['phase'] = 'STARTED'
+    req['started_at'] = now()
+    save(path, req)
+    env = dict(os.environ)
+    env.update(ENV_ADDED)
+    outcome = {'timed_out': False, 'killed_by_init_gate': False}
+    events, gate = [], {'seen_init': False}
+    with open(os.path.join(evidence, 'stderr.log'), 'wb') as err, open(os.path.join(evidence, 'stream.jsonl'), 'wb') as out:
+        proc = subprocess.Popen(argv(), cwd=lab, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=err, env=env)
+
+        def on_timeout():
+            outcome['timed_out'] = True
+            kill_tree(proc)
+        timer = threading.Timer(TIMEOUT, on_timeout)
+        timer.start()
+        try:
+            proc.stdin.write(prompt)
+            proc.stdin.close()
+        except OSError:
+            pass
+        for raw in proc.stdout:
+            out.write(raw)
+            out.flush()
+            try:
+                ev = json.loads(raw.decode('utf-8', 'replace'))
+            except ValueError:
+                continue
+            events.append(ev)
+            if not gate['seen_init'] and ev.get('type') == 'system' and ev.get('subtype') == 'init':
+                tools = ev.get('tools') or []
+                agents_listed = ev.get('agents') or []
+                gate.update(seen_init=True, tools=tools, agents=agents_listed, has_send_message='SendMessage' in tools, has_agent_tool='Agent' in tools, has_task_tool='Task' in tools,
+                            has_law_worker=any('law-worker' in str(a) for a in agents_listed),
+                            model=ev.get('model'), session_id=ev.get('session_id'), at_event=len(events) - 1)
+                if not (all(t in tools for t in ('Read', 'Write', 'Bash')) and ('Agent' in tools or 'Task' in tools) and gate['has_law_worker']):
+                    gate['decision'] = 'TERMINATE'
+                    outcome['killed_by_init_gate'] = True
+                    kill_tree(proc)
+                else:
+                    gate['decision'] = 'CONTINUE'
+        try:
+            proc.wait(timeout=60)
+        except subprocess.TimeoutExpired:
+            kill_tree(proc)
+            proc.wait(timeout=30)
+        timer.cancel()
+        outcome['exit_code'] = proc.returncode
+    if not gate['seen_init']:
+        gate['decision'] = 'NO_INIT_EVENT'
+    uses = [c for e in events if e.get('type') == 'assistant' for c in (e.get('message', {}).get('content') or []) if isinstance(c, dict) and c.get('type') == 'tool_use']
+    gate['tool_use_events_before_exit'] = len(uses)
+    req = load(path)
+    req['phase'] = 'FINISHED'
+    req['finished_at'] = now()
+    req['run_outcome'] = outcome
+    req['init_gate_observed'] = gate
+    req['winget_claude_processes_after_call'] = claude_processes()
+    req['after_tree'] = tree(lab)
+    save(path, req)
+    print('exit', outcome, 'gate', {k: gate.get(k) for k in ('decision', 'has_send_message', 'has_agent_tool', 'has_task_tool', 'has_law_worker', 'tool_use_events_before_exit')})
+
+
+def collect(evidence):
+    setup_doc = load(SETUP_PATH)
+    lab = setup_doc['lab']
+    ev_lab = os.path.join(evidence, 'lab')
+    items = {'TASK.json': TASK_REL, 'dispatch-package.json': DISPATCH_REL, 'worker-brief.md': BRIEF_REL, 'user-request.txt': REQUEST_REL, 'LAB-V2D-ghi-chu.txt': SOURCE_REL,
+             'candidate-draft.txt': CAND_REL, 'RESULT.json': RESULT_REL, 'native-worker.md': '.claude/agents/law-worker.md',
+             'receipt-worker.json': '.agent/runtime/native-agents/claude-code/law-worker.json', 'profile.json': '.agent/EXECUTION_PROFILE.json',
+             'catalog.json': 'roles/office/catalog.json', 'executive-secretary.md': 'roles/office/executive-secretary.md'}
+    copied = {}
+    for name, rel in items.items():
+        src = os.path.join(lab, *rel.split('/'))
+        if os.path.isfile(src):
+            with open(src, 'rb') as fh:
+                data = fh.read()
+            write_bytes(os.path.join(ev_lab, name), data)
+            copied[name] = {'lab_path': rel, 'sha256': sha(data), 'size': len(data)}
+        else:
+            copied[name] = {'lab_path': rel, 'present': False}
+    for name, src in (('setup.json', SETUP_PATH), ('bridge_manifest.json', MANIFEST_PATH), ('main_bridge.py.copy', BRIDGE), ('v2d.py.copy', os.path.abspath(__file__)), ('prompt-v2d.txt.copy', PROMPT_FILE)):
+        with open(src, 'rb') as fh:
+            data = fh.read()
+        write_bytes(os.path.join(ev_lab, name), data)
+        copied[name] = {'origin': os.path.relpath(src, REPO).replace('\\', '/'), 'sha256': sha(data), 'size': len(data)}
+    after = {'collected_at': now(), 'copies': copied, 'baseline_five_after': baseline_view(), 'bridge_sha256_after': file_sha(BRIDGE), 'manifest_sha256_after': file_sha(MANIFEST_PATH),
+             'pycache_files_in_source_tree': len([1 for d, _, ns in os.walk(REPO) for n in ns if d.endswith('__pycache__')])}
+    save(os.path.join(evidence, 'baseline-after.json'), after)
+    print(json.dumps(after, ensure_ascii=False, indent=2)[:3000])
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument('cmd', choices=('setup', 'anchor', 'selftest', 'discover-inner', 'prepare', 'run', 'assess', 'collect'))
+    ap.add_argument('arg', nargs='?')
+    ap.add_argument('--base')
+    ap.add_argument('--evidence')
+    a = ap.parse_args()
+    if a.cmd == 'setup':
+        setup(a.base)
+    elif a.cmd == 'anchor':
+        anchor()
+    elif a.cmd == 'assess':
+        assess(a.evidence)
+    elif a.cmd == 'discover-inner':
+        discover_inner(a.arg)
+    elif a.cmd == 'selftest':
+        sys.exit(selftest())
+    elif a.cmd == 'prepare':
+        prepare(a.evidence)
+    elif a.cmd == 'run':
+        run(a.evidence)
+    else:
+        collect(a.evidence)
+
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,3352 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:law:cvf:control:3",
+  "title": "LAW control contract records",
+  "description": "CANDIDATE_NOT_ACTIVE (A0 narrow, G-02-C2). Structural contract v3 for task/grant/review/effect/result records and the routing policy, evaluation basis COOPERATIVE_WORKFLOW, limited to one create_new action published by owner protocol P-CN1 on Windows NTFS local. Validating against this schema proves structure only. It does not prove authority, independence, host enforcement, tamper resistance, that a receipt is genuine or that bytes were published. Every attribution inside a record is a claim written with the record: a hash, locator, name or self-marked status never turns a claim into a verified fact or a grant. Unknown, unsupported, mixed or missing version/basis never means allow. Semantics: .cvf/contracts/v3/CONTROL_CONTRACT.md.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "record_type",
+    "evaluation_basis"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "#/$defs/schema_version"
+    },
+    "record_type": {
+      "enum": [
+        "task",
+        "grant",
+        "review",
+        "effect",
+        "result",
+        "bundle",
+        "routing_policy"
+      ]
+    },
+    "evaluation_basis": {
+      "$ref": "#/$defs/evaluation_basis"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "record_type": {
+            "const": "task"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/$defs/task"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "record_type": {
+            "const": "grant"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/$defs/grant"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "record_type": {
+            "const": "review"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/$defs/review"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "record_type": {
+            "const": "effect"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/$defs/effect"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "record_type": {
+            "const": "result"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/$defs/result"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "record_type": {
+            "const": "bundle"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/$defs/bundle"
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "record_type": {
+            "const": "routing_policy"
+          }
+        }
+      },
+      "then": {
+        "$ref": "#/$defs/routing_policy"
+      }
+    }
+  ],
+  "$defs": {
+    "schema_version": {
+      "description": "Exact version. Any other value (v1, v2, missing) is unknown and must be refused, not interpreted or migrated.",
+      "const": "law.cvf.control/3"
+    },
+    "header": {
+      "properties": {
+        "schema_version": {
+          "$ref": "#/$defs/schema_version"
+        },
+        "record_type": {
+          "type": "string"
+        },
+        "example_only": {
+          "description": "Present only on illustrative data. Example records never carry real authority.",
+          "const": true
+        },
+        "note": {
+          "type": "string"
+        },
+        "evaluation_basis": {
+          "$ref": "#/$defs/evaluation_basis"
+        }
+      },
+      "required": [
+        "schema_version",
+        "record_type",
+        "evaluation_basis"
+      ]
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "role": {
+      "description": "Role label. A label is not proof of identity or independence.",
+      "enum": [
+        "user",
+        "main",
+        "scout",
+        "worker",
+        "reviewer",
+        "domain_role",
+        "host",
+        "tool",
+        "issuer",
+        "unknown"
+      ]
+    },
+    "actor": {
+      "type": "object",
+      "required": [
+        "actor_id",
+        "role"
+      ],
+      "properties": {
+        "actor_id": {
+          "$ref": "#/$defs/id"
+        },
+        "role": {
+          "$ref": "#/$defs/role"
+        },
+        "host": {
+          "type": "string"
+        },
+        "session_ref": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ref_kind": {
+      "enum": [
+        "user_intent",
+        "user_condition",
+        "user_acceptance",
+        "grant",
+        "policy",
+        "recipe_acceptance",
+        "review_receipt",
+        "reviewer_eligibility",
+        "role_acceptance",
+        "host_observation",
+        "effect_receipt"
+      ]
+    },
+    "object_digest": {
+      "type": "object",
+      "required": [
+        "path",
+        "digest"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/path"
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "source_id": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string"
+        },
+        "scope": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Identity of one object. digest = sha256 of the exact file bytes at path (law.cvf.bind/3 'object bytes'); no line-ending, Unicode or format normalisation. path is a syntactic string: alias equivalence (case, separators, .., 8.3, trailing dot, ADS, UNC, links) is UNSUPPORTED and never assumed. Equal declared digests in two records are not a check of the bytes."
+    },
+    "binding": {
+      "description": "What a review, effect or result is bound to, defined by law.cvf.bind/3 (CONTROL_CONTRACT.md 'Binding'). Any change in a bound value invalidates receipts bound to the old value for the affected part. A digest is an identity of bytes, never an authority.",
+      "type": "object",
+      "required": [
+        "bind_version",
+        "evaluation_basis",
+        "task_id",
+        "task_revision",
+        "intent_digest",
+        "accepted_task_digest",
+        "context_digest",
+        "policy_version",
+        "policy_digest",
+        "inputs"
+      ],
+      "properties": {
+        "bind_version": {
+          "$ref": "#/$defs/bind_version"
+        },
+        "evaluation_basis": {
+          "$ref": "#/$defs/evaluation_basis"
+        },
+        "task_id": {
+          "$ref": "#/$defs/id"
+        },
+        "task_revision": {
+          "$ref": "#/$defs/revision"
+        },
+        "intent_digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "accepted_task_digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "context_digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "policy_version": {
+          "$ref": "#/$defs/policy_version"
+        },
+        "policy_digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/object_digest"
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/output_object"
+          }
+        },
+        "action_digest": {
+          "$ref": "#/$defs/digest"
+        }
+      },
+      "additionalProperties": false
+    },
+    "operation": {
+      "description": "Actual operation class. A checker derives it from the real operation, not from a label chosen by Main.",
+      "enum": [
+        "read",
+        "create_new",
+        "overwrite",
+        "delete",
+        "register_write",
+        "provenance_write",
+        "verification_status_write",
+        "schema_or_policy_write",
+        "grant_write",
+        "skill_install",
+        "skill_export",
+        "external_send",
+        "network_write",
+        "irreversible_other",
+        "delegate",
+        "unknown"
+      ]
+    },
+    "write_zone": {
+      "enum": [
+        "none",
+        "working",
+        "output_new",
+        "agent_runtime",
+        "original_source",
+        "shared_register",
+        "framework",
+        "external",
+        "unknown"
+      ],
+      "description": "agent_runtime is the only zone added in this candidate (owner-protocol runtime files). agent_state, package_content and the other Delta01 zones are deferred; a path with no classification is UNCLASSIFIED, never a zone."
+    },
+    "content_use": {
+      "enum": [
+        "internal_draft",
+        "sign",
+        "send_external",
+        "decision_basis",
+        "verified_claim"
+      ]
+    },
+    "recipe_ref": {
+      "type": "object",
+      "required": [
+        "recipe_id",
+        "recipe_version",
+        "acceptance_ref",
+        "user_decision_effect"
+      ],
+      "properties": {
+        "recipe_id": {
+          "$ref": "#/$defs/id"
+        },
+        "recipe_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "user_decision_effect": {
+          "description": "What the accepted recipe version does to decisions the user made, as stated by its acceptance record. A claim until the checker verifies it through acceptance_ref; CHANGES routes to R-MUTATION, UNKNOWN routes to R-UNCLASSIFIED.",
+          "enum": [
+            "NONE",
+            "CHANGES",
+            "UNKNOWN"
+          ]
+        },
+        "acceptance_ref": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/attributed_ref"
+            },
+            {
+              "properties": {
+                "kind": {
+                  "const": "recipe_acceptance"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "action": {
+      "description": "Operation descriptor. A descriptor that is schema-valid but still lacks facts the checker needs (scope, payload, binding) is BLOCKED with OPERATION_DESCRIPTOR_INCOMPLETE, never allowed.",
+      "type": "object",
+      "required": [
+        "operation",
+        "tool",
+        "targets",
+        "write_zone"
+      ],
+      "properties": {
+        "operation": {
+          "$ref": "#/$defs/operation"
+        },
+        "tool": {
+          "description": "Tool name. Having a tool does not make it an accepted recipe.",
+          "type": "string",
+          "minLength": 1
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/path"
+          }
+        },
+        "write_zone": {
+          "$ref": "#/$defs/write_zone"
+        },
+        "recipe": {
+          "$ref": "#/$defs/recipe_ref"
+        },
+        "delegation": {
+          "$ref": "#/$defs/delegation"
+        },
+        "payload": {
+          "description": "For external_send/network_write: locator and digest of the exact bytes that leave the workspace, not the content.",
+          "$ref": "#/$defs/object_digest"
+        },
+        "content_use": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/content_use"
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "const": "delegate"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "delegation"
+            ]
+          },
+          "else": {
+            "properties": {
+              "targets": {
+                "minItems": 1
+              },
+              "delegation": false
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": {
+                "enum": [
+                  "external_send",
+                  "network_write"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "payload"
+            ]
+          }
+        }
+      ]
+    },
+    "callee_role": {
+      "description": "Role a delegation may call. Not an actor role: user, main, issuer, host, tool and unknown are never callees. core = the framework's scout/worker/reviewer; registered (native host agent) and domain_accepted (role of an accepted pack) need identity_ref.",
+      "type": "object",
+      "required": [
+        "role_class",
+        "role_name"
+      ],
+      "properties": {
+        "role_class": {
+          "enum": [
+            "core",
+            "registered",
+            "domain_accepted"
+          ]
+        },
+        "role_name": {
+          "$ref": "#/$defs/id"
+        },
+        "identity_ref": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/attributed_ref"
+            },
+            {
+              "properties": {
+                "kind": {
+                  "const": "role_acceptance"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "role_class": {
+                "const": "core"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "role_name": {
+                "enum": [
+                  "scout",
+                  "worker",
+                  "reviewer"
+                ]
+              }
+            }
+          },
+          "else": {
+            "required": [
+              "identity_ref"
+            ]
+          }
+        }
+      ]
+    },
+    "task_pointer": {
+      "type": "object",
+      "required": [
+        "task_id",
+        "task_revision",
+        "accepted_task_digest",
+        "context_digest"
+      ],
+      "properties": {
+        "task_id": {
+          "$ref": "#/$defs/id"
+        },
+        "task_revision": {
+          "$ref": "#/$defs/revision"
+        },
+        "accepted_task_digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "context_digest": {
+          "$ref": "#/$defs/digest"
+        }
+      },
+      "additionalProperties": false
+    },
+    "delegation": {
+      "description": "Bound descriptor of a role call. Child task, tool scope and envelope must lie within the grant and the parent task; that comparison belongs to the checker. A grant supported by the required cooperative source attribution is necessary but not sufficient; attribution does not prove authenticity.",
+      "type": "object",
+      "required": [
+        "callee",
+        "parent_task",
+        "child_task",
+        "tool_scope",
+        "requested_envelope"
+      ],
+      "properties": {
+        "callee": {
+          "$ref": "#/$defs/callee_role"
+        },
+        "parent_task": {
+          "$ref": "#/$defs/task_pointer"
+        },
+        "child_task": {
+          "$ref": "#/$defs/task_pointer"
+        },
+        "tool_scope": {
+          "description": "Child permissions only. All three fields are required; an empty array grants no permission in that dimension, never a wildcard. Omitted fields are invalid. Parent dispatch permissions do not become child permissions.",
+          "type": "object",
+          "required": [
+            "tools",
+            "operations",
+            "paths"
+          ],
+          "properties": {
+            "tools": {
+              "type": "array",
+              "minItems": 0,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "operations": {
+              "type": "array",
+              "minItems": 0,
+              "items": {
+                "$ref": "#/$defs/operation"
+              },
+              "uniqueItems": true
+            },
+            "paths": {
+              "type": "array",
+              "minItems": 0,
+              "items": {
+                "$ref": "#/$defs/path"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "requested_envelope": {
+          "$ref": "#/$defs/envelope"
+        }
+      },
+      "additionalProperties": false
+    },
+    "preservation": {
+      "type": "object",
+      "required": [
+        "target",
+        "must_keep",
+        "known_loss_state"
+      ],
+      "properties": {
+        "target": {
+          "$ref": "#/$defs/path"
+        },
+        "must_keep": {
+          "type": "string",
+          "minLength": 1
+        },
+        "known_loss_state": {
+          "enum": [
+            "NONE_KNOWN",
+            "KNOWN_LOSS",
+            "UNKNOWN"
+          ]
+        },
+        "evidence_locator": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "envelope_field": {
+      "description": "Requested value and observed support. UNSUPPORTED/UNKNOWN are kept as such, never reported as applied.",
+      "type": "object",
+      "required": [
+        "value",
+        "status"
+      ],
+      "properties": {
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "integer",
+            "null"
+          ]
+        },
+        "status": {
+          "enum": [
+            "APPLIED",
+            "REQUESTED",
+            "UNSUPPORTED",
+            "UNKNOWN"
+          ]
+        },
+        "observed_by": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "envelope": {
+      "description": "Effective role envelope. Model/effort values come from role config/EXECUTION_PROFILE owners; this record only references them.",
+      "type": "object",
+      "required": [
+        "role"
+      ],
+      "properties": {
+        "role": {
+          "$ref": "#/$defs/role"
+        },
+        "model": {
+          "$ref": "#/$defs/envelope_field"
+        },
+        "effort": {
+          "$ref": "#/$defs/envelope_field"
+        },
+        "fallback": {
+          "$ref": "#/$defs/envelope_field"
+        },
+        "expires_at": {
+          "$ref": "#/$defs/envelope_field"
+        },
+        "max_retries": {
+          "$ref": "#/$defs/envelope_field"
+        },
+        "max_concurrency": {
+          "$ref": "#/$defs/envelope_field"
+        },
+        "cost_limit": {
+          "$ref": "#/$defs/envelope_field"
+        },
+        "profile_ref": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "review_phase": {
+      "enum": [
+        "PRE_EFFECT",
+        "PRE_INTEGRATION",
+        "PRE_DELIVERY"
+      ]
+    },
+    "requirement": {
+      "type": "object",
+      "required": [
+        "req_id",
+        "statement",
+        "mandatory"
+      ],
+      "properties": {
+        "req_id": {
+          "$ref": "#/$defs/id"
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mandatory": {
+          "type": "boolean"
+        },
+        "expected_evidence": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fail_when": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "policy_version": {
+      "const": "law.cvf.routing/3"
+    },
+    "row_id": {
+      "type": "string",
+      "pattern": "^R-[A-Z_]+$"
+    },
+    "task": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/header"
+        }
+      ],
+      "required": [
+        "work_id",
+        "task_id",
+        "task_revision",
+        "proposed_by",
+        "intent",
+        "authority",
+        "inputs",
+        "effects",
+        "acceptance",
+        "envelope"
+      ],
+      "properties": {
+        "record_type": {
+          "const": "task"
+        },
+        "work_id": {
+          "$ref": "#/$defs/id"
+        },
+        "task_id": {
+          "$ref": "#/$defs/id"
+        },
+        "task_revision": {
+          "$ref": "#/$defs/revision"
+        },
+        "proposed_by": {
+          "$ref": "#/$defs/actor"
+        },
+        "intent": {
+          "description": "refs point to what the user actually decided; main_interpretation is Main's reading and is never a substitute for refs.",
+          "type": "object",
+          "required": [
+            "refs",
+            "main_interpretation"
+          ],
+          "properties": {
+            "refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/attributed_ref"
+                  },
+                  {
+                    "properties": {
+                      "kind": {
+                        "enum": [
+                          "user_intent",
+                          "user_condition"
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "main_interpretation": {
+              "type": "string",
+              "minLength": 1
+            },
+            "unconfirmed": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "authority": {
+          "description": "An empty grant_refs list is structurally allowed so a proposal can state a missing grant; it never defaults to allow.",
+          "type": "object",
+          "required": [
+            "grant_refs",
+            "subject"
+          ],
+          "properties": {
+            "grant_refs": {
+              "type": "array",
+              "items": {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/attributed_ref"
+                  },
+                  {
+                    "properties": {
+                      "kind": {
+                        "const": "grant"
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "subject": {
+              "$ref": "#/$defs/actor"
+            }
+          },
+          "additionalProperties": false
+        },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/object_digest"
+          }
+        },
+        "effects": {
+          "type": "object",
+          "required": [
+            "actions",
+            "on_missing"
+          ],
+          "properties": {
+            "actions": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/action"
+              }
+            },
+            "protected_targets": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/path"
+              }
+            },
+            "preservation": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/preservation"
+              }
+            },
+            "expected_outputs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/path"
+              }
+            },
+            "on_missing": {
+              "enum": [
+                "STOP_DEPENDENT_EFFECT",
+                "RETURN_TO_MAIN",
+                "ASK_USER"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "acceptance": {
+          "type": "object",
+          "required": [
+            "requirements"
+          ],
+          "properties": {
+            "requirements": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/requirement"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "envelope": {
+          "$ref": "#/$defs/envelope"
+        },
+        "route_proposal": {
+          "description": "Main's proposal only. The checker computes the route from actual actions; a proposal cannot lower it.",
+          "type": "object",
+          "required": [
+            "policy_version",
+            "proposed_rows"
+          ],
+          "properties": {
+            "policy_version": {
+              "$ref": "#/$defs/policy_version"
+            },
+            "proposed_rows": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/row_id"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "context_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/object_digest"
+          }
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "grant": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/header"
+        },
+        {
+          "if": {
+            "required": [
+              "example_only"
+            ]
+          },
+          "then": {
+            "properties": {
+              "status": {
+                "const": "EXAMPLE_INACTIVE"
+              }
+            }
+          }
+        }
+      ],
+      "required": [
+        "grant_id",
+        "grant_revision",
+        "issuer",
+        "issuer_ref",
+        "subject",
+        "scope",
+        "status"
+      ],
+      "properties": {
+        "record_type": {
+          "const": "grant"
+        },
+        "grant_id": {
+          "$ref": "#/$defs/id"
+        },
+        "grant_revision": {
+          "$ref": "#/$defs/revision"
+        },
+        "issuer": {
+          "$ref": "#/$defs/actor"
+        },
+        "issuer_ref": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/attributed_ref"
+            },
+            {
+              "properties": {
+                "kind": {
+                  "const": "grant"
+                }
+              }
+            }
+          ]
+        },
+        "subject": {
+          "type": "object",
+          "required": [
+            "roles"
+          ],
+          "properties": {
+            "roles": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/role"
+              },
+              "uniqueItems": true
+            },
+            "actor_ids": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/id"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "scope": {
+          "description": "Group grant: reused for every task inside the scope without asking the user again. subject is who holds the grant; delegate_callees is which roles the holder may call. Empty or absent delegate_callees allows no delegation.",
+          "type": "object",
+          "required": [
+            "task_classes",
+            "operations",
+            "paths"
+          ],
+          "properties": {
+            "delegate_callees": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/callee_role"
+              }
+            },
+            "task_classes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "operations": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operation"
+              },
+              "uniqueItems": true
+            },
+            "tools": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "paths": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/path"
+              }
+            },
+            "providers": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "limits": {
+          "type": "object",
+          "properties": {
+            "expires_at": {
+              "$ref": "#/$defs/timestamp"
+            },
+            "max_retries": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "max_concurrency": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "cost_limit": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "status": {
+          "enum": [
+            "ACTIVE",
+            "REVOKED",
+            "EXPIRED",
+            "EXAMPLE_INACTIVE"
+          ]
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "review": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/header"
+        },
+        {
+          "if": {
+            "properties": {
+              "verdict": {
+                "const": "PASS"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "scope": {
+                "properties": {
+                  "objects": {
+                    "minItems": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "phase": {
+                "const": "PRE_EFFECT"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "scope": {
+                "properties": {
+                  "intent_refs_checked": {
+                    "minItems": 1
+                  }
+                },
+                "required": [
+                  "intent_refs_checked"
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "required": [
+        "review_id",
+        "phase",
+        "binding",
+        "reviewer",
+        "scope",
+        "verdict",
+        "findings"
+      ],
+      "properties": {
+        "record_type": {
+          "const": "review"
+        },
+        "review_id": {
+          "$ref": "#/$defs/id"
+        },
+        "phase": {
+          "$ref": "#/$defs/review_phase"
+        },
+        "binding": {
+          "$ref": "#/$defs/binding"
+        },
+        "reviewer": {
+          "type": "object",
+          "required": [
+            "actor",
+            "eligibility_ref",
+            "independence_observed"
+          ],
+          "properties": {
+            "actor": {
+              "$ref": "#/$defs/actor"
+            },
+            "eligibility_ref": {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/attributed_ref"
+                },
+                {
+                  "properties": {
+                    "kind": {
+                      "const": "reviewer_eligibility"
+                    }
+                  }
+                }
+              ]
+            },
+            "independence_observed": {
+              "description": "How independence was observed. SELF_DECLARED, NOT_OBSERVED and SAME_ACTOR never satisfy a required independent review.",
+              "enum": [
+                "OBSERVED_SEPARATE_CONTEXT",
+                "SELF_DECLARED",
+                "NOT_OBSERVED",
+                "SAME_ACTOR"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "scope": {
+          "type": "object",
+          "required": [
+            "objects",
+            "requirements_checked",
+            "not_checked"
+          ],
+          "properties": {
+            "objects": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/object_digest"
+              }
+            },
+            "requirements_checked": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/id"
+              }
+            },
+            "intent_refs_checked": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/id"
+              }
+            },
+            "not_checked": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "verdict": {
+          "enum": [
+            "PASS",
+            "BLOCKED",
+            "CHANGES_REQUIRED",
+            "UNKNOWN"
+          ]
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "finding_id",
+              "severity",
+              "statement"
+            ],
+            "properties": {
+              "finding_id": {
+                "$ref": "#/$defs/id"
+              },
+              "severity": {
+                "enum": [
+                  "P0",
+                  "P1",
+                  "P2",
+                  "P3",
+                  "INFO"
+                ]
+              },
+              "locator": {
+                "type": "string"
+              },
+              "statement": {
+                "type": "string",
+                "minLength": 1
+              },
+              "condition_to_pass": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "receipt_ref": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/attributed_ref"
+            },
+            {
+              "properties": {
+                "kind": {
+                  "const": "review_receipt"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "reason_code": {
+      "enum": [
+        "GRANT_MISSING",
+        "GRANT_OUT_OF_SCOPE",
+        "GRANT_INACTIVE",
+        "USER_CONFIRMATION_MISSING",
+        "ATTRIBUTION_INSUFFICIENT",
+        "REVIEWER_NOT_ELIGIBLE",
+        "REVIEW_MISSING",
+        "REVIEW_BLOCKING_VERDICT",
+        "BINDING_MISMATCH",
+        "STALE_REVIEW",
+        "UNSUPPORTED_BINDING_PART",
+        "BASIS_MISMATCH",
+        "RECIPE_NOT_ACCEPTED",
+        "KNOWN_PRESERVATION_LOSS",
+        "PRESERVATION_UNKNOWN",
+        "UNCLASSIFIED_OPERATION",
+        "ENVELOPE_EXCEEDED",
+        "HOST_SUPPORT_UNVERIFIED",
+        "NO_OBJECT",
+        "MANDATORY_REQUIREMENT_NOT_MET",
+        "OPERATION_DESCRIPTOR_INCOMPLETE",
+        "DELEGATE_SCOPE_UNVERIFIED",
+        "INPUT_CHANGED_SINCE_READ",
+        "PRECONDITION_PROOF_MISSING",
+        "CHANGED_AFTER_PUBLISH",
+        "REVIEW_REQUIRED_UNSUPPORTED"
+      ]
+    },
+    "effect": {
+      "description": "Gate decision (REQUEST) or observed outcome (OUTCOME). A disposition written by Main is a cooperative log. assurance_level never exceeds ADVISORY in v3: PASS means the record set is consistent for the cooperative workflow, not that anything was enforced.",
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/header"
+        },
+        {
+          "if": {
+            "properties": {
+              "stage": {
+                "const": "OUTCOME"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "outcome"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "disposition": {
+                "const": "PASS"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "reasons": {
+                "maxItems": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "disposition": {
+                "enum": [
+                  "DENY",
+                  "BLOCKED",
+                  "UNSUPPORTED"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "reasons": {
+                "minItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "stage": {
+                "const": "REQUEST"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "receipt_ref": false
+            }
+          }
+        }
+      ],
+      "required": [
+        "effect_id",
+        "stage",
+        "binding",
+        "actor",
+        "action",
+        "routing",
+        "assurance_level",
+        "disposition",
+        "reasons",
+        "decided_by"
+      ],
+      "properties": {
+        "record_type": {
+          "const": "effect"
+        },
+        "effect_id": {
+          "$ref": "#/$defs/id"
+        },
+        "stage": {
+          "enum": [
+            "REQUEST",
+            "OUTCOME"
+          ]
+        },
+        "binding": {
+          "$ref": "#/$defs/binding"
+        },
+        "actor": {
+          "$ref": "#/$defs/actor"
+        },
+        "action": {
+          "$ref": "#/$defs/action"
+        },
+        "routing": {
+          "type": "object",
+          "required": [
+            "policy_version",
+            "matched_rows",
+            "required_review_phases"
+          ],
+          "properties": {
+            "policy_version": {
+              "$ref": "#/$defs/policy_version"
+            },
+            "matched_rows": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/row_id"
+              },
+              "uniqueItems": true
+            },
+            "required_review_phases": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/review_phase"
+              },
+              "uniqueItems": true
+            }
+          },
+          "additionalProperties": false
+        },
+        "grant_ref_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "review_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "assurance_level": {
+          "enum": [
+            "UNVERIFIED",
+            "ADVISORY"
+          ]
+        },
+        "disposition": {
+          "enum": [
+            "PASS",
+            "DENY",
+            "BLOCKED",
+            "UNSUPPORTED",
+            "NOT_APPLICABLE",
+            "PENDING"
+          ]
+        },
+        "reasons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/reason_code"
+          },
+          "uniqueItems": true
+        },
+        "decided_by": {
+          "$ref": "#/$defs/actor"
+        },
+        "outcome": {
+          "type": "object",
+          "required": [
+            "status",
+            "observed_by"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "APPLIED",
+                "NOT_APPLIED",
+                "PARTIAL",
+                "UNKNOWN"
+              ]
+            },
+            "artifacts": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/output_object"
+              }
+            },
+            "observed_by": {
+              "$ref": "#/$defs/actor"
+            }
+          },
+          "additionalProperties": false
+        },
+        "receipt_ref": {
+          "description": "Pointer to the owner protocol receipt that proves the historical operation (kind effect_receipt). Only an OUTCOME record can carry it: dispatch and effect never require or accept a receipt that does not exist yet. A receipt is cooperative evidence, not a grant.",
+          "allOf": [
+            {
+              "$ref": "#/$defs/attributed_ref"
+            },
+            {
+              "properties": {
+                "kind": {
+                  "const": "effect_receipt"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "acceptance_state": {
+      "enum": [
+        "CANDIDATE",
+        "REVIEW_PASSED",
+        "ACCEPTED_FOR_INTEGRATION",
+        "EFFECT_APPLIED",
+        "USER_ACCEPTED",
+        "REJECTED",
+        "BLOCKED"
+      ]
+    },
+    "result": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/header"
+        },
+        {
+          "if": {
+            "properties": {
+              "state_set_by": {
+                "properties": {
+                  "role": {
+                    "enum": [
+                      "worker",
+                      "scout",
+                      "reviewer",
+                      "domain_role",
+                      "unknown"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "acceptance_states": {
+                "items": {
+                  "const": "CANDIDATE"
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "acceptance_states": {
+                "contains": {
+                  "const": "USER_ACCEPTED"
+                }
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "user_acceptance"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "acceptance_states": {
+                "contains": {
+                  "const": "ACCEPTED_FOR_INTEGRATION"
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "requirements": {
+                "items": {
+                  "if": {
+                    "properties": {
+                      "mandatory": {
+                        "const": true
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "status": {
+                        "const": "MET"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "required": [
+        "result_id",
+        "binding",
+        "produced_by",
+        "artifacts",
+        "evidence",
+        "requirements",
+        "gaps",
+        "acceptance_states",
+        "state_set_by"
+      ],
+      "properties": {
+        "record_type": {
+          "const": "result"
+        },
+        "result_id": {
+          "$ref": "#/$defs/id"
+        },
+        "binding": {
+          "$ref": "#/$defs/binding"
+        },
+        "produced_by": {
+          "$ref": "#/$defs/actor"
+        },
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/output_object"
+          }
+        },
+        "actions_performed": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/action"
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "evidence_id",
+              "req_id",
+              "locator",
+              "kind",
+              "scope"
+            ],
+            "properties": {
+              "evidence_id": {
+                "$ref": "#/$defs/id"
+              },
+              "req_id": {
+                "$ref": "#/$defs/id"
+              },
+              "locator": {
+                "type": "string",
+                "minLength": 1
+              },
+              "kind": {
+                "enum": [
+                  "SELF_DECLARED",
+                  "TOOL_OBSERVED",
+                  "REVIEWER_OBSERVED",
+                  "HOST_OBSERVED"
+                ]
+              },
+              "scope": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "requirements": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "req_id",
+              "mandatory",
+              "status"
+            ],
+            "properties": {
+              "req_id": {
+                "$ref": "#/$defs/id"
+              },
+              "mandatory": {
+                "type": "boolean"
+              },
+              "status": {
+                "enum": [
+                  "MET",
+                  "NOT_MET",
+                  "MISSING",
+                  "BLOCKED",
+                  "UNKNOWN",
+                  "NOT_APPLICABLE"
+                ]
+              },
+              "evidence_ids": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/id"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "gaps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "acceptance_states": {
+          "description": "Distinct meanings; never collapsed into one DONE. Workers/scouts/reviewers may only mark CANDIDATE.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/acceptance_state"
+          }
+        },
+        "state_set_by": {
+          "$ref": "#/$defs/actor"
+        },
+        "user_acceptance": {
+          "$ref": "#/$defs/user_acceptance"
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "bundle": {
+      "description": "A set of related records for one work item or example scenario. Bundles do not nest.",
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/header"
+        }
+      ],
+      "required": [
+        "bundle_id",
+        "records"
+      ],
+      "properties": {
+        "record_type": {
+          "const": "bundle"
+        },
+        "bundle_id": {
+          "$ref": "#/$defs/id"
+        },
+        "records": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#"
+              },
+              {
+                "properties": {
+                  "record_type": {
+                    "not": {
+                      "enum": [
+                        "bundle",
+                        "routing_policy"
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "gate": {
+      "enum": [
+        "GRANT_SCOPE",
+        "GRANT_EXACT_COVERAGE",
+        "PATH_SCOPE",
+        "TOOL_SCOPE",
+        "ENVELOPE",
+        "INPUT_REVISION",
+        "BINDING",
+        "RECIPE_VERSION_ACCEPTED",
+        "PRESERVATION",
+        "ACTUAL_OUTCOME",
+        "DELEGATE_SCOPE",
+        "SOURCE_SCOPE_AND_CONCLUSION",
+        "SKILL_INTAKE_STANDARD"
+      ]
+    },
+    "condition": {
+      "description": "Conditions the checker evaluates from operation descriptors, cooperative source evidence and available observations, never from a risk label alone. Claimed facts and observed facts remain distinct; matching records do not prove authenticity or actual effects. Exclusive sets: RECIPE_ACCEPTED_VERSION | RECIPE_ABSENT_OR_CHANGED; NO_USER_DECISION_CHANGE | USER_DECISION_CHANGE | USER_DECISION_EFFECT_UNKNOWN. A condition the checker cannot resolve counts as UNCLASSIFIED. NO_PROTECTED_TARGET is evaluated on the write set only (reads: empty set): every write target has an effective zone in light_write_zones, no authority name pattern match and no intersection with protected_targets. CONTENT_USE_INTERNAL_ONLY: true when content_use is declared and every element is internal_draft; false when any of sign/send_external/decision_basis/verified_claim is present; unresolved (UNCLASSIFIED) when content_use is absent.",
+      "enum": [
+        "NO_PROTECTED_TARGET",
+        "CONTENT_USE_INTERNAL_ONLY",
+        "RECIPE_ACCEPTED_VERSION",
+        "RECIPE_ABSENT_OR_CHANGED",
+        "NO_USER_DECISION_CHANGE",
+        "USER_DECISION_CHANGE",
+        "USER_DECISION_EFFECT_UNKNOWN",
+        "ENVELOPE_EXCEEDED",
+        "UNCLASSIFIED",
+        "MISSING_AUTHORITY",
+        "MISSING_REQUIRED_REVIEW",
+        "KNOWN_PRESERVATION_LOSS"
+      ]
+    },
+    "match_clause": {
+      "description": "A clause matches when every field present in it holds (AND between fields). operations, write_zones and content_use hold when the actual value is one of the listed values (OR). conditions_all holds when every listed condition holds (AND); conditions_any holds when at least one holds (OR). A row matches when any clause of match_any matches (OR between clauses).",
+      "type": "object",
+      "minProperties": 1,
+      "properties": {
+        "operations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/operation"
+          },
+          "uniqueItems": true
+        },
+        "write_zones": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/write_zone"
+          },
+          "uniqueItems": true
+        },
+        "content_use": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/content_use"
+          },
+          "uniqueItems": true
+        },
+        "conditions_all": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/condition"
+          },
+          "uniqueItems": true
+        },
+        "conditions_any": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/condition"
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "routing_row": {
+      "type": "object",
+      "required": [
+        "row_id",
+        "title",
+        "match_any",
+        "required_gates",
+        "required_review_phases",
+        "authority_evidence",
+        "attributed_refs_required"
+      ],
+      "properties": {
+        "row_id": {
+          "$ref": "#/$defs/row_id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "match_any": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/match_clause"
+          }
+        },
+        "required_gates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/gate"
+          },
+          "uniqueItems": true
+        },
+        "required_review_phases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/review_phase"
+          },
+          "uniqueItems": true
+        },
+        "authority_evidence": {
+          "description": "GRANT_REFERENCE_ATTRIBUTED: a grant reference of an accepted source class in scope is enough (light read/draft flow). ATTRIBUTED_REFS_REQUIRED: every listed ref kind must be present with an accepted source class. Neither verifies the claim.",
+          "enum": [
+            "GRANT_REFERENCE_ATTRIBUTED",
+            "ATTRIBUTED_REFS_REQUIRED"
+          ]
+        },
+        "forced_disposition": {
+          "enum": [
+            "BLOCKED",
+            "DENY"
+          ]
+        },
+        "additional_owner": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "attributed_refs_required": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "kind",
+              "accepted_source_classes"
+            ],
+            "properties": {
+              "kind": {
+                "$ref": "#/$defs/ref_kind"
+              },
+              "accepted_source_classes": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "$ref": "#/$defs/source_class"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "routing_policy": {
+      "type": "object",
+      "allOf": [
+        {
+          "$ref": "#/$defs/header"
+        }
+      ],
+      "required": [
+        "policy_id",
+        "policy_version",
+        "status",
+        "readable_rendering",
+        "combine",
+        "main_may_downgrade",
+        "missing_required_reviewer",
+        "reviewer_dispatch_needs_review",
+        "unknown_handling",
+        "unresolved_condition",
+        "unmatched_effect_route",
+        "group_grant_reuse",
+        "review_grants_authority",
+        "assurance_ceiling",
+        "tamper_resistance",
+        "basis_change_per_run",
+        "legacy_and_unknown_handling",
+        "binding_definition",
+        "unsupported_binding_part_handling",
+        "rows",
+        "candidate_scope",
+        "light_write_zones",
+        "write_zone_rank",
+        "zone_map",
+        "unmapped_path_handling",
+        "authority_name_patterns",
+        "conditional_route_disposition",
+        "open_assumptions",
+        "owner_protocols",
+        "operational_context_protocol",
+        "unsupported_in_candidate"
+      ],
+      "properties": {
+        "record_type": {
+          "const": "routing_policy"
+        },
+        "policy_id": {
+          "$ref": "#/$defs/id"
+        },
+        "policy_version": {
+          "$ref": "#/$defs/policy_version"
+        },
+        "status": {
+          "enum": [
+            "CANDIDATE_NOT_ACTIVE",
+            "DESIGN_REVIEWED",
+            "ACTIVE_COOPERATIVE"
+          ]
+        },
+        "readable_rendering": {
+          "type": "string",
+          "minLength": 1
+        },
+        "combine": {
+          "const": "UNION_OF_REQUIREMENTS"
+        },
+        "main_may_downgrade": {
+          "const": false
+        },
+        "missing_required_reviewer": {
+          "const": "BLOCK_DEPENDENT_EFFECT_NO_SELF_REVIEW"
+        },
+        "reviewer_dispatch_needs_review": {
+          "const": false
+        },
+        "unknown_handling": {
+          "const": "NEVER_ALLOW"
+        },
+        "unresolved_condition": {
+          "const": "TREAT_AS_UNCLASSIFIED"
+        },
+        "unmatched_effect_route": {
+          "const": "R-UNCLASSIFIED"
+        },
+        "match_semantics": {
+          "description": "Readable restatement of match_clause semantics; the schema description of match_clause is authoritative.",
+          "type": "string"
+        },
+        "group_grant_reuse": {
+          "const": "REUSE_WITHIN_SCOPE_WITHOUT_REAPPROVAL"
+        },
+        "review_grants_authority": {
+          "const": false
+        },
+        "independent_read_draft_continues": {
+          "type": "boolean"
+        },
+        "rows": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/routing_row"
+          }
+        },
+        "assurance_ceiling": {
+          "const": "ADVISORY"
+        },
+        "tamper_resistance": {
+          "const": "NONE"
+        },
+        "basis_change_per_run": {
+          "const": "FORBIDDEN"
+        },
+        "legacy_and_unknown_handling": {
+          "const": "REFUSE_NO_AUTO_MIGRATION"
+        },
+        "binding_definition": {
+          "const": "law.cvf.bind/3"
+        },
+        "unsupported_binding_part_handling": {
+          "const": "BLOCK_DEPENDENT_GATE"
+        },
+        "candidate_scope": {
+          "const": "A0_NARROW_ONE_CREATE_NEW_ACTION_P_CN1_WINDOWS_NTFS_LOCAL"
+        },
+        "light_write_zones": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "working",
+              "output_new"
+            ]
+          }
+        },
+        "write_zone_rank": {
+          "description": "Ascending protection order of the classified zones. A declared zone can only raise the effective zone, never lower it.",
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "none",
+              "working",
+              "output_new",
+              "agent_runtime",
+              "original_source",
+              "shared_register",
+              "framework",
+              "external"
+            ]
+          }
+        },
+        "zone_map": {
+          "description": "Baseline classification by path prefix (longest prefix wins). Only the zones needed by this candidate are mapped.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "path_prefix",
+              "write_zone"
+            ],
+            "properties": {
+              "path_prefix": {
+                "type": "string",
+                "pattern": "^[^\\\\:]+/$"
+              },
+              "write_zone": {
+                "$ref": "#/$defs/write_zone"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "unmapped_path_handling": {
+          "const": "UNCLASSIFIED"
+        },
+        "authority_name_patterns": {
+          "description": "Basename patterns (casefolded) that raise any write target to framework, in every zone.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "conditional_route_disposition": {
+          "const": "BLOCKED"
+        },
+        "open_assumptions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/open_assumption"
+          }
+        },
+        "owner_protocols": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/owner_protocol"
+          }
+        },
+        "operational_context_protocol": {
+          "$ref": "#/$defs/operational_context_protocol"
+        },
+        "unsupported_in_candidate": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "evaluation_basis": {
+      "description": "Closed basis. Cooperative workflow: obligations stay mandatory, evidence is attributed, nothing is tamper-resistant. The basis is fixed by the accepted profile, never chosen per run by Main. Unknown or absent basis is refused.",
+      "const": "COOPERATIVE_WORKFLOW"
+    },
+    "bind_version": {
+      "description": "Definition of the digests inside a binding. Digest meaning is defined in v3 CONTROL_CONTRACT.md 'Binding'. A digest of another bind_version is never comparable.",
+      "const": "law.cvf.bind/3"
+    },
+    "source_class": {
+      "description": "What kind of source the claim comes from. USER_CONFIRMATION: the user's own words or confirmation, located by evidence_locator. MAIN_PROPOSAL: Main's reading or proposal, never a user decision. ROLE_REPORT: a Scout/Worker/Reviewer/domain role's own report. TOOL_OBSERVATION: output observed by a tool or host. UNVERIFIED: no basis stated. None of these is verified against a trusted store.",
+      "enum": [
+        "USER_CONFIRMATION",
+        "MAIN_PROPOSAL",
+        "ROLE_REPORT",
+        "TOOL_OBSERVATION",
+        "UNVERIFIED"
+      ]
+    },
+    "channel": {
+      "description": "Where the claimed source was seen. MAIN_AUTHORED can never be USER_CONFIRMATION.",
+      "enum": [
+        "USER_MESSAGE",
+        "HOST_CONFIRMATION_UI",
+        "USER_AUTHORED_FILE",
+        "TOOL_OUTPUT",
+        "ROLE_OUTPUT",
+        "MAIN_AUTHORED",
+        "NONE"
+      ]
+    },
+    "attribution": {
+      "description": "Cooperative attribution of one claim. Not tamper-resistant: whoever can write the record can write this. It lets a person or checker see which source class is claimed and refuse rows that need another class. It never proves the claim.",
+      "type": "object",
+      "required": [
+        "source_class",
+        "channel",
+        "recorded_by"
+      ],
+      "properties": {
+        "source_class": {
+          "$ref": "#/$defs/source_class"
+        },
+        "channel": {
+          "$ref": "#/$defs/channel"
+        },
+        "recorded_by": {
+          "description": "Actor that wrote this record entry.",
+          "$ref": "#/$defs/actor"
+        },
+        "observed_by": {
+          "$ref": "#/$defs/actor"
+        },
+        "evidence_locator": {
+          "description": "Pointer to the user's words or the tool output. Locator only, not content.",
+          "type": "string",
+          "minLength": 1
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "source_class": {
+                "const": "USER_CONFIRMATION"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "evidence_locator"
+            ],
+            "properties": {
+              "channel": {
+                "enum": [
+                  "USER_MESSAGE",
+                  "HOST_CONFIRMATION_UI",
+                  "USER_AUTHORED_FILE"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "source_class": {
+                "const": "TOOL_OBSERVATION"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "observed_by"
+            ],
+            "properties": {
+              "channel": {
+                "const": "TOOL_OUTPUT"
+              },
+              "observed_by": {
+                "properties": {
+                  "role": {
+                    "enum": [
+                      "tool",
+                      "host"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "source_class": {
+                "const": "ROLE_REPORT"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "observed_by"
+            ],
+            "properties": {
+              "channel": {
+                "const": "ROLE_OUTPUT"
+              },
+              "observed_by": {
+                "properties": {
+                  "role": {
+                    "enum": [
+                      "scout",
+                      "worker",
+                      "reviewer",
+                      "domain_role"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "source_class": {
+                "const": "MAIN_PROPOSAL"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "channel": {
+                "const": "MAIN_AUTHORED"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "channel": {
+                "const": "MAIN_AUTHORED"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "source_class": {
+                "enum": [
+                  "MAIN_PROPOSAL",
+                  "UNVERIFIED"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "attributed_ref": {
+      "description": "Reference to an intent/authority/review fact held outside the record. Holds locator and digest of the exact referenced bytes, not content. digest and locator identify bytes; they say nothing about who produced them. The claimed origin is only in attribution.",
+      "type": "object",
+      "required": [
+        "ref_id",
+        "kind",
+        "locator",
+        "digest",
+        "attribution"
+      ],
+      "properties": {
+        "ref_id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "$ref": "#/$defs/ref_kind"
+        },
+        "locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "string"
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "issuer": {
+          "$ref": "#/$defs/actor"
+        },
+        "attribution": {
+          "$ref": "#/$defs/attribution"
+        }
+      },
+      "additionalProperties": false
+    },
+    "output_object": {
+      "description": "Identity of one actual output file: object_digest plus role ACTUAL_BYTES (bytes that exist after the operation). STAGED_BYTES and relations are not part of this candidate.",
+      "type": "object",
+      "required": [
+        "path",
+        "digest",
+        "role"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/path"
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "source_id": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string"
+        },
+        "scope": {
+          "type": "string"
+        },
+        "role": {
+          "const": "ACTUAL_BYTES"
+        }
+      },
+      "additionalProperties": false
+    },
+    "user_acceptance": {
+      "description": "Declared acceptance of one result by the user, bound to the exact task revision, requirement set and artifact bytes (D4). accepted_task_digest, accepted_requirements and accepted_artifacts are compared by the checker against the current task and result; the schema only fixes the shape and the source class. It never replaces a required review, a veto, bytes or operation proof.",
+      "type": "object",
+      "required": [
+        "ref",
+        "task_id",
+        "task_revision",
+        "accepted_task_digest",
+        "accepted_requirements",
+        "result_id",
+        "accepted_artifacts",
+        "presented_summary"
+      ],
+      "properties": {
+        "ref": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/attributed_ref"
+            },
+            {
+              "properties": {
+                "kind": {
+                  "const": "user_acceptance"
+                },
+                "attribution": {
+                  "required": [
+                    "source_class",
+                    "channel"
+                  ],
+                  "properties": {
+                    "source_class": {
+                      "const": "USER_CONFIRMATION"
+                    },
+                    "channel": {
+                      "enum": [
+                        "USER_MESSAGE",
+                        "HOST_CONFIRMATION_UI"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "task_id": {
+          "$ref": "#/$defs/id"
+        },
+        "task_revision": {
+          "$ref": "#/$defs/revision"
+        },
+        "accepted_task_digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "accepted_requirements": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "result_id": {
+          "$ref": "#/$defs/id"
+        },
+        "accepted_artifacts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/output_object"
+          }
+        },
+        "presented_summary": {
+          "type": "object",
+          "required": [
+            "locator",
+            "digest"
+          ],
+          "properties": {
+            "locator": {
+              "type": "string",
+              "minLength": 1
+            },
+            "digest": {
+              "$ref": "#/$defs/digest"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "open_assumption": {
+      "description": "A route assumption the checker cannot close from records. While open the route is CONDITIONAL and the disposition BLOCKED; only the named observer, in the same evaluation, closes it, and only for the phases listed.",
+      "type": "object",
+      "required": [
+        "id",
+        "applies_to_operations",
+        "route_status_while_open",
+        "closed_by",
+        "closes_in_phases",
+        "observation_scope",
+        "limits",
+        "not_applicable_in_phases"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^A-[A-Z_]+$"
+        },
+        "applies_to_operations": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/operation"
+          }
+        },
+        "route_status_while_open": {
+          "const": "CONDITIONAL"
+        },
+        "closed_by": {
+          "const": "S4_OBSERVER"
+        },
+        "closes_in_phases": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "dispatch",
+              "effect"
+            ]
+          }
+        },
+        "observation_scope": {
+          "const": "AT_TIME_ONLY"
+        },
+        "limits": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "EXCLUSIVE_WRITE_NOT_PROVEN",
+              "RACE_NOT_EXCLUDED"
+            ]
+          }
+        },
+        "not_applicable_in_phases": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "accept"
+            ]
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "envelope_effect": {
+      "type": "object",
+      "required": [
+        "id",
+        "operation",
+        "path_scope"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^T[1-7]$"
+        },
+        "operation": {
+          "enum": [
+            "mkdir",
+            "create",
+            "link",
+            "delete"
+          ]
+        },
+        "path_scope": {
+          "enum": [
+            "RUNTIME_ONE_TERMINAL_OF_RID",
+            "RUNTIME_PREPARED_OF_RID",
+            "RUNTIME_PUBLISH_DIR",
+            "RUNTIME_STAGED_OF_RID",
+            "TARGET",
+            "TARGET_ANCESTORS_UNDER_ZONE"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "owner_protocol": {
+      "description": "One accepted owner protocol. Matching is by protocol id, version, entrypoint and the observed entrypoint hash together; a tool name, a protocol name or a file location alone never qualifies. The pin compares versions cooperatively (ADVISORY): it does not prove the tool is genuine and grants nothing.",
+      "type": "object",
+      "required": [
+        "protocol_id",
+        "protocol_version",
+        "owner_tool",
+        "entrypoint",
+        "entrypoint_sha256",
+        "pin_semantics",
+        "platform",
+        "operation",
+        "target_zones",
+        "runtime_zone",
+        "runtime_dir",
+        "attaches_to_row",
+        "envelope",
+        "grant_must_cover",
+        "required_by_phase",
+        "receipt",
+        "not_exempt",
+        "review_phases_supported"
+      ],
+      "properties": {
+        "protocol_id": {
+          "type": "string",
+          "pattern": "^P-[A-Z0-9-]+$"
+        },
+        "protocol_version": {
+          "$ref": "#/$defs/revision"
+        },
+        "owner_tool": {
+          "type": "string",
+          "minLength": 1
+        },
+        "entrypoint": {
+          "type": "string",
+          "minLength": 1
+        },
+        "entrypoint_sha256": {
+          "$ref": "#/$defs/digest"
+        },
+        "pin_semantics": {
+          "const": "VERSION_COMPARE_ADVISORY"
+        },
+        "platform": {
+          "const": "windows-ntfs-local"
+        },
+        "operation": {
+          "const": "create_new"
+        },
+        "target_zones": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "working",
+              "output_new"
+            ]
+          }
+        },
+        "runtime_zone": {
+          "const": "agent_runtime"
+        },
+        "runtime_dir": {
+          "type": "string",
+          "pattern": "^[^\\\\:]+/$"
+        },
+        "attaches_to_row": {
+          "const": "R-READ_DRAFT"
+        },
+        "envelope": {
+          "description": "Exactly the seven effects T1..T7 of one call, in order. Anything outside this list follows the current route.",
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "prefixItems": [
+            {
+              "$ref": "#/$defs/envelope_effect",
+              "properties": {
+                "id": {
+                  "const": "T1"
+                },
+                "operation": {
+                  "const": "mkdir"
+                },
+                "path_scope": {
+                  "const": "TARGET_ANCESTORS_UNDER_ZONE"
+                }
+              }
+            },
+            {
+              "$ref": "#/$defs/envelope_effect",
+              "properties": {
+                "id": {
+                  "const": "T2"
+                },
+                "operation": {
+                  "const": "mkdir"
+                },
+                "path_scope": {
+                  "const": "RUNTIME_PUBLISH_DIR"
+                }
+              }
+            },
+            {
+              "$ref": "#/$defs/envelope_effect",
+              "properties": {
+                "id": {
+                  "const": "T3"
+                },
+                "operation": {
+                  "const": "create"
+                },
+                "path_scope": {
+                  "const": "RUNTIME_PREPARED_OF_RID"
+                }
+              }
+            },
+            {
+              "$ref": "#/$defs/envelope_effect",
+              "properties": {
+                "id": {
+                  "const": "T4"
+                },
+                "operation": {
+                  "const": "create"
+                },
+                "path_scope": {
+                  "const": "RUNTIME_STAGED_OF_RID"
+                }
+              }
+            },
+            {
+              "$ref": "#/$defs/envelope_effect",
+              "properties": {
+                "id": {
+                  "const": "T5"
+                },
+                "operation": {
+                  "const": "link"
+                },
+                "path_scope": {
+                  "const": "TARGET"
+                }
+              }
+            },
+            {
+              "$ref": "#/$defs/envelope_effect",
+              "properties": {
+                "id": {
+                  "const": "T6"
+                },
+                "operation": {
+                  "const": "create"
+                },
+                "path_scope": {
+                  "const": "RUNTIME_ONE_TERMINAL_OF_RID"
+                }
+              }
+            },
+            {
+              "$ref": "#/$defs/envelope_effect",
+              "properties": {
+                "id": {
+                  "const": "T7"
+                },
+                "operation": {
+                  "const": "delete"
+                },
+                "path_scope": {
+                  "const": "RUNTIME_STAGED_OF_RID"
+                }
+              }
+            }
+          ],
+          "items": false
+        },
+        "grant_must_cover": {
+          "type": "object",
+          "required": [
+            "tools",
+            "operations",
+            "path_scopes",
+            "delete_scope"
+          ],
+          "properties": {
+            "tools": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "operations": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/operation"
+              }
+            },
+            "path_scopes": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "TARGET_AND_ANCESTORS",
+                  "RUNTIME_DIR"
+                ]
+              }
+            },
+            "delete_scope": {
+              "const": "T7_STAGED_OF_SAME_RID_ONLY"
+            }
+          },
+          "additionalProperties": false
+        },
+        "required_by_phase": {
+          "type": "object",
+          "required": [
+            "dispatch",
+            "effect",
+            "accept"
+          ],
+          "properties": {
+            "dispatch": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "PROTOCOL_VERSION_ENTRYPOINT_ACCEPTED",
+                  "ENTRYPOINT_SHA256_OBSERVED_EQUALS_PIN",
+                  "ACTION_ROUTE_R_READ_DRAFT_B_OR_C",
+                  "GRANT_COVERS_ENVELOPE",
+                  "NO_REVIEW_PHASE_REQUIRED",
+                  "TARGET_ABSENT_OBSERVED_AT_TIME",
+                  "INPUTS_MATCH_DECLARED_DIGESTS",
+                  "PUBLISHED_EVIDENCE_RESOLVES_FOR_RID",
+                  "RECEIPT_REF_RESOLVES_TO_PUBLISHED",
+                  "RUNTIME_FILES_WITHIN_ENVELOPE",
+                  "CURRENT_BYTES_EQUAL_PUBLISHED_CONTENT",
+                  "USER_ACCEPTANCE_COMPLETE_D4"
+                ]
+              }
+            },
+            "effect": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "PROTOCOL_VERSION_ENTRYPOINT_ACCEPTED",
+                  "ENTRYPOINT_SHA256_OBSERVED_EQUALS_PIN",
+                  "ACTION_ROUTE_R_READ_DRAFT_B_OR_C",
+                  "GRANT_COVERS_ENVELOPE",
+                  "NO_REVIEW_PHASE_REQUIRED",
+                  "TARGET_ABSENT_OBSERVED_AT_TIME",
+                  "INPUTS_MATCH_DECLARED_DIGESTS",
+                  "PUBLISHED_EVIDENCE_RESOLVES_FOR_RID",
+                  "RECEIPT_REF_RESOLVES_TO_PUBLISHED",
+                  "RUNTIME_FILES_WITHIN_ENVELOPE",
+                  "CURRENT_BYTES_EQUAL_PUBLISHED_CONTENT",
+                  "USER_ACCEPTANCE_COMPLETE_D4"
+                ]
+              }
+            },
+            "accept": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "PROTOCOL_VERSION_ENTRYPOINT_ACCEPTED",
+                  "ENTRYPOINT_SHA256_OBSERVED_EQUALS_PIN",
+                  "ACTION_ROUTE_R_READ_DRAFT_B_OR_C",
+                  "GRANT_COVERS_ENVELOPE",
+                  "NO_REVIEW_PHASE_REQUIRED",
+                  "TARGET_ABSENT_OBSERVED_AT_TIME",
+                  "INPUTS_MATCH_DECLARED_DIGESTS",
+                  "PUBLISHED_EVIDENCE_RESOLVES_FOR_RID",
+                  "RECEIPT_REF_RESOLVES_TO_PUBLISHED",
+                  "RUNTIME_FILES_WITHIN_ENVELOPE",
+                  "CURRENT_BYTES_EQUAL_PUBLISHED_CONTENT",
+                  "USER_ACCEPTANCE_COMPLETE_D4"
+                ]
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "receipt": {
+          "type": "object",
+          "required": [
+            "ref_kind",
+            "evidence_schema",
+            "terminal_state",
+            "digest_of",
+            "required_in_phases"
+          ],
+          "properties": {
+            "ref_kind": {
+              "const": "effect_receipt"
+            },
+            "evidence_schema": {
+              "const": "local-agent-workspace/publish-v1"
+            },
+            "terminal_state": {
+              "const": "PUBLISHED"
+            },
+            "digest_of": {
+              "const": "RAW_PUBLISHED_BYTES"
+            },
+            "required_in_phases": {
+              "const": [
+                "accept"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "not_exempt": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "EVIDENCE_EDIT_OR_DELETE",
+              "OTHER_RUNTIME_FILES",
+              "STATE_OR_HANDOFF_FILES",
+              "RENAME_OR_OVERWRITE",
+              "DECLARED_TOOL_NAME_ONLY",
+              "FILE_LOCATION_ONLY"
+            ]
+          }
+        },
+        "review_phases_supported": {
+          "const": []
+        }
+      },
+      "additionalProperties": false
+    },
+    "operational_context_protocol": {
+      "description": "The single operational-context protocol P-CTX1: update of an EXISTING .agent/STATE.md or .agent/HANDOFF.md by tools/context_update.py, one file per call, hash-guarded. It is operational context, not an artifact delivered to the user: no task, effect, receipt or D4 per save and no checker PASS. Nothing here is evaluated by the artifact checker, workflow or observer; metadata that reaches the artifact checker stays UNSUPPORTED. It is not a source of grant, policy, review verdict or user acceptance. The pin compares versions cooperatively (ADVISORY) and grants nothing. Anything outside this envelope (direct or native write, another path, another journal) follows the current route.",
+      "type": "object",
+      "required": [
+        "protocol_id",
+        "protocol_version",
+        "owner_tool",
+        "entrypoint",
+        "entrypoint_sha256",
+        "pin_semantics",
+        "platform",
+        "scope",
+        "target_paths",
+        "files_per_call",
+        "existing_file_only",
+        "expected_before",
+        "runtime_precondition",
+        "transaction_prune",
+        "envelope",
+        "grant_precondition",
+        "non_authority",
+        "outside_envelope",
+        "not_exempt",
+        "artifact_checker_handling",
+        "concurrency"
+      ],
+      "properties": {
+        "protocol_id": {
+          "const": "P-CTX1"
+        },
+        "protocol_version": {
+          "const": 1
+        },
+        "owner_tool": {
+          "const": "context_update"
+        },
+        "entrypoint": {
+          "const": "tools/context_update.py"
+        },
+        "entrypoint_sha256": {
+          "$ref": "#/$defs/digest"
+        },
+        "pin_semantics": {
+          "const": "VERSION_COMPARE_ADVISORY"
+        },
+        "platform": {
+          "const": "windows-ntfs-local"
+        },
+        "scope": {
+          "const": "OPERATIONAL_CONTEXT_NOT_ARTIFACT"
+        },
+        "target_paths": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "prefixItems": [
+            {
+              "const": ".agent/STATE.md"
+            },
+            {
+              "const": ".agent/HANDOFF.md"
+            }
+          ],
+          "items": false
+        },
+        "files_per_call": {
+          "const": 1
+        },
+        "existing_file_only": {
+          "const": true
+        },
+        "expected_before": {
+          "const": "SHA256_OF_BYTES_READ_REQUIRED"
+        },
+        "runtime_precondition": {
+          "const": "ROOT_AGENT_RUNTIME_EXISTING_PLAIN_PINNED_BEFORE_PROBE"
+        },
+        "transaction_prune": {
+          "const": false
+        },
+        "envelope": {
+          "description": "Exactly the five effects C1..C5 of one call, in order: read the current target, probe write access in the runtime folder, create this call's own transaction journal/staging/backup, replace the one target, delete this call's own staging/backup. No other journal and no runtime parent is touched, created or removed.",
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "prefixItems": [
+            {
+              "type": "object",
+              "required": [
+                "id",
+                "operation",
+                "path_scope"
+              ],
+              "properties": {
+                "id": {
+                  "const": "C1"
+                },
+                "operation": {
+                  "const": "read"
+                },
+                "path_scope": {
+                  "const": "CONTEXT_TARGET"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "id",
+                "operation",
+                "path_scope"
+              ],
+              "properties": {
+                "id": {
+                  "const": "C2"
+                },
+                "operation": {
+                  "const": "create_delete"
+                },
+                "path_scope": {
+                  "const": "RUNTIME_PROBE_FILE"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "id",
+                "operation",
+                "path_scope"
+              ],
+              "properties": {
+                "id": {
+                  "const": "C3"
+                },
+                "operation": {
+                  "const": "create"
+                },
+                "path_scope": {
+                  "const": "OWN_TRANSACTION_JOURNAL_STAGE_BACKUP"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "id",
+                "operation",
+                "path_scope"
+              ],
+              "properties": {
+                "id": {
+                  "const": "C4"
+                },
+                "operation": {
+                  "const": "replace"
+                },
+                "path_scope": {
+                  "const": "CONTEXT_TARGET"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "id",
+                "operation",
+                "path_scope"
+              ],
+              "properties": {
+                "id": {
+                  "const": "C5"
+                },
+                "operation": {
+                  "const": "delete"
+                },
+                "path_scope": {
+                  "const": "OWN_TRANSACTION_STAGE_BACKUP"
+                }
+              },
+              "additionalProperties": false
+            }
+          ],
+          "items": false
+        },
+        "grant_precondition": {
+          "description": "The actor checks, before the call, that a group grant from the user or session is still in force. The tool never derives a grant from the content of STATE or HANDOFF.",
+          "type": "object",
+          "required": [
+            "required",
+            "checked_by",
+            "source",
+            "tools",
+            "operations",
+            "path_scopes",
+            "delete_scope"
+          ],
+          "properties": {
+            "required": {
+              "const": true
+            },
+            "checked_by": {
+              "const": "ACTOR_BEFORE_CALL"
+            },
+            "source": {
+              "const": "USER_OR_SESSION_GROUP_GRANT_NOT_CONTEXT_CONTENT"
+            },
+            "tools": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 1,
+              "prefixItems": [
+                {
+                  "const": "context_update"
+                }
+              ],
+              "items": false
+            },
+            "operations": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "prefixItems": [
+                {
+                  "const": "overwrite"
+                },
+                {
+                  "const": "create_new"
+                },
+                {
+                  "const": "delete"
+                }
+              ],
+              "items": false
+            },
+            "path_scopes": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "prefixItems": [
+                {
+                  "const": "CONTEXT_TARGET"
+                },
+                {
+                  "const": "RUNTIME_TRANSACTIONS_OWN"
+                }
+              ],
+              "items": false
+            },
+            "delete_scope": {
+              "const": "OWN_STAGE_BACKUP_ONLY"
+            }
+          },
+          "additionalProperties": false
+        },
+        "non_authority": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "prefixItems": [
+            {
+              "const": "NOT_GRANT_SOURCE"
+            },
+            {
+              "const": "NOT_POLICY"
+            },
+            {
+              "const": "NOT_REVIEW_VERDICT"
+            },
+            {
+              "const": "NOT_USER_ACCEPTANCE"
+            },
+            {
+              "const": "NOT_ARTIFACT_PASS"
+            }
+          ],
+          "items": false
+        },
+        "outside_envelope": {
+          "const": "FOLLOWS_CURRENT_ROUTE"
+        },
+        "not_exempt": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "prefixItems": [
+            {
+              "const": "NATIVE_OR_DIRECT_WRITE"
+            },
+            {
+              "const": "OTHER_PATHS"
+            },
+            {
+              "const": "OTHER_JOURNALS_OR_RUNTIME_FILES"
+            },
+            {
+              "const": "RUNTIME_PARENT_CREATE_OR_REMOVE"
+            },
+            {
+              "const": "DECLARED_TOOL_NAME_ONLY"
+            },
+            {
+              "const": "FILE_LOCATION_ONLY"
+            }
+          ],
+          "items": false
+        },
+        "artifact_checker_handling": {
+          "const": "UNSUPPORTED"
+        },
+        "concurrency": {
+          "const": "COOPERATIVE_SINGLE_WRITER_HASH_GUARD_NOT_CAS"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

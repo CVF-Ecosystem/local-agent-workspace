@@ -1,0 +1,7 @@
+# Nguồn, quyền sử dụng và thay đổi
+
+Các phương pháp I01–I13 trong skill này là bản điều chỉnh từ **academic-research-skills** của **Cheng-I Wu (Imbad0202)** tại commit [`77e77e871aeccf5b5740a3086903f914e58c4204`](https://github.com/Imbad0202/academic-research-skills/tree/77e77e871aeccf5b5740a3086903f914e58c4204), truy cập để dựng candidate ngày 25/10/2026. Danh sách file, phần nhận và delta nằm tại [integration-map.md](integration-map.md). Tên file `ars-adapted` thể hiện nguồn gốc phương pháp, không phải bản sao nguyên văn.
+
+Upstream ghi **Copyright (c) 2026 Cheng-I Wu** và **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)**. Giữ [LICENSE nguyên văn](licenses/ARS-LICENSE.txt) và [NOTICE nguyên văn](licenses/ARS-NOTICE.md) trong cây skill. Bản điều chỉnh của LAW dịch, thu gọn, tái cấu trúc và thay ranh giới nguồn/quyền/phiên bản bằng cơ chế LAW; các phần dẫn dắt vai, script, hook, lookup tự động, checkpoint và các gate chưa kiểm được loại khỏi đường active. Đây là dấu chỉ thay đổi, không ngụ ý tác giả upstream đã xem hoặc bảo trợ bản này.
+
+Phạm vi được license upstream cho phép là **phi thương mại** theo chính văn bản license; điều kiện sử dụng thực tế hoặc phân phối tới đơn vị phải được người quyết định triển khai xác nhận. Không coi source pack candidate là đã được phê duyệt dùng chung hay release. NOTICE nguyên văn có link tương đối `GOVERNANCE.md` chỉ về repo gốc; nó là bản lưu attribution, không phải dependency hoạt động của skill.

@@ -1,6 +1,6 @@
 ---
 name: internal-accounting-vn
-description: Gợi ý lập và kiểm chứng từ kế toán nội bộ - tạm ứng, thanh toán, hoàn ứng, đối chiếu công nợ, hóa đơn và điều kiện khấu trừ, lưu trữ tài liệu kế toán; căn cứ có ngày đối chiếu. Kích hoạt khi người dùng nói "đề nghị thanh toán", "tạm ứng", "hoàn ứng", "đối chiếu công nợ", "kiểm chứng từ", "hóa đơn hợp lệ", "lưu trữ chứng từ". / Internal accounting vouchers and checks under current Vietnamese rules. Triggers on payment or advance requests, reconciliations, voucher and invoice checks.
+description: Dùng lập, kiểm chứng từ nội bộ, căn cứ có ngày; không thay hạch toán, báo cáo tài chính, tư vấn thuế. / Internal vouchers with dated legal checks; not bookkeeping, financial statements or tax advice.
 metadata:
   version: "0.2"
 ---

@@ -1,0 +1,119 @@
+setUpClass (test_package_v3.Archive) ... ERROR
+test_a_package_without_cvf_cannot_upgrade_a_target_with_cvf (test_package_v3.GuardReview.test_a_package_without_cvf_cannot_upgrade_a_target_with_cvf) ... ok
+test_adopt_never_runs_foreign_bootstrap_code (test_package_v3.GuardReview.test_adopt_never_runs_foreign_bootstrap_code) ... ok
+test_clean_template_stale_bytes_or_raw_pin_are_refused_before_copy (test_package_v3.GuardReview.test_clean_template_stale_bytes_or_raw_pin_are_refused_before_copy) ... ok
+test_empty_or_readable_partial_cvf_is_not_absent (test_package_v3.GuardReview.test_empty_or_readable_partial_cvf_is_not_absent) ... ok
+test_git_clean_filters_preserve_the_four_raw_owner_files (test_package_v3.GuardReview.test_git_clean_filters_preserve_the_four_raw_owner_files) ... ok
+test_leaf_links_are_outside_the_runtime_closure (test_package_v3.GuardReview.test_leaf_links_are_outside_the_runtime_closure) ... ok
+test_raw_owner_eol_change_blocks_even_when_manifest_hash_still_matches (test_package_v3.GuardReview.test_raw_owner_eol_change_blocks_even_when_manifest_hash_still_matches) ... ok
+test_source_manifest_must_declare_the_runtime_it_carries (test_package_v3.GuardReview.test_source_manifest_must_declare_the_runtime_it_carries) ... ok
+setUpClass (test_package_v3.Journey) ... ERROR
+setUpClass (test_package_v3.Lifecycle) ... ERROR
+test_abnormal_anchors_are_refused_before_any_write (test_package_v3.Projection.test_abnormal_anchors_are_refused_before_any_write) ... ok
+test_idempotent_exact_replacement_and_eol_kept (test_package_v3.Projection.test_idempotent_exact_replacement_and_eol_kept) ... ok
+test_source_selection_never_ships_maintainer_or_older_runtime_files (test_package_v3.Projection.test_source_selection_never_ships_maintainer_or_older_runtime_files) ... ok
+test_the_clean_templates_are_the_only_context_files_and_the_en_state_keeps_the_frame (test_package_v3.Projection.test_the_clean_templates_are_the_only_context_files_and_the_en_state_keeps_the_frame) ... ok
+test_an_old_jsonschema_is_not_enough (test_package_v3.Readiness.test_an_old_jsonschema_is_not_enough) ... ok
+test_an_unsupported_filesystem_is_unavailable_not_a_fallback (test_package_v3.Readiness.test_an_unsupported_filesystem_is_unavailable_not_a_fallback) ... ok
+test_missing_jsonschema_makes_the_card_unavailable_and_the_rest_keep_working (test_package_v3.Readiness.test_missing_jsonschema_makes_the_card_unavailable_and_the_rest_keep_working) ... ok
+test_other_platforms_are_unsupported (test_package_v3.Readiness.test_other_platforms_are_unsupported) ... ok
+test_the_launcher_does_not_pick_another_python_or_install_anything (test_package_v3.Readiness.test_the_launcher_does_not_pick_another_python_or_install_anything) ... ok
+test_usable_here_reads_only_and_never_installs (test_package_v3.Readiness.test_usable_here_reads_only_and_never_installs) ... ok
+
+======================================================================
+ERROR: setUpClass (test_package_v3.Archive)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_package_v3.py", line 82, in setUpClass
+    raise AssertionError('RC build failed: ' + r.stdout[-3000:] + r.stderr[-1000:])
+AssertionError: RC build failed: Cổng chất lượng / quality gates (rc):
+  - package_check: lỗi (3 lỗi, 14 cảnh báo (gồm đồng bộ HTML với Markdown))
+  - python38_compat: đạt (0 vấn đề (heuristic, xem check_package.py))
+  - behaviour_tests: lồng nhau (build lồng trong bộ kiểm thử; tiến trình cha đã chạy bộ kiểm thử)
+Cảnh báo: README.md không nhắc tới skill "data-charts".
+Cảnh báo: README.md không nhắc tới skill "doc-coauthoring".
+Cảnh báo: README.md không nhắc tới skill "document-comparison".
+Cảnh báo: README.md không nhắc tới skill "excel-html-viewer".
+Cảnh báo: README.md không nhắc tới skill "excel-workbooks".
+Cảnh báo: README.md không nhắc tới skill "html-reports".
+Cảnh báo: README.md không nhắc tới skill "internal-comms".
+Cảnh báo: README.md không nhắc tới skill "meeting-minutes".
+Cảnh báo: README.md không nhắc tới skill "office-documents".
+Cảnh báo: README.md không nhắc tới skill "process-mapping".
+Cảnh báo: README.md không nhắc tới skill "source-library".
+Cảnh báo: README.md không nhắc tới skill "spreadsheet-check".
+Cảnh báo: README.md không nhắc tới skill "vietnamese-editing".
+Cảnh báo: README.md không nhắc tới skill "vn-admin-documents".
+LỖI: packs/cang-logistics/skills/container-yard-check/references/nghiep-vu-bai.md: đường dẫn `tests/test_v421_fixes.py` không tồn tại.
+LỖI: packs/cang-logistics/skills/container-yard-check/references/nghiep-vu-bai.md: đường dẫn `tests/test_core.py` không tồn tại.
+LỖI: packs/cang-logistics/skills/container-yard-check/references/nghiep-vu-bai.md: đường dẫn `analysis/dunnage.py` không tồn tại.
+Không đóng gói: cổng bắt buộc chưa đạt (package_check). Không tạo ZIP.
+@@RESULT_JSON@@{"schema":"local-agent-workspace/result-v1","status":"blocked","code":1,"message":"Không đóng gói: cổng bắt buộc chưa đạt (package_check). Không tạo ZIP.","changes":false,"merge_required":false,"files":[],"findings":[{"severity":"error","message":"package_check: 3 lỗi, 14 cảnh báo (gồm đồng bộ HTML với Markdown)"}],"unchecked":[{"tool":"build_release.py","gate":"behaviour_tests","reason":"lồng nhau: build lồng trong bộ kiểm thử; tiến trình cha đã chạy bộ kiểm thử"}],"next_actions":[]}
+
+
+======================================================================
+ERROR: setUpClass (test_package_v3.Journey)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_package_v3.py", line 82, in setUpClass
+    raise AssertionError('RC build failed: ' + r.stdout[-3000:] + r.stderr[-1000:])
+AssertionError: RC build failed: Cổng chất lượng / quality gates (rc):
+  - package_check: lỗi (3 lỗi, 14 cảnh báo (gồm đồng bộ HTML với Markdown))
+  - python38_compat: đạt (0 vấn đề (heuristic, xem check_package.py))
+  - behaviour_tests: lồng nhau (build lồng trong bộ kiểm thử; tiến trình cha đã chạy bộ kiểm thử)
+Cảnh báo: README.md không nhắc tới skill "data-charts".
+Cảnh báo: README.md không nhắc tới skill "doc-coauthoring".
+Cảnh báo: README.md không nhắc tới skill "document-comparison".
+Cảnh báo: README.md không nhắc tới skill "excel-html-viewer".
+Cảnh báo: README.md không nhắc tới skill "excel-workbooks".
+Cảnh báo: README.md không nhắc tới skill "html-reports".
+Cảnh báo: README.md không nhắc tới skill "internal-comms".
+Cảnh báo: README.md không nhắc tới skill "meeting-minutes".
+Cảnh báo: README.md không nhắc tới skill "office-documents".
+Cảnh báo: README.md không nhắc tới skill "process-mapping".
+Cảnh báo: README.md không nhắc tới skill "source-library".
+Cảnh báo: README.md không nhắc tới skill "spreadsheet-check".
+Cảnh báo: README.md không nhắc tới skill "vietnamese-editing".
+Cảnh báo: README.md không nhắc tới skill "vn-admin-documents".
+LỖI: packs/cang-logistics/skills/container-yard-check/references/nghiep-vu-bai.md: đường dẫn `tests/test_v421_fixes.py` không tồn tại.
+LỖI: packs/cang-logistics/skills/container-yard-check/references/nghiep-vu-bai.md: đường dẫn `tests/test_core.py` không tồn tại.
+LỖI: packs/cang-logistics/skills/container-yard-check/references/nghiep-vu-bai.md: đường dẫn `analysis/dunnage.py` không tồn tại.
+Không đóng gói: cổng bắt buộc chưa đạt (package_check). Không tạo ZIP.
+@@RESULT_JSON@@{"schema":"local-agent-workspace/result-v1","status":"blocked","code":1,"message":"Không đóng gói: cổng bắt buộc chưa đạt (package_check). Không tạo ZIP.","changes":false,"merge_required":false,"files":[],"findings":[{"severity":"error","message":"package_check: 3 lỗi, 14 cảnh báo (gồm đồng bộ HTML với Markdown)"}],"unchecked":[{"tool":"build_release.py","gate":"behaviour_tests","reason":"lồng nhau: build lồng trong bộ kiểm thử; tiến trình cha đã chạy bộ kiểm thử"}],"next_actions":[]}
+
+
+======================================================================
+ERROR: setUpClass (test_package_v3.Lifecycle)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\UNG DUNG AI\TOOL AI 2026\CVF-Workspace\local-agent-workspace\tests\test_package_v3.py", line 82, in setUpClass
+    raise AssertionError('RC build failed: ' + r.stdout[-3000:] + r.stderr[-1000:])
+AssertionError: RC build failed: Cổng chất lượng / quality gates (rc):
+  - package_check: lỗi (3 lỗi, 14 cảnh báo (gồm đồng bộ HTML với Markdown))
+  - python38_compat: đạt (0 vấn đề (heuristic, xem check_package.py))
+  - behaviour_tests: lồng nhau (build lồng trong bộ kiểm thử; tiến trình cha đã chạy bộ kiểm thử)
+Cảnh báo: README.md không nhắc tới skill "data-charts".
+Cảnh báo: README.md không nhắc tới skill "doc-coauthoring".
+Cảnh báo: README.md không nhắc tới skill "document-comparison".
+Cảnh báo: README.md không nhắc tới skill "excel-html-viewer".
+Cảnh báo: README.md không nhắc tới skill "excel-workbooks".
+Cảnh báo: README.md không nhắc tới skill "html-reports".
+Cảnh báo: README.md không nhắc tới skill "internal-comms".
+Cảnh báo: README.md không nhắc tới skill "meeting-minutes".
+Cảnh báo: README.md không nhắc tới skill "office-documents".
+Cảnh báo: README.md không nhắc tới skill "process-mapping".
+Cảnh báo: README.md không nhắc tới skill "source-library".
+Cảnh báo: README.md không nhắc tới skill "spreadsheet-check".
+Cảnh báo: README.md không nhắc tới skill "vietnamese-editing".
+Cảnh báo: README.md không nhắc tới skill "vn-admin-documents".
+LỖI: packs/cang-logistics/skills/container-yard-check/references/nghiep-vu-bai.md: đường dẫn `tests/test_core.py` không tồn tại.
+LỖI: packs/cang-logistics/skills/container-yard-check/references/nghiep-vu-bai.md: đường dẫn `analysis/dunnage.py` không tồn tại.
+LỖI: packs/cang-logistics/skills/container-yard-check/references/nghiep-vu-bai.md: đường dẫn `tests/test_v421_fixes.py` không tồn tại.
+Không đóng gói: cổng bắt buộc chưa đạt (package_check). Không tạo ZIP.
+@@RESULT_JSON@@{"schema":"local-agent-workspace/result-v1","status":"blocked","code":1,"message":"Không đóng gói: cổng bắt buộc chưa đạt (package_check). Không tạo ZIP.","changes":false,"merge_required":false,"files":[],"findings":[{"severity":"error","message":"package_check: 3 lỗi, 14 cảnh báo (gồm đồng bộ HTML với Markdown)"}],"unchecked":[{"tool":"build_release.py","gate":"behaviour_tests","reason":"lồng nhau: build lồng trong bộ kiểm thử; tiến trình cha đã chạy bộ kiểm thử"}],"next_actions":[]}
+
+
+----------------------------------------------------------------------
+Ran 18 tests in 33.009s
+
+FAILED (errors=3)

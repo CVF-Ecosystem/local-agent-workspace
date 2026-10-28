@@ -1,6 +1,6 @@
 ---
 name: records-management-vn
-description: Gợi ý tổ chức công tác văn thư - lưu trữ của đơn vị - văn bản đi, văn bản đến, sổ đăng ký, sao văn bản, danh mục hồ sơ, lập hồ sơ, nộp lưu, thời hạn bảo quản, hủy tài liệu, tài liệu lưu trữ số; căn cứ có ngày đối chiếu. Kích hoạt khi người dùng nói "sổ công văn đi đến", "đăng ký văn bản", "sao y", "danh mục hồ sơ", "lập hồ sơ", "nộp lưu", "thời hạn bảo quản", "hủy tài liệu". / Records management for a unit: registers, copies, file lists, filing, archiving, retention, destruction. Triggers on document registers, copies, file lists, archiving.
+description: Dùng kiểm sổ văn bản, hồ sơ, lưu trữ, bảo quản, hủy, căn cứ có ngày; không dùng soạn nội dung, thể thức. / Records, filing, retention and disposal with dated legal checks; not drafting or document format.
 metadata:
   version: "0.2"
 ---

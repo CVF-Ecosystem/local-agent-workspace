@@ -359,7 +359,7 @@
   },
   "policy_digest": {
     "file": ".cvf/rules/v3/ROUTING_POLICY.json",
-    "digest": "sha256:1a4fd3233dcf4b8571d9fa2249faf060216b3e530ca7d8dcf976dc5df880eaf3",
+    "digest": "sha256:3fb735bbb88087fcd3c76bd23851609d93e57fc4f8c43194b29d61b0466d6794",
     "note": "digest of the parsed policy object, not of file bytes, so line endings do not matter; changes whenever the policy content changes"
   },
   "receipt_fixture": {

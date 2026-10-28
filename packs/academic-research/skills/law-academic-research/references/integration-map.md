@@ -1,0 +1,38 @@
+# Integration map — ARS pin 77e77e8 → LAW candidate 0.1.0
+
+**Pin:** `Imbad0202/academic-research-skills@77e77e871aeccf5b5740a3086903f914e58c4204`. Mọi đường nguồn dưới đây nằm trong repo đó. Đích tương đối với thư mục chứa bản đồ này; không có runtime fetch hay clone. `BUNDLED` nghĩa là phương pháp đã được đọc rồi điều chỉnh trong cây này, **không** có nghĩa đã đạt thử hành vi. `REPLACED_EXPLICITLY` nghĩa là chức năng dựa vào LAW/host thực có với giới hạn ghi tại đây. `NOT_SUPPORTED` không được gọi từ đường active.
+
+| ID | Upstream file / phần chọn | Đích active | Delta và dependency |
+|---|---|---|---|
+| I01 | `ARS:deep-research/agents/research_question_agent.md` Core, Process 1–5, Socratic/FINER | [RQ](ars-adapted/deep-research/agents/research_question_agent.md) | BUNDLED: scope, subquestion, FINER gợi ý; bỏ phase fence, scoring gate, mentor, marker và script. Main nhận quyết định RQ. |
+| I02 | `ARS:deep-research/agents/research_architect_agent.md` Core, Decision Tree, Blueprint 1–5 | [Thiết kế](ars-adapted/deep-research/agents/research_architect_agent.md) | BUNDLED: method proposal/validity; ethics approval/preregistration/reporting standard không tự nhận. Bỏ cross-model, registry, phần ngoài 1–5. |
+| I03 | `ARS:deep-research/agents/bibliography_agent.md` Core, Search 1–4, annotation đầu Step 5 | [Tài liệu](ars-adapted/deep-research/agents/bibliography_agent.md) | BUNDLED strategy, screening mức đọc, annotation; external search REPLACED_EXPLICITLY bởi Main với scope/tool thật; Semantic Scholar, resolver, passport và Steps 4.5/4.6 NOT_SUPPORTED. |
+| I04 | `ARS:deep-research/agents/source_verification_agent.md` Core, factual claims, existence/outcome, limitations | [Kiểm nguồn](ars-adapted/deep-research/agents/source_verification_agent.md) | BUNDLED bốn trục nhận diện/đọc/hỗ trợ/phương pháp; lookup/API/web và hierarchy I–VII NOT_SUPPORTED; LAW binding nguồn REPLACED_EXPLICITLY. |
+| I05 | `ARS:deep-research/agents/synthesis_agent.md` Core, Anti-Patterns, Methods, Steps 1–3 | [Tổng hợp](ars-adapted/deep-research/agents/synthesis_agent.md) | BUNDLED map/convergence/contradiction; dùng I06; phase guard, tension census bắt buộc và automatic gap claim NOT_SUPPORTED. |
+| I06 | `ARS:deep-research/templates/literature_matrix_template.md` Basic, Extended, Convergence, Gap | [Matrix](../templates/literature-evidence-matrix.md) | BUNDLED thêm SourceID/revision/read scope/locator; bỏ count/Net→strength, ví dụ Theme A 4/1 sai với 3/1 bảng. |
+| I07 | `ARS:academic-paper/agents/structure_architect_agent.md` Core, Selection, Outline 1–6 | [Đề cương](ars-adapted/academic-paper/agents/structure_architect_agent.md) | BUNDLED 1–6; nối I08; Step 7/FORMATIVE registry và `abstract_writing_guide.md` NOT_SUPPORTED; word allocation chỉ gợi ý. |
+| I08 | `ARS:academic-paper/references/paper_structure_patterns.md` Pattern 2 | [Thematic review](ars-adapted/academic-paper/references/paper_structure_patterns.md) | BUNDLED chỉ Pattern 2; mẫu Word/IMRaD khác NOT_SUPPORTED cho đường này. |
+| I09 | `ARS:academic-paper/agents/argument_builder_agent.md` Core, Steps 1–5, discipline patterns, CER/Blueprint | [Lập luận](ars-adapted/academic-paper/agents/argument_builder_agent.md) | BUNDLED thesis/CER/counterargument/flow và sáu pattern lĩnh vực như gợi ý; score/mentor/receipt/evidence-stream gate NOT_SUPPORTED. |
+| I10 | `ARS:academic-paper/agents/draft_writer_agent.md` Core, Writing 1–3, tone/TEEL/citation/revision | [Viết](ars-adapted/academic-paper/agents/draft_writer_agent.md) | BUNDLED bản viết; pre-writing lấy project/brief/I07/I09/I11/matrix; revision REPLACED_EXPLICITLY bởi owner/revision LAW; checker và quota ARS NOT_SUPPORTED. |
+| I11 | `ARS:academic-paper/references/writing_quality_check.md` Purpose/Priority, A–E | [Chất lượng viết](ars-adapted/academic-paper/references/writing_quality_check.md) | BUNDLED checklist ngữ cảnh tiếng Việt; script acronym phần F, quota, humanizer NOT_SUPPORTED. |
+| I12 | `ARS:academic-paper-reviewer/agents/methodology_reviewer_agent.md` remit, Steps 1–6 trừ 4a | [Review method](ars-adapted/academic-paper-reviewer/agents/methodology_reviewer_agent.md) | BUNDLED review có vị trí/căn cứ; Sprint/recompute/calibration/hội đồng và gate PRISMA chung NOT_SUPPORTED; độc lập theo trace LAW/host thực. |
+| I13 | `ARS:academic-pipeline/SKILL.md` exclusions, stage map, review/revise intent | [Workflow](modules/workflow.md) | BUNDLED luồng Main; entry/routing riêng, passport, ledger, hook, root script, cross-model và mandatory checkpoint ARS NOT_SUPPORTED; STATE/HANDOFF/brief LAW REPLACED_EXPLICITLY. |
+| I14 | `LICENSE`, `NOTICE.md` nguyên văn | [License](licenses/ARS-LICENSE.txt), [NOTICE](licenses/ARS-NOTICE.md), [thông báo sửa](upstream-notice.md) | BUNDLED attribution; link `GOVERNANCE.md` trong NOTICE nguyên văn chỉ repo gốc và không phải dependency active. |
+
+## Đường active và phần hoãn
+
+Entry → `common-standard.md` và module `research.md`, `writing.md`, `review.md` hoặc `workflow.md` theo việc; module chỉ tới các bản adapted trên. Mỗi phương pháp có **một bản active**. Cây không có executable, network call, cấu hình auto-discovery, symlink hay dependency ngoài. Chỉ `LICENSE` và `NOTICE.md` là nguyên văn, nằm trong cây xuất để giữ attribution; source repo gốc không cần hiện diện khi dùng.
+
+Các tham chiếu phát hiện trong phần nguồn đã chọn được đóng như sau; không đưa link upstream vào đường gọi active:
+
+| Nguồn tham chiếu | Disposition trong candidate |
+|---|---|
+| Phase checker `ARS:scripts/check_pipeline_integrity.py`, PreToolUse guard và slash command `/ars-mark-read --scope` | **NOT_SUPPORTED** các executable/hook/command; mức đọc ghi trong binding/record của LAW, không claim có guard host. |
+| I03 `review_criteria_framework.md` §2, Semantic Scholar, DOI/WebSearch protocol | **NOT_SUPPORTED** framework và lookup tự động; chiến lược/tình trạng nguồn dùng phần I03/I04, external chỉ qua Main khi được cấp scope và tool thật. |
+| I05 template matrix và thang evidence I–VII | Matrix **BUNDLED** ở I06; thang I–VII **REPLACED_EXPLICITLY** bằng đánh giá theo câu hỏi, phương pháp, mức đọc tại common standard. |
+| I07 `paper_structure_patterns.md`, `abstract_writing_guide.md`, mentor handoff | Pattern 2 **BUNDLED** I08; abstract guide **NOT_SUPPORTED**; mentor handoff **REPLACED_EXPLICITLY** bằng brief/RQ Main đã chốt. |
+| I10 `Paper Configuration Record`, APA guide/citation switcher, academic writing style, intro guide, anti-leakage protocol, `ARS:scripts/check_acronyms.py`, citation/peer reviewer agent | Project/brief **REPLACED_EXPLICITLY** cho cấu hình; citation tác giả–năm + locator và kiểm hai chiều **BUNDLED**; guide/script/protocol/agent upstream **NOT_SUPPORTED**. LAW owner xử lý review/revision thật, không giả một agent khác đã chạy. |
+| I12 `field_analyst_agent`, `editorial_synthesizer_agent`, Sprint/calibration | Identity/context reviewer **REPLACED_EXPLICITLY** bằng trace thật; các persona/gate khác **NOT_SUPPORTED**. |
+| I13 state machine, passport, ledger, integrity agent, root script, process summary, cross-model audit và format conversion | **NOT_SUPPORTED** đường upstream; brief, STATE/HANDOFF, source/artifact và kiểm format có thật của LAW **REPLACED_EXPLICITLY** khi được dùng. Không có stage/checkpoint ARS chạy ngầm. |
+
+Hồ sơ nguồn/artifact, quyền gọi vai, tiếp phiên và format kiểm theo LAW đang có. Việc **đã thực dùng** các cơ chế đó chỉ được nhận khi pilot có trace; map này là thiết kế và audit đường dẫn. Screening theo protocol/meta-analysis và mọi module ARS khác **hoãn** đến consumer AC-C, không tạo đường gọi ẩn. Nâng upstream: đọc diff đúng phần I01–I14, dependency và patch local rồi kiểm lại nội dung/đường dùng bị ảnh hưởng; không auto-fetch hay kế thừa PASS cũ.

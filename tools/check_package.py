@@ -17,7 +17,7 @@ from result_schema import emit, make
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEXT_EXT = ('.md', '.html', '.py', '.json', '.txt', '.sha256', '.css', '.js', '')
-SKIP_DIRS = {'.git', '__pycache__', 'dist', 'node_modules'}
+SKIP_DIRS = {'.git', '__pycache__', '.pytest_cache', 'dist', 'node_modules'}
 # Chỉ ở thư mục gốc: nơi quản lý feedback của người duy trì, không đưa vào gói phát hành
 ROOT_ONLY_SKIP = {'feedback', '.github', 'roadmap', 'tests', 'release_templates'}
 # Native của host trong project (A-10: .claude/agents/...) là trạng thái riêng của project/người dùng: không vào MANIFEST, ZIP hay project mới tạo từ bản này.
@@ -223,9 +223,11 @@ TEMPLATE_OVERLAYS = {  # kho nguồn: thay file người bảo trì bằng mẫu
     'PROJECT.md': 'release_templates/PROJECT.md',
     '.agent/STATE.md': 'release_templates/.agent/STATE.md',
     '.agent/HANDOFF.md': 'release_templates/.agent/HANDOFF.md',
+    '.agent/SKILL_INDEX.md': 'release_templates/.agent/SKILL_INDEX.md',
     'en/PROJECT.md': 'release_templates/en/PROJECT.md',
     'en/.agent/STATE.md': 'release_templates/en/.agent/STATE.md',
     'en/.agent/HANDOFF.md': 'release_templates/en/.agent/HANDOFF.md',
+    'en/.agent/SKILL_INDEX.md': 'release_templates/en/.agent/SKILL_INDEX.md',
 }
 _P_RULES, _P_POLICY, _P_CONTRACTS = '`.cvf/rules/CONTROL_RULES.md`', '`.cvf/rules/ROUTING_POLICY.json`', '`.cvf/contracts/`'
 _V_RULES, _V_POLICY, _V_CONTRACTS = '`.cvf/rules/v3/CONTROL_RULES.md`', '`.cvf/rules/v3/ROUTING_POLICY.json`', '`.cvf/contracts/v3/`'
@@ -751,6 +753,60 @@ def check_py38():
                 errs.append('%s:%d: không tương thích Python 3.8 — %s.' % (f, ln, msg))
     return errs
 
+def crlf_warning_paths(files):
+    """Warn on ordinary text only; byte-exact owners and Git -text retain raw bytes.
+
+    Packaged checks do not require Git. In a source checkout Git supplies effective
+    attributes (including local overrides). Without Git, only literal root paths
+    declared -text are exempt; wildcard rules stay conservative.
+    """
+    candidates = [f for f in files if f.endswith(('.md', '.html', '.py', '.json')) and '\r\n' in rd(f)]
+    raw_byte_paths = set(BYTE_EXACT)
+    git_attributes = False
+    if candidates and os.path.isdir(P('release_templates')) and os.path.exists(P('.git')):
+        try:
+            result = subprocess.run(['git', 'check-attr', '-z', '--stdin', 'text'], cwd=ROOT,
+                                    input=b''.join(os.fsencode(p) + b'\0' for p in candidates),
+                                    capture_output=True, timeout=10)
+            parts = result.stdout.split(b'\0')
+            if result.returncode == 0 and parts[-1:] == [b''] and len(parts[:-1]) == len(candidates) * 3:
+                git_attributes = True
+                raw_byte_paths.update(os.fsdecode(parts[i]) for i in range(0, len(parts) - 1, 3)
+                                      if parts[i + 1:i + 3] == [b'text', b'unset'])
+        except (OSError, subprocess.TimeoutExpired):
+            pass  # conservative fallback: ordinary CRLF still warns
+    if not git_attributes and os.path.isfile(P('.gitattributes')):
+        for line in rd('.gitattributes').splitlines():
+            fields = line.split()
+            if len(fields) == 2 and fields[1] == '-text':
+                path = fields[0]
+                if not any(c in path for c in '*?[]\\"') and not path.startswith(('#', '!', '/')) and '..' not in path.split('/'):
+                    raw_byte_paths.add(path)
+    return [f for f in candidates if f not in raw_byte_paths]
+
+
+def pack_index_problems():
+    """Installed PACK rows must resolve; clean delivery templates cannot install packs.
+
+    A dangling declared target is an error: the index would otherwise advertise
+    an unavailable capability. Live user index choices are never rewritten.
+    """
+    errors = []
+    for rel in ('.agent/SKILL_INDEX.md', 'en/.agent/SKILL_INDEX.md'):
+        for index, template in ((rel, False), ('release_templates/' + rel, True)):
+            if not os.path.isfile(P(index)):
+                continue
+            for line in rd(index).splitlines():
+                cells = [s.strip() for s in line.strip().strip('|').split('|')]
+                if len(cells) < 4 or cells[2] != 'PACK':
+                    continue
+                if template:
+                    errors.append('%s: mẫu sạch không được có dòng PACK (%s).' % (index, cells[0]))
+                elif not os.path.isfile(P(cells[3])):
+                    errors.append('%s: %s trỏ tới file không có (%s).' % (index, cells[0], cells[3]))
+    return errors
+
+
 def check_all(release=False):
     errs, warns = [], []
     raw_files = all_files()
@@ -812,6 +868,7 @@ def check_all(release=False):
         for name, loc in rows:
             if not os.path.isfile(P(loc)): errs.append('%s: %s trỏ tới file không có (%s).' % (idxf, name, loc))
             if name not in sk: errs.append('%s liệt kê "%s" nhưng không có thư mục skill.' % (idxf, name))
+    errs += pack_index_problems()
     # cây en/ phủ đủ các file chỉ có nội dung tiếng Việt
     root_lang = [f for f in files if not f.startswith(('en/', 'docs/', 'tools/', 'dist/')) and f.endswith(('.md', '.html', '.csv', '.txt')) and
                  (f in ('AGENTS.md', 'CLAUDE.md', 'GEMINI.md', 'PROJECT.md', 'README.md') or f.startswith(('.agent/', 'archive/', 'output/', 'working/', 'references/', 'skills/', 'examples/')))
@@ -882,7 +939,7 @@ def check_all(release=False):
     for f in [f for f in files if f.endswith('.py')]:
         try: ast.parse(rd(f))
         except SyntaxError as e: errs.append('%s: lỗi cú pháp Python (%s).' % (f, e))
-    crlf = [f for f in files if f.endswith(('.md', '.html', '.py', '.json')) and '\r\n' in rd(f)]
+    crlf = crlf_warning_paths(files)
     if crlf: warns.append('Có %d file dùng CRLF (ví dụ %s); nên dùng LF.' % (len(crlf), crlf[0]))
     # 7a. schema profile và mặc định / profile schema and its default
     errs += _ep().schema_problems()
@@ -942,7 +999,7 @@ def run_checks(release=False):
 
 def source_eol_problems(paths):
     """Maintainer-only, explicit files: ask Git for effective attributes, then check raw bytes.
-    No attributes parser, normalisation, package traversal or Git dependency in the ordinary checks.
+    This scoped check uses effective Git attributes; ordinary package warnings use a conservative literal -text fallback.
     """
     if not os.path.isdir(P('release_templates')) or not os.path.exists(P('.git')):
         return ['--check-eol chỉ dùng trong kho nguồn LAW có Git; không áp vào project người dùng.'], []
@@ -999,6 +1056,9 @@ def source_eol_problems(paths):
 
 
 def main():
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(encoding='utf-8')
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--release', action='store_true')
     ap.add_argument('--write-manifest', action='store_true')
@@ -1006,8 +1066,6 @@ def main():
     ap.add_argument('--check-eol', nargs='+', metavar='FILE', help='kho nguồn có Git: kiểm EOL đúng các file được nêu, chỉ đọc')
     ap.add_argument('--result-json', action='store_true', help=argparse.SUPPRESS)
     a = ap.parse_args()
-    if hasattr(sys.stdout, 'reconfigure'):
-        sys.stdout.reconfigure(encoding='utf-8')
     if a.check_eol is not None:
         if a.release or a.verify or a.write_manifest:
             ap.error('--check-eol dùng riêng, không kết hợp --release/--verify/--write-manifest')

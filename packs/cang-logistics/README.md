@@ -1,7 +1,14 @@
 # Gói Cảng - logistics / Ports and logistics pack (cang-logistics)
 
-Phiên bản 0.2.0, thử nghiệm. Một skill: `port-operations-reports`: báo cáo khai thác tàu và sà lan, chờ cầu, năng suất, gián đoạn và sự cố thiết bị, đối soát sự cố với chuyến tàu.
-Version 0.2.0, trial. One skill: `port-operations-reports`: ship and barge operation reports, berth waiting, productivity, stoppages and equipment incidents, incident-to-voyage matching.
+Phiên bản 0.3.0, vẫn là ứng viên `DEFER`. Hai skill có phạm vi riêng:
+
+- `port-operations-reports`: báo cáo khai thác tàu và sà lan, thời gian chờ cầu, năng suất, gián đoạn và sự cố thiết bị.
+- `container-yard-check`: xây dựng hoặc rà soát công cụ kiểm tra dữ liệu vị trí bãi từ TOS. Quy tắc và ngưỡng riêng phải được project xác nhận, đặt trong cấu hình riêng.
+
+Version 0.3.0, still a `DEFER` candidate. Two skills with separate scopes:
+
+- `port-operations-reports`: ship and barge operations, berth waiting, productivity, stoppages, and equipment incidents.
+- `container-yard-check`: build or review a tool that checks yard-position data from a TOS. Project-specific rules and thresholds must be confirmed and kept in project configuration.
 
 Cài / Install: `python tools/pack.py add cang-logistics` (hoặc trang "Gói lĩnh vực" của bảng điều khiển / or the "Domain packs" page of the control panel).
 
@@ -9,9 +16,8 @@ Cài / Install: `python tools/pack.py add cang-logistics` (hoặc trang "Gói l�
 trạng thái và nguồn, đối chiếu ngày 12/10/2026, để người dùng tự kiểm lại. Dòng chưa kiểm được ghi `[cần xác nhận]`.
 Lists numbers, articles, dates, status and sources, checked on 2026-10-12, so users can verify them; unverified rows say `[cần xác nhận]`.
 
-Quy tắc tính rút từ việc thật của một đội khai thác container (đã bỏ tên đơn vị, mã thiết bị, số liệu). Calculation rules drawn from real work at a container operations team (unit names, equipment codes and figures removed).
+Các quy tắc trong gói không thay cho cấu hình và xác nhận nghiệp vụ của từng project. Không suy tên block, mã thiết bị, thời điểm hoặc ngưỡng từ ví dụ.
+Pack guidance does not replace project-specific configuration and domain confirmation. Do not infer block names, equipment codes, timestamps, or thresholds from examples.
 
-Trạng thái / Status: chưa qua lần thử trên ứng dụng agent thật sau khi viết; dùng trên một việc thật rồi ghi phản hồi trước khi
-nâng lên 1.0. Skill riêng của project (quy chế, mẫu, người ký của đơn vị) đứng trước gói này.
-Not yet tried in a real agent app after writing; use it on a real task and record feedback before 1.0. A project's own skill
-(the unit's rules, templates, signatories) comes before this pack.
+Trạng thái / Status: chưa có xác nhận dùng trên ứng dụng agent thật cho phiên bản hiện tại. Phản hồi người nhận gói vẫn cần ba việc thật riêng biệt; số kiểm thử của ứng dụng nguồn không thay bằng chứng hiệu quả của skill. Căn cứ pháp lý và hiệu quả/reuse của hai skill còn phải được đánh giá theo hồ sơ. Skill riêng của project đứng trước gói này. Không tự cài, xác nhận hay nâng trạng thái.
+The current version has not been confirmed in a real agent app. Recipient feedback still requires three distinct real tasks; application test counts do not prove skill effectiveness. Legal-source review and evidence of both skills' effect and reuse remain open in the intake record. Project-specific skills take precedence. Do not install, confirm, or promote this candidate automatically.

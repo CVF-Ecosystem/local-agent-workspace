@@ -1,0 +1,242 @@
+"""V2-F: cầu nối bảo trì cho Main, CHỈ ĐỌC. Script hỗ trợ bài đo, không phải công cụ sản phẩm. / Read-only maintenance bridge for Main.
+
+Chạy (hai lệnh duy nhất Main được phép): / The only two commands Main may run:
+  python -I -B "<đường dẫn>/main_bridge.py" observe
+  python -I -B "<đường dẫn>/main_bridge.py" checkpoint
+
+Bridge nằm trong kho nguồn tin cậy, NGOÀI dữ liệu lab. Lab chỉ là data root: không import, không exec mã từ lab hay từ dữ liệu của caller.
+- Không nhận đối số nào ngoài `observe|checkpoint`: đường dẫn lab/TASK/candidate/RESULT và digest TASK thô lúc giao lấy từ `working/v2f/meta/setup.json`.
+- ANCHOR (D): hằng EXPECTED_SETUP_SHA256 và EXPECTED_LAB nằm trong chính file này, chốt SAU khi setup xong và TRƯỚC khi driver pin hash bridge. Bridge băm bytes thô của setup.json
+  và so với hằng trước khi dùng bất kỳ trường nào bên trong, rồi so `lab` với hằng; không nhận override qua argv/env. Đây là anchor mã bảo trì do operator kiểm soát, không phải sandbox của host.
+- Nạp đúng khối `law-recipe: task-result-checkpoint` của roles/README.md kho nguồn khi raw hash khớp V2-B, rồi gọi `load_v3` từ cây LAW cố định.
+- Trước mọi operation: hash manifest và README, hash mọi file LAW được pin; sau khi nạp owner, mọi module đã nạp phải nằm trong cây LAW (và đã pin)
+  hoặc trong thư viện chuẩn/site-packages của Python gốc. Lệch hoặc module ngoài cây thì từ chối trước khi gọi operation.
+- Chỉ stdout và mã thoát: không ghi observation, RESULT, sidecar, cache, sổ hay bytecode. `observe` không tạo RESULT; `checkpoint` không publish, không tự gán MET/PASS.
+Self-integrity của chính file này do driver kiểm bằng hash trước lượt (không tự chứng minh bằng cách tự hash). / This file's own bytes are pinned by the driver before the run, not by itself.
+"""
+import sys
+
+sys.dont_write_bytecode = True
+
+import hashlib
+import importlib
+import json
+import os
+import re
+import sysconfig
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+LAW = HERE.parents[2]  # working/v2f/scripts -> kho nguồn / source tree
+EXEMPT = {Path(__file__).resolve()}  # chính bridge (driver kiểm hash trước lượt) / this file; the driver pins its bytes before the run
+META = HERE.parent / 'meta'
+SETUP_PATH = META / 'setup.json'
+MANIFEST_PATH = META / 'bridge_manifest.json'
+EXPECTED_SETUP_SHA256 = '6e25ecba64e54c6e50eef71202ddbbde1c603fe37a3962c8068724d242764721'  # được điền SAU setup, TRƯỚC khi driver pin bridge / filled after setup, before the driver pins this file
+EXPECTED_LAB = 'C:\\Users\\DELL\\AppData\\Local\\Temp\\claude\\d--UNG-DUNG-AI-TOOL-AI-2026-CVF-Workspace-local-agent-workspace\\c9b7c50b-e251-4e37-bfc9-2edaa0c24add\\scratchpad\\law-v2f-run1\\project'  # đường lab drive-absolute đã chốt / the resolved lab path fixed after setup
+README_REL = 'roles/README.md'
+README_SHA256 = '2f42490f39ed16a4ad30310da28f1bf1764ee3bed48a501f62cc54b842e73ef5'  # recipe V2-B đã nhận
+RECIPE_RE = re.compile(r'```python\n# law-recipe: task-result-checkpoint\n(.*?)```', re.S)
+DATA_PINS = ('.cvf/contracts/v3/control.schema.json', '.cvf/rules/ROUTING_POLICY.json')
+LIMITS = ['BYTES_DIGEST_ONLY', 'NOT_PASS_NOT_GRANT_NOT_CONTENT_CHECK', 'NOT_ATOMIC_SNAPSHOT']
+
+
+def sha_bytes(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def sha_file(path):
+    with open(path, 'rb') as fh:
+        return sha_bytes(fh.read())
+
+
+def inside(base, path):
+    b, p = os.path.normcase(os.path.realpath(str(base))), os.path.normcase(os.path.realpath(str(path)))
+    return p == b or p.startswith(b + os.sep)
+
+
+def trusted_prefixes():
+    """Thư viện chuẩn và site-packages của Python gốc. / Stdlib and site-packages of the base interpreter."""
+    paths = sysconfig.get_paths()
+    out = {sys.base_prefix, sys.prefix, paths.get('stdlib'), paths.get('platstdlib'), paths.get('purelib'), paths.get('platlib')}
+    return [p for p in out if p]
+
+
+# ---------------------------------------------------------------- pin / provenance
+def pin_problems(law, manifest, readme_expected=README_SHA256):
+    """Hash README và mọi file LAW được pin. / Hash the README and every pinned LAW file."""
+    problems = []
+    law = Path(law)
+    readme = law / README_REL
+    if not readme.is_file() or sha_file(readme) != readme_expected:
+        problems.append('RECIPE_README_HASH_DRIFT')
+    if manifest.get('readme_sha256') != readme_expected:
+        problems.append('MANIFEST_README_PIN_DRIFT')
+    files = manifest.get('files')
+    if not isinstance(files, dict) or not files:
+        return problems + ['MANIFEST_FILES_MISSING']
+    for rel, want in sorted(files.items()):
+        p = law.joinpath(*rel.split('/'))
+        if not inside(law, p) or not p.is_file():
+            problems.append('PIN_MISSING ' + rel)
+        elif sha_file(p) != want:
+            problems.append('PIN_DRIFT ' + rel)
+    return problems
+
+
+def loaded_module_problems(law, lab, manifest):
+    """Mọi module đã nạp phải nằm trong cây LAW và được pin, hoặc trong thư viện chuẩn/site-packages; module từ lab hay nơi khác bị từ chối. / Reject any module resolved outside the fixed trees."""
+    problems, law, trusted = [], Path(law), trusted_prefixes()
+    files = manifest.get('files', {})
+    for name, mod in sorted(sys.modules.items()):
+        f = getattr(mod, '__file__', None)
+        if not f:
+            continue
+        p = Path(f).resolve()
+        if p in EXEMPT:
+            continue
+        if inside(law, p):
+            rel = p.relative_to(Path(os.path.realpath(str(law)))).as_posix() if p.is_absolute() else str(p)
+            if rel not in files:
+                problems.append('UNPINNED_LAW_MODULE %s=%s' % (name, rel))
+        elif lab is not None and inside(lab, p):
+            problems.append('MODULE_FROM_LAB %s' % name)
+        elif not any(inside(t, p) for t in trusted):
+            problems.append('MODULE_OUTSIDE_TRUSTED_TREE %s' % name)
+    return problems
+
+
+def law_loaded_files(law):
+    """Các file .py của cây LAW đang nằm trong sys.modules (dùng để dựng manifest khi setup). / LAW .py files currently loaded."""
+    law, out = Path(os.path.realpath(str(law))), set()
+    for mod in list(sys.modules.values()):
+        f = getattr(mod, '__file__', None)
+        if f:
+            p = Path(f).resolve()
+            if p not in EXEMPT and inside(law, p) and p.suffix == '.py':
+                out.add(p.relative_to(law).as_posix())
+    return out
+
+
+def load_recipe(law):
+    readme = Path(law) / README_REL
+    blocks = RECIPE_RE.findall(readme.read_text(encoding='utf-8'))
+    if len(blocks) != 1:
+        raise RuntimeError('RECIPE_BLOCK_COUNT %d' % len(blocks))
+    ns = {'__name__': 'law_recipe_v2f'}
+    exec(compile(blocks[0], 'roles/README.md#law-recipe', 'exec'), ns)  # mã tin cậy của cây LAW đã pin hash / trusted pinned LAW code
+    return ns
+
+
+def refuse(op, problems):
+    return {'op': op, 'ok': False, 'refused_before_operation': True, 'problems': problems}
+
+
+# ---------------------------------------------------------------- operations
+def prepare(op, law, setup, manifest, discover=False):
+    """Trả (recipe, v3, None) hoặc (None, None, refusal). Không gọi operation khi còn vấn đề. / Pins, recipe, owners, then loaded-module check."""
+    law = Path(law)
+    lab = setup.get('lab')
+    if not isinstance(lab, str) or not re.match(r'^[A-Za-z]:\\', lab) or not os.path.isdir(lab):
+        return None, None, refuse(op, ['LAB_PATH_NOT_DRIVE_ABSOLUTE_DIR'])
+    if inside(law, lab) or inside(lab, law):
+        return None, None, refuse(op, ['LAB_OVERLAPS_LAW_TREE'])
+    problems = [] if discover else pin_problems(law, manifest)
+    if problems:
+        return None, None, refuse(op, problems)
+    try:
+        recipe = load_recipe(law)
+        v3 = recipe['load_v3'](law)
+        for name in ('artifacts', 'library_sync'):  # observe nạp lười hai module này: nạp trước để kiểm cùng lượt / preloaded so they are checked before the operation
+            m = importlib.import_module(name)
+            if Path(m.__file__).resolve().parent != Path(os.path.realpath(str(law))) / 'tools':
+                return None, None, refuse(op, ['OWNER_NOT_FIXED_TREE ' + name])
+    except Exception as exc:  # owner không nạp được: từ chối, không fallback / owner unavailable: refuse
+        return None, None, refuse(op, ['OWNER_LOAD_FAILED %s' % type(exc).__name__])
+    if not discover:
+        mp = loaded_module_problems(law, lab, manifest)
+        if mp:
+            return None, None, refuse(op, mp)
+    return recipe, v3, None
+
+
+def anchored_setup(op, setup_path, manifest_path):
+    """Đọc bytes thô setup.json, kiểm anchor TRƯỚC khi dùng trường bên trong. Trả (setup, manifest, None) hoặc (None, None, refusal). / Raw-hash the setup before trusting any inner field."""
+    if not (isinstance(EXPECTED_SETUP_SHA256, str) and len(EXPECTED_SETUP_SHA256) == 64 and isinstance(EXPECTED_LAB, str) and EXPECTED_LAB):
+        return None, None, refuse(op, ['ANCHOR_NOT_SET'])
+    try:
+        raw_setup = Path(setup_path).read_bytes()
+    except OSError:
+        return None, None, refuse(op, ['SETUP_UNREADABLE'])
+    if sha_bytes(raw_setup) != EXPECTED_SETUP_SHA256:
+        return None, None, refuse(op, ['ANCHOR_SETUP_SHA_MISMATCH'])
+    try:
+        setup = json.loads(raw_setup.decode('utf-8'))
+        raw_manifest = Path(manifest_path).read_bytes()
+        manifest = json.loads(raw_manifest.decode('utf-8'))
+    except (OSError, ValueError):
+        return None, None, refuse(op, ['SETUP_OR_MANIFEST_UNREADABLE'])
+    lab = setup.get('lab')
+    if lab != EXPECTED_LAB or not isinstance(lab, str) or os.path.normcase(os.path.realpath(lab)) != os.path.normcase(os.path.abspath(EXPECTED_LAB)):
+        return None, None, refuse(op, ['ANCHOR_LAB_MISMATCH'])
+    if sha_bytes(raw_manifest) != setup.get('manifest_sha256'):
+        return None, None, refuse(op, ['MANIFEST_HASH_DRIFT'])
+    return setup, manifest, None
+
+
+def run(op, law=LAW, setup=None, manifest=None, discover=False, setup_path=None, manifest_path=None):
+    """`setup`/`manifest` dạng dict chỉ dùng cho fixture/discover trong Python (không qua argv); đường thật luôn qua anchor. / dict injection is for fixtures only; the real path always goes through the anchor."""
+    if setup is None or manifest is None:
+        setup, manifest, bad = anchored_setup(op, setup_path or SETUP_PATH, manifest_path or MANIFEST_PATH)
+        if bad:
+            return bad
+    recipe, v3, bad = prepare(op, law, setup, manifest, discover)
+    if bad:
+        return bad
+    lab = setup['lab']
+    base = {'op': op, 'refused_before_operation': False, 'limits': LIMITS,
+            'bridge': {'manifest_sha256': setup.get('manifest_sha256'), 'pinned_files': len(manifest.get('files', {}))}}
+    if op == 'observe':
+        out = recipe['observe_candidate'](v3, lab, setup['task_rel'], setup['candidate_rel'], setup['result_rel'], setup['task_raw_digest'])
+        base.update(ok=bool(out['observed']), problems=out['problems'], observation=out['observation'])
+        return base
+    cp = recipe['checkpoint'](v3, lab, setup['task_rel'], setup['result_rel'])
+    problems = list(cp['problems'])
+    ident = {'task_raw_digest': None, 'task_equals_dispatch_digest': None, 'result_raw_digest': None, 'result_path': setup['result_rel'],
+             'candidate': None, 'result_binding_equals_dispatch_stub_before_outputs': None}
+    raw = cp.get('raw')
+    if raw:
+        ident['task_raw_digest'], ident['result_raw_digest'] = raw['task'], raw['result']
+        ident['task_equals_dispatch_digest'] = raw['task'] == setup['task_raw_digest']
+        if not ident['task_equals_dispatch_digest']:
+            problems.append('TASK_CHANGED_SINCE_DISPATCH')
+        binding = {k: v for k, v in cp['result']['binding'].items() if k != 'outputs'}
+        ident['result_binding_equals_dispatch_stub_before_outputs'] = binding == setup['binding_stub']
+        if not ident['result_binding_equals_dispatch_stub_before_outputs']:
+            problems.append('BINDING_DIFFERS_FROM_DISPATCH_STUB')
+        art = cp['result']['artifacts']
+        if cp['result']['binding'].get('outputs') != art:
+            problems.append('BINDING_OUTPUTS_NOT_ARTIFACTS')
+        if len(art) != 1 or art[0].get('path') != setup['candidate_rel']:
+            problems.append('ARTIFACT_NOT_DISPATCHED_CANDIDATE')
+        if len(art) == 1:
+            ident['candidate'] = {'path': art[0]['path'], 'digest': art[0]['digest'], 'role': art[0].get('role'),
+                                  'size': len(cp['candidate']) if cp.get('candidate') is not None else None}
+    base.update(ok=not problems, verdict='HOLD' if problems else 'CHECKED_NOT_PASS', problems=problems, identity=ident, ledger_snapshot=cp.get('ledger_snapshot'),
+                note='problems rỗng = bytes/binding/ledger khớp theo recipe; không PASS, không quyền, không nghiệm thu nội dung, không publish')
+    return base
+
+
+def main(argv):
+    if hasattr(sys.stdout, 'reconfigure'):
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    if len(argv) != 2 or argv[1] not in ('observe', 'checkpoint'):
+        print(json.dumps(refuse('?', ['USAGE observe|checkpoint']), ensure_ascii=True))
+        return 2
+    out = run(argv[1])
+    print(json.dumps(out, ensure_ascii=True, indent=2, sort_keys=False, default=str))
+    return 0 if out.get('ok') else 1
+
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv))

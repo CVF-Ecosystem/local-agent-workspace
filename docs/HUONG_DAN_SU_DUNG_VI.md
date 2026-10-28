@@ -73,8 +73,8 @@ Workspace có mười bốn kỹ năng gợi ý, từ soạn tài liệu (`offic
 (`data-charts`, `html-reports`), quy trình và họp (`process-mapping`, `meeting-minutes`), văn bản
 hành chính đúng thể thức (`vn-admin-documents`), sổ và công cụ Excel (`excel-workbooks`, `excel-html-viewer`) đến biên tập (`vietnamese-editing`) và thư viện nguồn (`source-library`). Bạn không phải gọi chúng bằng tên.
 
-Ngoài ra có năm gói lĩnh vực cài khi cần (pháp lý, văn thư - lưu trữ, cảng - logistics, hành chính - nhân sự, kế toán nội bộ),
-mỗi gói kèm bảng căn cứ pháp lý có ngày đối chiếu. Gói đã cài thì trợ lý AI tự dùng; gói chưa cài thì trợ lý AI sẽ gợi ý bạn cài.
+Ngoài ra có sáu gói lĩnh vực thử nghiệm cài khi cần: pháp lý, văn thư - lưu trữ, cảng - logistics, hành chính - nhân sự, kế toán nội bộ và nghiên cứu học thuật.
+Các gói có yêu cầu pháp lý kèm bảng căn cứ để kiểm lại; gói nghiên cứu có phương pháp và quy tắc đối chiếu nguồn. Gói đã cài thì trợ lý AI tự dùng; gói chưa cài thì trợ lý AI sẽ gợi ý bạn cài.
 
 Trợ lý AI có thể dùng kỹ năng sẵn có (native), kỹ năng của workspace, kết hợp hoặc không dùng kỹ năng.
 Tiêu chí là độ phù hợp với công việc và khả năng thực có, không phải nơi cung cấp.

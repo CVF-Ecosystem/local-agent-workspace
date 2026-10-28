@@ -1,0 +1,403 @@
+diff --git a/AGENTS.md b/AGENTS.md
+index 23f50278b8dfd82e7baf18686b395bbab372e575..a98e0f833bff097c4799adcccc0e4a46fbec4528 100644
+--- a/AGENTS.md
++++ b/AGENTS.md
+@@ -82,6 +82,31 @@ keys.
+ 
+ Every role and resumed agent applies `docs/reference/CVF_PRODUCT_MILESTONE_COVERAGE_CONTRACT_2026-10-23.md` without operator reminder. Verification questions preserve approved direction. Bind work to user outcomes, complete milestone coverage, owned remainder, bounded supporting tasks and distinct tranche/product conclusions. Reuse native provider/repository capability and existing CVF owners; implement only demonstrated adapter gaps.
+ 
++The development team owns roadmap detail, usable delivery, justified test oracles,
++bounded cases, required independent/domain review and real packaged-flow evidence
++before requesting product-use feedback. Non-coders provide goals and business
++decisions, not technical QA. Apply the contract's "Development-Owned Internal
++Readiness Before User Feedback" section; distinguish internal readiness, business
++acceptance and install/publish authority. Missing evidence blocks the affected
++capability without lowering mandatory correctness or safety gates.
++
++Technical checks precede developer-owned product acceptance; business feedback
++follows usable delivery, while install/publish authority remains separate.
++In the existing acceptance record, answer five questions: what job and trigger;
++what output standard; what grounded evidence; what specific added value; and
++what delivered workflow and supported environment. Preserve all project criteria.
++Scale cases and domain review to the claim and risk; do not make every mechanical
++check wait for an expert. Developers prepare assessment cases/sources/rubrics;
++ask the operator once for missing assessor/budget authority, without unauthorized
++contact or spending. Dependent claims remain blocked pending qualified evidence.
++Record source revision/check date and risk-based recheck triggers without automatic
++status changes. For overdue unchecked sources, disclose the last check date in
++the output (unknown if unknown); do not claim current authority for high-stakes
++use. Mark untested environments NOT_TESTED;
++verify exact-artifact new and upgrade workflows when claimed. Quality evidence
++is separate from enabling or confirming use. Reuse existing records and gates;
++do not create a tranche per check or silently drop committed scope.
++
+ Agents must honor the startup order, workspace isolation rule, public claim
+ boundary, and live-proof requirement above.
+ 
+diff --git a/docs/reference/CVF_AGENT_ERROR_TO_GOVERNANCE_LEARNING_PHILOSOPHY_2026-05-28.md b/docs/reference/CVF_AGENT_ERROR_TO_GOVERNANCE_LEARNING_PHILOSOPHY_2026-05-28.md
+index 2a080358fe5584570d0e8de752d4b5cb615b9364..888fa7f2b0eb51ec9fd62cb8a7b555e770cecdb2 100644
+--- a/docs/reference/CVF_AGENT_ERROR_TO_GOVERNANCE_LEARNING_PHILOSOPHY_2026-05-28.md
++++ b/docs/reference/CVF_AGENT_ERROR_TO_GOVERNANCE_LEARNING_PHILOSOPHY_2026-05-28.md
+@@ -8,7 +8,7 @@ docType: reference
+ 
+ Date: 2026-05-28
+ 
+-EPISTEMIC_PROCESS_NA_WITH_REASON: binding governance philosophy reference restored from archive to its active path without semantic change; it defines a learning philosophy and makes no source-backed evidence comparison claim.
++EPISTEMIC_PROCESS_NA_WITH_REASON: normative learning philosophy, extended on 2026-10-28 with a public-safe development-responsibility rule; no private incident evidence, source-backed comparison or adoption claim is projected here.
+ 
+ ---
+ 
+@@ -204,6 +204,34 @@ blocked, why the agents cannot resolve it inside current authority, the risk of
+ continuing, and the next safe choice. A non-coder operator must not be asked to
+ debug role choreography, path manifests, or checker ordering.
+ 
++## Learning From Acceptance Burden Transfer
++
++Treat a workflow that requires a non-coder to invent technical tests, expected
++answers or specialist QA before the development team can establish readiness as
++an orchestrator/acceptance gap. Reuse the existing product milestone owner:
++`docs/reference/CVF_PRODUCT_MILESTONE_COVERAGE_CONTRACT_2026-10-23.md`, section
++"Development-Owned Internal Readiness Before User Feedback". The team prepares
++bounded cases, justified expected evidence, required independent review and a
++real packaged consumer flow before requesting product-use feedback. Where a
++professional claim needs qualified expertise, the team prepares assessment inputs
++and asks the operator only for missing assessor/budget authority. No unauthorized
++recruitment, contact or spending; retain the affected gap until evidenced. AI
++self-certification is not acceptance.
++
++This is a reusable process rule, not a claim that a specific product has passed.
++Keep internal readiness, user feedback/business acceptance and install/publish
++authority distinct. Record the missing control and its existing owner rather
++than adding a parallel acceptance standard or transferring technical work to the
++user. Preserve mandatory criteria, safety gates and parked adoption.
++
++Apply the contract's three layers (technical verification, developer product
++acceptance, user business feedback) and five questions within existing records.
++The improvement makes product responsibility explicit; it does not assert that
++previous governance had no semantic review. Use risk- and claim-proportionate
++evidence, dated source checks, concrete value and exact delivered-workflow proof.
++Separate quality from activation/confirmation; do not introduce automatic status
++changes, parallel ledgers or per-test tranches to address the burden transfer.
++
+ ## Non-Coder Trust Boundary
+ 
+ The operator should not need to inspect every diff, table, checklist, or source
+diff --git a/docs/reference/CVF_PRODUCT_MILESTONE_COVERAGE_CONTRACT_2026-10-23.md b/docs/reference/CVF_PRODUCT_MILESTONE_COVERAGE_CONTRACT_2026-10-23.md
+index a9e2544fca73542205f6db20137835c292629e50..d0c7236e4283f851f159c4b1e4fc3fc101c2d20f 100644
+--- a/docs/reference/CVF_PRODUCT_MILESTONE_COVERAGE_CONTRACT_2026-10-23.md
++++ b/docs/reference/CVF_PRODUCT_MILESTONE_COVERAGE_CONTRACT_2026-10-23.md
+@@ -125,6 +125,104 @@ dependencies or evidence change, and at checkpoint/terminal review. Preserve val
+ unaffected evidence. Record invalidated proof and the bounded verification needed;
+ do not rerun unrelated suites or silently reset a spent budget.
+ 
++### Development-Owned Internal Readiness Before User Feedback
++
++The development team, including the orchestrator, workers and reviewers, owns
++turning the approved user outcome into an actionable roadmap, a usable product
++and internal acceptance evidence. This duty applies to CVF core, downstream
++products, packages, skills and templates. The non-coder supplies goals, business
++decisions, available business sources and later suitability feedback; they are
++not required to design technical tests, invent an oracle or expected output,
++debug the implementation, or perform technical QA before the team can proceed.
++Ask for genuinely missing business decisions with their consequences; the team
++resolves ordinary technical choices within existing authority.
++
++Before presenting a capability as internally ready for feedback, the team owns:
++
++- observable acceptance criteria and a bounded set of representative, boundary,
++  failure and recovery cases appropriate to the claimed use;
++- expected results supported by authoritative sources, reproducible calculations
++  or other justified evidence independent of the generated answer; do not invent
++  gold data or treat agreement among AI outputs as proof;
++- exact-version execution evidence, recorded failures and limitations, and the
++  independent review required by the existing risk and role rules; and
++- a real packaged consumer flow, including installation or opening, normal use,
++  useful output and applicable recovery, exercised in a permitted environment.
++  Component checks, document presence and a successful script alone do not prove
++  that the delivered product is usable.
++
++The team must organize qualified domain verification when the capability's
++correctness, safety or professional claim requires it. An AI cannot certify its
++own professional competence. Missing source, semantic or expert evidence blocks
++the affected capability or claim; the team owns the gap and its next condition.
++Independent capabilities may proceed only with an evidenced independence decision
++under this contract. An authorized experimental component may be delivered with
++its unmet criteria and use limits explicit, without a ready-for-use claim. Its
++mandatory criteria remain unmet: do not relabel them optional, N/A or accepted
++merely to ship, or lower correctness/safety gates. Changing committed scope still
++requires its existing scope-owner authority.
++
++Keep three decisions explicit in the existing roadmap and terminal return:
++internal readiness (team evidence and required review), user feedback/business
++acceptance (fit to the user's needs), and permission to install, publish, deploy
++or otherwise act externally (the applicable authority). Internal readiness is a
++prerequisite for requesting product-use feedback, not a substitute for business
++acceptance or an external-action grant. Feedback may identify further work; its
++absence does not transfer unresolved internal testing or expertise to the user.
++
++#### Three Acceptance Layers And A Compact Evidence Record
++
++Make the order explicit: technical verification, then developer-owned product
++acceptance against defined content and workflow criteria, then a usable delivery
++for user suitability feedback/business acceptance. The orchestrator owns the
++integrated product outcome and all milestone gaps. Installation, activation,
++confirmation and publishing authority remain separate from these quality layers.
++Technical checks or a user enabling a package do not establish product quality.
++
++Use the existing acceptance/intake record for five questions, preserving every
++applicable project criterion rather than adding a parallel ledger:
++
++1. What job does the component perform, with which user-request triggers,
++   inputs, outputs, exclusions and reuse boundary?
++2. What output standard was defined before testing, including provenance,
++   usage terms, permissions, limitations and missing/invalid-input behaviour?
++3. Which revision-bound cases, justified expectations, actual outputs and
++   independent review demonstrate that standard, and what remains untested?
++4. What concrete value does it add over the existing approach, with evidence
++   for that claim and fair comparison where duplication requires it?
++5. Which exact delivered artifact, environment and consumer workflow were
++   exercised, including new-project and upgrade paths when claimed, preservation
++   of user files/choices/permissions and applicable recovery?
++
++Scale evidence to claim and risk: ordinary tasks need representative and
++missing-input cases with content review; numeric or format constraints add
++measurable checks and typical failures. High-consequence claims require source
++verification and appropriate domain assessment of the parts needing professional
++judgement. Mechanical checks need not all await a specialist. Developers prepare
++cases, sources, rubrics and questions for assessment. Where authority to recruit
++or pay is missing, ask the operator once in business language about the assessor
++and budget; reuse existing decisions, do not self-hire, contact or pay anyone
++without authorization. Keep dependent claims blocked until qualified evidence
++exists; continue independent checks rather than waiting for user-designed QA.
++Distinguish regressions used to tune behaviour from evidence for new-task claims.
++Do not use AI agreement as the sole oracle or demand a large benchmark for every
++skill. A concrete template-compliance or error-reduction claim can be tested as
++such without claiming universal superiority over native capability.
++
++For changeable sources, record the revision, check date, unresolved verification
++and risk-based recheck events/dates; a deadline triggers reassessment, not an
++assumption of continuing validity or an automatic status downgrade. If an overdue
++source has not been rechecked, state "not rechecked since <last check date>" in
++the output (unknown if unknown); do not present it as current authority for
++high-consequence claims. Record the
++actual OS/runtime/host/tool/format support matrix, marking unknown combinations
++NOT_TESTED. Test new and upgrade flows on the artifact being claimed, not just
++the development checkout. Reuse existing release gates; these questions do not
++add an approval gate, intake enum or universal project schema. Existing packages
++and skills need revision-bound evidence for readiness claims; legacy availability
++labels are not proof, and missing evidence does not authorize blanket status
++changes or silent removal of committed scope.
++
+ ### Two Terminal Conclusions
+ 
+ Every terminal return/review states both:
+@@ -158,8 +256,9 @@ Local-admitted milestone pointers, section identity, exact criterion sets, owned
+ remainder and phase/conclusion joins are checked mechanically. File presence or a passing shape check never
+ proves agent compliance, installed-project adoption or runtime AI enforcement.
+ 
+-The 2026-10-25 intent-preservation and native-reuse clarification is a written
+-semantic review obligation. Existing validators bind declared criteria and control
++The 2026-10-28 development-owned readiness rule and the 2026-10-25
++intent-preservation and native-reuse clarification are written semantic review
++obligations. Existing validators bind declared criteria and control
+ identity; they do not infer conversational intent or detect redundant native code.
+ 
+ ## Related Artifacts
+diff --git a/docs/reference/CVF_WORKSPACE_RULES.md b/docs/reference/CVF_WORKSPACE_RULES.md
+index c77c2f470e444794108af73dbb4b7ad4dbb13fd8..f0fb43de656cdc7e9bfb0eb79e34df2aee82f68a 100644
+--- a/docs/reference/CVF_WORKSPACE_RULES.md
++++ b/docs/reference/CVF_WORKSPACE_RULES.md
+@@ -89,6 +89,37 @@ The workspace root should stay clean:
+ - It should not contain mixed application source files directly at root.
+ - It should not be initialized as a git repository.
+ 
++## Development Responsibility And Feedback
++
++Apply `docs/reference/CVF_PRODUCT_MILESTONE_COVERAGE_CONTRACT_2026-10-23.md`
++in the sibling CVF core, including "Development-Owned Internal Readiness Before
++User Feedback". The development team owns roadmap detail, usable delivery,
++justified expected results, bounded tests, required independent/domain review
++and real packaged consumer-flow evidence. Non-coders provide goals, business
++decisions and feedback after internal readiness; they do not design technical QA.
++Keep internal readiness, business acceptance and install/publish authority
++separate. Missing evidence blocks the affected capability; preserve mandatory
++criteria, correctness/safety gates and parked-project boundaries. Written rules
++and generated carriers do not prove runtime enforcement or existing-project
++adoption. Existing projects adopt only at an authorized boundary.
++
++Technical checks precede developer-owned product acceptance; business feedback
++follows usable delivery, while install/publish authority remains separate.
++In the existing acceptance record, answer five questions: what job and trigger;
++what output standard; what grounded evidence; what specific added value; and
++what delivered workflow and supported environment. Preserve all project criteria.
++Scale cases and domain review to the claim and risk; do not make every mechanical
++check wait for an expert. Developers prepare assessment cases/sources/rubrics;
++ask the operator once for missing assessor/budget authority, without unauthorized
++contact or spending. Dependent claims remain blocked pending qualified evidence.
++Record source revision/check date and risk-based recheck triggers without automatic
++status changes. For overdue unchecked sources, disclose the last check date in
++the output (unknown if unknown); do not claim current authority for high-stakes
++use. Mark untested environments NOT_TESTED;
++verify exact-artifact new and upgrade workflows when claimed. Quality evidence
++is separate from enabling or confirming use. Reuse existing records and gates;
++do not create a tranche per check or silently drop committed scope.
++
+ ## Bootstrap Contract
+ 
+ `scripts/new-cvf-workspace.ps1` creates or verifies this layout.
+diff --git a/governance/toolkit/05_OPERATION/CVF_DOWNSTREAM_AGENTS_TEMPLATE.md b/governance/toolkit/05_OPERATION/CVF_DOWNSTREAM_AGENTS_TEMPLATE.md
+index bdb3204bdca2574cf6f0faa540891413be465b1f..42e302fefc996101e6427c551ced4e2b95fd1ce7 100644
+--- a/governance/toolkit/05_OPERATION/CVF_DOWNSTREAM_AGENTS_TEMPLATE.md
++++ b/governance/toolkit/05_OPERATION/CVF_DOWNSTREAM_AGENTS_TEMPLATE.md
+@@ -65,6 +65,31 @@ A tranche may inherit accepted evidence and enter at its earliest open stage whe
+ Before intake, planning, producing or receiving work, apply the pinned core's `docs/reference/CVF_GOVERNED_WORK_LIFECYCLE_AND_DESIGN_CONTROL_STANDARD_2026-06-11.md`, including its mandatory `docs/reference/CVF_PRODUCT_MILESTONE_COVERAGE_CONTRACT_2026-10-23.md`: roadmap outcomes/checkpoints, complete milestone coverage, owned remainder, bounded supporting work and separate tranche/product conclusions. Apply `docs/reference/downstream_gate_profile/CVF_MILESTONE_COVERAGE_MACHINE_CONTRACT.md`: Local admits `docs/milestone-coverage-authority.json` before implementation; missing/unknown coverage permits finite verification only.
+ Design outputs for quick agent and human continuation; accept incomplete inputs for permitted clarification, read sources before asking, resolve ordinary authorized details and pause only dependent actions. Apply these rules for every role and resumed agent without operator reminder. Verification questions do not change approved direction. Preserve native capability reuse; identify only missing CVF adapter work. Preserve governed SPEC/WORK_ORDER and locked design/authority; reuse existing artifact structure.
+ 
++The development team owns roadmap detail, usable delivery, justified test oracles,
++bounded cases, required independent/domain review and real packaged-flow evidence
++before requesting product-use feedback. Non-coders provide goals and business
++decisions, not technical QA. Apply the contract's "Development-Owned Internal
++Readiness Before User Feedback" section; distinguish internal readiness, business
++acceptance and install/publish authority. Missing evidence blocks the affected
++capability without lowering mandatory correctness or safety gates.
++
++Technical checks precede developer-owned product acceptance; business feedback
++follows usable delivery, while install/publish authority remains separate.
++In the existing acceptance record, answer five questions: what job and trigger;
++what output standard; what grounded evidence; what specific added value; and
++what delivered workflow and supported environment. Preserve all project criteria.
++Scale cases and domain review to the claim and risk; do not make every mechanical
++check wait for an expert. Developers prepare assessment cases/sources/rubrics;
++ask the operator once for missing assessor/budget authority, without unauthorized
++contact or spending. Dependent claims remain blocked pending qualified evidence.
++Record source revision/check date and risk-based recheck triggers without automatic
++status changes. For overdue unchecked sources, disclose the last check date in
++the output (unknown if unknown); do not claim current authority for high-stakes
++use. Mark untested environments NOT_TESTED;
++verify exact-artifact new and upgrade workflows when claimed. Quality evidence
++is separate from enabling or confirming use. Reuse existing records and gates;
++do not create a tranche per check or silently drop committed scope.
++
+ ## Provider-Neutral Role Contract
+ 
+ Roles are responsibilities and must never be hardcoded to a specific provider. A single agent may hold multiple roles,
+diff --git a/governance/toolkit/05_OPERATION/CVF_PUBLIC_CORE_AGENTS.md b/governance/toolkit/05_OPERATION/CVF_PUBLIC_CORE_AGENTS.md
+index 23f50278b8dfd82e7baf18686b395bbab372e575..a98e0f833bff097c4799adcccc0e4a46fbec4528 100644
+--- a/governance/toolkit/05_OPERATION/CVF_PUBLIC_CORE_AGENTS.md
++++ b/governance/toolkit/05_OPERATION/CVF_PUBLIC_CORE_AGENTS.md
+@@ -82,6 +82,31 @@ keys.
+ 
+ Every role and resumed agent applies `docs/reference/CVF_PRODUCT_MILESTONE_COVERAGE_CONTRACT_2026-10-23.md` without operator reminder. Verification questions preserve approved direction. Bind work to user outcomes, complete milestone coverage, owned remainder, bounded supporting tasks and distinct tranche/product conclusions. Reuse native provider/repository capability and existing CVF owners; implement only demonstrated adapter gaps.
+ 
++The development team owns roadmap detail, usable delivery, justified test oracles,
++bounded cases, required independent/domain review and real packaged-flow evidence
++before requesting product-use feedback. Non-coders provide goals and business
++decisions, not technical QA. Apply the contract's "Development-Owned Internal
++Readiness Before User Feedback" section; distinguish internal readiness, business
++acceptance and install/publish authority. Missing evidence blocks the affected
++capability without lowering mandatory correctness or safety gates.
++
++Technical checks precede developer-owned product acceptance; business feedback
++follows usable delivery, while install/publish authority remains separate.
++In the existing acceptance record, answer five questions: what job and trigger;
++what output standard; what grounded evidence; what specific added value; and
++what delivered workflow and supported environment. Preserve all project criteria.
++Scale cases and domain review to the claim and risk; do not make every mechanical
++check wait for an expert. Developers prepare assessment cases/sources/rubrics;
++ask the operator once for missing assessor/budget authority, without unauthorized
++contact or spending. Dependent claims remain blocked pending qualified evidence.
++Record source revision/check date and risk-based recheck triggers without automatic
++status changes. For overdue unchecked sources, disclose the last check date in
++the output (unknown if unknown); do not claim current authority for high-stakes
++use. Mark untested environments NOT_TESTED;
++verify exact-artifact new and upgrade workflows when claimed. Quality evidence
++is separate from enabling or confirming use. Reuse existing records and gates;
++do not create a tranche per check or silently drop committed scope.
++
+ Agents must honor the startup order, workspace isolation rule, public claim
+ boundary, and live-proof requirement above.
+ 
+diff --git a/scripts/install_cvf_workspace_root_wrappers.ps1 b/scripts/install_cvf_workspace_root_wrappers.ps1
+index 234e1ea7093a3569c96bed6e2b4d522c6a9221d2..8b081080663a7b0a3488df2e48a58cd7104604f3 100644
+--- a/scripts/install_cvf_workspace_root_wrappers.ps1
++++ b/scripts/install_cvf_workspace_root_wrappers.ps1
+@@ -628,6 +628,37 @@ CVF-Workspace/
+ - Keep secrets out of workspace rules, generated project instructions, and logs.
+ - Read `CVF_WORKSPACE_CLASSIFICATION_GUIDE.md` before selecting or changing a profile.
+ 
++## Development Responsibility And Feedback
++
++Apply the sibling CVF core's
++`docs/reference/CVF_PRODUCT_MILESTONE_COVERAGE_CONTRACT_2026-10-23.md`, especially
++"Development-Owned Internal Readiness Before User Feedback". The development
++team owns roadmap detail, usable delivery, justified expected results, bounded
++tests, required independent/domain review and real packaged consumer-flow proof.
++Non-coders provide goals, business decisions and later feedback, not technical
++QA. Distinguish internal readiness, business acceptance and install/publish
++authority. Missing evidence blocks the affected capability; do not lower
++mandatory correctness/safety gates or silently change committed scope. Existing
++projects adopt only at an authorized boundary; generated rules alone do not prove
++runtime enforcement or adoption.
++
++Technical checks precede developer-owned product acceptance; business feedback
++follows usable delivery, while install/publish authority remains separate.
++In the existing acceptance record, answer five questions: what job and trigger;
++what output standard; what grounded evidence; what specific added value; and
++what delivered workflow and supported environment. Preserve all project criteria.
++Scale cases and domain review to the claim and risk; do not make every mechanical
++check wait for an expert. Developers prepare assessment cases/sources/rubrics;
++ask the operator once for missing assessor/budget authority, without unauthorized
++contact or spending. Dependent claims remain blocked pending qualified evidence.
++Record source revision/check date and risk-based recheck triggers without automatic
++status changes. For overdue unchecked sources, disclose the last check date in
++the output (unknown if unknown); do not claim current authority for high-stakes
++use. Mark untested environments NOT_TESTED;
++verify exact-artifact new and upgrade workflows when claimed. Quality evidence
++is separate from enabling or confirming use. Reuse existing records and gates;
++do not create a tranche per check or silently drop committed scope.
++
+ ## Canonical Source
+ 
+ `.Controlled-Vibe-Framework-CVF/docs/reference/CVF_WORKSPACE_RULES.md`
+diff --git a/scripts/new-cvf-workspace.ps1 b/scripts/new-cvf-workspace.ps1
+index 48089050389520f99e5fe62202c375e180b0e2eb..86966f0981688944ebcf957d3ecdf434eac86277 100644
+--- a/scripts/new-cvf-workspace.ps1
++++ b/scripts/new-cvf-workspace.ps1
+@@ -153,6 +153,37 @@ CVF-Workspace/
+ - Run application work from the application project root.
+ - Keep provider keys and secrets out of this file, `.cvf/`, generated `AGENTS.md`, and bootstrap logs.
+ 
++## Development Responsibility And Feedback
++
++Apply the sibling CVF core's
++`docs/reference/CVF_PRODUCT_MILESTONE_COVERAGE_CONTRACT_2026-10-23.md`, especially
++"Development-Owned Internal Readiness Before User Feedback". The development
++team owns roadmap detail, usable delivery, justified expected results, bounded
++tests, required independent/domain review and real packaged consumer-flow proof.
++Non-coders provide goals, business decisions and later feedback, not technical
++QA. Distinguish internal readiness, business acceptance and install/publish
++authority. Missing evidence blocks the affected capability; do not lower
++mandatory correctness/safety gates or silently change committed scope. Existing
++projects adopt only at an authorized boundary; generated rules alone do not prove
++runtime enforcement or adoption.
++
++Technical checks precede developer-owned product acceptance; business feedback
++follows usable delivery, while install/publish authority remains separate.
++In the existing acceptance record, answer five questions: what job and trigger;
++what output standard; what grounded evidence; what specific added value; and
++what delivered workflow and supported environment. Preserve all project criteria.
++Scale cases and domain review to the claim and risk; do not make every mechanical
++check wait for an expert. Developers prepare assessment cases/sources/rubrics;
++ask the operator once for missing assessor/budget authority, without unauthorized
++contact or spending. Dependent claims remain blocked pending qualified evidence.
++Record source revision/check date and risk-based recheck triggers without automatic
++status changes. For overdue unchecked sources, disclose the last check date in
++the output (unknown if unknown); do not claim current authority for high-stakes
++use. Mark untested environments NOT_TESTED;
++verify exact-artifact new and upgrade workflows when claimed. Quality evidence
++is separate from enabling or confirming use. Reuse existing records and gates;
++do not create a tranche per check or silently drop committed scope.
++
+ ## Reference
+ 
+ Canonical source: `.Controlled-Vibe-Framework-CVF/docs/reference/CVF_WORKSPACE_RULES.md`

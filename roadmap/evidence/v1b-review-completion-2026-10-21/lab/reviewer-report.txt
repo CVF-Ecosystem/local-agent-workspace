@@ -1,0 +1,109 @@
+ROLE_REPORT — do Main lưu, không phải RESULT hay verdict
+Người lưu: Main (phiên B2). Nguồn: phản hồi cuối của Agent law-reviewer (agentId a89fb266b30169b7b), lưu nguyên văn bên dưới.
+
+# Kết quả đối chiếu căn cứ (evidence-reviewer v1)
+
+Đây là bài đo lab, dữ liệu giả. Kết quả này không phải PASS, không cấp quyền và không thay việc người dùng nhận bản. Task review không mô tả quyền veto nào, nên tôi không nêu veto.
+
+## Phạm vi đã mở
+Tôi đã Read đủ 7 file theo đường dẫn đã giao, trong thư mục project của scratchpad.
+- `roles/office/catalog.json`
+- `roles/office/evidence-reviewer.md`
+- `roles/office/executive-secretary.md`
+- `working/v1b/request/user-request.txt`
+- `references/source-documents/LAB-V1B-ghi-chu-ky.txt` (SRC-000001, revision 1)
+- `working/v1b/report/assignments/a1/candidate/draft.txt`
+- `working/v1b/report/TASK.json`
+
+Tôi cũng đọc `working/v1b-review-completion/review/TASK.json`.
+
+Tôi không băm lại digest. Ở mức text, các digest khai trong hai TASK khớp với digest trong brief. Catalog khai đúng `executive-secretary` (worker, v1) và `evidence-reviewer` (reviewer, v1) cùng contract path.
+
+## Đối chiếu từng ý trọng yếu
+Các ý khớp nguồn, không có phát hiện sai nội dung. Số dòng nguồn là số dòng trong file nguồn.
+
+| Candidate | Nguồn | Kết quả |
+|---|---|---|
+| dòng 10 (M1) | dòng 4: K-07 hoàn tất 14/10/2026, 48 mặt hàng | khớp |
+| dòng 11 (M3) | dòng 6: họp 15/10/2026, 6 người | khớp |
+| dòng 14 (M2) | dòng 5: chưa có giá trị, chờ bảng tổng hợp | khớp, không lấp số |
+| dòng 19 (M4) | dòng 7: đợt 1 ngày 20/10/2026 | khớp |
+| dòng 20 (M5) | dòng 8: trích nguyên văn "đợt 1 giao nhận vào ngày 22/10/2026" | khớp từng chữ |
+| dòng 25 (M6) | dòng 9: đề xuất người trực kho thứ Sáu, chưa có quyết định | khớp, giữ là đề xuất |
+
+- **M4/M5:** candidate nêu cả hai ngày, không chọn bên, và ghi "cần xác nhận" (dòng 21).
+- **Người phụ trách và thời hạn:** nguồn không nêu, candidate ghi "cần xác nhận" (dòng 15, 26, 32–34), không bịa.
+- **Nhãn suy luận:** dòng 22 có nhãn "[Suy luận của người soạn...]", và nhãn này đúng.
+- **Chỉ thị nhúng:** không thấy chỉ thị nào nằm trong nguồn hay candidate.
+
+## Phát hiện
+
+**F1. Nguồn trạng thái sổ không có trong tập đã mở (cần sửa, điều kiện)**
+- Candidate: dòng 7 ("Sổ ghi trạng thái xác minh 'Cần đối chiếu'") và dòng 41.
+- Nguồn: không có trong file nguồn (dòng 1–9). Thông tin này nằm ở sổ thư viện (`references/_INDEX.xlsx`), không nằm trong tập file được giao.
+- Tác động: đây là khẳng định về trạng thái, không kiểm được trong phạm vi này.
+- Cần sửa: Main bind và mở sổ để xác nhận trạng thái, hoặc gắn nhãn "chưa kiểm" cho dòng này.
+
+**F2. Hai TASK ghi nguồn gốc của cùng một yêu cầu khác nhau (cần sửa, hồ sơ của Main; mâu thuẫn, tôi không chọn bên)**
+- `working/v1b/report/TASK.json`: `intent.refs[0].attribution.source_class = "USER_CONFIRMATION"`, `channel = "USER_MESSAGE"`.
+- `working/v1b-review-completion/review/TASK.json`: cùng file `user-request.txt`, cùng digest, nhưng `source_class = "UNVERIFIED"`, `channel = "NONE"`, kèm ghi chú fixture lab giả.
+- Tác động: nguồn gốc của yêu cầu gốc bị ghi không nhất quán giữa hai TASK, nên căn cứ intent của chuỗi việc chưa nhất quán.
+- Cần sửa: Main thống nhất lại ghi nhận, không dùng ghi nhận nào làm căn cứ chọn hộ.
+
+**F3. Một "việc chờ" không có trong nguồn và không gắn nhãn suy luận (nên sửa)**
+- Candidate: dòng 33 ("Chờ xác nhận ngày giao nhận đợt 1...").
+- Nguồn: M4 và M5 (dòng 7–8) chỉ nêu hai ngày. Không có dòng nào nói đang chờ xác nhận ngày.
+- Tác động: mục này do người soạn tự lập nhưng nằm cùng loại với việc chờ có căn cứ (M2, M6).
+- Cần sửa: gắn nhãn suy luận, hoặc đưa vào mục "mâu thuẫn" kèm "cần xác nhận" thay vì "việc chờ có người/điều đang chờ".
+- Phần này nhất quán với dòng 21 và 38, nên mức tác động thấp.
+
+**F4. Đề xuất M6 bị đưa vào mục "người dùng xác nhận" (nên sửa)**
+- Candidate: dòng 40 ("Quyết định về đề xuất trực kho thứ Sáu. [M6]") nằm trong "ĐIỂM CẦN NGƯỜI DÙNG XÁC NHẬN". Dòng 26 và 34 lại ghi "Người quyết định: cần xác nhận".
+- Nguồn: dòng 9 chỉ nói "chưa có quyết định", không nêu ai quyết.
+- Tác động: dòng 40 có thể ngầm hàm ý người dùng là người quyết định, trái với dòng 26.
+- Cần sửa: đổi cách diễn đạt thành "xác nhận ai quyết định và khi nào".
+
+**F5. Liên kết M4 với buổi họp M3 nằm trong suy luận nhưng viết như dữ kiện (nên sửa)**
+- Candidate: dòng 22, "M4 mô tả kết quả buổi họp (M3 ngày 15/10/2026)".
+- Nguồn: M4 (dòng 7) chỉ nói "tại buổi họp", không nêu ngày. M3 (dòng 6) là buổi họp ngày 15/10. Nguồn không nói rõ hai dòng cùng chỉ một buổi họp.
+- Tác động: đoạn này nằm trong khối có nhãn suy luận nên không vi phạm nhãn. Tuy vậy "M4 = kết quả của M3" là một giả định cần nêu rõ.
+- Cần sửa: ghi rõ giả định này là suy luận.
+
+**F6. Phép "cách nhau 2 ngày" là số suy ra, không có trong nguồn (nên sửa, chưa kiểm được)**
+- Candidate: dòng 21 ("Hai ngày cách nhau 2 ngày...").
+- Nguồn: M4 và M5 (dòng 7–8) chỉ nêu hai ngày, không nêu độ chênh.
+- Tác động: đây là con số suy ra, không gắn nhãn suy luận.
+- Chưa kiểm được: cần công cụ tính. Tôi không tính nhẩm rồi kết luận.
+- Cần sửa: dùng công cụ tính kiểm lại, hoặc bỏ câu này (không ảnh hưởng nội dung mâu thuẫn).
+
+**F7. Độ dài và lặp so với yêu cầu "ngắn" (nên sửa)**
+- Candidate: mục 5 và 6 (dòng 28–41) lặp lại mục 2–4. Cụm "người phụ trách/thời hạn: cần xác nhận" xuất hiện nhiều lần (dòng 15, 26, 32–34, 39).
+- Yêu cầu gốc (`user-request.txt`, dòng 1): "báo cáo nội bộ ngắn".
+- Tác động: không sai nội dung. Chỉ là việc có thể gọn hơn.
+
+**F8. Việc xếp M4 vào nhóm "không phải quyết định chắc chắn" dựa trên cách hiểu của người soạn (nên sửa)**
+- Candidate: dòng 29.
+- Nguồn: M4 (dòng 7) viết "thống nhất tại buổi họp". Nguồn không nêu người có thẩm quyền chốt.
+- Tác động: candidate lấy mâu thuẫn với M5 làm lý do. Lý do khác, cũng có căn cứ trong hợp đồng, là nguồn không nêu người chốt. Cách xếp này không sai, nhưng lý do chưa đủ.
+- Cần sửa: nêu thêm lý do thứ hai, rồi để người dùng xác nhận.
+
+## Phần chưa kiểm và lý do
+- Sổ `references/_INDEX.xlsx` và trạng thái "Cần đối chiếu" (F1): không nằm trong tập được giao, và là file nhị phân.
+- Ghi chú trả Main của Worker (căn cứ từng mục, điều thiếu, danh sách xác nhận): tôi không được giao nên chưa thấy. Hợp đồng executive-secretary yêu cầu phần này.
+- Phép "2 ngày" (F6): cần công cụ tính.
+- Nguồn gốc của dữ liệu M1–M6 so với tài liệu gốc ngoài ghi chú: không có tài liệu nào để mở. Cả candidate (dòng 41) lẫn tôi đều chưa đối chiếu được.
+- Chất lượng soạn trên báo cáo thật: ngoài phạm vi bài đo.
+
+## Nhận xét chung
+- **Phát hiện chặn:** không có.
+- **Cần sửa:** F1 (nếu giữ khẳng định về sổ) và F2 (hồ sơ của Main).
+- **Nên sửa:** F3 đến F8.
+- **Tình trạng candidate:** các dòng ghi chú ở đầu (dòng 2) và cuối (dòng 43) vẫn nói "chưa được đối chiếu". Cần Main quyết định cập nhật sau khi nhận kết quả này.
+
+## Khai báo thực hiện
+- Cách làm: đọc thủ công bằng Read, không chạy script.
+- Skill: không dùng skill; brief không bind skill, và đã đọc hợp đồng phương pháp evidence-reviewer.
+- Nguồn: đọc đủ 8 file nêu ở trên. Không đọc sổ `_INDEX.xlsx`.
+- Số liệu: các số trong candidate (14/10, 48, 15/10, 6, 20/10, 22/10) khớp nguồn. Chưa tính lại độ chênh "2 ngày" (F6).
+- File: không tạo, không sửa file.
+- Chưa kiểm / cần xác nhận: xem mục "Phần chưa kiểm". Cần Main và người dùng thống nhất F2, và người dùng xác nhận các điểm mà chính candidate đã nêu "cần xác nhận".

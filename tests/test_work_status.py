@@ -100,6 +100,38 @@ class WorkStatus(tf.FlowBase):
         self.assertEqual(view['tasks'][0]['assignments'][0]['state'], 'STALE')
         self.assertNotIn('working/other/secret.txt', [call.args[1] for call in read.call_args_list])
 
+    def test_large_input_uses_scoped_digest_snapshot_and_detects_drift(self):
+        path, data = 'references/large.bin', b'\x00\xff' * (1024 * 1024 + 123)
+        self.write(path, data)
+        t, r, _ = self.assignment(inputs=[{'path': path, 'digest': tc.sha(data)}])
+        # Two tasks reuse one named input snapshot during a view.
+        t2, r2, _ = self.assignment(task_id='t-b', inputs=[{'path': path, 'digest': tc.sha(data)}])
+        marker = {'work_id': tf.WORK, 'tasks': [{'task': t, 'results': [r]}, {'task': t2, 'results': [r2]}]}
+        self.write('.agent/STATE.md', (tf.STATE_FRAME + '<!-- law-work/1 ' + json.dumps(marker) + ' -->\n').encode())
+        before = self.tree()
+        real_checkpoint = tc.checkpoint
+        def checked(*args, **kwargs):
+            self.assertEqual(kwargs['digest_reader'](self.project, 'working/secret.bin'),
+                             (None, 0, 'READ_SCOPE_UNSUPPORTED'))
+            return real_checkpoint(*args, **kwargs)
+        with mock.patch.object(tc, 'file_digest', wraps=tc.file_digest) as digest, \
+             mock.patch.object(tc, 'checkpoint', side_effect=checked):
+            view = ws.status(self.project)
+        self.assertEqual(view['result'], 'READY', view)
+        self.assertEqual([c.args[1] for c in digest.call_args_list], [path])
+        self.assertEqual(self.tree(), before)
+        self.write(path, data[:-1] + b'x')
+        self.assertIn('INPUT_CHANGED ' + path, self.assignment_view()['problems'])
+
+    def test_streamed_inputs_keep_view_budget(self):
+        path, data = 'references/large.bin', b'x' * (16 * 1024 * 1024 + 1)
+        self.write(path, data)
+        t, r, _ = self.assignment(inputs=[{'path': path, 'digest': tc.sha(data)}])
+        self.set_marker(t, [r])
+        view = self.assignment_view()
+        self.assertEqual(view['state'], 'STALE')
+        self.assertIn('INPUT ' + path + ' VIEW_READ_BUDGET_EXCEEDED', view['problems'])
+
     def test_view_no_scan_writer_or_process_call(self):
         self.ready()
         os.makedirs(self.abs('.agent/runtime/transactions'), exist_ok=True)

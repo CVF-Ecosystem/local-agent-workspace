@@ -1,0 +1,21 @@
+DỮ LIỆU GIẢ - BẢN ỨNG VIÊN (CANDIDATE), KHÔNG PHÁT HÀNH
+
+BÁO CÁO NỘI BỘ NGẮN: KIỂM KÊ KHO GIẢ Z-04
+Kỳ báo cáo: cần xác nhận (brief không nêu kỳ).
+Người đọc: nội bộ; người nhận cụ thể cần xác nhận.
+
+Tình trạng (căn cứ nguồn):
+- Kiểm kê kho giả Z-04 hoàn tất ngày 09/11/2026; đã kiểm 12 lô. [N1]
+
+Việc chờ:
+- Số lô lệch sau kiểm kê: chưa có giá trị cụ thể, đang chờ bảng tổng hợp. [N2]
+- Người phụ trách và thời hạn nhận bảng tổng hợp: cần xác nhận (nguồn không nêu).
+
+Quyết định: không có trong nguồn (cần xác nhận nếu có).
+Đề xuất: không có trong nguồn.
+
+Điều còn thiếu: số lô lệch (N2); kỳ báo cáo; người đọc; người phụ trách và thời hạn.
+
+Nhãn suy luận của người soạn: do số lô lệch chưa có, chưa thể kết luận kết quả kiểm kê khớp hay lệch; không nên trình ký hoặc gửi ra ngoài khi chưa bổ sung.
+
+Nguồn: [N1], [N2] = references/source-documents/LAB-V2D-ghi-chu.txt (SRC-000001, revision 1), dòng 4 và dòng 5.

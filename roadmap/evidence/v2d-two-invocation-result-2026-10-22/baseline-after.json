@@ -1,0 +1,120 @@
+{
+  "collected_at": "2026-10-22T01:54:39.732773+00:00",
+  "copies": {
+    "TASK.json": {
+      "lab_path": "working/v2d/report/TASK.json",
+      "sha256": "e22c3b8c2ec797121af5c31fc34ac7f6ac7d38d105eea89cce7388194bcd69a8",
+      "size": 2964
+    },
+    "dispatch-package.json": {
+      "lab_path": "working/v2d/setup/dispatch-package.json",
+      "sha256": "4d192ae10da2a1d903fe86803ca7bb7fe191546afbaacb3b05795f3b4431e5df",
+      "size": 2027
+    },
+    "worker-brief.md": {
+      "lab_path": "working/v2d/setup/worker-brief.md",
+      "sha256": "2338637dd151cb08a357f37b7d8b0302e1d9ef363f99014ec0ba979332df8a7c",
+      "size": 6213
+    },
+    "user-request.txt": {
+      "lab_path": "working/v2d/request/user-request.txt",
+      "sha256": "9d8338cc499543d8887459e7eabf8160e25f863e47856f5301c2030232904402",
+      "size": 197
+    },
+    "LAB-V2D-ghi-chu.txt": {
+      "lab_path": "references/source-documents/LAB-V2D-ghi-chu.txt",
+      "sha256": "99c6058e996cbcf221637cd982a539ea0e7326f80d71dd6cbb9f59dc0c7791ae",
+      "size": 294
+    },
+    "candidate-draft.txt": {
+      "lab_path": "working/v2d/report/assignments/a1/candidate/draft.txt",
+      "sha256": "108c56f29d948ec0b2397c6e766d7abc61f68d59c71aa5e55c6062ef38cd9e3f",
+      "size": 1165
+    },
+    "RESULT.json": {
+      "lab_path": "working/v2d/report/assignments/a1/RESULT.json",
+      "sha256": "614a77f95733a29cc90014812eb6fbafbe21f33bdc5400b4169599309f46e83b",
+      "size": 3729
+    },
+    "native-worker.md": {
+      "lab_path": ".claude/agents/law-worker.md",
+      "sha256": "79ad3bc25841b46d53fb117fccf8a72224601b4ffc5bfefcfbcc28e14855dd53",
+      "size": 4412
+    },
+    "receipt-worker.json": {
+      "lab_path": ".agent/runtime/native-agents/claude-code/law-worker.json",
+      "sha256": "7e7c155b4c9ec09352119f394fea80d4ccd2dc4eafbcc65fcad55791c19e9069",
+      "size": 1501
+    },
+    "profile.json": {
+      "lab_path": ".agent/EXECUTION_PROFILE.json",
+      "sha256": "74b8a304bc8ea89906e8a6723568ce7e547e170807640e3ce769b8a594ee93d7",
+      "size": 590
+    },
+    "catalog.json": {
+      "lab_path": "roles/office/catalog.json",
+      "sha256": "5cbfc5f8f9c7a8ef88b10f502401052a936e86e1810b5b60da55e0de52544802",
+      "size": 3470
+    },
+    "executive-secretary.md": {
+      "lab_path": "roles/office/executive-secretary.md",
+      "sha256": "d6827648a7e01f07e764067f104b3ed8b7e1229ae8a22198ad80ab97e0d103a7",
+      "size": 7535
+    },
+    "setup.json": {
+      "origin": "working/v2d/meta/setup.json",
+      "sha256": "82dd79edcf28fe9c116dd1da314a161bc03be59ad93ab0db8e0871d2033ead74",
+      "size": 1698
+    },
+    "bridge_manifest.json": {
+      "origin": "working/v2d/meta/bridge_manifest.json",
+      "sha256": "b90098b933795da185dd8ba3d6dafe66ac4d7d6c05e50c2c29338b0895a51df3",
+      "size": 2270
+    },
+    "main_bridge.py.copy": {
+      "origin": "working/v2d/scripts/main_bridge.py",
+      "sha256": "48df91de25dcb7b6fdacbc5ebac92444a8b50a93d674d063743d0892f03674dc",
+      "size": 13776
+    },
+    "v2d.py.copy": {
+      "origin": "working/v2d/scripts/v2d.py",
+      "sha256": "51749524e70c330809ff12e9c5996d1a8ab7d31c274d5830fedba14348dc2871",
+      "size": 59581
+    },
+    "prompt-v2d.txt.copy": {
+      "origin": "working/v2d/scripts/prompt-v2d.txt",
+      "sha256": "392a4bc19a7268c5a23a48347594aba9a1b5514b4cdf69d0c0c58c27953c6727",
+      "size": 6258
+    }
+  },
+  "baseline_five_after": {
+    "roles/README.md": {
+      "sha256": "2f42490f39ed16a4ad30310da28f1bf1764ee3bed48a501f62cc54b842e73ef5",
+      "baseline": "2f42490f39ed16a4ad30310da28f1bf1764ee3bed48a501f62cc54b842e73ef5",
+      "equal": true
+    },
+    "tools/office.py": {
+      "sha256": "ffd7f5cc1651f2e4fac53d03761760510f1d23714cbab68ddc9e09147362c600",
+      "baseline": "ffd7f5cc1651f2e4fac53d03761760510f1d23714cbab68ddc9e09147362c600",
+      "equal": true
+    },
+    "roles/office/MAIN.md": {
+      "sha256": "16202be5a815683b0459dcc8cf909f5b564e669577af609222593e88aa7fb40e",
+      "baseline": "16202be5a815683b0459dcc8cf909f5b564e669577af609222593e88aa7fb40e",
+      "equal": true
+    },
+    "tools/artifacts.py": {
+      "sha256": "be315aff047b0d73d0a9d15693ac72049edfbb15e9499bb0163687906f782c1a",
+      "baseline": "be315aff047b0d73d0a9d15693ac72049edfbb15e9499bb0163687906f782c1a",
+      "equal": true
+    },
+    "tools/native_agents.py": {
+      "sha256": "e5405e3a971739e0e44741a27d8d9f03ed3b9ed901972806faaa300d9a3aad8e",
+      "baseline": "e5405e3a971739e0e44741a27d8d9f03ed3b9ed901972806faaa300d9a3aad8e",
+      "equal": true
+    }
+  },
+  "bridge_sha256_after": "48df91de25dcb7b6fdacbc5ebac92444a8b50a93d674d063743d0892f03674dc",
+  "manifest_sha256_after": "b90098b933795da185dd8ba3d6dafe66ac4d7d6c05e50c2c29338b0895a51df3",
+  "pycache_files_in_source_tree": 92
+}

@@ -1,0 +1,152 @@
+{
+  "passed": 19,
+  "failed": [],
+  "cases": [
+    {
+      "case": "observe: candidate missing is refused, nothing written",
+      "ok": true,
+      "detail": [
+        "CANDIDATE_MISSING"
+      ]
+    },
+    {
+      "case": "checkpoint: RESULT missing is refused, nothing written",
+      "ok": true,
+      "detail": [
+        "RECORD_RESULT MISSING_OR_NOT_REGULAR"
+      ]
+    },
+    {
+      "case": "observe: positive, digest equals an independent hash, read-only",
+      "ok": true,
+      "detail": {
+        "problems": [],
+        "digest": "sha256:c809c4576022181368cff7c50be37eae37c4986b269407709f11bd0d3cf2d7d0"
+      }
+    },
+    {
+      "case": "observe: result has no binding/RESULT/receipt",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "case": "observe: expected TASK digest mismatch is refused",
+      "ok": true,
+      "detail": [
+        "TASK_CHANGED_SINCE_DISPATCH"
+      ]
+    },
+    {
+      "case": "observe: another target is refused",
+      "ok": true,
+      "detail": [
+        "TARGETS_NOT_CANDIDATE_AND_RESULT"
+      ]
+    },
+    {
+      "case": "observe: a path outside the slot is refused",
+      "ok": true,
+      "detail": [
+        "SLOT_LAYOUT",
+        "TARGETS_NOT_CANDIDATE_AND_RESULT"
+      ]
+    },
+    {
+      "case": "owner drift (pin mismatch) refused before the operation",
+      "ok": true,
+      "detail": [
+        "PIN_DRIFT tools/artifacts.py"
+      ]
+    },
+    {
+      "case": "manifest README pin drift refused",
+      "ok": true,
+      "detail": [
+        "MANIFEST_README_PIN_DRIFT"
+      ]
+    },
+    {
+      "case": "a loaded LAW module that is not pinned is refused",
+      "ok": true,
+      "detail": [
+        "UNPINNED_LAW_MODULE library_sync=tools/library_sync.py"
+      ]
+    },
+    {
+      "case": "wrong lab is refused",
+      "ok": true,
+      "detail": [
+        "RECORD_TASK MISSING_OR_NOT_REGULAR"
+      ]
+    },
+    {
+      "case": "modules resolved from the lab or outside the trusted trees are reported",
+      "ok": true,
+      "detail": [
+        "MODULE_FROM_LAB v2c_fake_lab_mod",
+        "MODULE_OUTSIDE_TRUSTED_TREE v2c_fake_outside_mod"
+      ]
+    },
+    {
+      "case": "checkpoint: fixture RESULT (test driver, not a native Worker) gives problems=[]",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "case": "observe after a RESULT exists is refused",
+      "ok": true,
+      "detail": [
+        "RESULT_ALREADY_EXISTS"
+      ]
+    },
+    {
+      "case": "checkpoint: TASK differing from the dispatch digest is flagged",
+      "ok": true,
+      "detail": [
+        "TASK_CHANGED_SINCE_DISPATCH"
+      ]
+    },
+    {
+      "case": "checkpoint: candidate changed after the RESULT is flagged",
+      "ok": true,
+      "detail": [
+        "CANDIDATE_CHANGED"
+      ]
+    },
+    {
+      "case": "exact commands from the live cwd: read-only refusals while the slot is empty",
+      "ok": true,
+      "detail": {
+        "observe": {
+          "exit": 1,
+          "ok": false,
+          "refused_before_operation": false,
+          "problems": [
+            "CANDIDATE_MISSING"
+          ]
+        },
+        "checkpoint": {
+          "exit": 1,
+          "ok": false,
+          "refused_before_operation": false,
+          "problems": [
+            "RECORD_RESULT MISSING_OR_NOT_REGULAR"
+          ]
+        }
+      }
+    },
+    {
+      "case": "no bytecode was added to the source tree",
+      "ok": true,
+      "detail": {
+        "before": 92,
+        "after": 92
+      }
+    },
+    {
+      "case": "the live lab is unchanged by the whole self-test",
+      "ok": true,
+      "detail": "70ef0d8c474c56e6a9659e1649808a288fd781da121d073bad5831cc771630a5"
+    }
+  ]
+}

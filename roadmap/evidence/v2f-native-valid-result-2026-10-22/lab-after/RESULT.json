@@ -1,0 +1,79 @@
+{
+  "schema_version": "law.cvf.control/3",
+  "record_type": "result",
+  "evaluation_basis": "COOPERATIVE_WORKFLOW",
+  "result_id": "r-v2f-report-a1",
+  "binding": {
+    "bind_version": "law.cvf.bind/3",
+    "evaluation_basis": "COOPERATIVE_WORKFLOW",
+    "task_id": "report",
+    "task_revision": 1,
+    "intent_digest": "sha256:84b9ede152099013ff0f75c7c53d21197f6255ce1dbfbd85534e64e411cb0757",
+    "accepted_task_digest": "sha256:6c768e7ae2a487faeda2678c18dfa5fd21fbcdd8214958ef6c128173d459f214",
+    "context_digest": "sha256:0526f9ced825a6df4119de46177fb2ac5c2ce18515f07570856d48b2b4ea0719",
+    "policy_version": "law.cvf.routing/3",
+    "policy_digest": "sha256:1a4fd3233dcf4b8571d9fa2249faf060216b3e530ca7d8dcf976dc5df880eaf3",
+    "inputs": [
+      {
+        "path": "references/source-documents/LAB-V2F-ghi-chu.txt",
+        "digest": "sha256:35470f67d313778a94bf69813937150e8155ce750940d250d3f6382f628d4ff3",
+        "source_id": "SRC-000001",
+        "revision": "1"
+      }
+    ],
+    "outputs": [
+      {
+        "path": "working/v2f/report/assignments/a1/candidate/draft.txt",
+        "digest": "sha256:3c4d57666c3f426f843e1dbb898299532d913f536a357d203fafcdcba0d61cc1",
+        "role": "ACTUAL_BYTES"
+      }
+    ]
+  },
+  "produced_by": {
+    "actor_id": "worker-v2f",
+    "role": "worker"
+  },
+  "artifacts": [
+    {
+      "path": "working/v2f/report/assignments/a1/candidate/draft.txt",
+      "digest": "sha256:3c4d57666c3f426f843e1dbb898299532d913f536a357d203fafcdcba0d61cc1",
+      "role": "ACTUAL_BYTES"
+    }
+  ],
+  "evidence": [
+    {
+      "evidence_id": "EV-v2f-report-a1-obs1",
+      "req_id": "OFFICE-METHOD:executive-secretary:v1",
+      "locator": "working/v2f/report/assignments/a1/candidate/draft.txt",
+      "kind": "TOOL_OBSERVED",
+      "scope": "Digest sha256 cua byte candidate (size 1158, identity 5289a548:46000000016319) do artifacts.observe_file cua Main quan sat, khong do Worker bam; TASK report revision 1 raw_digest sha256:8dc05b3da636d1da1c2c5f18341667ff04e704dd8a4167201b65c397b6114280. Gioi han cua quan sat: BYTES_DIGEST_ONLY, NOT_PASS_NOT_GRANT_NOT_CONTENT_CHECK, NOT_ATOMIC_SNAPSHOT. Khong chung minh noi dung dat."
+    }
+  ],
+  "requirements": [
+    {
+      "req_id": "OFFICE-METHOD:executive-secretary:v1",
+      "mandatory": true,
+      "status": "UNKNOWN",
+      "evidence_ids": [
+        "EV-v2f-report-a1-obs1"
+      ]
+    }
+  ],
+  "gaps": [
+    "Candidate do mot invocation Worker khac (pha 1) tao; RESULT do invocation nay (pha 2) viet. Digest do Main/cong cu quan sat, khong do Worker bam.",
+    "Quan sat cua Main chi la digest byte cua candidate, khong kiem noi dung, khong phai PASS, khong phai grant, khong la anh chup nguyen tu.",
+    "Requirement OFFICE-METHOD:executive-secretary:v1 de UNKNOWN: Worker khong co cong cu chay validator hay doi chieu doc lap; da doc candidate va nguon bang Read nhung khong tu tuyen bo MET.",
+    "Nguon LAB-V2F-ghi-chu.txt chi co N1 (kiem ke 8 tren 10 lo, ngay 20/10/2026) va N2 (so lo lech chua co gia tri, cho bang tong hop): thieu so lo lech, ten va ke hoach/thoi han kiem 2 lo con lai, nguoi phu trach va thoi han cua moi viec; candidate ghi 'can xac nhan' cho cac muc nay.",
+    "Nguon khong neu quyet dinh hay de xuat nao; candidate ghi 'can xac nhan' cho hai nhom nay.",
+    "Ky, nguoi doc va muc dich do SETUP khai (du lieu gia), Worker khong tu suy; TASK khong co grant_refs; y dinh (intent) la fixture lab, nguon goc UNVERIFIED.",
+    "Chua co Reviewer (evidence-reviewer) xem; bao cao chi la thu nghiem noi bo, khong phat hanh. Trang thai chi la CANDIDATE.",
+    "Catalog roles/office/catalog.json duoc nhac trong brief; invocation nay khong doc lai catalog (chi doc brief, hop dong, TASK, nguon, candidate, goi giao, schema)."
+  ],
+  "acceptance_states": [
+    "CANDIDATE"
+  ],
+  "state_set_by": {
+    "actor_id": "worker-v2f",
+    "role": "worker"
+  }
+}

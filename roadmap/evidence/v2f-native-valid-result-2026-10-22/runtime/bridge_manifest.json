@@ -1,0 +1,31 @@
+{
+  "schema": "law.v2f.bridge-manifest/1",
+  "created_at": "2026-10-22T06:29:32.443484+00:00",
+  "law_root": "D:\\UNG DUNG AI\\TOOL AI 2026\\CVF-Workspace\\local-agent-workspace",
+  "readme_sha256": "2f42490f39ed16a4ad30310da28f1bf1764ee3bed48a501f62cc54b842e73ef5",
+  "baseline_six": {
+    "roles/README.md": "2f42490f39ed16a4ad30310da28f1bf1764ee3bed48a501f62cc54b842e73ef5",
+    "tools/office.py": "f7e6ae546d97f4f1dda7817b4189ed0bf3f78b1aa8471ce6dfc2f100e1308caf",
+    "roles/office/MAIN.md": "929d5319ed8b1b66fd5c4a793321a302892e4307175272cc6a5a95a3ab880183",
+    ".cvf/contracts/v3/control.schema.json": "21d3b192151b84f6d999d17bf0ed8e209678e6db39fc685c7c9c26918b2a3642",
+    "tools/artifacts.py": "be315aff047b0d73d0a9d15693ac72049edfbb15e9499bb0163687906f782c1a",
+    "tools/native_agents.py": "e5405e3a971739e0e44741a27d8d9f03ed3b9ed901972806faaa300d9a3aad8e"
+  },
+  "files": {
+    ".cvf/checks/control_check_v3.py": "e4bcbf35faa3392d862df4c8d66311032a2554c7fc32a3f265cbb68031ea28d1",
+    ".cvf/checks/v3/__init__.py": "3e4d9f92ba71ea44b867d4aec03316aef451e6e42a26c5764d6099fccd160484",
+    ".cvf/checks/v3/binding.py": "f227eda4a8f73e5ea1fd5360ff9282067ee304f58402118665975c3074b4cbec",
+    ".cvf/checks/v3/canon.py": "7ab1bf8e6b94e2b03df857564052d87905851f19f3e3847065ffd6e9a80fc5db",
+    ".cvf/checks/v3/loader.py": "0a50424e8e767ce8630698da82d44fba373753521dedad3e50dfbcd2d96f99a2",
+    ".cvf/checks/v3/refs.py": "33761fd35bd6b8f6241d1c9d64698c18970f130f1b603f9b2bb9e275639e0284",
+    ".cvf/contracts/v3/control.schema.json": "21d3b192151b84f6d999d17bf0ed8e209678e6db39fc685c7c9c26918b2a3642",
+    ".cvf/rules/ROUTING_POLICY.json": "8db011baf5d5c5a09a00e44036157f6a742b50c68d3e1693f3de2387202a42f8",
+    "tools/artifacts.py": "be315aff047b0d73d0a9d15693ac72049edfbb15e9499bb0163687906f782c1a",
+    "tools/library.py": "e22a6d20459e96820bd0df3845a9be350ffc9b490b077eaff141f33219a80b62",
+    "tools/library_sync.py": "2ffe9223a692ad8143dbc133fa4b3d76d42ddb5c3af88bd039618a90b96f3be5",
+    "tools/office.py": "f7e6ae546d97f4f1dda7817b4189ed0bf3f78b1aa8471ce6dfc2f100e1308caf",
+    "tools/publish_new.py": "8a4e5914d0892ea1d28566f96f7114afd857b441e2013d8534dc9cb93e4bd852",
+    "tools/result_schema.py": "00c708072846d5bf7764987243d23092291dd6d837f23663fe711569ad0915ff",
+    "tools/transaction.py": "4328586a789298684c9b9fb748bbc5a64eab493bc59a336fd40be0252966cbc8"
+  }
+}

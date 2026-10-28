@@ -1,0 +1,43 @@
+BẢN NHÁP (CANDIDATE) - DỮ LIỆU GIẢ, BÀI ĐO KỸ THUẬT LAB, KHÔNG PHÁT HÀNH
+Chưa được đối chiếu căn cứ, chưa được người dùng chấp nhận.
+
+BÁO CÁO NỘI BỘ NGẮN - KỲ 12-16/10/2026
+Nhóm: LAB-V1B (nhóm giả)
+Người đọc: người đã yêu cầu báo cáo (bản nội bộ, trước khi bàn giao)
+Nguồn: SRC-000001, revision 1 (references/source-documents/LAB-V1B-ghi-chu-ky.txt). Sổ ghi trạng thái xác minh "Cần đối chiếu". Mã [M#] là mã dòng trong nguồn.
+
+1. ĐIỀU ĐÃ GHI NHẬN TRONG NGUỒN (theo nguồn, chưa đối chiếu độc lập)
+- Đợt kiểm kê kho giả K-07 hoàn tất ngày 14/10/2026; số mặt hàng đã kiểm: 48. [M1]
+- Buổi họp rà soát lịch giao nhận diễn ra ngày 15/10/2026, có 6 người tham dự. [M3]
+
+2. ĐIỀU CÒN THIẾU
+- Số mặt hàng lệch sau kiểm kê: nguồn ghi chưa có giá trị cụ thể, đang chờ bảng tổng hợp. Chưa có số liệu để báo cáo. [M2]
+  Người phụ trách bảng tổng hợp: cần xác nhận (nguồn không nêu). Thời hạn có bảng tổng hợp: cần xác nhận (nguồn không nêu). [M2]
+
+3. ĐIỀU MÂU THUẪN (nêu cả hai, không chọn bên nào)
+Ngày giao nhận đợt 1 có hai giá trị khác nhau trong nguồn:
+- Ghi là lịch thống nhất tại buổi họp: đợt 1 vào ngày 20/10/2026. [M4]
+- Đoạn tóm tắt cuối kỳ ghi: "đợt 1 giao nhận vào ngày 22/10/2026". [M5]
+Hai ngày cách nhau 2 ngày theo số ngày trong tháng (20 và 22/10/2026). Nguồn không cho biết dòng nào là bản cuối. Ngày giao nhận đợt 1: cần xác nhận.
+[Suy luận của người soạn, không phải dữ kiện nguồn] Vì M4 mô tả kết quả buổi họp (M3 ngày 15/10/2026) còn M5 là đoạn tóm tắt cuối kỳ, có thể hai dòng được ghi ở hai thời điểm khác nhau hoặc một trong hai có sai sót; nguồn không có căn cứ để xác định. Việc này cần người dùng hoặc người dự họp xác nhận.
+
+4. ĐỀ XUẤT CHƯA QUYẾT ĐỊNH
+- Nhóm đề xuất bổ sung một người trực kho vào thứ Sáu hằng tuần; chưa có quyết định. [M6]
+  Người quyết định: cần xác nhận (nguồn không nêu). Thời hạn quyết định: cần xác nhận (nguồn không nêu). Người được bổ sung trực kho: cần xác nhận (nguồn không nêu). [M6]
+
+5. PHÂN LOẠI THEO QUYẾT ĐỊNH / ĐỀ XUẤT / VIỆC CHỜ
+- Quyết định đã chốt có căn cứ: không có mục nào được ghi nhận là quyết định chắc chắn. Lịch đợt 1 ([M4]) được nguồn mô tả là "thống nhất tại buổi họp" nhưng đang mâu thuẫn với [M5], nên không báo cáo là quyết định đã chốt.
+- Đề xuất: bổ sung người trực kho thứ Sáu hằng tuần. [M6]
+- Việc chờ:
+  + Chờ bảng tổng hợp để có số mặt hàng lệch sau kiểm kê. [M2] Người phụ trách và thời hạn: cần xác nhận.
+  + Chờ xác nhận ngày giao nhận đợt 1 (20/10/2026 theo [M4] hoặc 22/10/2026 theo [M5]). Người xác nhận và thời hạn: cần xác nhận. [M4][M5]
+  + Chờ quyết định về đề xuất trực kho thứ Sáu. [M6] Người quyết định và thời hạn: cần xác nhận.
+
+6. ĐIỂM CẦN NGƯỜI DÙNG XÁC NHẬN (tổng hợp)
+- Số mặt hàng lệch sau kiểm kê. [M2]
+- Ngày giao nhận đợt 1: 20/10/2026 [M4] hay 22/10/2026 [M5], hay ngày khác.
+- Người phụ trách và thời hạn cho từng việc chờ ở mục 5 (nguồn không nêu).
+- Quyết định về đề xuất trực kho thứ Sáu. [M6]
+- Căn cứ nguồn: sổ ghi "Cần đối chiếu"; nội dung các dòng M1-M6 chưa được đối chiếu với tài liệu gốc ngoài ghi chú này.
+
+Ghi chú về phạm vi: bản nháp chỉ dựa trên một nguồn (SRC-000001, revision 1). Phần "đối chiếu lại căn cứ" người dùng đề nghị chưa được thực hiện trong bản nháp này; chờ bước đối chiếu riêng do Main sắp xếp.

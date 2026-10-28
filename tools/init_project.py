@@ -76,6 +76,9 @@ def is_original(rel):
         return False
 
 def main():
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(encoding='utf-8')
     global LANG, LAST_RESULT
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--name', required=True, help='tên project / project name')
@@ -87,8 +90,6 @@ def main():
     ap.add_argument('--result-json', action='store_true', help=argparse.SUPPRESS)
     a = ap.parse_args()
     LANG = a.lang
-    if hasattr(sys.stdout, 'reconfigure'):
-        sys.stdout.reconfigure(encoding='utf-8'); sys.stderr.reconfigure(encoding='utf-8')
     name = a.name.strip()
     if not name:
         sys.exit(L('Tên project không được để trống.', 'The project name must not be empty.'))

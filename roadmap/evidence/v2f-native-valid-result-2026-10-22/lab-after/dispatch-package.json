@@ -1,0 +1,241 @@
+{
+  "note": "Gói giao do SETUP chuẩn bị cho bài đo V2-F (không phải Main tự lập). Binding tính bằng recipe binding_stub từ TASK này, trước dispatch.",
+  "lab_root": "C:\\Users\\DELL\\AppData\\Local\\Temp\\claude\\d--UNG-DUNG-AI-TOOL-AI-2026-CVF-Workspace-local-agent-workspace\\c9b7c50b-e251-4e37-bfc9-2edaa0c24add\\scratchpad\\law-v2f-run1\\project",
+  "paths_absolute": {
+    "dispatch_package": "C:\\Users\\DELL\\AppData\\Local\\Temp\\claude\\d--UNG-DUNG-AI-TOOL-AI-2026-CVF-Workspace-local-agent-workspace\\c9b7c50b-e251-4e37-bfc9-2edaa0c24add\\scratchpad\\law-v2f-run1\\project\\working\\v2f\\setup\\dispatch-package.json",
+    "task": "C:\\Users\\DELL\\AppData\\Local\\Temp\\claude\\d--UNG-DUNG-AI-TOOL-AI-2026-CVF-Workspace-local-agent-workspace\\c9b7c50b-e251-4e37-bfc9-2edaa0c24add\\scratchpad\\law-v2f-run1\\project\\working\\v2f\\report\\TASK.json",
+    "brief": "C:\\Users\\DELL\\AppData\\Local\\Temp\\claude\\d--UNG-DUNG-AI-TOOL-AI-2026-CVF-Workspace-local-agent-workspace\\c9b7c50b-e251-4e37-bfc9-2edaa0c24add\\scratchpad\\law-v2f-run1\\project\\working\\v2f\\setup\\worker-brief.md",
+    "source": "C:\\Users\\DELL\\AppData\\Local\\Temp\\claude\\d--UNG-DUNG-AI-TOOL-AI-2026-CVF-Workspace-local-agent-workspace\\c9b7c50b-e251-4e37-bfc9-2edaa0c24add\\scratchpad\\law-v2f-run1\\project\\references\\source-documents\\LAB-V2F-ghi-chu.txt",
+    "contract": "C:\\Users\\DELL\\AppData\\Local\\Temp\\claude\\d--UNG-DUNG-AI-TOOL-AI-2026-CVF-Workspace-local-agent-workspace\\c9b7c50b-e251-4e37-bfc9-2edaa0c24add\\scratchpad\\law-v2f-run1\\project\\roles\\office\\executive-secretary.md",
+    "catalog": "C:\\Users\\DELL\\AppData\\Local\\Temp\\claude\\d--UNG-DUNG-AI-TOOL-AI-2026-CVF-Workspace-local-agent-workspace\\c9b7c50b-e251-4e37-bfc9-2edaa0c24add\\scratchpad\\law-v2f-run1\\project\\roles\\office\\catalog.json",
+    "candidate": "C:\\Users\\DELL\\AppData\\Local\\Temp\\claude\\d--UNG-DUNG-AI-TOOL-AI-2026-CVF-Workspace-local-agent-workspace\\c9b7c50b-e251-4e37-bfc9-2edaa0c24add\\scratchpad\\law-v2f-run1\\project\\working\\v2f\\report\\assignments\\a1\\candidate\\draft.txt",
+    "result": "C:\\Users\\DELL\\AppData\\Local\\Temp\\claude\\d--UNG-DUNG-AI-TOOL-AI-2026-CVF-Workspace-local-agent-workspace\\c9b7c50b-e251-4e37-bfc9-2edaa0c24add\\scratchpad\\law-v2f-run1\\project\\working\\v2f\\report\\assignments\\a1\\RESULT.json",
+    "schema_file": "C:\\Users\\DELL\\AppData\\Local\\Temp\\claude\\d--UNG-DUNG-AI-TOOL-AI-2026-CVF-Workspace-local-agent-workspace\\c9b7c50b-e251-4e37-bfc9-2edaa0c24add\\scratchpad\\law-v2f-run1\\project\\.cvf\\contracts\\v3\\control.schema.json"
+  },
+  "paths_relative_canonical": {
+    "task": "working/v2f/report/TASK.json",
+    "brief": "working/v2f/setup/worker-brief.md",
+    "source": "references/source-documents/LAB-V2F-ghi-chu.txt",
+    "contract": "roles/office/executive-secretary.md",
+    "catalog": "roles/office/catalog.json",
+    "candidate": "working/v2f/report/assignments/a1/candidate/draft.txt",
+    "result": "working/v2f/report/assignments/a1/RESULT.json",
+    "schema_file": ".cvf/contracts/v3/control.schema.json"
+  },
+  "task_path": "working/v2f/report/TASK.json",
+  "task_id": "report",
+  "task_revision": 1,
+  "task_raw_digest": "sha256:8dc05b3da636d1da1c2c5f18341667ff04e704dd8a4167201b65c397b6114280",
+  "binding": {
+    "bind_version": "law.cvf.bind/3",
+    "evaluation_basis": "COOPERATIVE_WORKFLOW",
+    "task_id": "report",
+    "task_revision": 1,
+    "intent_digest": "sha256:84b9ede152099013ff0f75c7c53d21197f6255ce1dbfbd85534e64e411cb0757",
+    "accepted_task_digest": "sha256:6c768e7ae2a487faeda2678c18dfa5fd21fbcdd8214958ef6c128173d459f214",
+    "context_digest": "sha256:0526f9ced825a6df4119de46177fb2ac5c2ce18515f07570856d48b2b4ea0719",
+    "policy_version": "law.cvf.routing/3",
+    "policy_digest": "sha256:1a4fd3233dcf4b8571d9fa2249faf060216b3e530ca7d8dcf976dc5df880eaf3",
+    "inputs": [
+      {
+        "path": "references/source-documents/LAB-V2F-ghi-chu.txt",
+        "digest": "sha256:35470f67d313778a94bf69813937150e8155ce750940d250d3f6382f628d4ff3",
+        "source_id": "SRC-000001",
+        "revision": "1"
+      }
+    ]
+  },
+  "candidate_path": "working/v2f/report/assignments/a1/candidate/draft.txt",
+  "result_path": "working/v2f/report/assignments/a1/RESULT.json",
+  "brief_path": "working/v2f/setup/worker-brief.md",
+  "worker_logical_actor": {
+    "actor_id": "worker-v2f",
+    "role": "worker"
+  },
+  "result_id": "r-v2f-report-a1",
+  "method_contract": "roles/office/executive-secretary.md",
+  "source_path": "references/source-documents/LAB-V2F-ghi-chu.txt",
+  "report_period": "báo cáo ngày 20/10/2026",
+  "report_reader": "trưởng nhóm giả LAB-V2F",
+  "report_purpose": "thử nghiệm nội bộ của bài đo V2-F, không phát hành",
+  "period_reader_note": "Kỳ, người đọc và mục đích do SETUP khai (dữ liệu giả); Worker không tự suy. Thiếu hoặc mâu thuẫn thì trả Main.",
+  "schema_file": "C:\\Users\\DELL\\AppData\\Local\\Temp\\claude\\d--UNG-DUNG-AI-TOOL-AI-2026-CVF-Workspace-local-agent-workspace\\c9b7c50b-e251-4e37-bfc9-2edaa0c24add\\scratchpad\\law-v2f-run1\\project\\.cvf\\contracts\\v3\\control.schema.json",
+  "schema_pointer": "#/$defs/result",
+  "schema_note": "schema_file là đường file thật để Read, không chứa dấu #. schema_pointer là chỉ mục JSON-pointer trong file đó, tách riêng; không ghép thành đường Read. Dùng Read với offset/limit theo schema_read_ranges (số dòng của chính file này, 1-based) để lấy $defs.result và các $defs nó tham chiếu.",
+  "schema_read_ranges": [
+    {
+      "pointer": "#/$defs/result",
+      "line_from": 1592,
+      "line_to": 1809
+    },
+    {
+      "pointer": "#/$defs/schema_version",
+      "line_from": 118,
+      "line_to": 121
+    },
+    {
+      "pointer": "#/$defs/header",
+      "line_from": 122,
+      "line_to": 146
+    },
+    {
+      "pointer": "#/$defs/id",
+      "line_from": 147,
+      "line_to": 150
+    },
+    {
+      "pointer": "#/$defs/digest",
+      "line_from": 151,
+      "line_to": 154
+    },
+    {
+      "pointer": "#/$defs/revision",
+      "line_from": 155,
+      "line_to": 158
+    },
+    {
+      "pointer": "#/$defs/path",
+      "line_from": 159,
+      "line_to": 162
+    },
+    {
+      "pointer": "#/$defs/role",
+      "line_from": 167,
+      "line_to": 181
+    },
+    {
+      "pointer": "#/$defs/actor",
+      "line_from": 182,
+      "line_to": 203
+    },
+    {
+      "pointer": "#/$defs/ref_kind",
+      "line_from": 204,
+      "line_to": 218
+    },
+    {
+      "pointer": "#/$defs/object_digest",
+      "line_from": 219,
+      "line_to": 244
+    },
+    {
+      "pointer": "#/$defs/binding",
+      "line_from": 245,
+      "line_to": 305
+    },
+    {
+      "pointer": "#/$defs/operation",
+      "line_from": 306,
+      "line_to": 326
+    },
+    {
+      "pointer": "#/$defs/write_zone",
+      "line_from": 327,
+      "line_to": 340
+    },
+    {
+      "pointer": "#/$defs/content_use",
+      "line_from": 341,
+      "line_to": 349
+    },
+    {
+      "pointer": "#/$defs/recipe_ref",
+      "line_from": 350,
+      "line_to": 390
+    },
+    {
+      "pointer": "#/$defs/action",
+      "line_from": 391,
+      "line_to": 478
+    },
+    {
+      "pointer": "#/$defs/callee_role",
+      "line_from": 479,
+      "line_to": 540
+    },
+    {
+      "pointer": "#/$defs/task_pointer",
+      "line_from": 541,
+      "line_to": 564
+    },
+    {
+      "pointer": "#/$defs/delegation",
+      "line_from": 565,
+      "line_to": 625
+    },
+    {
+      "pointer": "#/$defs/envelope_field",
+      "line_from": 654,
+      "line_to": 683
+    },
+    {
+      "pointer": "#/$defs/envelope",
+      "line_from": 684,
+      "line_to": 720
+    },
+    {
+      "pointer": "#/$defs/policy_version",
+      "line_from": 758,
+      "line_to": 760
+    },
+    {
+      "pointer": "#/$defs/acceptance_state",
+      "line_from": 1581,
+      "line_to": 1591
+    },
+    {
+      "pointer": "#/$defs/evaluation_basis",
+      "line_from": 2242,
+      "line_to": 2245
+    },
+    {
+      "pointer": "#/$defs/bind_version",
+      "line_from": 2246,
+      "line_to": 2249
+    },
+    {
+      "pointer": "#/$defs/source_class",
+      "line_from": 2250,
+      "line_to": 2259
+    },
+    {
+      "pointer": "#/$defs/channel",
+      "line_from": 2260,
+      "line_to": 2271
+    },
+    {
+      "pointer": "#/$defs/attribution",
+      "line_from": 2272,
+      "line_to": 2424
+    },
+    {
+      "pointer": "#/$defs/attributed_ref",
+      "line_from": 2425,
+      "line_to": 2460
+    },
+    {
+      "pointer": "#/$defs/output_object",
+      "line_from": 2461,
+      "line_to": 2490
+    },
+    {
+      "pointer": "#/$defs/user_acceptance",
+      "line_from": 2491,
+      "line_to": 2582
+    }
+  ],
+  "schema_total_lines": 3353,
+  "observation_interface": {
+    "who": "Main chạy lệnh observe (Bash), Worker không có Bash",
+    "stdout": "JSON; Main chuyển cho Worker2 NGUYÊN VĂN object \"observation\" (không tóm tắt, không sửa); ok=true và problems=[] mới được chuyển",
+    "worker_use": "candidate path/digest và định danh TASK trong observation là căn cứ outputs/artifacts/evidence của RESULT"
+  },
+  "invocation_plan": {
+    "phase1": "Worker invocation 1: chỉ Write candidate, chưa RESULT",
+    "phase2": "Worker invocation 2 (mới, không resume): Read lại hồ sơ, Write RESULT; agentId thực chỉ điền từ trace vào assessment, không sửa TASK sau dispatch",
+    "logical_actor_both": {
+      "actor_id": "worker-v2f",
+      "role": "worker"
+    }
+  }
+}

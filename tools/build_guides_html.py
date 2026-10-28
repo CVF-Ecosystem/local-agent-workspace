@@ -299,8 +299,12 @@ def rebuild_start_here(loc):
 
 
 def main(argv):
-    if hasattr(sys.stdout, 'reconfigure'):
-        sys.stdout.reconfigure(encoding='utf-8')
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(encoding='utf-8')
+    if argv in (['--help'], ['-h']):
+        print(__doc__)
+        return 0
     unknown = [a for a in argv if a not in ('--check',)]
     if unknown:
         msg = 'Tham số không hợp lệ: %s\nDùng: python tools/build_guides_html.py [--check]' % ' '.join(unknown)

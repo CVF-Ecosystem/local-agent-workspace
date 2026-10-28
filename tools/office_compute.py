@@ -667,6 +667,9 @@ def _refused(code):
 
 
 def main(argv):
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(encoding='utf-8')
     ap = argparse.ArgumentParser(prog='office_compute.py', description='Công cụ tính hẹp cho vai văn phòng, chỉ đọc. / Narrow office compute tool, read only.')
     sub = ap.add_subparsers(dest='cmd')
     p = sub.add_parser('run')

@@ -1,0 +1,74 @@
+{
+  "schema_version": "law.cvf.control/3",
+  "record_type": "result",
+  "evaluation_basis": "COOPERATIVE_WORKFLOW",
+  "result_id": "r-v2d-report-a1",
+  "binding": {
+    "bind_version": "law.cvf.bind/3",
+    "evaluation_basis": "COOPERATIVE_WORKFLOW",
+    "task_id": "report",
+    "task_revision": 1,
+    "intent_digest": "sha256:47e1b8249b4238c2ae0cc8ac3f1e9cd562ab5d6d1b1efc99f4d21ef68689ad41",
+    "accepted_task_digest": "sha256:20e308f6a9fd2be9cf315bb8e0546f5b794176c79c22d77b6d1ed06d67733db8",
+    "context_digest": "sha256:0526f9ced825a6df4119de46177fb2ac5c2ce18515f07570856d48b2b4ea0719",
+    "policy_version": "law.cvf.routing/3",
+    "policy_digest": "sha256:1a4fd3233dcf4b8571d9fa2249faf060216b3e530ca7d8dcf976dc5df880eaf3",
+    "inputs": [
+      {
+        "path": "references/source-documents/LAB-V2D-ghi-chu.txt",
+        "digest": "sha256:99c6058e996cbcf221637cd982a539ea0e7326f80d71dd6cbb9f59dc0c7791ae",
+        "source_id": "SRC-000001",
+        "revision": "1"
+      }
+    ],
+    "outputs": [
+      {
+        "path": "working/v2d/report/assignments/a1/candidate/draft.txt",
+        "digest": "sha256:108c56f29d948ec0b2397c6e766d7abc61f68d59c71aa5e55c6062ef38cd9e3f",
+        "role": "ACTUAL_BYTES"
+      }
+    ]
+  },
+  "produced_by": {
+    "actor_id": "worker-v2d",
+    "role": "worker"
+  },
+  "artifacts": [
+    {
+      "path": "working/v2d/report/assignments/a1/candidate/draft.txt",
+      "digest": "sha256:108c56f29d948ec0b2397c6e766d7abc61f68d59c71aa5e55c6062ef38cd9e3f",
+      "role": "ACTUAL_BYTES"
+    }
+  ],
+  "evidence": [
+    {
+      "kind": "TOOL_OBSERVED",
+      "locator": "main-observation:artifacts.observe_file",
+      "scope": "Digest và kích thước (1165 byte) của candidate do Main quan sát bằng công cụ artifacts.observe_file, không do Worker băm. Candidate draft.txt do Worker invocation 1 tạo; RESULT.json này do Worker invocation 2 (context mới) ghi dựa trên quan sát Main chuyển và việc đọc lại TASK, hợp đồng executive-secretary, nguồn SRC-000001, brief và candidate. Worker invocation 2 không phải tác giả candidate. Quan sát chỉ là digest bytes; không phải PASS, không phải grant, không phải kiểm nội dung; không phải ảnh chụp nguyên tử."
+    }
+  ],
+  "requirements": [
+    {
+      "req_id": "OFFICE-METHOD:executive-secretary:v1",
+      "state": "UNKNOWN",
+      "note": "Chưa có review độc lập về việc candidate đáp ứng điều kiện xong của hợp đồng; chưa có bằng chứng đủ để ghi MET."
+    }
+  ],
+  "gaps": [
+    "Nội dung candidate chưa được Reviewer hay bên thứ hai kiểm; việc đọc lại của Worker invocation 2 không thay thế review độc lập.",
+    "Grant sản phẩm và việc host thực sự gọi vai/cấp công cụ chưa kiểm (TASK có grant_refs rỗng; công cụ ở trạng thái PREPARED_UNVERIFIED).",
+    "Kỳ báo cáo chưa được xác nhận (brief không nêu).",
+    "Người đọc cụ thể chưa được xác nhận (candidate chỉ ghi nội bộ).",
+    "Người phụ trách và thời hạn nhận bảng tổng hợp cần xác nhận (nguồn không nêu).",
+    "Số lô lệch sau kiểm kê chưa có giá trị trong nguồn (N2 chờ bảng tổng hợp).",
+    "Yêu cầu trong TASK là fixture lab giả (attribution UNVERIFIED), không phải xác nhận của người dùng thật; dữ liệu giả, không phát hành.",
+    "Digest chỉ do Main quan sát tại một thời điểm; Main cần kiểm input binding còn hiện hành trước khi tích hợp."
+  ],
+  "acceptance_states": [
+    "CANDIDATE"
+  ],
+  "state_set_by": {
+    "actor_id": "worker-v2d",
+    "role": "worker"
+  }
+}

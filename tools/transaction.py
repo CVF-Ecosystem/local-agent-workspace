@@ -207,14 +207,29 @@ def _write_json_atomic(project, path, data):
         os.replace(tmp, path)
 
 def probe_writable(project):
-    """Kiểm quyền ghi bằng file tạm trong .agent/runtime. / Write probe inside the runtime folder."""
+    """Probe this transaction's temporary file, including deletion; never bypass a failed probe."""
     d = runtime_root(project)
-    guard(project, d)
-    os.makedirs(d, exist_ok=True)
     p = os.path.join(d, '.probe-' + uuid.uuid4().hex)
-    with open(p, 'wb') as f:
-        f.write(b'probe')
-    os.remove(p)
+    phase = 'guard'
+    try:
+        guard(project, d)
+        phase = 'mkdir'
+        os.makedirs(d, exist_ok=True)
+        phase = 'create'
+        with open(p, 'xb') as f:
+            phase = 'write'
+            f.write(b'probe')
+            phase = 'close'
+        phase = 'remove'
+        os.remove(p)
+    except OSError as exc:
+        # Put the useful facts first: execution_profile bounds exception details.
+        rel = os.path.relpath(p, project).replace('\\', '/')
+        detail = 'WRITE_PROBE_FAILED phase=%s errno=%s winerror=%s path=%s' % (
+            phase, exc.errno, getattr(exc, 'winerror', None), rel)
+        detail += L('; file người dùng chưa ghi; kiểm quyền thao tác file tạm của host.',
+                    '; user files not written; check host permissions for transaction temporaries.')
+        raise OSError(exc.errno, detail) from exc
 
 class Transaction:
     """Một lần ghi có nhật ký. Dùng: plan -> stage -> backup -> commit. / One journaled write.
@@ -666,6 +681,9 @@ def blocked_message(project):
             'Unfinished transaction %s: nothing new written. Run ONE of the two commands above.') % (t, t, t, t)
 
 def _cli(argv):
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(encoding='utf-8')
     global LANG
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('cmd', choices=['status', 'resume', 'rollback'])
@@ -675,8 +693,6 @@ def _cli(argv):
     ap.add_argument('--lang', choices=['vi', 'en'], default='vi')
     a = ap.parse_args(argv)
     LANG = a.lang
-    if hasattr(sys.stdout, 'reconfigure'):
-        sys.stdout.reconfigure(encoding='utf-8'); sys.stderr.reconfigure(encoding='utf-8')
     project = os.path.abspath(a.project)
     if a.cmd == 'status':
         problem = runtime_problem(project)

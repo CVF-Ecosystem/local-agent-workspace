@@ -1,11 +1,28 @@
 ---
 name: legal-research-vn
-description: Gợi ý tra cứu và áp dụng văn bản quy phạm pháp luật Việt Nam: 5 trục vấn đề, văn bản áp dụng đúng thời điểm, tra chéo sửa đổi và thay thế, trích nguyên văn có tọa độ, xung đột, phương án; không thay thế ý kiến pháp lý. Kích hoạt khi người dùng hỏi "luật quy định thế nào", "căn cứ pháp lý", "văn bản nào còn hiệu lực", "xử lý tình huống này theo quy định", "khiếu nại", "bồi thường". / Suggestions for researching and applying Vietnamese legal documents to a concrete situation. Triggers when the user asks what the law says, for the legal basis, which document is in force, or how to handle a situation under the rules.
+description: Dùng tra luật Việt Nam theo vấn đề, thời điểm, sửa đổi, trích dẫn; không thay ý kiến có thẩm quyền. / Vietnamese law research by issue, date and amendments, with citations; not authoritative legal advice.
 metadata:
-  version: "0.2"
+  version: "0.2.1"
 ---
 
 # Tra cứu và áp dụng văn bản quy phạm pháp luật
+
+## Kích hoạt theo yêu cầu
+
+Chỉ dùng skill này khi người dùng yêu cầu rõ việc tra căn cứ hoặc hiệu lực pháp lý cho một tình huống, kiểm tra trích dẫn,
+rà soát câu trả lời pháp lý, hoặc soạn nội dung có viện dẫn quy phạm. Chỉ thấy từ ngữ pháp luật trong tên file hoặc tài
+liệu không tự kích hoạt. Yêu cầu biên tập câu chữ, định dạng hay chép lại mà không hỏi về nghĩa pháp lý cũng không tự
+kích hoạt.
+
+Trước khi bắt đầu, dùng [checklist tiếp nhận và điều kiện kích hoạt](references/legal-review-checklist.md). Hỏi gộp
+những dữ kiện còn thiếu có thể đổi kết quả; không hỏi lại điều đã nêu. Kích hoạt skill chỉ chọn cách làm: không tạo vai,
+grant, quyền cài đặt hay yêu cầu gọi agent khác.
+
+Gói này hiện là ứng viên DEFER/REVIEW. Không tự cài, nâng trạng thái, xuất sang ứng dụng hay nạp vào project khác. Chỉ
+dùng thử trong project nơi người dùng đã đặt hoặc cài gói và nói rõ đây là bản thử. Trước khi trích nguyên văn, tra
+thư viện nguồn của project theo skill source-library. Nếu văn bản không có trong thư viện hoặc chưa đọc được toàn văn,
+không đặt nội dung trong ngoặc kép và ghi rõ phần chưa đối chiếu. Kết quả MATCH của tools/check_quotes.py chỉ xác nhận
+chuỗi khớp trong phạm vi kiểm, không chứng minh trích dẫn đúng ngữ cảnh, quy định còn hiệu lực hay kết luận pháp lý đúng.
 
 Văn bản pháp luật Việt Nam là các bản ghi rời: luật, nghị định, thông tư sửa đổi, thay thế, bãi bỏ lẫn nhau. Không đọc hết;
 tra đúng chỗ và ghép đúng thứ tự. Mọi kết luận phải truy được về một câu trích nguyên văn có tọa độ. Skill hỗ trợ nghiên cứu

@@ -427,7 +427,7 @@ class Lifecycle(Rc):
 
         def cvf_is_a_file(p):
             shutil.rmtree(str(p / '.cvf'))
-            (p / '.cvf').write_text('không phải thư mục')
+            (p / '.cvf').write_text('không phải thư mục', encoding='utf-8')
 
         def only_readable(p):
             for rel in cp.CVF_MACHINE:

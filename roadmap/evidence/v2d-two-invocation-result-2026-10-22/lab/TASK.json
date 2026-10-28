@@ -1,0 +1,86 @@
+{
+  "schema_version": "law.cvf.control/3",
+  "record_type": "task",
+  "evaluation_basis": "COOPERATIVE_WORKFLOW",
+  "work_id": "v2d",
+  "task_id": "report",
+  "task_revision": 1,
+  "proposed_by": {
+    "actor_id": "main",
+    "role": "main"
+  },
+  "intent": {
+    "refs": [
+      {
+        "ref_id": "intent-1",
+        "kind": "user_intent",
+        "locator": "working/v2d/request/user-request.txt",
+        "digest": "sha256:9d8338cc499543d8887459e7eabf8160e25f863e47856f5301c2030232904402",
+        "attribution": {
+          "source_class": "UNVERIFIED",
+          "channel": "NONE",
+          "recorded_by": {
+            "actor_id": "main",
+            "role": "main"
+          },
+          "note": "yêu cầu là fixture lab giả do setup viết, không phải xác nhận của người dùng thật"
+        }
+      }
+    ],
+    "main_interpretation": "Main chọn / chose executive-secretary v1: Smoke kỹ thuật V2-D: phương pháp do setup chọn rõ, không phải routing tự nhiên. TASK này do setup chuẩn bị cho bài đo V2-D (không phải Main tự nhận yêu cầu); lab dữ liệu giả, không có grant sản phẩm."
+  },
+  "authority": {
+    "grant_refs": [],
+    "subject": {
+      "actor_id": "worker-v2d",
+      "role": "worker"
+    }
+  },
+  "inputs": [
+    {
+      "path": "references/source-documents/LAB-V2D-ghi-chu.txt",
+      "digest": "sha256:99c6058e996cbcf221637cd982a539ea0e7326f80d71dd6cbb9f59dc0c7791ae",
+      "source_id": "SRC-000001",
+      "revision": "1"
+    }
+  ],
+  "effects": {
+    "actions": [
+      {
+        "operation": "create_new",
+        "tool": "Write",
+        "targets": [
+          "working/v2d/report/assignments/a1/candidate/draft.txt",
+          "working/v2d/report/assignments/a1/RESULT.json"
+        ],
+        "write_zone": "working"
+      }
+    ],
+    "expected_outputs": [
+      "working/v2d/report/assignments/a1/candidate/draft.txt"
+    ],
+    "on_missing": "RETURN_TO_MAIN"
+  },
+  "acceptance": {
+    "requirements": [
+      {
+        "req_id": "OFFICE-METHOD:executive-secretary:v1",
+        "mandatory": true,
+        "statement": "Thực hiện đúng phương pháp «Thư ký tổng hợp» (v1, hợp đồng roles/office/executive-secretary.md) cho yêu cầu: Từ ghi chú LAB-V2D (references/source-documents/LAB-V2D-ghi-chu.txt), soạn giúp một đoạn báo cáo nội bộ rất ngắn về kiểm kê kho giả Z-04, nêu rõ điều còn thiếu.. Chỉ đạt khi đáp ứng điều kiện xong của hợp đồng và phần thiếu được báo, không được lấp."
+      }
+    ]
+  },
+  "context_refs": [
+    {
+      "path": "roles/office/catalog.json",
+      "digest": "sha256:5cbfc5f8f9c7a8ef88b10f502401052a936e86e1810b5b60da55e0de52544802"
+    },
+    {
+      "path": "roles/office/executive-secretary.md",
+      "digest": "sha256:d6827648a7e01f07e764067f104b3ed8b7e1229ae8a22198ad80ab97e0d103a7"
+    }
+  ],
+  "envelope": {
+    "role": "worker"
+  }
+}

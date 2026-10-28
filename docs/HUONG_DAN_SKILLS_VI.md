@@ -168,14 +168,14 @@ nhân sự, tài chính...) nên nằm trong **gói lĩnh vực** trong `packs/`
 `python tools/pack.py add <tên>` (xem `python tools/pack.py list`). Gói cài vào `skills/local/packs/` và được ghi trong
 `.agent/SKILL_INDEX.md` với Scope `PACK`; gỡ bằng `pack.py remove <tên>` (thư mục được chuyển vào `archive/`, không xóa).
 Quy tắc nhận một gói và cách viết gói mới ở `packs/README.md`. Mọi gói cài vào đều ghi `REVIEW` (dùng thử, không được chép sang ứng dụng); khối `intake` trong gói chỉ là lời khai. Đọc hồ sơ rồi muốn nhận cho dự án
-này thì cài kèm `python tools/pack.py add <tên> --confirm` (đã cài rồi thì `pack.py confirm <tên>`; trong bảng điều khiển là nút "Cài và cho phép dùng" / "Cho phép dùng trong dự án", một hộp thoại là xong); sửa nội dung gói sau đó thì phải xác nhận lại. Bộ công cụ kèm năm gói lĩnh vực (thử nghiệm, bản 0.2.0): `phap-ly` (tra cứu, áp dụng văn bản quy phạm pháp luật), `van-thu-luu-tru`
-(văn bản đi, đến, sao văn bản, lập hồ sơ, nộp lưu), `cang-logistics` (báo cáo khai thác tàu, sà lan, sự cố thiết bị),
+này thì cài kèm `python tools/pack.py add <tên> --confirm` (đã cài rồi thì `pack.py confirm <tên>`; trong bảng điều khiển là nút "Cài và cho phép dùng" / "Cho phép dùng trong dự án", một hộp thoại là xong); sửa nội dung gói sau đó thì phải xác nhận lại. Bộ công cụ kèm sáu gói lĩnh vực thử nghiệm (phiên bản từng gói ghi trong `pack.json`): `phap-ly` (tra cứu, áp dụng văn bản quy phạm pháp luật), `van-thu-luu-tru`
+(văn bản đi, đến, sao văn bản, lập hồ sơ, nộp lưu), `cang-logistics` (báo cáo khai thác tàu, sà lan, sự cố thiết bị và công cụ kiểm dữ liệu bãi container),
 `hanh-chinh-nhan-su` (quyết định nhân sự, phép năm, làm thêm giờ, kỷ luật, lương, bảo hiểm) và `ke-toan-noi-bo` (tạm ứng, thanh
-toán, chứng từ, hóa đơn, lưu trữ). Mỗi gói có bảng căn cứ (tệp legal-basis.md trong thư mục references của kỹ năng) ghi số hiệu, điều khoản, hiệu lực, nguồn và ngày đối
-chiếu để người dùng kiểm lại. Cài bằng `python tools/pack.py add <tên>` hoặc trong bảng điều khiển: nhóm "Quản lý và bảo trì" → "Quản lý kỹ năng". Ngoài ra
+toán, chứng từ, hóa đơn, lưu trữ) và `academic-research` (tìm, đối chiếu và tổng hợp nguồn học thuật). Gói có nội dung pháp lý kèm bảng căn cứ (tệp legal-basis.md trong thư mục references của kỹ năng) ghi số hiệu, điều khoản, hiệu lực, nguồn và ngày đối
+chiếu để người dùng kiểm lại; gói nghiên cứu có phương pháp và quy tắc nguồn tương ứng. Cài bằng `python tools/pack.py add <tên>` hoặc trong bảng điều khiển: nhóm "Quản lý và bảo trì" → "Quản lý kỹ năng". Ngoài ra
 là khung `_template` để viết gói mới.
 
-**Lưu ý:** năm gói đi kèm hiện là bản thử nghiệm, chưa qua tiếp nhận. Căn cứ pháp lý trong gói được tổng hợp từ trang tin và trang tư vấn, chưa đối chiếu từng điều với văn bản chính thức (Công báo, cổng văn bản của Nhà nước); khi thử, trợ lý AI vẫn có lúc đưa ra câu "trích nguyên văn" không có trong gói. Dùng để tham khảo và soạn nháp; với văn bản trình ký hoặc gửi ra ngoài, tự đối chiếu căn cứ với văn bản chính thức trước khi dùng.
+**Lưu ý:** các gói đi kèm hiện là bản thử nghiệm, chưa được nhận làm mặc định. Gói nghiên cứu học thuật vẫn ở mức dùng thử, cần kiểm nguồn và chất lượng theo từng việc. Căn cứ pháp lý trong các gói có nội dung pháp lý được tổng hợp từ trang tin và trang tư vấn, chưa đối chiếu từng điều với văn bản chính thức (Công báo, cổng văn bản của Nhà nước); khi thử, trợ lý AI vẫn có lúc đưa ra câu "trích nguyên văn" không có trong gói. Dùng để tham khảo và soạn nháp; với văn bản trình ký hoặc gửi ra ngoài, tự đối chiếu căn cứ với văn bản chính thức trước khi dùng.
 
 Mỗi dự án giữ bản sao kỹ năng của riêng mình, nên dự án luôn tự đủ và mang đi được; công cụ `tools/upgrade_package.py` giữ
 các bản sao này đồng bộ với bộ công cụ mới khi bạn nâng cấp. Nếu muốn một kỹ năng hiện trong menu của ứng dụng (ví dụ Claude), dùng

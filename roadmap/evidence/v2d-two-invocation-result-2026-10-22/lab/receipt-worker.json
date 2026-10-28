@@ -1,0 +1,39 @@
+{
+  "schema": "local-agent-workspace/native-agent-receipt-v1",
+  "adapter": "law.native-agent.claude-code/core-2",
+  "host": "claude-code",
+  "role": "worker",
+  "native": {
+    "path": ".claude/agents/law-worker.md",
+    "sha256": "79ad3bc25841b46d53fb117fccf8a72224601b4ffc5bfefcfbcc28e14855dd53"
+  },
+  "requested": {
+    "model": "claude-sonnet-5-5",
+    "tools": [
+      "Read",
+      "Grep",
+      "Glob",
+      "Write"
+    ]
+  },
+  "inputs": {
+    "profile": "74b8a304bc8ea89906e8a6723568ce7e547e170807640e3ce769b8a594ee93d7",
+    "project": "daaa0403c3f7f05562564bc43f182be132d87916ee1e15682cd4534bae6c7b14",
+    "contract": "0b56deee5ea2b26acb099679709535574ab71864161a903a4c6692978aa56152",
+    "checks": "da51c396f792ab0e2b474adc78c61f4b1828eaf7622f3e3edb7702223868a19b",
+    "config": "55544d6bda148370c6be026994fc5d8d2eaf848b8ea12bdc5df2bf3d5887b7f2",
+    "profile_schema": "a550fcdb358a8df4f4bd7905836e3af4df1544b090c1ec93e0e5cafac0169225",
+    "adapter": "e5405e3a971739e0e44741a27d8d9f03ed3b9ed901972806faaa300d9a3aad8e",
+    "package_info": "e975199375d85f80e153dc7856da86c6461fe7d344e4d2c81575926b98315e6b",
+    "native_inventory": "f430e673d93ac3f880c8b552c72b8d1e23c514e35f65d778f856f6f67f1263b8"
+  },
+  "confirmation": {
+    "kind": "CALLER_PREVIEW_APPLY_CLAIM",
+    "plan_sha256": "feee56c59ad02c417a3964c7e1105b936b7d50589f8774cbb3d0529b894a6ef4"
+  },
+  "host_state": {
+    "disk_projection": "WRITTEN",
+    "host_list": "NOT_INSPECTED",
+    "invocation": "NOT_INSPECTED"
+  }
+}

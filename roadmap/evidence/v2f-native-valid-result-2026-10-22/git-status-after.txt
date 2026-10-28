@@ -1,0 +1,35 @@
+ M .agent/HANDOFF.md
+ M .agent/STATE.md
+ M AGENTS.md
+ M en/AGENTS.md
+ M roadmap/ROADMAP_HOAN_THIEN.md
+ M roles/README.md
+ M tests/test_task_result_flow.py
+ M tests/test_ui_browser.py
+ M tools/README.md
+ M tools/app.py
+ M tools/app_ui.html
+?? output/LAW_PHAN_BIEN_LOCAL_DE_XUAT_VAN_PHONG_NGHIEP_VU_R1_VI.md
+?? roadmap/ROADMAP_VAN_PHONG_NGHIEP_VU.md
+?? roadmap/WORKORDER_V1A_VAN_PHONG_TRUNG_TAM_2026-10-21.md
+?? roadmap/WORKORDER_V1B_2026-10-21.md
+?? roadmap/WORKORDER_V1_2026-10-21.md
+?? roadmap/WORKORDER_V2A_2026-10-21.md
+?? roadmap/WORKORDER_V2B_2026-10-21.md
+?? roadmap/WORKORDER_V2C_2026-10-21.md
+?? roadmap/WORKORDER_V2D_2026-10-22.md
+?? roadmap/WORKORDER_V2E_2026-10-22.md
+?? roadmap/WORKORDER_V2F_2026-10-22.md
+?? roadmap/evidence/v1b-live-method-2026-10-21/
+?? roadmap/evidence/v1b-review-completion-2026-10-21/
+?? roadmap/evidence/v2c-native-result-2026-10-21/
+?? roadmap/evidence/v2d-two-invocation-result-2026-10-22/
+?? roadmap/evidence/v2f-native-valid-result-2026-10-22/
+?? roles/office/
+?? tests/test_office.py
+?? tools/office.py
+?? working/v1b-review-completion/
+?? working/v1b/
+?? working/v2c/
+?? working/v2d/
+?? working/v2f/

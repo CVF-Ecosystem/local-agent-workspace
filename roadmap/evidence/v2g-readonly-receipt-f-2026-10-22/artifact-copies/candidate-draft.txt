@@ -1,0 +1,20 @@
+DỮ LIỆU GIẢ - BẢN THỬ NỘI BỘ BÀI ĐO V2-F - KHÔNG PHÁT HÀNH (CANDIDATE)
+
+Kính gửi: Trưởng nhóm giả LAB-V2F
+Báo cáo ngày 20/10/2026 - Kiểm kê kho giả Z-07
+
+1. Tiến độ kiểm kê
+Ngày 20/10/2026, kiểm kê kho giả Z-07 đã kiểm 8 trên 10 lô theo kế hoạch. [Nguồn: LAB-V2F-ghi-chu.txt, N1]
+
+2. Số lô lệch
+Số lô lệch sau kiểm kê: chưa có giá trị cụ thể, đang chờ bảng tổng hợp. [Nguồn: N2]
+
+3. Phân loại
+- Quyết định: nguồn không nêu quyết định nào - cần xác nhận.
+- Đề xuất: nguồn không nêu đề xuất nào - cần xác nhận.
+- Việc chờ: bảng tổng hợp số lô lệch (N2). Người phụ trách: cần xác nhận. Thời hạn: cần xác nhận.
+
+4. Điều còn thiếu / cần xác nhận
+- Số lô lệch (N2).
+- 2 lô còn lại chưa kiểm: nguồn không nêu tên lô, kế hoạch hay thời hạn kiểm - cần xác nhận. [Nhãn suy luận: 2 = 10 - 8, suy ra từ N1, không phải số liệu nêu trực tiếp trong nguồn.]
+- Người phụ trách và thời hạn của mọi việc: cần xác nhận.

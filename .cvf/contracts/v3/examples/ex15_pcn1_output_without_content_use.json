@@ -172,7 +172,7 @@
         "accepted_task_digest": "sha256:0edac2df2bb7e445dc8ef347041f8c27959c8458e866c31bd262e4ec3ffb2894",
         "context_digest": "sha256:e0673081c5e11fd718fb48bdd94ab81ae541a3ae14ec5f126fbc4456880ea884",
         "policy_version": "law.cvf.routing/3",
-        "policy_digest": "sha256:1a4fd3233dcf4b8571d9fa2249faf060216b3e530ca7d8dcf976dc5df880eaf3",
+        "policy_digest": "sha256:3fb735bbb88087fcd3c76bd23851609d93e57fc4f8c43194b29d61b0466d6794",
         "inputs": [
           {
             "path": "references/source-documents/team/quy-che-gia.pdf",

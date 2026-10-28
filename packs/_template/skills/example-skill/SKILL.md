@@ -1,6 +1,6 @@
 ---
 name: example-skill
-description: Skill ví dụ trong gói mẫu; thay bằng skill thật của lĩnh vực. Kích hoạt khi người dùng nói về [việc cụ thể của lĩnh vực]. / Example skill in the template pack; replace it with a real skill of the domain. Triggers when the user says: [a specific task of the domain].
+description: Mẫu để tác giả viết skill lĩnh vực và điều kiện dùng. Không dùng cho nghiệp vụ thật khi chưa thay nội dung và qua tiếp nhận. / Domain skill template; not for live work before adaptation and intake.
 metadata:
   version: "0.1"
 ---

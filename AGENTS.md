@@ -32,6 +32,12 @@ làm kho nguồn; các phần còn lại là gợi ý để agent tự cân nh�
     kể cả ngoài phạm vi lần giao. Thiếu đối chiếu này thì hoàn thiện brief trước khi giao thi công.
     Xong một việc, tranche hay phép kiểm không tự có nghĩa đã đạt mốc sản phẩm.
 
+## Trách nhiệm khi phát triển sản phẩm
+
+Khi được giao xây dựng hoặc sửa sản phẩm, đội agents dev chịu trách nhiệm lập roadmap theo đầu ra, chuẩn chất lượng, ca kiểm/kết quả kỳ vọng có căn cứ, thực hiện kiểm và review để giao bản dùng được. Áp dụng cả core, package, skill và template. Noncoder nêu mục tiêu, quyết định nghiệp vụ và quyền tác động; không bị yêu cầu viết test, oracle, debug hay tự tổ chức QA thay đội dev. Chỉ hỏi dữ kiện/quyết định thật sự thiếu bằng ngôn ngữ công việc; tự làm phần độc lập trong quyền đã cấp.
+
+Nghiệm thu nội bộ có trước feedback độ phù hợp. Thiếu feedback không chặn kiểm và hoàn thiện nội bộ; cũng không được giả user đã nhận. Chuyên môn sâu cần xác nhận thì không coi AI tự chấm hoặc checker xanh là chứng nhận. Đội dev chuẩn bị đủ ca, nguồn, rubric, câu hỏi và phần cần phán đoán để chuyên gia thẩm định. Nếu cần mời người hoặc có chi phí chưa được cấp quyền, hỏi operator một lần bằng lời công việc về người duyệt/ngân sách; không hỏi lại quyết định đã có, không tự liên hệ hoặc trả phí. Chưa có thẩm định thì claim phụ thuộc vẫn bị chặn, thành phần giữ nhãn thử nghiệm với giới hạn rõ; tiếp tục các kiểm độc lập, không tự chấm thay chuyên gia. Giữ yêu cầu nguồn/chất lượng/bảo toàn, không tự bỏ scope đã chốt hoặc promote gói để ship; quyền install/publish vẫn riêng. Quy tắc này không thêm quy trình phát triển cho việc văn phòng thông thường.
+
 ## Bảo trì bộ khung LAW (chỉ kho nguồn)
 
 Khi operator giao sửa code, schema, hướng dẫn khung hoặc bản phát hành của chính LAW,
@@ -159,6 +165,9 @@ Worker, Reviewer hoặc trước tác động ngoài đọc/nháp mới. Main v�
   cách làm của nhiệm vụ trên vai lõi, không cấp quyền; việc nhỏ vẫn làm trực tiếp, không đọc catalog.
 - Hiện chưa có checker hay host chặn các điều này: đây là quy tắc hợp tác, không phải bằng chứng
   đã cưỡng chế.
+
+<!-- law-host-session-guidance -->
+Với Cowork, Codex Desktop, Antigravity hoặc host khác, không coi bộ công cụ của exporter Claude Code là giới hạn native của mọi vai. Xem `roles/office/MAIN.md` mục "Phiên native và exporter"; `office.py compose` có tuyến `host_session` chỉ chuẩn bị theo khai báo có evidence bind, không đăng ký vai/cấp quyền hoặc xác minh host. Giữ quyền do profile nắm, tách model yêu cầu với model thực tế và container/app-project với file Windows. `ROLES.md` trong project ứng dụng chưa phải file trên đĩa; nói rõ nơi lưu. Ghi lỗi công cụ kèm detail/mã thoát, không pipe qua `head` để kết luận; thiếu dependency thì báo thiếu, không tự cài.
 
 ## Làm vừa đủ
 

@@ -123,6 +123,30 @@ kiểm tra con có thể KHÔNG ÁP DỤNG kèm lý do, nhưng không bỏ cả 
 Đọc nguồn không chứng minh đã chạy; chạy thử không chứng minh mọi nhánh an toàn. Thiếu bằng chứng chỉ chặn
 tuyên bố và hành động phụ thuộc vào nó, không chặn công việc tiếp tục bằng cách sẵn có.
 
+### Làn bảo trì của người xây dựng
+
+Làn này áp dụng khi operator giao người duy trì tạo hoặc cập nhật skill/gói ở kho nguồn. Số lần dùng thật là bằng
+chứng đầu vào, không phải ngưỡng cứng. Vẫn ghi đủ sáu điều kiện, tương xứng với rủi ro và phạm vi; không lấy số
+việc, kiểm cấu trúc hay kết quả của ứng dụng nguồn để thay bằng chứng về hiệu quả của chính skill (điều kiện 4),
+hoặc bằng chứng skill đã tách được quy tắc/dữ liệu riêng khỏi phần dùng chung (điều kiện 6). Chưa đủ thì giữ
+`DEFER`/`REVIEW`; làn này không tự đổi quyền ghi gốc, `ROOT_ELIGIBLE`, hay xác nhận của người dùng ở từng project.
+
+### Trách nhiệm dev trước khi giao bản dùng được
+
+Với skill/gói do đội phát triển xây dựng hoặc đóng gói sẵn, đội dev sở hữu chuẩn đầu ra, bộ ca, kết quả kỳ vọng có căn cứ, đối chiếu nguồn, kiểm và review nội bộ. Không chuyển việc viết test/đáp án, debug hoặc chuẩn bị thẩm định sang end user. Người dùng nêu mục tiêu và quyết định nghiệp vụ; feedback mức phù hợp đến sau bản dùng được.
+
+Ghi trong hồ sơ intake hiện có: khi dùng/không dùng, đầu vào/đầu ra, nguồn và giới hạn, tiêu chí nội dung đặt trước, ca đại diện/thiếu dữ kiện/lỗi theo rủi ro, evidence đúng revision và luồng dùng trên bản đóng gói. Ca từng dùng chỉnh skill là regression; tuyên bố khả năng cho việc mới cần evidence phù hợp ngoài các ca đó. Kiểm cơ học không thay kiểm ngữ cảnh/lập luận; AI tự soạn rồi tự tán thành đáp án không là bằng chứng duy nhất. Đội dev chuẩn bị đủ ca, nguồn, rubric, câu hỏi và phần cần phán đoán để chuyên gia thẩm định. Nếu cần mời người hoặc có chi phí chưa được cấp quyền, hỏi operator một lần bằng lời công việc về người duyệt/ngân sách; không hỏi lại quyết định đã có, không tự liên hệ hoặc trả phí. Chưa có thẩm định thì claim phụ thuộc vẫn bị chặn, thành phần giữ nhãn thử nghiệm với giới hạn rõ; tiếp tục các kiểm độc lập, không tự chấm thay chuyên gia.
+
+Sáu điều kiện vẫn áp dụng. Chỉ công bố sẵn dùng trong phạm vi đã kiểm; thành phần chưa đủ giữ candidate, không tự bỏ yêu cầu đã cam kết để đạt mốc. Thiếu feedback người dùng không chặn chuẩn bị/kiểm/nhận nội bộ, và không thành bằng chứng user đã nhận. Quyền cài, confirm, ghi gốc hay publish vẫn riêng; không chuyển trách nhiệm QA của dev sang bước confirm.
+
+#### Hồ sơ gọn và bằng chứng tương xứng
+
+Dùng năm câu hỏi trong [mẫu hồ sơ gói](../packs/_template/references/intake-record.md) ngay tại hồ sơ intake hiện có: (1) làm việc gì, kích hoạt khi nào; (2) đầu ra đạt chuẩn nào; (3) đã chứng minh bằng gì; (4) phần tăng thêm cụ thể là gì; (5) bản giao dùng được ở đâu và bằng luồng nào. Mẫu sắp xếp bằng chứng cho đủ sáu điều kiện, không thay hoặc giảm điều kiện và không yêu cầu sổ riêng. Skill dùng chung dùng cùng khung trong hồ sơ của skill.
+
+Kiểm kỹ thuật là lớp đầu; dev còn phải kiểm nội dung và luồng sản phẩm trước feedback nghiệp vụ. Với việc thông thường, chọn ca đại diện, thiếu dữ kiện và review đầu ra. Với số liệu/định dạng, thêm kiểm phần đo được và lỗi điển hình. Với claim hậu quả cao, đối chiếu nguồn chính thức, ca sai/thiếu nguồn và thẩm định chuyên môn đúng phần cần phán đoán chuyên ngành; không bắt mọi phép kiểm cơ học chờ chuyên gia. Không dùng AI tự đồng ý làm oracle duy nhất hoặc mặc định mọi skill phải có benchmark lớn.
+
+Ghi một tuyên bố giá trị cụ thể (ví dụ đúng mẫu/giảm lỗi số), chứng minh đúng phần đó; bản trùng vẫn theo so sánh native bên dưới. Nguồn có thể đổi cần phiên bản, ngày đối chiếu, trạng thái chưa xác minh và sự kiện/ngày cần kiểm lại theo rủi ro. Hạn kiểm lại là trigger xem xét, không chứng minh hiệu lực hay tự đổi status. Khi dùng nguồn quá hạn mà chưa kiểm lại, ghi ngay trong đầu ra "chưa kiểm lại từ <ngày đối chiếu gần nhất>"; ngày chưa biết thì ghi chưa biết. Với nội dung thận trọng cao, không trình bày nguồn đó như căn cứ hiện hành. Ma trận OS/Python/host/công cụ/định dạng chỉ nhận phạm vi có evidence; phần chưa thử ghi NOT_TESTED. Luồng bản đóng gói phải xét cả tạo mới và nâng cấp khi công bố hỗ trợ, giữ file/quyền/lựa chọn riêng; thiếu evidence vẫn ghi thiếu.
+
 ### Khi nói "tốt hơn native"
 
 Đặt tiêu chí trước (đúng nội dung, đủ đầu ra, ít lỗi, ít phải sửa, thời gian/chi phí, dễ dùng, giữ định dạng);

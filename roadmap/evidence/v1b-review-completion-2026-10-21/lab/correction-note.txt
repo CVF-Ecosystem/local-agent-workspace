@@ -1,0 +1,30 @@
+CORRECTION NOTE — tác giả: Main (phiên B2). Dữ liệu giả, bài đo lab.
+Đầu vào: reviewer-report.txt (phát hiện F1–F8). Đầu ra: candidate/draft-r2.txt (CANDIDATE, chưa review lại, chưa được chấp nhận). Mỗi phát hiện đã được tôi tự đối chiếu với nguồn LAB-V1B-ghi-chu-ky.txt (dòng M1–M6) và candidate gốc.
+
+F1 — Trạng thái sổ "Cần đối chiếu" không có trong nguồn.
+  Trạng thái: đã sửa một phần. Tôi đã đọc working/v1b/request/source-ledger-extract.json: có verify = "Cần đối chiếu" cho SRC-000001 revision 1, nên khẳng định có căn cứ. Draft-r2 ghi rõ lấy từ bản trích sổ, không phải từ ghi chú nguồn, và nêu sổ gốc _INDEX.xlsx chưa được Reviewer mở. Vị trí: draft-r2 dòng "Nguồn:" (đầu báo cáo). Chưa mở trực tiếp _INDEX.xlsx; cần xác nhận nếu muốn đối chiếu sổ gốc.
+
+F2 — Hai TASK ghi attribution khác nhau cho cùng yêu cầu gốc (USER_CONFIRMATION/USER_MESSAGE ở TASK Worker; UNVERIFIED/NONE ở TASK review).
+  Trạng thái: chưa sửa. Lý do: đây là hồ sơ, không phải nội dung draft; điều kiện bài đo cấm sửa TASK cũ và Main không tự nâng/hạ nguồn gốc xác nhận. TASK review ghi UNVERIFIED vì yêu cầu gốc là fixture lab giả. Cần người điều hành/người dùng xác nhận ghi nhận nào đúng. Không có thay đổi trong draft-r2.
+
+F3 — "Chờ xác nhận ngày giao nhận đợt 1" không có trong nguồn, không gắn nhãn.
+  Trạng thái: đã sửa. Lý do: đồng ý; nguồn M4/M5 không nói đang chờ xác nhận. Draft-r2 mục 5, gạch cuối, gắn nhãn [Suy luận của người soạn] và nêu nguồn không ghi đây là việc đang chờ; không còn trong danh sách "việc chờ có căn cứ".
+
+F4 — Mục "Quyết định về đề xuất trực kho" ngầm hàm ý người dùng quyết định.
+  Trạng thái: đã sửa. Lý do: đồng ý; M6 chỉ nói chưa có quyết định, không nêu ai quyết. Draft-r2 mục 6 gạch 4 đổi thành "Ai là người quyết định ... và khi nào quyết định. [M6]". M6 vẫn là đề xuất chưa quyết định (mục 4).
+
+F5 — Liên kết M4 với buổi họp M3 viết như dữ kiện.
+  Trạng thái: đã sửa. Lý do: đồng ý; nguồn M4 không nêu ngày họp. Draft-r2 mục 3, đoạn [Suy luận ...] nêu rõ đây là giả định, nguồn không nói hai dòng cùng một buổi họp.
+
+F6 — "Cách nhau 2 ngày" là số suy ra, không có trong nguồn, không nhãn.
+  Trạng thái: đã sửa. Lý do: đồng ý bỏ; câu không cần cho nội dung mâu thuẫn, và phép tính không được kiểm bằng công cụ (Reviewer báo chưa kiểm). Draft-r2 mục 3 không còn câu này. Không chọn ngày hiệu lực giữa M4 (20/10/2026) và M5 (22/10/2026).
+
+F7 — Dài và lặp so với yêu cầu "ngắn".
+  Trạng thái: đã sửa một phần. Lý do: đồng ý. Draft-r2 gộp mục 5–6 cũ (bỏ lặp "người phụ trách/thời hạn" từng dòng, rút các việc chờ còn hai gạch) và gọn các câu "cần xác nhận". Vẫn giữ bố cục 6 mục để mỗi ý có mã [M#]; bản vẫn lặp một số điểm ở mục 6 vì mục này là danh sách xác nhận cho người dùng.
+
+F8 — Lý do xếp M4 "không phải quyết định chắc chắn" chỉ dựa vào mâu thuẫn với M5.
+  Trạng thái: đã sửa. Lý do: đồng ý; nguồn không nêu người có thẩm quyền chốt. Draft-r2 mục 5 gạch 1 nêu lý do thứ hai, gắn [Suy luận của người soạn], và để người dùng xác nhận. Dòng M4 vẫn ghi đúng "thống nhất tại buổi họp" (mục 3 và 5).
+
+Mục "Phần chưa kiểm" của Reviewer (giữ nguyên, không xử lý): sổ _INDEX.xlsx chưa mở bởi Reviewer; ghi chú trả Main của Worker không được giao cho Reviewer; tài liệu gốc ngoài ghi chú không có. Cần người dùng xác nhận các điểm cần xác nhận nêu trong draft-r2 mục 6.
+
+Giữ nguyên: M2 vẫn thiếu giá trị; M6 vẫn là đề xuất chưa quyết định; không có người phụ trách/thời hạn bịa ra (ghi "cần xác nhận"); nhãn suy luận vẫn gắn. Dòng đầu và dòng ghi chú phạm vi của draft-r2 đã cập nhật thành bản sửa chưa review lại. Không tuyên bố r2 đã được review hay chấp nhận.

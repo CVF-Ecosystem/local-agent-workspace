@@ -1,0 +1,36 @@
+{
+  "note": "Gói giao do SETUP chuẩn bị cho bài đo V2-C (không phải Main tự lập). Binding tính bằng recipe binding_stub từ TASK này, trước dispatch.",
+  "task_path": "working/v2c/report/TASK.json",
+  "task_id": "report",
+  "task_revision": 1,
+  "task_raw_digest": "sha256:80ccde4ce1e13ed28da40e3ec99249c2d2bff669909d874ecb1ce9438787dd2b",
+  "binding": {
+    "bind_version": "law.cvf.bind/3",
+    "evaluation_basis": "COOPERATIVE_WORKFLOW",
+    "task_id": "report",
+    "task_revision": 1,
+    "intent_digest": "sha256:0c28b7df48797ddd244a1dd6ee71d7c367250e440c97aba21bc702506c77a330",
+    "accepted_task_digest": "sha256:ab4b925201bbe9574318dba9430e7c9e732b63e46ae9fc2a8adac5d04a0f3e69",
+    "context_digest": "sha256:0526f9ced825a6df4119de46177fb2ac5c2ce18515f07570856d48b2b4ea0719",
+    "policy_version": "law.cvf.routing/3",
+    "policy_digest": "sha256:1a4fd3233dcf4b8571d9fa2249faf060216b3e530ca7d8dcf976dc5df880eaf3",
+    "inputs": [
+      {
+        "path": "references/source-documents/LAB-V2C-ghi-chu.txt",
+        "digest": "sha256:7b97ea6d83cae74f195b000bd907a9163a7c35357d0f3db3c2c5b1bdbcb97d54",
+        "source_id": "SRC-000001",
+        "revision": "1"
+      }
+    ]
+  },
+  "candidate_path": "working/v2c/report/assignments/a1/candidate/draft.txt",
+  "result_path": "working/v2c/report/assignments/a1/RESULT.json",
+  "brief_path": "working/v2c/setup/worker-brief.md",
+  "worker_logical_actor": {
+    "actor_id": "worker-v2c",
+    "role": "worker"
+  },
+  "result_id": "r-v2c-report-a1",
+  "method_contract": "roles/office/executive-secretary.md",
+  "source_path": "references/source-documents/LAB-V2C-ghi-chu.txt"
+}

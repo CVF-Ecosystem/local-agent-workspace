@@ -1,0 +1,16 @@
+{
+  "method": "evidence-reviewer",
+  "reason": "Yêu cầu tiếp việc là đối chiếu bản nháp báo cáo (candidate) với yêu cầu gốc, ghi chú nguồn và phương pháp đã dùng để soạn; cần mở nguồn và trả phát hiện có vị trí trước khi sửa, đúng phương pháp evidence-reviewer. Bài đo lab dữ liệu giả, chưa có grant sản phẩm.",
+  "request": "Đối chiếu candidate working/v1b/report/assignments/a1/candidate/draft.txt với yêu cầu gốc, nguồn LAB-V1B-ghi-chu-ky.txt và phương pháp executive-secretary v1 đã dùng (theo TASK của Worker); trả phát hiện có vị trí ở cả hai phía, mức tác động, điều cần sửa, phạm vi đã kiểm, phần chưa kiểm. Không viết lại candidate.",
+  "sources": [
+    {"path": "working/v1b/request/user-request.txt", "note": "yêu cầu gốc (fixture lab giả)"},
+    {"path": "references/source-documents/LAB-V1B-ghi-chu-ky.txt", "note": "nguồn SRC-000001 revision 1"},
+    {"path": "working/v1b/report/assignments/a1/candidate/draft.txt", "note": "candidate cần đối chiếu"},
+    {"path": "working/v1b/report/TASK.json", "note": "TASK của Worker"}
+  ],
+  "output_format": "text",
+  "limits": "Reviewer chỉ đọc, không Write; trả phát hiện qua phản hồi; không nhãn PASS; không viết lại candidate; không chọn bên khi nguồn mâu thuẫn.",
+  "needs_compute": false,
+  "resources_used": [],
+  "lang": "vi"
+}

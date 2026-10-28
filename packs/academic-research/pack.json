@@ -1,0 +1,22 @@
+{
+  "name": "academic-research",
+  "version": "0.1.0",
+  "requires_core": "1.9",
+  "title": {
+    "vi": "Nghiên cứu và viết học thuật",
+    "en": "Academic research and writing"
+  },
+  "description": {
+    "vi": "Phương pháp truy nguyên nguồn, tổng hợp, lập luận, viết và phản biện học thuật; ứng viên dùng thử trong project.",
+    "en": "Methods for source provenance, synthesis, argument, drafting and academic review; project trial candidate."
+  },
+  "domain": "academic-research",
+  "skills": ["law-academic-research"],
+  "intake": {
+    "decision": "DEFER",
+    "version": "0.1.0",
+    "relation": "SUPPLEMENT",
+    "record": "references/intake-record.md",
+    "note": "Candidate REVIEW; structural checks are not academic acceptance or permission to export."
+  }
+}

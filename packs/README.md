@@ -9,9 +9,9 @@ nhân sự, tài chính...) nằm trong **gói lĩnh vực**: bộ skill và m�
 The package core holds the working rules, role contracts and shared skills. Knowledge specific to a domain (port and logistics,
 HR, finance...) lives in a **domain pack**: a set of skills and templates installed per project on demand.
 
-**Lưu ý:** năm gói đi kèm hiện là bản thử nghiệm, chưa qua tiếp nhận. Căn cứ pháp lý trong gói được tổng hợp từ trang tin và trang tư vấn, chưa đối chiếu từng điều với văn bản chính thức (Công báo, cổng văn bản của Nhà nước); khi thử, trợ lý AI vẫn có lúc đưa ra câu "trích nguyên văn" không có trong gói. Dùng để tham khảo và soạn nháp; với văn bản trình ký hoặc gửi ra ngoài, tự đối chiếu căn cứ với văn bản chính thức trước khi dùng.
+**Lưu ý:** các gói đi kèm hiện là bản thử nghiệm, chưa qua tiếp nhận. Căn cứ pháp lý ở các gói nghiệp vụ được tổng hợp từ trang tin và trang tư vấn, chưa đối chiếu từng điều với văn bản chính thức; thử nghiệm đã phát hiện câu "trích nguyên văn" không có trong nguồn. Đội phát triển chịu trách nhiệm khắc phục và kiểm trước khi công bố khả năng sẵn dùng. Khi chưa qua nghiệm thu, gói chỉ dùng để tham khảo và soạn nháp; không dùng căn cứ trong gói cho văn bản trình ký hoặc gửi ra ngoài. Khi làm tài liệu thực tế, agent phải đối chiếu đúng nguồn và nêu giới hạn; người có thẩm quyền quyết định việc ký/gửi, không bị giao nhiệm vụ QA sản phẩm.
 
-**Note:** the five bundled packs are trial versions that have not been through intake. Their legal basis was compiled from news and advisory sites and has not been checked article by article against official texts (the Official Gazette, government legal portals); in tests the AI assistant still sometimes produced "verbatim quotes" that are not in the pack. Use them for reference and drafting; for documents to be signed or sent outside, check the legal basis against the official texts yourself first.
+**Note:** bundled packs remain trial candidates. Legal references in the office-domain packs were compiled from news/advisory sites and have not been checked article by article against official texts; trials found purported verbatim quotations absent from the source. Developers own correction and verification before claiming readiness. Until accepted, packs are for reference and drafting only; do not use their references as the basis for documents submitted for signature or sent externally. For actual documents, the agent checks the relevant sources and states limits; the authorized person decides signing/sending, without taking on product QA.
 
 ## Cách dùng / Usage
 
@@ -38,12 +38,26 @@ packs/<ten-goi>/
 
 1. `python tools/pack.py new <ten-goi>` rồi sửa `pack.json`, đổi tên và viết skill. / then edit `pack.json`, rename and write the skills.
 2. `python tools/pack.py check <ten-goi>` để kiểm tra cấu trúc. Cấu trúc đạt không phải tiếp nhận. / to validate the structure. A passing structure is not intake.
-3. Quy tắc nhận một gói: theo chuẩn tiếp nhận chung ở `skills/README.md` (sáu điều kiện, so với native hoặc cách đang có). Riêng gói
-   dùng chung còn cần: ít nhất ba việc thật của lĩnh vực đó; skill qua thử trong ứng dụng agent thật; skill id không trùng skill của
-   package; nghiệp vụ đặc thù đơn vị nằm trong skill của project, không trong gói dùng chung.
-   Rule for accepting a pack: follow the shared intake standard in `skills/README.md` (six conditions, compared with native or the way
-   currently used). A shared pack also needs: at least three real tasks in that domain; its skills tried in a real agent app; skill ids
-   that do not clash with the package's skills; unit-specific rules kept in the project's own skills, not in a shared pack.
+3. Gói gửi từ folder cho người nhận vẫn theo chuẩn chung ở `skills/README.md` (sáu điều kiện, đối chiếu native/cách đang có); riêng
+   gói dùng chung cần ít nhất ba việc thật của lĩnh vực đó, được thử trong ứng dụng agent thật; skill id không trùng trong package;
+   nghiệp vụ đặc thù đơn vị nằm trong skill của project. Đây là ngưỡng của làn phản hồi người nhận folder.
+   Gói do người duy trì được operator giao xây dựng/cập nhật theo làn builder ở `skills/README.md`: không có ngưỡng cứng về số lần dùng,
+   nhưng vẫn phải ghi đủ sáu điều kiện. Số việc thật hoặc kiểm ứng dụng không thay bằng chứng về hiệu quả của skill và phạm vi tái dùng.
+   For a pack received from a folder, follow the shared intake standard in `skills/README.md` (six conditions, compared with native or
+   the way currently used). A shared pack in this recipient-feedback lane also needs at least three real tasks in that domain and a trial
+   in a real agent app; its skill ids must not clash with the package's skills, and unit-specific rules belong in project skills.
+   A pack created/updated by a maintainer assigned by the operator follows the builder lane in `skills/README.md`: no hard use-count
+   threshold, but all six conditions still apply. Task count or application tests cannot replace evidence of the skill's own effect or reuse scope.
+
+Năm câu hỏi của hồ sơ nghiệm thu được chuẩn bị trong [mẫu intake](./_template/references/intake-record.md), tự đi cùng gói mới tạo bằng `pack.py new`. Gói đang có bổ sung vào hồ sơ hiện có khi đến lượt kiểm; không tạo sổ riêng. Kết luận chất lượng phải có evidence của đội dev; `pack.py confirm` là quyết định tiếp nhận vào project sau khi đọc hồ sơ, không thay kiểm chất lượng. Giữ các mã `intake.decision` và cơ chế hiện hành; mẫu chưa điền không phải quyết định tiếp nhận.
+
+The [intake template](./_template/references/intake-record.md) supplies five questions and travels with packs created by `pack.py new`. Existing packs extend their existing records when reviewed, without a new ledger. Developer quality conclusions require evidence; `pack.py confirm` records project acceptance after reading that record and does not replace quality assurance. Existing decision codes and mechanisms remain unchanged; an unfilled template is not an intake decision.
+
+## Chuẩn nội bộ trước feedback / Internal acceptance before feedback
+
+Toàn bộ gói/skill đóng gói sẵn theo trách nhiệm dev ở `skills/README.md`: đội phát triển tự chuẩn bị chuẩn nội dung, ca/đáp án có căn cứ, review và kiểm luồng trên bản giao. Người nhận không phải viết test hoặc tìm người kiểm mới có sản phẩm dùng được. Ngưỡng ba việc của làn phản hồi người nhận không phải gate chặn đội xây dựng hoàn tất nghiệm thu nội bộ. Thành phần công bố sẵn dùng phải đạt đủ sáu điều kiện trong scope; các bản thử giữ giới hạn và status hiện hữu. Không tự bỏ scope đã cam kết hay dùng user confirm thay QA.
+
+Every bundled pack/skill follows developer responsibility in `skills/README.md`: developers prepare content criteria, grounded cases/expected results, review and checks on the delivered workflow. Recipients need not write tests or recruit testers to obtain a usable product. The recipient-feedback lane's three-task threshold does not block builder internal acceptance. Ready-to-use claims require all six conditions within scope; trial candidates retain their limits/status. Never silently drop committed scope or substitute user confirmation for QA.
 
 ## Tiếp nhận gói / Pack intake
 

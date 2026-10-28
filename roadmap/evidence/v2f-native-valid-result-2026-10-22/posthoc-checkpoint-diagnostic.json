@@ -1,0 +1,39 @@
+{
+  "label": "POST_HOC_DIAGNOSTIC_NOT_MAIN_PROOF",
+  "note": "Chạy bởi worker thi công SAU lượt, ngoài trace parent/children, một lần, chỉ đọc. Main không chạy checkpoint trong lượt (CLI dừng error_max_budget_usd trước đó), nên đây KHÔNG là bằng chứng Main checkpoint và không thay đổi verdict PARTIAL.",
+  "exit": 0,
+  "stdout_sha256": "eb7f5db742871c430ca808c3a580d36e9886452101ed7c1151eb9ccb965283f9",
+  "lab_tree_unchanged": true,
+  "stdout": {
+    "op": "checkpoint",
+    "refused_before_operation": false,
+    "limits": [
+      "BYTES_DIGEST_ONLY",
+      "NOT_PASS_NOT_GRANT_NOT_CONTENT_CHECK",
+      "NOT_ATOMIC_SNAPSHOT"
+    ],
+    "bridge": {
+      "manifest_sha256": "fb7923a895110834d8851ad81cf124c5d358d1718f72509cd5bda3bb7758d5bb",
+      "pinned_files": 15
+    },
+    "ok": true,
+    "verdict": "CHECKED_NOT_PASS",
+    "problems": [],
+    "identity": {
+      "task_raw_digest": "sha256:8dc05b3da636d1da1c2c5f18341667ff04e704dd8a4167201b65c397b6114280",
+      "task_equals_dispatch_digest": true,
+      "result_raw_digest": "sha256:f3aa7e670cf5e5f9ef763b8bc127256bd20fc73617b14d16f59c0e3f6e54704e",
+      "result_path": "working/v2f/report/assignments/a1/RESULT.json",
+      "candidate": {
+        "path": "working/v2f/report/assignments/a1/candidate/draft.txt",
+        "digest": "sha256:3c4d57666c3f426f843e1dbb898299532d913f536a357d203fafcdcba0d61cc1",
+        "role": "ACTUAL_BYTES",
+        "size": 1158
+      },
+      "result_binding_equals_dispatch_stub_before_outputs": true
+    },
+    "ledger_snapshot": "eba5bfe61338fb4ddb14524d408aad7c1378592988931c62821e1ffa6e4e5b08",
+    "note": "problems rỗng = bytes/binding/ledger khớp theo recipe; không PASS, không quyền, không nghiệm thu nội dung, không publish"
+  },
+  "stderr": ""
+}

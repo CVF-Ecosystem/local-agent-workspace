@@ -1,0 +1,71 @@
+{
+  "schema": "law.office-methods/1",
+  "methods": [
+    {
+      "id": "research-assistant",
+      "label": {"vi": "Khảo sát và kiểm nguồn", "en": "Research assistant"},
+      "base_role": "scout",
+      "method_version": 1,
+      "contract": "roles/office/research-assistant.md",
+      "required_capabilities": ["read_local", "search_local"],
+      "optional_capabilities": [],
+      "resources": ["skills/local/shared/source-library/SKILL.md", "skills/local/shared/document-comparison/SKILL.md"],
+      "preset_mode": "INHERIT_CORE_PROFILE"
+    },
+    {
+      "id": "executive-secretary",
+      "label": {"vi": "Thư ký tổng hợp", "en": "Executive secretary"},
+      "base_role": "worker",
+      "method_version": 1,
+      "contract": "roles/office/executive-secretary.md",
+      "required_capabilities": ["read_local", "search_local", "write_text"],
+      "optional_capabilities": ["write_html"],
+      "resources": ["skills/local/shared/meeting-minutes/SKILL.md", "skills/local/shared/html-reports/SKILL.md", "skills/local/shared/internal-comms/SKILL.md", "skills/local/shared/vn-admin-documents/SKILL.md", "skills/local/shared/vietnamese-editing/SKILL.md"],
+      "preset_mode": "INHERIT_CORE_PROFILE"
+    },
+    {
+      "id": "correspondence",
+      "label": {"vi": "Thư tín", "en": "Correspondence"},
+      "base_role": "worker",
+      "method_version": 1,
+      "contract": "roles/office/correspondence.md",
+      "required_capabilities": ["read_local", "write_text"],
+      "optional_capabilities": ["search_local"],
+      "resources": ["skills/local/shared/internal-comms/SKILL.md", "skills/local/shared/vn-admin-documents/SKILL.md", "skills/local/shared/vietnamese-editing/SKILL.md"],
+      "preset_mode": "INHERIT_CORE_PROFILE"
+    },
+    {
+      "id": "market-analyst",
+      "label": {"vi": "Phân tích thị trường", "en": "Market analyst"},
+      "base_role": "worker",
+      "method_version": 1,
+      "contract": "roles/office/market-analyst.md",
+      "required_capabilities": ["read_local", "search_local", "write_text"],
+      "optional_capabilities": ["compute", "write_html"],
+      "resources": ["skills/local/shared/spreadsheet-check/SKILL.md", "skills/local/shared/data-charts/SKILL.md", "skills/local/shared/html-reports/SKILL.md"],
+      "preset_mode": "INHERIT_CORE_PROFILE"
+    },
+    {
+      "id": "data-analyst",
+      "label": {"vi": "Phân tích số liệu", "en": "Data analyst"},
+      "base_role": "worker",
+      "method_version": 1,
+      "contract": "roles/office/data-analyst.md",
+      "required_capabilities": ["read_local", "write_text", "compute"],
+      "optional_capabilities": ["search_local", "write_html", "office_files"],
+      "resources": ["skills/local/shared/spreadsheet-check/SKILL.md", "skills/local/shared/excel-workbooks/SKILL.md", "skills/local/shared/data-charts/SKILL.md"],
+      "preset_mode": "INHERIT_CORE_PROFILE"
+    },
+    {
+      "id": "evidence-reviewer",
+      "label": {"vi": "Đối chiếu căn cứ", "en": "Evidence reviewer"},
+      "base_role": "reviewer",
+      "method_version": 1,
+      "contract": "roles/office/evidence-reviewer.md",
+      "required_capabilities": ["read_local", "search_local"],
+      "optional_capabilities": ["compute"],
+      "resources": ["skills/local/shared/source-library/SKILL.md", "skills/local/shared/document-comparison/SKILL.md", "skills/local/shared/spreadsheet-check/SKILL.md"],
+      "preset_mode": "INHERIT_CORE_PROFILE"
+    }
+  ]
+}

@@ -13,7 +13,7 @@ Runs on this computer only (127.0.0.1) with a per-session access code. No networ
 Each button calls one existing script in tools/ with fixed arguments; writing actions always have a preview step.
 Shuts down about 3 minutes after the page is closed, or with "Quit". Python 3.8+ only.
 """
-import datetime, getpass, http.server, importlib.util, io, json, os, platform, re, secrets, socketserver, subprocess, sys, threading, time, webbrowser, zipfile
+import argparse, datetime, getpass, http.server, importlib.util, io, json, os, platform, re, secrets, socketserver, subprocess, sys, threading, time, webbrowser, zipfile
 import urllib.parse
 import hashlib
 sys.dont_write_bytecode = True  # không để lại __pycache__ trong bộ mẫu / leave no __pycache__ in the template
@@ -1006,15 +1006,14 @@ def watchdog():
 
 
 def main(argv):
-    if hasattr(sys.stdout, 'reconfigure'):
-        sys.stdout.reconfigure(encoding='utf-8', errors='replace', line_buffering=True)
-    port = 0
-    if '--port' in argv:
-        try:
-            port = int(argv[argv.index('--port') + 1])
-        except (IndexError, ValueError):
-            print('Dùng / Usage: python tools/app.py [--port N] [--no-browser]')
-            return 2
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(encoding='utf-8', errors='replace', line_buffering=True)
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument('--port', type=int, default=0)
+    ap.add_argument('--no-browser', action='store_true')
+    args = ap.parse_args(argv)
+    port = args.port
     if not os.path.isfile(UI_FILE):
         print('Thiếu tools/app_ui.html / Missing tools/app_ui.html')
         return 1
@@ -1026,7 +1025,7 @@ def main(argv):
     print('Giữ cửa sổ này mở trong lúc dùng; đóng trang hoặc bấm "Thoát" để tắt.')
     print('Keep this window open while using it; close the page or press "Quit" to stop.')
     threading.Thread(target=watchdog, daemon=True).start()
-    if '--no-browser' not in argv:
+    if not args.no_browser:
         threading.Timer(0.6, lambda: webbrowser.open(url)).start()
     try:
         srv.serve_forever()

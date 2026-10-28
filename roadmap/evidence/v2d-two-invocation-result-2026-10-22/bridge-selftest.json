@@ -1,0 +1,249 @@
+{
+  "passed": 32,
+  "failed": [],
+  "cases": [
+    {
+      "case": "anchor constants in the D bridge equal the live setup raw SHA256 and lab",
+      "ok": true,
+      "detail": {
+        "expected_setup_sha256": "82dd79edcf28fe9c116dd1da314a161bc03be59ad93ab0db8e0871d2033ead74",
+        "expected_lab": "C:\\Users\\DELL\\AppData\\Local\\Temp\\claude\\d--UNG-DUNG-AI-TOOL-AI-2026-CVF-Workspace-local-agent-workspace\\7594f949-8322-4c4b-9709-f9efe6a4a819\\scratchpad\\law-v2d-run1\\project"
+      }
+    },
+    {
+      "case": "observe: candidate missing is refused, nothing written",
+      "ok": true,
+      "detail": [
+        "CANDIDATE_MISSING"
+      ]
+    },
+    {
+      "case": "checkpoint: RESULT missing is refused, nothing written",
+      "ok": true,
+      "detail": [
+        "RECORD_RESULT MISSING_OR_NOT_REGULAR"
+      ]
+    },
+    {
+      "case": "observe: positive, digest equals an independent hash, read-only",
+      "ok": true,
+      "detail": {
+        "problems": [],
+        "digest": "sha256:c809c4576022181368cff7c50be37eae37c4986b269407709f11bd0d3cf2d7d0"
+      }
+    },
+    {
+      "case": "observe: result has no binding/RESULT/receipt",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "case": "observe: expected TASK digest mismatch is refused",
+      "ok": true,
+      "detail": [
+        "TASK_CHANGED_SINCE_DISPATCH"
+      ]
+    },
+    {
+      "case": "observe: another target is refused",
+      "ok": true,
+      "detail": [
+        "TARGETS_NOT_CANDIDATE_AND_RESULT"
+      ]
+    },
+    {
+      "case": "observe: a path outside the slot is refused",
+      "ok": true,
+      "detail": [
+        "SLOT_LAYOUT",
+        "TARGETS_NOT_CANDIDATE_AND_RESULT"
+      ]
+    },
+    {
+      "case": "owner drift (pin mismatch) refused before the operation",
+      "ok": true,
+      "detail": [
+        "PIN_DRIFT tools/artifacts.py"
+      ]
+    },
+    {
+      "case": "manifest README pin drift refused",
+      "ok": true,
+      "detail": [
+        "MANIFEST_README_PIN_DRIFT"
+      ]
+    },
+    {
+      "case": "a loaded LAW module that is not pinned is refused",
+      "ok": true,
+      "detail": [
+        "UNPINNED_LAW_MODULE library_sync=tools/library_sync.py"
+      ]
+    },
+    {
+      "case": "modules resolved from the lab or outside the trusted trees are reported",
+      "ok": true,
+      "detail": [
+        "MODULE_FROM_LAB v2d_fake_lab_mod",
+        "MODULE_OUTSIDE_TRUSTED_TREE v2d_fake_outside_mod"
+      ]
+    },
+    {
+      "case": "checkpoint: fixture RESULT (test driver, not a native Worker) gives problems=[] and CHECKED_NOT_PASS",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "case": "observe after a RESULT exists is refused",
+      "ok": true,
+      "detail": [
+        "RESULT_ALREADY_EXISTS"
+      ]
+    },
+    {
+      "case": "checkpoint: TASK differing from the dispatch digest is HOLD",
+      "ok": true,
+      "detail": [
+        "TASK_CHANGED_SINCE_DISPATCH"
+      ]
+    },
+    {
+      "case": "checkpoint: raw TASK changed in the lab after dispatch is HOLD",
+      "ok": true,
+      "detail": [
+        "TASK_CHANGED_SINCE_DISPATCH"
+      ]
+    },
+    {
+      "case": "checkpoint: binding (minus outputs) different from the dispatch stub is HOLD, not an ok flag only",
+      "ok": true,
+      "detail": [
+        "BINDING B-INTENT=MISMATCH",
+        "BINDING_DIFFERS_FROM_DISPATCH_STUB"
+      ]
+    },
+    {
+      "case": "checkpoint: stub delivered differs from the RESULT binding is HOLD",
+      "ok": true,
+      "detail": [
+        "BINDING_DIFFERS_FROM_DISPATCH_STUB"
+      ]
+    },
+    {
+      "case": "checkpoint: candidate changed after the RESULT is HOLD",
+      "ok": true,
+      "detail": [
+        "CANDIDATE_CHANGED"
+      ]
+    },
+    {
+      "case": "the second lab exists and holds a TASK with the same bytes",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "case": "anchor: the anchored fixture setup file and lab give a positive read-only observe",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "case": "anchor: a coherent setup for ANOTHER existing lab with a valid TASK is refused before the operation (setup raw SHA)",
+      "ok": true,
+      "detail": [
+        "ANCHOR_SETUP_SHA_MISMATCH"
+      ]
+    },
+    {
+      "case": "anchor: even with the setup hash matching, a lab different from the fixed lab is refused before the operation",
+      "ok": true,
+      "detail": [
+        "ANCHOR_LAB_MISMATCH"
+      ]
+    },
+    {
+      "case": "anchor: any byte change of the setup file is refused before the operation",
+      "ok": true,
+      "detail": [
+        "ANCHOR_SETUP_SHA_MISMATCH"
+      ]
+    },
+    {
+      "case": "anchor: constants not set -> refused",
+      "ok": true,
+      "detail": [
+        "ANCHOR_NOT_SET"
+      ]
+    },
+    {
+      "case": "exact commands from the live cwd (sys.executable subprocess; NOT a Bash allow-rule proof): anchor passes, read-only refusals while the slot is empty",
+      "ok": true,
+      "detail": {
+        "observe": {
+          "exit": 1,
+          "ok": false,
+          "refused_before_operation": false,
+          "problems": [
+            "CANDIDATE_MISSING"
+          ]
+        },
+        "checkpoint": {
+          "exit": 1,
+          "ok": false,
+          "refused_before_operation": false,
+          "problems": [
+            "RECORD_RESULT MISSING_OR_NOT_REGULAR"
+          ]
+        }
+      }
+    },
+    {
+      "case": "rendered prompt carries both commands, both phases, paths and the no-resume rule; no placeholder left",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "case": "dispatch package has every fact the phase briefs need",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "case": "assessment of an empty trace is NOT complete",
+      "ok": true,
+      "detail": {
+        "complete": false,
+        "status": "LIVE_NOT_RUN",
+        "problems": [
+          "NO_INIT_EVENT",
+          "AGENT_CALLS=0 (expected 2)",
+          "MAIN_BASH_NOT_OBSERVE_THEN_CHECKPOINT []"
+        ],
+        "init": null,
+        "result_event": null,
+        "phases": [],
+        "main_bash": [],
+        "tool_use_count": 0,
+        "tool_use_names": [],
+        "agent_calls": [],
+        "note": "Mapping hai actual agentId <-> pha là khai báo cooperative suy từ trace; không xác thực danh tính/quyền của host. Terminal result không là bằng chứng remote stop."
+      }
+    },
+    {
+      "case": "no bytecode was added to the source tree",
+      "ok": true,
+      "detail": {
+        "before": 92,
+        "after": 92
+      }
+    },
+    {
+      "case": "TASK in the first fixture lab is restored to its bytes",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "case": "the live lab is unchanged by the whole self-test",
+      "ok": true,
+      "detail": "8e3f5d47d03f22a3cd451ec7fcea65fb47143ad6ccfd813640b9b267e4cc45fd"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 ---
 name: hr-admin-vn
-description: Gợi ý soạn, kiểm văn bản và phép tính nhân sự theo luật lao động hiện hành - quyết định nhân sự, nghỉ phép, hợp đồng, làm thêm giờ, kỷ luật, lương tối thiểu, bảo hiểm, thuế TNCN; căn cứ có ngày đối chiếu. Kích hoạt khi người dùng nói "quyết định nhân sự", "nghỉ phép năm", "làm thêm giờ", "kỷ luật lao động", "lương tối thiểu vùng", "hợp đồng lao động". / HR documents and calculations under current Vietnamese labour law. Triggers on personnel decisions, leave, overtime, discipline, minimum wage, labour contracts.
+description: Dùng cho hồ sơ, phép tính nhân sự, căn cứ có ngày; không thay quyết định có thẩm quyền. / HR records and calculations with dated legal checks; not a substitute for authorized decisions.
 metadata:
   version: "0.2"
 ---
