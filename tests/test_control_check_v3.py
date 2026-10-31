@@ -46,13 +46,14 @@ V1_PINS = {
 }
 V2_TREE_PIN = ('e154e1db4438adb9', 30)           # .cvf/contracts/v2 + .cvf/rules/v2
 V2_CHECK_TREE_PIN = ('3a4895ec9979faaa', 6)      # .cvf/checks/v2 (*.py, *.md)
+# P-CTX1 revision 28/10/2026: approved derivative refresh; see HANDOFF rev144.
 FILE_PINS = {
     ('checks', 'control_check_v2.py'): '5179e7091579c048',
     ('contracts', 'v3', 'control.schema.json'): '21d3b192151b84f6',
-    ('contracts', 'v3', 'vectors.json'): '79d63454f1143c41',
-    ('rules', 'v3', 'ROUTING_POLICY.json'): 'af141b37c242119c',
+    ('contracts', 'v3', 'vectors.json'): 'eb59221f24200df8',
+    ('rules', 'v3', 'ROUTING_POLICY.json'): '4577f71406997acb',
 }
-V3_EXAMPLES_PIN = ('deb1ae93824126f3', 22)
+V3_EXAMPLES_PIN = ('0857c44d4bc15e9b', 22)
 TEST_PINS = {
     'test_control_check.py': '454e3f4944825809',
     'test_control_v2_candidate.py': 'b32d7b3ff0e8a014',

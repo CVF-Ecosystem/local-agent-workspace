@@ -948,6 +948,9 @@ def _emit(res, args, lang_message):
     print('%s: %s' % (status, lang_message))
     for r in res['reasons']:
         print('  - %s: %s' % (r, reason_text(r)))
+    if res.get('detail') is not None:
+        detail = res['detail']
+        print('  detail: ' + (detail if isinstance(detail, str) else json.dumps(detail, ensure_ascii=False)))
     if res.get('plan'):
         print(json.dumps(res['plan'], ensure_ascii=False, indent=2))
     if res.get('next_actions'):
@@ -960,6 +963,9 @@ def _emit(res, args, lang_message):
 
 
 def main(argv=None):
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(encoding='utf-8', errors='replace')
     global LANG
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest='cmd')
@@ -974,8 +980,6 @@ def main(argv=None):
         if name.startswith('apply'):
             p.add_argument('--expect-plan', default=None, help='plan_sha256 từ lần xem trước')
     a = ap.parse_args(argv)
-    if hasattr(sys.stdout, 'reconfigure'):
-        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
     if not a.cmd:
         ap.print_usage(sys.stderr)
         return 2

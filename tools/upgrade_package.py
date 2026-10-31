@@ -155,7 +155,7 @@ def plan(project, source, lang):
         ov = 'en/' + rel
         return lang == 'en' and not rel.startswith('en/') and ov in mf and ov not in OVERLAY_SKIP
     for rel in sorted(new):
-        if rel == 'MANIFEST.sha256':
+        if cp.intake_config(rel) or rel == 'MANIFEST.sha256':
             continue
         src_rel = ('en/' + rel) if use_overlay(rel, new) else rel
         new_h = new[src_rel]
@@ -192,7 +192,7 @@ def plan(project, source, lang):
     for rel, _ in out['user_missing']:
         out['snapshot'].setdefault(rel, tx.sha_file(os.path.join(project, *rel.split('/'))))
     for rel in sorted(old):
-        if rel not in new and rel != 'MANIFEST.sha256' and rel not in USER_FILES and os.path.isfile(os.path.join(project, *rel.split('/'))):
+        if not cp.intake_config(rel) and rel not in new and rel != 'MANIFEST.sha256' and rel not in USER_FILES and os.path.isfile(os.path.join(project, *rel.split('/'))):
             out['obsolete'].append(rel)
     return out
 
@@ -302,6 +302,9 @@ def tx_next_actions(txid):
 
 
 def main():
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(encoding='utf-8')
     global LANG, LAST_RESULT
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--from', dest='source', help='thư mục package MỚI / the NEW package folder')
@@ -311,8 +314,6 @@ def main():
     ap.add_argument('--force', action='store_true', help='cho phép "nâng cấp" xuống bản thấp hơn / allow a downgrade')
     ap.add_argument('--result-json', action='store_true', help=argparse.SUPPRESS)
     a = ap.parse_args()
-    if hasattr(sys.stdout, 'reconfigure'):
-        sys.stdout.reconfigure(encoding='utf-8'); sys.stderr.reconfigure(encoding='utf-8')
     project = os.path.abspath(a.project) if a.project else HERE
     source = os.path.abspath(a.source) if a.source else HERE
     if os.path.normcase(project) == os.path.normcase(source):

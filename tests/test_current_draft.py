@@ -36,14 +36,17 @@ WINDOWS = os.name == 'nt'
 NEED = unittest.skipUnless(WINDOWS and HAVE_JSONSCHEMA, 'current draft needs Windows NTFS and jsonschema (the pin check)')
 STATE_REL = '.agent/STATE.md'
 HEADINGS = cu.STATE_HEADINGS
-# bytes of the accepted owners when I2 started (prefix of sha256): I2 must not change them
+# Reviewed owner-byte regression pins (SHA256 prefixes); AN C2 refreshes only reviewed owner deltas.
+# Context/policy and transaction pins include the permitted CLI UTF-8 maintenance; other pins stay fixed.
+# P-CTX1 revision 28/10/2026: derived vectors refresh; see HANDOFF rev144.
+# Transaction pin follows reviewed P1 opt-in owner (p1/REVIEW.md + custody.json); default v1 remains.
 OWNER_PINS = {
-    'tools/publish_new.py': '8a4e5914d0892ea1', 'tools/context_update.py': 'ee7cb6b15f3b5e70', 'tools/transaction.py': '4328586a78929868',
+    'tools/publish_new.py': '8a4e5914d0892ea1', 'tools/context_update.py': '65fd87929e886393', 'tools/transaction.py': '5aa6482007e0c0c2',
     '.cvf/checks/v3/observer.py': '7c0a089e5eb03475', '.cvf/checks/v3/workflow.py': '3019bd55a70281d0', '.cvf/checks/v3/loader.py': '0a50424e8e767ce8',
     '.cvf/checks/v3/canon.py': '7ab1bf8e6b94e2b0', '.cvf/checks/v3/binding.py': 'f227eda4a8f73e5e', '.cvf/checks/v3/routing.py': '37845b6bc357ad24',
     '.cvf/checks/v3/refs.py': '33761fd35bd6b8f6', '.cvf/checks/control_check_v3.py': 'e4bcbf35faa3392d',
-    '.cvf/rules/v3/ROUTING_POLICY.json': 'af141b37c242119c', '.cvf/contracts/v3/control.schema.json': '21d3b192151b84f6',
-    '.cvf/contracts/v3/vectors.json': '79d63454f1143c41', '.cvf/checks/v2/loader.py': 'a1216b35eba1ff4f',
+    '.cvf/rules/v3/ROUTING_POLICY.json': '4577f71406997acb', '.cvf/contracts/v3/control.schema.json': '21d3b192151b84f6',
+    '.cvf/contracts/v3/vectors.json': 'eb59221f24200df8', '.cvf/checks/v2/loader.py': 'a1216b35eba1ff4f',
 }
 
 

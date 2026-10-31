@@ -105,7 +105,8 @@ class Catalog(unittest.TestCase):
         self.assertEqual(tuple(info['methods']), METHODS)
         seen = set()
         for mid, m in info['methods'].items():
-            self.assertEqual((m['base_role'], m['method_version'], m['preset_mode']), (BASE[mid], 1, 'INHERIT_CORE_PROFILE'))
+            version = 2 if mid in ('data-analyst', 'market-analyst') else 1
+            self.assertEqual((m['base_role'], m['method_version'], m['preset_mode']), (BASE[mid], version, 'INHERIT_CORE_PROFILE'))
             self.assertEqual(m['contract'], 'roles/office/%s.md' % mid)
             self.assertEqual(tuple(m['sections']) and list(office.sections(m['contract_bytes'].decode('utf-8'))[0]), list(office.SECTION_KEYS))
             for key in office.SECTION_KEYS:  # Vietnamese body and an English line in every section
@@ -199,7 +200,8 @@ class Catalog(unittest.TestCase):
         self.assertEqual(office.validate_contract(entry, good.replace('\n', '\r\n').encode('utf-8')), [], 'a CRLF copy edited on Windows still validates')
         first = good.split('\n', 1)[0]
         cases = {
-            'header version': good.replace(first, first.replace('version=1', 'version=2'), 1),
+            'header version': good.replace(first, first.replace('version=%d' % entry['method_version'],
+                                                              'version=%d' % (entry['method_version'] + 1)), 1),
             'header id': good.replace(first, first.replace('id=data-analyst', 'id=market-analyst'), 1),
             'header role': good.replace(first, first.replace('base_role=worker', 'base_role=reviewer'), 1),
             'no header': good.split('\n', 1)[1],

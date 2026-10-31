@@ -1286,5 +1286,66 @@ class Docs(unittest.TestCase):
         self.assertEqual(Path(importlib.import_module('artifacts').__file__).resolve().parent, Path(v3['office'].__file__).resolve().parent)
 
 
+class LargeInputCheckpoint(FlowBase):
+    """Real owner regression: binary hashing is separate from bounded payload reads."""
+
+    def large_assignment(self):
+        path, context = 'references/large.bin', 'roles/large-context.bin'
+        data = b'\x00\xff' * (1024 * 1024 + 123)
+        self.write(path, data)
+        self.write(context, data)
+        t, r, task = self.assignment(inputs=[{'path': path, 'digest': sha(data)}])
+        task['context_refs'] = [{'path': context, 'digest': sha(data)}]
+        self.put_task(task)
+        result = self.result_record(task, 'a1', b'candidate')
+        self.write(r, json.dumps(result).encode())
+        return t, r, path, context, data
+
+    def test_large_binary_input_and_context_match_then_one_byte_change_is_detected(self):
+        t, r, path, context, data = self.large_assignment()
+        before = self.tree()
+        self.assertEqual(self.checkpoint(t, r)['problems'], [])
+        self.assertEqual(self.tree(), before)
+        for changed in (path, context):
+            with self.subTest(path=changed):
+                self.write(changed, data[:-1] + b'x')
+                self.assertEqual(self.checkpoint(t, r)['problems'], ['INPUT_CHANGED ' + changed])
+                self.write(changed, data)
+
+    def test_custom_byte_reader_is_not_bypassed_by_streaming(self):
+        import task_checkpoint as tc
+        t, r, path, _, _ = self.large_assignment()
+        def refusing(project, rel):
+            return (None, 'CALLER_REFUSED') if rel == path else tc.read_file(project, rel)
+        with mock.patch.object(tc, 'file_digest', side_effect=AssertionError('must use caller')):
+            cp = tc.checkpoint(self.v3, self.project, t, r, reader=refusing)
+        self.assertIn('INPUT ' + path + ' CALLER_REFUSED', cp['problems'])
+
+    def test_record_result_and_candidate_reads_remain_bounded(self):
+        import task_checkpoint as tc
+        t, r, _, _, _ = self.large_assignment()
+        for rel, expected in ((t, 'RECORD_TASK TOO_LARGE'), (r, 'RECORD_RESULT TOO_LARGE'),
+                              (self.slot('t-a', 'a1') + '/candidate/draft.txt', 'CANDIDATE TOO_LARGE')):
+            with self.subTest(path=rel):
+                old = self.read(rel)
+                self.write(rel, b'x' * (2 * 1024 * 1024 + 1))
+                self.assertIn(expected, tc.checkpoint(self.v3, self.project, t, r)['problems'])
+                self.write(rel, old)
+
+    def test_streaming_rejects_noncanonical_paths_and_junctions(self):
+        import task_checkpoint as tc
+        self.assertEqual(tc.file_digest(self.project, '../outside.bin'), (None, 0, 'PATH_UNSUPPORTED_FORM'))
+        self.assertEqual(tc.file_digest(self.project, 'references/./outside.bin'), (None, 0, 'PATH_UNSUPPORTED_FORM'))
+        outside = tempfile.mkdtemp(prefix='law-digest-outside-')
+        self.addCleanup(shutil.rmtree, outside, True)
+        Path(outside, 'secret.bin').write_bytes(b'secret')
+        link = self.abs('references/linked')
+        made = subprocess.run(['cmd', '/c', 'mklink', '/J', link, outside], capture_output=True, text=True)
+        self.assertEqual(made.returncode, 0, made.stderr)
+        self.addCleanup(lambda: os.path.isdir(link) and os.rmdir(link))
+        self.assertEqual(tc.file_digest(self.project, 'references/linked/secret.bin'),
+                         (None, 0, 'MISSING_OR_NOT_REGULAR'))
+
+
 if __name__ == '__main__':
     unittest.main()

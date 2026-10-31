@@ -1,6 +1,6 @@
 ---
 name: port-operations-reports
-description: Gợi ý dựng và kiểm báo cáo khai thác cảng - tàu, sà lan, chờ cầu, năng suất, gián đoạn và sự cố thiết bị, đối soát sự cố với chuyến tàu; căn cứ hàng hải, hải quan có ngày đối chiếu. Kích hoạt khi người dùng nói "báo cáo làm tàu", "sà lan chờ cầu", "năng suất cẩu", "sự cố thiết bị", "tàu trễ giờ". / Port operation reports: ships, barges, berth waiting, productivity, stoppages, equipment incidents. Triggers on ship operation or equipment incident reports.
+description: Dùng dựng/kiểm báo cáo khai thác tàu, sà lan, năng suất, gián đoạn, sự cố; căn cứ pháp lý cần đối chiếu. Không dùng kiểm vị trí bãi. / Ship/barge operations reports; excludes yard-position checks.
 metadata:
   version: "0.2"
 ---
@@ -10,6 +10,10 @@ metadata:
 Rút từ việc thật ở một đội khai thác container (đã bỏ tên đơn vị, mã thiết bị, số liệu). Quy tắc riêng của đơn vị (mã thiết bị,
 danh sách cầu bến, người ký, mẫu đã duyệt) để trong skill riêng của project; skill riêng đứng trước skill này.
 Dựng sổ Excel: `excel-workbooks`; dashboard HTML đọc Excel: `excel-html-viewer` và `html-reports`.
+
+## Phạm vi
+
+Dùng cho báo cáo khai thác tàu/sà lan, năng suất, chờ cầu, gián đoạn và sự cố thiết bị. Các ghi chú căn cứ hàng hải, hải quan và an toàn là tài liệu tham khảo cần đối chiếu với nguồn chính thức trước khi dùng làm căn cứ; không dùng skill này để kiểm dữ liệu vị trí bãi.
 
 ## Dữ liệu cần cho mỗi lượt tàu
 

@@ -620,7 +620,7 @@ class ComposeRoute(ComputeBase):
         self.lab.set_task()
         out = self.lab.run()
         self.assertEqual(out['outcome'], 'COMPUTED', out)
-        self.assertEqual(res['task_fragment']['acceptance_requirement']['req_id'], 'OFFICE-METHOD:data-analyst:v1')
+        self.assertEqual(res['task_fragment']['acceptance_requirement']['req_id'], 'OFFICE-METHOD:data-analyst:v2')
 
     def test_legacy_checkpoint_guard_is_untouched(self):
         task = {'acceptance': {'requirements': []}, 'context_refs': []}

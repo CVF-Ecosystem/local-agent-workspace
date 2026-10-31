@@ -32,6 +32,13 @@ làm kho nguồn; các phần còn lại là gợi ý để agent tự cân nh�
     kể cả ngoài phạm vi lần giao. Thiếu đối chiếu này thì hoàn thiện brief trước khi giao thi công.
     Xong một việc, tranche hay phép kiểm không tự có nghĩa đã đạt mốc sản phẩm.
 
+## Trách nhiệm khi phát triển sản phẩm
+
+Khi phát triển core, package, skill hoặc template, bắt buộc áp dụng [chuẩn nghiệm thu nội bộ](skills/README.md#developer-product-acceptance).
+Đội dev chịu chuẩn đầu ra, kiểm và review trước khi giao bản dùng được; noncoder nêu mục tiêu, quyết định nghiệp vụ và feedback.
+Giữ nguyên tiêu chí đã chốt, quyền mời/trả phí chuyên gia, trạng thái thử nghiệm và quyền install/publish theo chuẩn đó.
+Chuẩn chi tiết và mẫu hồ sơ nằm trong LAW, không cần kho CVF bên cạnh. Việc văn phòng thông thường không phải mở quy trình phát triển.
+
 ## Bảo trì bộ khung LAW (chỉ kho nguồn)
 
 Khi operator giao sửa code, schema, hướng dẫn khung hoặc bản phát hành của chính LAW,
@@ -102,6 +109,8 @@ Sổ ghi nhận file và revision; một dòng tự động mới chưa có ngh�
 Trước khi trích dẫn một văn bản pháp luật hoặc quy định nội bộ, tra chỉ mục (`python tools/library.py find <từ khóa>`); chỉ trích
 nguyên văn từ file có trong thư viện, không có file thì ghi "[chưa đối chiếu toàn văn]" và không đặt trong ngoặc kép (skill `source-library`).
 
+Khi nhiệm vụ cần biểu mẫu, nguồn hoặc quy tắc nghiệp vụ của project, tra cột “Use when” trong `.agent/SKILL_INDEX.md` trước khi chốt phương pháp; đọc skill phù hợp và dùng yêu cầu đã xác nhận. Sửa một câu có thể làm trực tiếp. Version/hash chỉ phát hiện lệch: chọn revision đã tiếp nhận theo nguồn canonical và phạm vi, không tự dùng bản cao hơn, tạo mirror hay kích hoạt ứng viên.
+
 ## Chọn cách phù hợp
 
 Tận dụng năng lực, công cụ và native skill thực có trong phiên này, trong phạm vi được giao; workspace
@@ -159,6 +168,9 @@ Worker, Reviewer hoặc trước tác động ngoài đọc/nháp mới. Main v�
   cách làm của nhiệm vụ trên vai lõi, không cấp quyền; việc nhỏ vẫn làm trực tiếp, không đọc catalog.
 - Hiện chưa có checker hay host chặn các điều này: đây là quy tắc hợp tác, không phải bằng chứng
   đã cưỡng chế.
+
+<!-- law-host-session-guidance -->
+Với Cowork, Codex Desktop, Antigravity hoặc host khác, không coi bộ công cụ của exporter Claude Code là giới hạn native của mọi vai. Xem `roles/office/MAIN.md` mục "Phiên native và exporter"; `office.py compose` có tuyến `host_session` chỉ chuẩn bị theo khai báo có evidence bind, không đăng ký vai/cấp quyền hoặc xác minh host. Giữ quyền do profile nắm, tách model yêu cầu với model thực tế và container/app-project với file Windows. `ROLES.md` trong project ứng dụng chưa phải file trên đĩa; nói rõ nơi lưu. Ghi lỗi công cụ kèm detail/mã thoát, không pipe qua `head` để kết luận; thiếu dependency thì báo thiếu, không tự cài.
 
 ## Làm vừa đủ
 

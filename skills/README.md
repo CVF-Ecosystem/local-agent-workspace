@@ -17,6 +17,8 @@ thư viện hay tất cả ví dụ. Skill đã được nhận đúng phạm vi
 
 ## Script hỗ trợ skill và công việc
 
+Script tải nguồn phải bật kiểm TLS, kiểm HTTP/MIME và chữ ký cùng parser/cấu trúc, giới hạn bytes/redirect/hostname, tải staging không ghi đè và giữ URL cuối/lỗi. Không đoán link thành kết quả đã kiểm, vượt CAPTCHA hay tự lấy tài khoản; xác thực hợp lệ theo quyền đã cấp. Magic bytes không chứng minh toàn văn.
+
 Quy tắc này áp dụng cho script do agent tạo để hỗ trợ công việc, gồm file `.py`. Chỉ tạo file
 khi cần cho yêu cầu đã giao; phép tính hoặc kiểm tra ngắn có thể chạy trực tiếp, không cần lưu
 thành script. Trước khi viết, xem hướng dẫn và script liên quan đã có để tái dùng.
@@ -122,6 +124,38 @@ kiểm tra con có thể KHÔNG ÁP DỤNG kèm lý do, nhưng không bỏ cả 
 
 Đọc nguồn không chứng minh đã chạy; chạy thử không chứng minh mọi nhánh an toàn. Thiếu bằng chứng chỉ chặn
 tuyên bố và hành động phụ thuộc vào nó, không chặn công việc tiếp tục bằng cách sẵn có.
+
+### Làn bảo trì của người xây dựng
+
+Làn này áp dụng khi operator giao người duy trì tạo hoặc cập nhật skill/gói ở kho nguồn. Số lần dùng thật là bằng
+chứng đầu vào, không phải ngưỡng cứng. Vẫn ghi đủ sáu điều kiện, tương xứng với rủi ro và phạm vi; không lấy số
+việc, kiểm cấu trúc hay kết quả của ứng dụng nguồn để thay bằng chứng về hiệu quả của chính skill (điều kiện 4),
+hoặc bằng chứng skill đã tách được quy tắc/dữ liệu riêng khỏi phần dùng chung (điều kiện 6). Chưa đủ thì giữ
+`DEFER`/`REVIEW`; làn này không tự đổi quyền ghi gốc, `ROOT_ELIGIBLE`, hay xác nhận của người dùng ở từng project.
+
+<a id="developer-product-acceptance"></a>
+
+### Trách nhiệm dev trước khi giao bản dùng được
+
+Khi phát triển core, sản phẩm kế thừa, skill/gói hoặc template, đội dev sở hữu chuẩn đầu ra, bộ ca, kết quả kỳ vọng có căn cứ, đối chiếu nguồn, kiểm và review nội bộ. Không chuyển việc viết test/đáp án, debug hoặc chuẩn bị thẩm định sang end user. Người dùng nêu mục tiêu và quyết định nghiệp vụ; feedback mức phù hợp đến sau bản dùng được.
+
+Với core/template, ghi trong roadmap hoặc hồ sơ nghiệm thu hiện có; với skill/gói dùng hồ sơ intake hiện có, không tạo sổ riêng. Ghi: khi dùng/không dùng, đầu vào/đầu ra, nguồn và giới hạn, tiêu chí nội dung đặt trước, ca đại diện/thiếu dữ kiện/lỗi theo rủi ro, evidence đúng revision và luồng dùng trên bản đóng gói. Ca từng dùng chỉnh skill là regression; tuyên bố khả năng cho việc mới cần evidence phù hợp ngoài các ca đó. Kiểm cơ học không thay kiểm ngữ cảnh/lập luận; AI tự soạn rồi tự tán thành đáp án không là bằng chứng duy nhất. Đội dev chuẩn bị đủ ca, nguồn, rubric, câu hỏi và phần cần phán đoán để chuyên gia thẩm định. Nếu cần mời người hoặc có chi phí chưa được cấp quyền, hỏi operator một lần bằng lời công việc về người duyệt/ngân sách; không hỏi lại quyết định đã có, không tự liên hệ hoặc trả phí. Chưa có thẩm định thì claim phụ thuộc vẫn bị chặn, thành phần giữ nhãn thử nghiệm với giới hạn rõ; tiếp tục các kiểm độc lập, không tự chấm thay chuyên gia.
+
+Sáu điều kiện tiếp nhận vẫn áp dụng cho skill/gói; không biến intake thành thủ tục cho mọi sửa core. Chỉ công bố sẵn dùng trong phạm vi đã kiểm; thành phần chưa đủ giữ candidate, không tự bỏ yêu cầu đã cam kết để đạt mốc. Thiếu feedback người dùng không chặn chuẩn bị/kiểm/nhận nội bộ, và không thành bằng chứng user đã nhận. Quyền cài, confirm, ghi gốc hay publish vẫn riêng; không chuyển trách nhiệm QA của dev sang bước confirm.
+
+#### Hồ sơ gọn và bằng chứng tương xứng
+
+Dùng năm câu hỏi trong [mẫu hồ sơ gói](../packs/_template/references/intake-record.md) ngay tại roadmap/hồ sơ nghiệm thu hiện có (hồ sơ intake cho skill/gói): (1) làm việc gì, kích hoạt khi nào; (2) đầu ra đạt chuẩn nào; (3) đã chứng minh bằng gì; (4) phần tăng thêm cụ thể là gì; (5) bản giao dùng được ở đâu và bằng luồng nào. Với skill/gói, mẫu sắp xếp bằng chứng cho đủ sáu điều kiện tiếp nhận, không thay hoặc giảm điều kiện và không yêu cầu sổ riêng. Skill dùng chung dùng cùng khung trong hồ sơ của skill.
+
+Kiểm kỹ thuật là lớp đầu; dev còn phải kiểm nội dung và luồng sản phẩm trước feedback nghiệp vụ. Với việc thông thường, chọn ca đại diện, thiếu dữ kiện và review đầu ra. Với số liệu/định dạng, thêm kiểm phần đo được và lỗi điển hình. Với claim hậu quả cao, đối chiếu nguồn chính thức, ca sai/thiếu nguồn và thẩm định chuyên môn đúng phần cần phán đoán chuyên ngành; không bắt mọi phép kiểm cơ học chờ chuyên gia. Không dùng AI tự đồng ý làm oracle duy nhất hoặc mặc định mọi skill phải có benchmark lớn.
+
+Ghi một tuyên bố giá trị cụ thể (ví dụ đúng mẫu/giảm lỗi số), chứng minh đúng phần đó; bản trùng vẫn theo so sánh native bên dưới. Nguồn có thể đổi cần phiên bản, ngày đối chiếu, trạng thái chưa xác minh và sự kiện/ngày cần kiểm lại theo rủi ro. Hạn kiểm lại là trigger xem xét, không chứng minh hiệu lực hay tự đổi status. Khi dùng nguồn quá hạn mà chưa kiểm lại, ghi ngay trong đầu ra "chưa kiểm lại từ <ngày đối chiếu gần nhất>"; ngày chưa biết thì ghi chưa biết. Với nội dung thận trọng cao, không trình bày nguồn đó như căn cứ hiện hành. Ma trận OS/Python/host/công cụ/định dạng chỉ nhận phạm vi có evidence; phần chưa thử ghi NOT_TESTED. Luồng bản đóng gói phải xét cả tạo mới và nâng cấp khi công bố hỗ trợ, giữ file/quyền/lựa chọn riêng; thiếu evidence vẫn ghi thiếu.
+
+#### Kiểm bắt buộc và giữ bằng chứng
+
+Trước khi công bố sẵn dùng, đội dev chạy bộ kiểm phát hành/đóng gói bắt buộc áp dụng cho đúng candidate và môi trường công bố. Kiểm tập trung không thay bộ bắt buộc khi phần giao thay đổi cần bộ đó; không chạy suite không liên quan chỉ vì sửa tài liệu. Báo cáo hiện có ghi từng test skip, lý do/môi trường, phép kiểm tương đương đã thử và ảnh hưởng tới claim (hoặc NONE nếu không skip); skip không phải PASS. Reviewer dùng lại bằng chứng producer còn đúng revision, chỉ kiểm lại gate bắt buộc hoặc khoảng trống/mâu thuẫn cụ thể.
+
+Trước khi thay tài liệu điều phối chưa được version, giữ nguyên bytes bản cũ trong archive phù hợp, ghi hash và danh tính bản thay. Khi được giao sửa quy tắc CVF, sửa nguồn canonical rồi đồng bộ theo đường hiện có. Sửa tạm được cấp quyền tại bản sinh/downstream phải giữ patch có hash, nhãn NOT_UPSTREAMED và owner/đích nguồn đến khi đối chiếu đồng bộ xuôi xong; không tự nhận đã upstream. Các nghĩa vụ này theo việc phát triển/bảo trì được giao, không biến mọi bản nháp văn phòng thành hồ sơ tiếp nhận.
 
 ### Khi nói "tốt hơn native"
 

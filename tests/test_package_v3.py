@@ -427,7 +427,7 @@ class Lifecycle(Rc):
 
         def cvf_is_a_file(p):
             shutil.rmtree(str(p / '.cvf'))
-            (p / '.cvf').write_text('không phải thư mục')
+            (p / '.cvf').write_text('không phải thư mục', encoding='utf-8')
 
         def only_readable(p):
             for rel in cp.CVF_MACHINE:
@@ -731,12 +731,40 @@ class GuardReview(unittest.TestCase):
     def test_git_clean_filters_preserve_the_four_raw_owner_files(self):
         if shutil.which('git') is None:
             self.skipTest('git unavailable')
+        repo = self.base / 'raw-owner-git'
+        repo.mkdir()
+        # The contract belongs to the versioned attributes, not an ancestor repo
+        # or a developer's global Git attributes/configuration.
+        env = {key: value for key, value in os.environ.items() if not key.startswith('GIT_')}
+        env.update(GIT_CONFIG_NOSYSTEM='1', GIT_CONFIG_GLOBAL=os.devnull, GIT_ATTR_NOSYSTEM='1')
+
+        def git(*args, raw=None):
+            return subprocess.run(['git', '-c', 'core.attributesFile=' + os.devnull, *args],
+                                  input=raw, cwd=str(repo), env=env, capture_output=True)
+
+        initialized = git('init', '--quiet')
+        self.assertEqual(initialized.returncode, 0, initialized.stderr)
+        top = git('rev-parse', '--show-toplevel')
+        self.assertEqual(top.returncode, 0, top.stderr)
+        self.assertEqual(Path(os.fsdecode(top.stdout).strip()).resolve(), repo.resolve())
+        (repo / '.gitattributes').write_bytes((ROOT / '.gitattributes').read_bytes())
+        probe = b'raw-owner-probe\r\nsecond-line\r\n'
         for rel in ('tools/publish_new.py', 'tools/context_update.py', '.cvf/checks/v3/observer.py', '.cvf/checks/v3/workflow.py'):
             raw = (ROOT / rel).read_bytes()
-            filtered = subprocess.run(['git', 'hash-object', '--stdin', '--path=' + rel], input=raw, cwd=ROOT, capture_output=True)
-            exact = subprocess.run(['git', 'hash-object', '--stdin', '--no-filters'], input=raw, cwd=ROOT, capture_output=True)
+            filtered = git('hash-object', '--stdin', '--path=' + rel, raw=raw)
+            exact = git('hash-object', '--stdin', '--no-filters', raw=raw)
             self.assertEqual((filtered.returncode, exact.returncode), (0, 0), rel)
             self.assertEqual(filtered.stdout, exact.stdout, rel)
+            filtered_probe = git('hash-object', '--stdin', '--path=' + rel, raw=probe)
+            exact_probe = git('hash-object', '--stdin', '--no-filters', raw=probe)
+            self.assertEqual((filtered_probe.returncode, exact_probe.returncode), (0, 0), rel)
+            self.assertEqual(filtered_probe.stdout, exact_probe.stdout, rel)
+        filtered = git('hash-object', '--stdin', '--path=unprotected-probe.py', raw=probe)
+        exact = git('hash-object', '--stdin', '--no-filters', raw=probe)
+        normalized = git('hash-object', '--stdin', '--no-filters', raw=probe.replace(b'\r\n', b'\n'))
+        self.assertEqual((filtered.returncode, exact.returncode, normalized.returncode), (0, 0, 0))
+        self.assertNotEqual(filtered.stdout, exact.stdout)
+        self.assertEqual(filtered.stdout, normalized.stdout)
 
 
 if __name__ == '__main__':

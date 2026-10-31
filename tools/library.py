@@ -7,6 +7,8 @@ Dùng / Usage (chạy từ thư mục gốc của project / run from the project
                                                create the folders and the index if missing (never overwrites)
   python tools/library.py check [--days 180]   kiểm chỉ mục: thiếu file, file chưa vào chỉ mục, trùng số hiệu,
                                                tình trạng mâu thuẫn, ngày kiểm quá cũ / check the index
+  python tools/library.py check --content-audit  thêm dấu hiệu nguồn chỉ đọc, PDF engine tùy chọn;
+                                               add read-only source indicators; optional PDF engine, no verification
   python tools/library.py find <từ khóa> [--group "Pháp luật"] [--all]
                                                tìm theo số hiệu, trích yếu, lĩnh vực, điều (không phân biệt dấu)
                                                search number, title, domain, articles (accent-insensitive)
@@ -27,6 +29,10 @@ Dùng / Usage (chạy từ thư mục gốc của project / run from the project
                                                ngữ nghĩa explicit; find chỉ đọc sổ, không đọc nguồn, không xác minh
                                                record/look up read content per source version (sheet "LAW content") and explicit
                                                semantic source-events; find reads the workbook only, never the source, verifies nothing
+  python tools/library.py intake [--file BASENAME --code CODE] [--apply --expect-plan TOKEN] [--json]
+                                               nhập create-only từ staging project đã khai; mặc định chỉ xem trước,
+                                               không xác minh danh tính/toàn văn/hiệu lực; giữ nguyên staging.
+                                               create-only from configured staging; preview by default, staging retained.
   Thêm --json để lấy kết quả dạng JSON (bảng điều khiển dùng) / add --json for JSON output.
 
 find/check/stats đọc sheet "Danh mục"; sync --apply chỉ ghi sổ này và sheet lịch sử LAW, không sửa file nguồn.
@@ -410,6 +416,9 @@ def cmd_check(args):
     unindexed = [f for f in library_files() if f not in indexed]
     for f in unindexed:
         warns.append((0, L('file chưa có trong chỉ mục: references/%s', 'file not in the index: references/%s') % f))
+    if args.get('content_audit'):
+        import library_audit
+        warns.extend(library_audit.audit(ROOT, data, sys.modules[__name__]))
     out = {'rows': len(data), 'errors': [{'row': n, 'msg': m} for n, m in errs], 'warnings': [{'row': n, 'msg': m} for n, m in warns],
            'unindexed': unindexed}
     findings = [{'row': n or None, 'severity': 'error', 'message': m} for n, m in errs] + \
@@ -1010,7 +1019,7 @@ def cmd_content(cmd, rest):
     try:
         request = library_sync.load_request(path)
         res = apply_fn(ROOT, request, token) if sub == 'apply' else plan_fn(ROOT, request)
-    except (library_sync.SyncError, ContentError) as e:
+    except (library_sync.SyncError, library_sync.ContentError, ContentError) as e:
         stop(str(e), reason=getattr(e, 'code', None) or getattr(e, 'reason', 'refused'),
              next_actions=[L('Sửa yêu cầu hoặc đồng bộ nguồn, rồi xem trước lại.', 'Fix the request or sync the source, then preview again.')])
     changed = res.get('bytes') is not None
@@ -1042,9 +1051,10 @@ def cmd_content(cmd, rest):
 
 
 def main(argv):
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(encoding='utf-8', errors='replace')
     global LANG
-    if hasattr(sys.stdout, 'reconfigure'):
-        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
     try:
         info = json.load(io.open(os.path.join(ROOT, '.agent', 'PACKAGE_INFO.json'), encoding='utf-8'))
         LANG = 'en' if info.get('language') == 'en' else 'vi'
@@ -1058,9 +1068,15 @@ def main(argv):
         print(__doc__)
         return 0
     cmd, rest = argv[0], argv[1:]
+    if cmd == 'intake':
+        import library_intake
+        return library_intake.command(rest, sys.modules[__name__])
     if cmd in ('content', 'source-event'):
         return cmd_content(cmd, rest)
     args = {'json': '--json' in rest, 'all': '--all' in rest, 'apply': '--apply' in rest}
+    if cmd == 'check' and '--content-audit' in rest:
+        args['content_audit'] = True
+        rest.remove('--content-audit')
     rest = [a for a in rest if a not in ('--json', '--all', '--apply')]
     for opt in ('--days', '--group'):
         if opt in rest:

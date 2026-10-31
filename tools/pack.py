@@ -140,6 +140,7 @@ def validate_pack(base, name):
             errs.append('%s/skills/%s/SKILL.md thiếu frontmatter.' % (name, sid)); continue
         if fm.get('name') != sid: errs.append('%s/skills/%s: "name" (%r) không khớp thư mục.' % (name, sid, fm.get('name')))
         if len(fm.get('description', '')) < 40: errs.append('%s/skills/%s: description thiếu hoặc quá ngắn.' % (name, sid))
+        if len(fm.get('description', '')) > 220: errs.append('%s/skills/%s: description vượt 220 ký tự; rút gọn để index giữ đủ điều kiện dùng.' % (name, sid))
         if not re.search(r'^\s+version:\s*"?\d', txt, re.M): errs.append('%s/skills/%s: thiếu metadata.version.' % (name, sid))
     skills_dir = os.path.join(base, 'skills')
     if os.path.isdir(skills_dir):
@@ -313,6 +314,15 @@ def installed():
                     pass
     return out
 
+def index_description(description):
+    """Defensive display fallback for external descriptions; never split a word."""
+    if len(description) <= 220:
+        return description
+    prefix = description[:220]
+    boundary = max((m.start() for m in re.finditer(r'\s+', prefix)), default=0)
+    return prefix[:boundary].rstrip() + '…'
+
+
 def index_rows(name, meta, st, approved=False):
     """(skill id, trạng thái, mẫu dòng có chỗ %s cho trạng thái). Chỉ gói đã được người dùng xác nhận (approved) mới ghi AVAILABLE.
     (skill id, status, row template with %s for the status). Only a pack the user confirmed (approved) is recorded AVAILABLE."""
@@ -324,7 +334,7 @@ def index_rows(name, meta, st, approved=False):
         fm = cp.frontmatter(io.open(sp, encoding='utf-8').read()) or {}
         desc = re.sub(r'\s*(Kích hoạt khi|Triggers when).*$', '', fm.get('description', ''), flags=re.S).strip().replace('|', '/')
         rows.append((sid, 'AVAILABLE' if approved else 'REVIEW',
-                     ('| %s | LOCAL | PACK | %s/%s/skills/%s/SKILL.md | %s | ' % (sid, INSTALL_DIR, name, sid, desc[:220])).replace('%', '%%')
+                     ('| %s | LOCAL | PACK | %s/%s/skills/%s/SKILL.md | %s | ' % (sid, INSTALL_DIR, name, sid, index_description(desc))).replace('%', '%%')
                      + '%s' + (' | Gói/Pack %s v%s; %s%s |' % (name, meta['version'], note, L('; đã xác nhận ở project', '; confirmed in this project') if approved else '')).replace('%', '%%')))
     return rows
 
@@ -669,6 +679,9 @@ def cmd_new(a):
     print('Created packs/%s/. Edit pack.json, rename and write the skills in skills/, then run: python tools/pack.py check %s' % (a.name, a.name))
 
 def main():
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(encoding='utf-8')
     global LANG
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest='cmd', required=True)
@@ -684,8 +697,6 @@ def main():
             s.add_argument('--apply', action='store_true', help=argparse.SUPPRESS)  # giữ cho lệnh cũ / kept for older commands
     s = sub.add_parser('check'); s.add_argument('name', nargs='?'); s.set_defaults(f=cmd_check)
     a = ap.parse_args([x for x in sys.argv[1:] if x != '--result-json'])
-    if hasattr(sys.stdout, 'reconfigure'):
-        sys.stdout.reconfigure(encoding='utf-8')
     try:
         LANG = json.loads(rd('.agent/PACKAGE_INFO.json')).get('language', 'vi')
     except (OSError, ValueError):

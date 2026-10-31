@@ -612,7 +612,7 @@
     "protocol_version": 1,
     "owner_tool": "context_update",
     "entrypoint": "tools/context_update.py",
-    "entrypoint_sha256": "sha256:ee7cb6b15f3b5e70f394d9483085126a919c4f19f044b773f0a185cd74626248",
+    "entrypoint_sha256": "sha256:65fd87929e8863937e96f084beadee791044b5dc5ca3c048f1137b13ae5e148d",
     "pin_semantics": "VERSION_COMPARE_ADVISORY",
     "platform": "windows-ntfs-local",
     "scope": "OPERATIONAL_CONTEXT_NOT_ARTIFACT",

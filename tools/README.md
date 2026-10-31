@@ -161,6 +161,52 @@ Nút "Cập nhật sổ" chạy `library_sync.plan` (xem trước, không ghi); 
 
 ## library.py
 
+Lõi/helper `library_audit.py` giữ Python 3.8+; extractor tùy chọn đã thử cục bộ là `pdfminer.six`20250506/Python3.11, bản engine này yêu cầu Python>=3.9. Không tự cài, vendored hoặc thêm dependency bắt buộc. `python -B -m unittest discover -s tests -p test_library_audit.py -v` dùng fixture giả bằng stdlib; khi thiếu engine, hai ca extraction thật ghi skip/NOT_TESTED. Office chỉ kiểm content-types, root relationship và main XML của OOXML transitional, không kiểm mọi thành phần hoặc nội dung. Engine/dependency nếu được phân phối phải rà license/attribution đúng phiên bản.
+
+`check --content-audit` bổ sung cảnh báo chỉ đọc về hash, lời khai kiểm theo phạm vi và dấu hiệu PDF theo trang. Engine `pdfminer.six` là tùy chọn, không tự cài; giới hạn 20 MiB/file, 100 trang, 15 giây/PDF, ZIP 2.000 entry/40 MiB giải nén/1 MiB XML. Lỗi, thiếu engine hoặc quá giới hạn là chưa kiểm; cảnh báo không đổi mã thoát cơ bản. Không OCR hay xác minh hiệu lực/toàn văn; kiểm scope liên kết không chống mọi race.
+
+**Nhập file chờ (offline, create-only).** `python tools/library.py intake [--json]` chỉ xem trước;
+`intake --apply --expect-plan TOKEN` ghi đúng bản đã xem. Có thể chọn một file bằng
+`--file BASENAME --code CODE` ở cả hai lượt. Agent chuẩn bị cấu hình khi được giao, không bắt người dùng soạn JSON;
+công cụ không tự tạo hoặc bật `<project>/.agent/SOURCE_INTAKE.json`. Cấu hình project có đúng các trường sau (ví dụ giả):
+
+```json
+{"schema":"law.source-intake/1","enabled":true,"staging":"references/legal/_moi_tai","mappings":[{"code":"DOC-01","canonical_name":"DOC-01_nguon.txt","destination":"legal/linh-vuc/DOC-01_nguon.txt"}]}
+```
+
+Thư mục đích phải có sẵn; staging nằm dưới `references/<nhóm>/` và có thư mục bắt đầu `_`, nên các scanner thường
+không tự nhập file chờ. Chỉ đọc file trực tiếp trong staging, không quét cả lĩnh vực; subfolder, liên kết, đuôi không hỗ trợ,
+config thiếu/tắt/sai, không hoặc nhiều mã, nhiều file cùng mã đều bị từ chối. Mã được tìm nguyên chuỗi (ranh giới chữ/số,
+`_` là dấu phân cách), hoặc tên file đúng tên chuẩn, hoặc lựa chọn tường minh. Số hiệu có `/` cần tên chuẩn hoặc lựa chọn
+tường minh nếu tên file dùng cách viết khác. Không đoán tên mới nhất, không tự đổi tên, không nối ID theo SHA/tên.
+Luật cũ/cùng chủ đề chỉ là gợi ý; hậu tố `_ban-gioi-thieu` bị từ chối. Tên/mã đúng không chứng minh danh tính, VBHN,
+toàn văn hoặc hiệu lực. Importer không tải mạng và không kiểm parser nội dung; dùng `check --content-audit` cho dấu hiệu sau nhập.
+
+Giới hạn: config 64 KiB/100 mapping; staging 100 entry, 20 MiB/file, tổng 100 MiB. Mọi file trong staging được kiểm kê/hash,
+kể cả khi chỉ chọn một file; không dùng staging để chứa dữ liệu ngoài phạm vi được giao. Plan buộc bytes config/sổ,
+kiểm kê/SHA nguồn, lựa chọn, đích chưa có, ID/row/revision và ngày quan sát; thay đổi phải xem trước lại. Preview không tạo
+runtime; apply có thể tạo thư mục khóa và `index.lock` dù sau đó từ chối. Kiểm đường dẫn/đầu vào giữa đọc và ghi là hợp tác,
+không phải sandbox hay atomic no-follow với mọi tiến trình ngoài.
+
+Owner `library_sync` ghi file mới và sổ trong cùng transaction; giữ nguyên nguồn staging cả sau thành công. Đích đã tồn tại
+luôn bị từ chối, kể cả SHA giống. Dòng đã có đường dẫn hoặc căn cứ revision/SHA/history/content cũ không được gắn lại;
+dòng chưa có đường dẫn/căn cứ có thể giữ ID khi mã khớp duy nhất. Revision mới 1, SHA thực, verification `Cần đối chiếu`;
+fulltext dòng mới để trống (chưa xác nhận), dòng cũ giữ nguyên trừ khai `Có` khi chưa có file thì từ chối.
+`check` vẫn có thể cảnh báo có file nhưng chưa khai Có: đó không phải yêu cầu tự nâng xác minh.
+
+Đây là giao dịch nhiều bước **có phục hồi**, không nguyên tử toàn bộ file+sổ. Atomic no-clobber dùng hard link cùng filesystem,
+không fallback ghi đè; filesystem không hỗ trợ thì từ chối. Chỉ importer bật `Transaction(..., create_only=True)` và dùng
+`local-agent-workspace/transaction-v2`; owner mới đọc v1/v2, owner cũ từ chối v2, nên phục hồi bằng bộ tools mới đi cùng importer.
+Caller mặc định vẫn v1, kể cả các nhãn `create`/`create_exclusive` cũ; không đổi hành vi upgrade/adopt.
+Khi gián đoạn, chạy `python tools/transaction.py status`, rồi chọn `resume TXID` hoặc `rollback TXID`.
+Staged name được giữ đến commit để đối chiếu identity+SHA; file người dùng lưu lại (kể cả thay file bằng cùng bytes) được giữ,
+và nguồn tạo bị đổi/thiếu/xung đột chặn ghi tiếp sổ. Rollback một phần giữ bản người dùng, không cho resume; đọc hướng dẫn
+trong kết quả thay vì xóa nhật ký để bỏ guard. Compare-before của sổ thu hẹp cửa sổ lưu đồng thời, không ngăn mọi external writer.
+Không có retry tự động hay chi phí API; lỗi công cụ chỉ thử lại tối đa một lần sau khi hiểu trạng thái.
+Kết quả lỗi sau khi ghi một phần có `status=partial`, mã thoát 1, transaction ID và các file đã biết đã ghi;
+`changes=null` nếu chưa xác định được tác động. Không lấy lỗi apply làm bằng chứng chưa ghi gì. Lỗi sổ/nội dung đã biết được báo
+từ chối, không traceback. Dòng mới dùng ô trống thực sự, không kế thừa `Có` hoặc ghi đè ghi chú có sẵn.
+
 Thư viện nguồn trong `references/` (xem skill `source-library`). `init` tạo các thư mục nhóm (legal, policies, templates,
 source-documents) kèm README và chép mẫu chỉ mục thành `references/_INDEX.xlsx` nếu chưa có (không ghi đè). `check [--days 180]`
 kiểm chỉ mục, báo theo số dòng: thiếu file, file chưa vào chỉ mục, trùng số hiệu, trùng Mã (khi sổ có cột Mã: nêu mã và các dòng, cùng quy tắc với `sync`; sổ cũ không có cột Mã đọc như trước), "Còn hiệu lực" nhưng đã ghi bị thay thế, ngày
@@ -196,6 +242,8 @@ thì các kiểm tra hiện có tiếp tục áp dụng. Từ chối x14, `x14_s
 
 Ghi lại **điều đã đọc** từ một nguồn, gắn với đúng phiên bản nguồn làm căn cứ, rồi tra lại sau này mà không phải đọc lại nguồn. Cùng một sổ `references/_INDEX.xlsx`, cùng writer với `sync`
 (`library_sync.locked_commit`: khóa, nhật ký strict, từ chối x14, Transaction `expected_before`); không có database, cache, đồ thị hay giao diện riêng.
+
+Caller phải đóng workbook và stream do mình giữ trước `locked_commit` thay file; khi phù hợp đọc snapshot bytes qua `BytesIO` và dùng `try/finally` đóng tài nguyên. Sự cố handle ở script project chưa chứng minh lỗi core LAW.
 
 - `content preview --request FILE` / `content apply --request FILE --expect-plan TOKEN` ghi **một** entry (`entry_id` do người gọi chọn) vào sheet `LAW content` (A1 = `law.source-content/1`, tiêu đề ở dòng 4, dữ liệu từ dòng 5; sheet chỉ được tạo ở lần `apply` đầu tiên, xem trước và tra không tạo). Request là JSON dữ liệu thuần, khóa lạ bị từ chối:
   `entry_id, source_id, source_revision, source_sha256, locator, read_scope, kind (EXTRACT|FACT|CALCULATION|INFERENCE), text, limits, recorded_by`, tùy chọn `check_level (NOT_CHECKED|DECLARED_CHECK)` kèm `check_scope, check_evidence_ref, checked_by, checked_at`, `user_decision`+`user_confirmation_ref` (đi cùng nhau), `supersedes`.
@@ -350,6 +398,14 @@ python tools/execution_profile.py apply-migration   --grants FILE --expect-plan 
 - **Ghi.** Qua `transaction.py` (một giao dịch nhóm gồm profile, `PROJECT.md` và hai bản sao lưu `*.bak-<ngày>` khi migration; từ chối trước khi ghi nếu có giao dịch dở hoặc không rõ, runtime/đích là liên kết, hay sao lưu đã tồn tại). **Không nguyên tử** giữa hai file và không chống race: bị ngắt giữa chừng hoặc người dùng sửa file trong lúc ghi thì kết quả nêu đúng file nào đã/chưa ghi (`PARTIAL`/`CONFLICT`), giữ bytes của người dùng và hướng dẫn `status`/`resume`/`rollback`; không xóa nhật ký hay đặt lại profile để vượt chặn.
 - **Chưa kiểm/không có:** host áp dụng lựa chọn, đăng ký native, tính xác thực và hạn của grant, thực thi giới hạn, hệ điều hành ngoài Windows 11/NTFS, liên kết tệp thật khi không có quyền tạo symlink.
 
+
+### Lỗi ghi trên host và log đầy đủ / Host write errors
+
+`execution_profile.py` in `detail` cả trong text và `--result-json` (không phải `--json`). Giữ stdout/stderr và mã thoát của chính Python; không kết luận từ lệnh nối `| head` làm mất lỗi/mã thoát. `VALIDATOR_UNAVAILABLE` là thiếu validator trong đúng môi trường chạy; không tự cài vào Windows hoặc VM nếu người dùng chưa giao. `preview-config` chỉ xem đề xuất lựa chọn yêu cầu; `apply-config` mới ghi lựa chọn, không thêm grant; host phải mô tả đúng ứng dụng, không chọn `claude-code` để ép exporter chạy trong Cowork.
+
+Giao dịch vẫn kiểm tạo/ghi/đóng/xóa file `.agent/runtime/.probe-*`. `WRITE_PROBE_FAILED` nêu `phase`, `errno`, `winerror`, đường tương đối; phase=remove nghĩa là tạo/ghi đã qua nhưng host từ chối dọn file thử của giao dịch. File đích người dùng chưa được ghi. Không bỏ qua probe, kiểm hash, backup hay cleanup để chạy tiếp. Chỉ xin quyền cần thiết cho file tạm của giao dịch hoặc thực hiện qua môi trường filesystem phù hợp; không yêu cầu quyền xóa toàn project và không tự dọn probe/journal cũ. Việc Windows ghi được không tự chứng minh mọi thao tác FUSE/VM đều chạy được.
+
+EN: Text and `--result-json` preserve error detail and Python's exit code. `WRITE_PROBE_FAILED` identifies the phase, errno/winerror and relative probe path. A failed removal still refuses before user-file writes; do not bypass the probe, hashes, backup or cleanup. Grant only the necessary temporary-file operations or use an appropriate filesystem environment. Missing validation dependencies are specific to the executing environment and must not be installed automatically.
 
 ## native_agents.py
 
@@ -538,6 +594,32 @@ chỉ báo catalog dùng được hay không (`/api/status`, trường `office`)
 
 `compose` có thêm khóa tùy chọn `compute_route` = `{probe, scope}` (V4): không có khóa này thì kết quả và handover giữ nguyên như trên. Có khóa thì `office_compute.py` đối chiếu
 probe (biên nhận `canary`, khớp digest owner và canary) và quyền lab, trả `compute_route` với `ROUTE_READY_UNVERIFIED`/`ROUTE_REFUSED`, và handover Worker nêu công cụ shell của host với đúng một lệnh.
+
+### Native host-session preparation (Cowork / Codex Desktop / Antigravity)
+
+`office.py compose` mặc định vẫn báo bộ công cụ exporter Claude Code. Main có thể chủ động thêm `host_session` vào JSON yêu cầu để khai báo đúng phiên native; helper không phát hiện host, không gọi agent hoặc ghi cấu hình. Ví dụ cấu trúc dưới đây là minh họa, không phải evidence hay grant thật; thay digest bằng hash của đúng ghi nhận do Main giữ:
+
+```json
+{
+  "host": "cowork",
+  "agent_type": "general-purpose",
+  "tool_names": ["Bash"],
+  "capabilities": ["read_local", "write_text", "compute", "office_files"],
+  "requested_model": "sonnet",
+  "requested_effort": "medium",
+  "execution_location": "container",
+  "output_location": "container",
+  "evidence_ref": {"path": "working/ghi-nhan-host.txt", "digest": "sha256:<64 lowercase hex characters>"}
+}
+```
+
+Đây là giá trị của field `host_session`, không phải toàn request: các field `method`, `reason`, `request`, `sources` vẫn như trên. Tất cả field trong cấu trúc này bắt buộc; `requested_model`/`requested_effort` có thể null. `evidence_ref` chỉ được nằm trong working/references, file thường không liên kết, digest đúng bytes. Không trộn `compute_route`; không thêm actual/verified/grant/registration vào input để tự chứng nhận. Helper bind note vào `context_refs`/`task_fragment`, checkpoint tiếp tục so bytes context như trước. Chỉ bind bytes, không xác thực nội dung lời khai.
+
+Khả năng được khai chỉ là `ROUTE_READY_UNVERIFIED` dù exporter=ABSENT; khả năng bắt buộc không khai vẫn held, không lấy công cụ exporter bù cho host khác. Công cụ Main không tự là công cụ của subagent; phần mềm đã cài không tự là capability. Tool names không cấp công cụ/quyền. Profile requested và session requested giữ riêng; actual model/effort, grant và registration vẫn NOT_INSPECTED, lời gọi chuyên viên NOT_OBSERVED. Alias hay agent tự khai không chứng minh actual model.
+
+Vị trí output là lời khai, `delivery=NOT_VERIFIED` kể cả khi ghi "Windows/project". Main phải kiểm đường truyền, mở artifact đã nhận, đối chiếu bytes/digest và checkpoint trước tích hợp. Khi TASK/grant chưa cho công cụ hoặc thao tác cần thiết thì giữ chờ; không dùng tuyến này để bỏ quyền do profile giữ, không tự đặt grant từ một báo cáo. Định dạng Office/PDF native hiện chỉ được chuẩn bị cho data-analyst/market-analyst v2; các hợp đồng khác chưa hỗ trợ thì từ chối. Brief native không ép bốn công cụ của Code exporter hoặc tuyên không có công cụ băm; Main vẫn phải quan sát digest độc lập.
+
+EN: This optional route prepares a host-native hand-over using explicitly declared capabilities and a hash-bound Main note, never a host inspection, registration, grant or invocation. It works as a declaration format for other hosts too, not evidence those hosts were tested. Required undeclared capabilities stay held. Actual model/effort and delivery remain unverified; Main must separately validate authority, tools, exact delivered bytes and checkpoint. Native/session file paths, application-project documents and Windows files are different locations.
 
 ## office_compute.py (V4: công cụ tính hẹp cho vai văn phòng, chỉ đọc)
 
@@ -816,6 +898,120 @@ Ranh giới bản giao V7: `check_package.SCAFFOLD_READMES` là14đường READM
 
 `python -B tools/work_status.py --project DIR` chỉ đọc STATE marker `law-work/1`, các TASK/RESULT được dẫn và finite input/context/ledger của chúng. UI `?view=work` và `/api/work/status` dùng cùng owner; không đi qua status/count/recent/merge scan, không AI/ghi lịch sử/đổi nháp. Thiếu hoặc trùng marker thì báo chưa xác định, không tìm file mới nhất. Giữ model quyền và host stop riêng; copy yêu cầu tiếp/dừng không là dispatch hay stop. Marker/định dạng và cách Main ghi nằm `roles/office/MAIN.md`.
 
-`task_checkpoint.py` là owner code của sáu hàm đọc/binding/checkpoint được đưa từ recipe A-11 trong roles/README.md. Recipe workflow còn lại dùng owner này, UI không compile/exec Markdown. Code/checker/schema/policy chỉ từ cây LAW cố định cạnh owner, không import data project. Checkpoint so bytes/metadata/binding, không review nội dung hoặc xác thực grant/actor/host; bounded reads, TOCTOU/cooperative vẫn giới hạn. Owner không ghi, không tự cập nhật STATE hoặc tìm TASK.
+`task_checkpoint.py` là owner code của sáu hàm đọc/binding/checkpoint được đưa từ recipe A-11 trong roles/README.md. Recipe workflow còn lại dùng owner này, UI không compile/exec Markdown. Code/checker/schema/policy chỉ từ cây LAW cố định cạnh owner, không import data project. Checkpoint so bytes/metadata/binding, không review nội dung hoặc xác thực grant/actor/host. TASK/RESULT/candidate vẫn đọc tối đa 2 MiB; input/context chỉ cần đối chiếu digest thì băm theo khối 64 KiB, không nạp toàn file. Custom reader vẫn quyết định phạm vi trừ khi caller giao digest callback có cùng scope/snapshot; work_status giữ cache và ngân sách đọc tổng 16 MiB. TOCTOU/cooperative vẫn giới hạn. Owner không ghi, không tự cập nhật STATE hoặc tìm TASK.
 
 EN: work_status reads one explicit STATE navigation marker and the referenced task/result/input/context/ledger files; the direct Work page/API avoid status scans, AI, operation logging and draft selection. Missing/ambiguous refs never fall back to newest-file discovery. Resume/stop only copy a request. task_checkpoint promotes the accepted A-11 core into fixed Python product code; the recipe delegates and the UI never executes project Markdown. Matching is not semantic approval, authority, host state or user acceptance; cooperative/TOCTOU limits remain.
+
+## check_quotes.py (first exact quote check / kiểm nguyên văn hẹp)
+
+Chỉ đọc nguồn UTF-8 đã khai là `plain-text` hoặc `verified-extract`; phải có SHA-256 đủ
+64 ký tự hex của revision và vùng dòng 1-based inclusive. `sha256:` là tiền tố tùy chọn,
+không phải cho phép hash rút gọn. `verified-extract` là lời khai của người gọi về bản text
+đã đối chiếu, công cụ không xác minh extraction. Thiếu `--source-kind`, `ocr`, `table` hoặc
+`unverified-extract` cho UNVERIFIED; không dùng đuôi file để suy ra text đã được xác minh.
+Không trích PDF, OCR hay bảng; không cài dependency, truy cập mạng hoặc ghi file nghiệp vụ.
+Dùng `-B` để cả Python không tạo cache bytecode. Không có corpus/rubric pháp lý được duyệt
+kèm công cụ này; test chỉ dùng text giả lập.
+
+```text
+python -B tools/check_quotes.py --root . --source references/example.txt --expected-sha256 <64-hex> --start-line 2 --end-line 4 --source-kind plain-text --quote "Nội dung cần đối chiếu" --json
+```
+
+Có thể thay `--quote` bằng `--quote-file <path>` (UTF-8, giữ nguyên newline cuối file).
+Nguồn tối đa 8 MiB, quote tối đa 64 KiB; vượt giới hạn file là UNVERIFIED, quote trực tiếp
+không hợp lệ là ERROR. Hai đường dẫn chỉ được nằm trong root khai báo, kể cả khi dùng
+đường dẫn tuyệt đối; từ chối traversal `..`, symlink/junction/reparse point cả ở cha của root.
+Chỉ đọc một snapshot bytes của nguồn để vừa băm vừa so khớp; không băm một revision rồi
+so revision khác. Thay đổi trong khi đọc, lỗi đọc/mã hóa, hash lệch, vùng dòng vượt nguồn
+đều UNVERIFIED. Kiểm stat trước/sau giảm lỗi TOCTOU, không bảo đảm chống filesystem đối kháng.
+
+Giới hạn liên kết/cloud: công cụ từ chối mọi `FILE_ATTRIBUTE_REPARSE_POINT` ở file,
+đường dẫn bên trong root và cả root/thư mục cha. File/thư mục placeholder OneDrive hoặc
+thư mục chuyển hướng mang cờ đó sẽ trả UNVERIFIED (exit 2), kể cả khi được dùng hợp lệ;
+không tự hydrate/tải file hay đi theo liên kết. Không phải mọi thư mục OneDrive đều có
+cờ này. Nếu cần kiểm, dùng bản nguồn local thường được phép sao chép, bảo toàn và đối
+chiếu lại SHA-256; không đổi reparse flag hoặc nới boundary để lấy MATCH.
+
+Test thư mục cha dùng symlink nếu tạo được, fallback sang junction trên Windows; có
+ca root đi qua liên kết và đối chứng nguồn thường cùng bytes. Ca file-symlink không
+thay bằng junction: local thiếu quyền tạo link vẫn skip rõ lý do; CI Ubuntu/macOS trong
+ma trận hiện có là nơi cần chạy ca này, không suy đã đạt khi chưa có log CI. Test cờ
+placeholder là mô phỏng; thử metadata/điểm reparse OneDrive local không chứng minh toàn
+bộ vòng đời cloud-only/hydration được hỗ trợ.
+
+EN: All reparse-point sources and ancestors are refused with UNVERIFIED, including
+legitimate cloud placeholders or redirected paths that carry that flag. Ordinary
+OneDrive folders need not carry it. The checker does not hydrate/download files. Use
+an authorized ordinary local copy and rebind its SHA-256; do not bypass the boundary.
+Directory-link tests use symlinks or Windows junction fallback; file-symlink coverage
+still needs a capable host (including the existing Ubuntu/macOS CI matrix). Synthetic
+placeholder-flag tests and local metadata probes do not establish real cloud-only
+hydration support or a successful CI run.
+
+Mặc định `strict`: giữ nguyên code point, hoa/thường, khoảng trắng và newline. `nfc` chỉ
+chuẩn hóa Unicode NFC; `nfc-whitespace` thêm gom mỗi chuỗi Unicode whitespace (`re` `\s+`)
+thành đúng một dấu cách ASCII, không trim. Chuẩn hóa áp dụng cho cả quote và vùng nguồn,
+được khai trong kết quả. Dòng được đếm bằng Python `str.splitlines(keepends=True)`; vùng
+được cắt trước chuẩn hóa. Không fuzzy match, casefold hoặc sửa từ/gạch nối. Quote chỉ xuất
+hiện ngoài vùng đã khai vẫn MISMATCH. MATCH chỉ chứng minh sự hiện diện text theo chế độ
+đó ở đúng nguồn/hash/vùng; không chứng minh dẫn chứng hỗ trợ claim, tính xác thực, tính đầy
+đủ, chính xác extraction, hiệu lực pháp lý hay quyền dùng nguồn.
+
+Mã thoát/API `code`: 0 MATCH (`success`), 1 MISMATCH (`issues`), 2 UNVERIFIED (`not_checked`),
+3 ERROR đầu vào (`error`, kể cả lỗi argparse). API `check_quote(...)` trả envelope result-v1,
+không raise cho đầu vào thông thường; xem signature/docstring trong owner. `--json` chỉ in
+một JSON trên stdout; lỗi cú pháp còn có usage trên stderr. Mặc định in dòng dễ đọc và marker
+`@@RESULT_JSON@@`. Hai stream CLI được đặt UTF-8 trước argparse (kể cả help/lỗi).
+
+EN: Read-only, hash-bound exact substring check inside an explicit inclusive line range,
+using a single UTF-8 source snapshot and the declared normalization. The caller declares
+plain text or a previously verified text extraction; provenance is not independently
+verified. OCR/table/unverified extraction is unsupported and returns UNVERIFIED. The
+checker never extracts documents or confirms entailment/current legal validity. Paths stay
+inside the declared root, links/reparse points and traversal are refused, and source/quote
+limits are 8 MiB/64 KiB. Use Python `-B` to suppress interpreter bytecode caches. Exit codes
+0/1/2/3 mean MATCH/MISMATCH/UNVERIFIED/input ERROR; `--json` emits result-v1 on UTF-8 stdout.
+
+## source_response.py
+
+Kiểm phản hồi đã lưu **offline** bằng Python 3.8+ và thư viện chuẩn; không tải trang,
+không nhận đường dẫn/URL, không đọc hay ghi file, không tạo nhật ký/cache. Agent dùng
+khi đã có bytes phản hồi và HTTP status/headers; không đoán quyền hay hợp đồng nguồn.
+API `classify_response(status, headers, body, expected_content=False)` nhận `body`
+bytes hoặc chuỗi UTF-8, headers là dict chuỗi. API trả quyết định và evidence an toàn;
+đầu vào sai trả `unknown` với `input_error`. Không sửa đầu vào.
+
+CLI chỉ đọc một JSON UTF-8 từ STDIN. Ví dụ dưới đây là dữ liệu giả: body base64 của
+`<main>ok</main>`. PowerShell, chạy từ gốc project:
+
+```powershell
+'{"status":200,"headers":{"Content-Type":"text/html"},"body_base64":"PG1haW4+b2s8L21haW4+","expected_content":true}' | python -X utf8 -B tools/source_response.py
+python -X utf8 -B tools/source_response.py --help
+```
+
+`expected_content` là khai báo của caller rằng phản hồi thuộc loại nội dung đang chờ;
+chỉ cho phép parse tiếp, không xác minh danh tính, nội dung, toàn văn, giấy phép, hiệu lực
+hay điều kiện import. `identity_verified`, `fulltext_verified`, `importable` luôn false.
+Thiếu khai báo này thì `unknown`. HTTP 401/403/429, Cf-Mitigated challenge và dấu hiệu
+challenge/đăng nhập bắt buộc ưu tiên chặn; form mật khẩu hiện thấy thì `unknown`.
+Script/comment/nội dung ẩn và nút đăng nhập phụ không tự làm thành trang chặn.
+
+Chỉ HTML UTF-8 có cấu trúc đầy đủ trong phạm vi bộ kiểm mới có thể `allow_parse`;
+PDF, nhị phân, MIME khác, HTML giả PDF, UTF-8 lỗi, HTML dở dang hoặc thuộc tính HTML
+trùng gây mơ hồ trả `unknown`.
+Đây không phải trình parse PDF hay đầy đủ HTML/CSS: không tính CSS bên ngoài, selector
+hoặc layout trình duyệt. Parser giới hạn 64 tầng và 20.000 sự kiện, không phải sandbox OS.
+Hạn mức: JSON STDIN 2 MiB; body giải mã 1 MiB; tổng UTF-8 tên/giá trị header 64 KiB.
+JSON key trùng, NaN, base64 không chuẩn, kiểu/range sai hoặc vượt hạn mức bị từ chối.
+Không in body, header thô, URL, secret hay thông báo exception; evidence chỉ có status,
+số bytes, SHA-256 body và Retry-After chuẩn hóa (giây hoặc ngày UTC, sai thì null).
+
+CLI dùng envelope `result-v1`, trường `response_check`; mã thoát 0 chỉ `allow_parse`,
+1 cho `blocked`/`unknown`, 2 cho đầu vào/cách gọi sai. Mọi kết quả đều chưa phải nhận nguồn.
+Không tích hợp downloader, thư viện nguồn, nhật ký source hay giao diện APP trong phạm vi này.
+
+### APP: nhập file chờ / import waiting files
+
+Thư viện nguồn → **Nhập file chờ** xem trước cả lô đã được cấu hình bởi agent theo yêu cầu đã xác nhận; bấm **Thực hiện** riêng để nhập đúng bản vừa xem. Công cụ giữ file chờ, không ghi đè đích và không xác minh danh tính/toàn văn/hiệu lực nguồn. Nếu nguồn hoặc cấu hình đã đổi, xem trước lại. Thiếu cấu hình hợp lệ thì chưa thể nhập; APP không sửa cấu hình hay staging.
+
+Source library → **Import waiting files** previews the configured batch. A separate **Apply** click imports that preview. Waiting files are retained, destinations are never overwritten, and source identity, full text and validity remain unverified. Preview again if sources or configuration change. An agent prepares the configuration from confirmed requirements; APP does not edit configuration or staging.

@@ -62,6 +62,9 @@ def frontmatter(path):
 
 
 def main():
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(encoding='utf-8', errors='replace')
     global LAST_RESULT
     ap = argparse.ArgumentParser(description='Đưa package vào project đã có / adopt the package into an existing project')
     ap.add_argument('--project', required=True, help='thư mục project cũ / the existing project folder')

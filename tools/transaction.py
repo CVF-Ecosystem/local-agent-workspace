@@ -34,6 +34,7 @@ import argparse, contextlib, datetime, hashlib, io, json, os, shutil, sys, uuid
 from result_schema import emit, make
 
 SCHEMA = 'local-agent-workspace/transaction-v1'
+CREATE_SCHEMA = 'local-agent-workspace/transaction-v2'
 RUNTIME_DIR = '.agent/runtime'
 KEEP_JOURNALS = 20
 MARGIN = 1024 * 1024
@@ -207,14 +208,29 @@ def _write_json_atomic(project, path, data):
         os.replace(tmp, path)
 
 def probe_writable(project):
-    """Kiểm quyền ghi bằng file tạm trong .agent/runtime. / Write probe inside the runtime folder."""
+    """Probe this transaction's temporary file, including deletion; never bypass a failed probe."""
     d = runtime_root(project)
-    guard(project, d)
-    os.makedirs(d, exist_ok=True)
     p = os.path.join(d, '.probe-' + uuid.uuid4().hex)
-    with open(p, 'wb') as f:
-        f.write(b'probe')
-    os.remove(p)
+    phase = 'guard'
+    try:
+        guard(project, d)
+        phase = 'mkdir'
+        os.makedirs(d, exist_ok=True)
+        phase = 'create'
+        with open(p, 'xb') as f:
+            phase = 'write'
+            f.write(b'probe')
+            phase = 'close'
+        phase = 'remove'
+        os.remove(p)
+    except OSError as exc:
+        # Put the useful facts first: execution_profile bounds exception details.
+        rel = os.path.relpath(p, project).replace('\\', '/')
+        detail = 'WRITE_PROBE_FAILED phase=%s errno=%s winerror=%s path=%s' % (
+            phase, exc.errno, getattr(exc, 'winerror', None), rel)
+        detail += L('; file người dùng chưa ghi; kiểm quyền thao tác file tạm của host.',
+                    '; user files not written; check host permissions for transaction temporaries.')
+        raise OSError(exc.errno, detail) from exc
 
 class Transaction:
     """Một lần ghi có nhật ký. Dùng: plan -> stage -> backup -> commit. / One journaled write.
@@ -223,7 +239,7 @@ class Transaction:
     until staged, never written to the journal.
     """
 
-    def __init__(self, project, operation, txid=None, *, prune=True):
+    def __init__(self, project, operation, txid=None, *, prune=True, create_only=False):
         # prune=False (owner opt-in, P-CTX1): never delete another transaction's journal and never remove the runtime folders; the
         # transaction still cleans its own staging/backup. Default True keeps the long-standing behaviour.
         self._prune = bool(prune)
@@ -232,7 +248,7 @@ class Transaction:
         self.dir = txdir(self.project, self.txid)
         self.stage_dir = os.path.join(self.dir, 'staging')
         self.backup_dir = os.path.join(self.dir, 'backup')
-        self.journal = {'schema': SCHEMA, 'id': self.txid, 'operation': operation, 'status': 'prepared',
+        self.journal = {'schema': CREATE_SCHEMA if create_only else SCHEMA, 'id': self.txid, 'operation': operation, 'status': 'prepared',
                         'created': _now(), 'updated': _now(), 'ops': []}
         self._content = {}
         self._pins = Pins()
@@ -253,6 +269,11 @@ class Transaction:
         dst = os.path.join(self.project, *rel.split('/'))
         guard(self.project, os.path.dirname(dst))
         before = sha_file(dst)
+        if action == 'create' and self.journal['schema'] == CREATE_SCHEMA:
+            if any(o['action'] != 'create' for o in self.journal['ops']):
+                raise TransactionError('Create operations must precede replacements')
+            if before is not None or os.path.lexists(dst):
+                raise TransactionError('Create target already exists: ' + rel)
         if expected_before is not _UNSET and before != expected_before:
             raise TransactionError('File changed since it was read / File đã đổi từ lúc đọc: ' + rel)
         if before is not None and before == sha_bytes(data):
@@ -289,10 +310,17 @@ class Transaction:
             dst = os.path.join(self.project, *op['path'].split('/'))
             if os.path.isdir(dst):
                 problems.append(L('Đường dẫn đích là thư mục: %s', 'Target is a folder: %s') % op['path'])
+            if self.journal['schema'] == CREATE_SCHEMA and op['before'] is not None:
+                try:
+                    fd = os.open(dst, os.O_RDWR)
+                    os.close(fd)
+                except OSError as e:
+                    problems.append('Cannot open the existing target for writing: %s: %s' % (op['path'], e))
         return problems
 
     # ---- execution / thực thi
     def begin(self):
+        _validate_create_journal(self.journal)
         guard(self.project, self.dir)
         os.makedirs(self.stage_dir, exist_ok=True)
         os.makedirs(self.backup_dir, exist_ok=True)
@@ -345,12 +373,16 @@ class Transaction:
         for op in self.journal['ops']:
             if op['state'] != 'pending':
                 continue
+            if self.journal['schema'] == CREATE_SCHEMA:
+                _check_created_dependencies(self.project, self.dir, self.journal, op)
             dst = os.path.join(self.project, *op['path'].split('/'))
             staged = os.path.join(self.stage_dir, *op['path'].split('/'))
             try:
                 with held(self.project, dst, staged, create=(dst,), point='commit') as recheck:
                     self._prot.append(recheck.protected)
                     recheck()  # trước khi băm / before hashing
+                    if self.journal['schema'] == CREATE_SCHEMA:
+                        _check_created_dependencies(self.project, self.dir, self.journal, op)
                     if sha_file(dst) != op['before']:
                         self._set_state(op, 'skipped_conflict')
                         raise CommitConflict(L('File đã đổi sau khi lập kế hoạch: %s', 'File changed after planning: %s') % op['path'])
@@ -358,8 +390,14 @@ class Transaction:
                         self._set_state(op, 'skipped_conflict')
                         raise CommitConflict(L('Bản staging không còn đúng: %s', 'The staged copy is no longer valid: %s') % op['path'])
                     recheck()  # sát trước khi ghi / right before the write
+                    if self.journal['schema'] == CREATE_SCHEMA:
+                        _check_created_dependencies(self.project, self.dir, self.journal, op)
                     try:
-                        os.replace(staged, dst)
+                        if op['action'] == 'create' and self.journal['schema'] == CREATE_SCHEMA:
+                            # Atomic no-clobber. Keep the staged name as ownership evidence until cleanup.
+                            os.link(staged, dst)
+                        else:
+                            os.replace(staged, dst)
                     except OSError as e:
                         if any(o['state'] == 'done' for o in self.journal['ops']):
                             raise
@@ -437,9 +475,60 @@ def _load(project, txid):
     guard(project, path)  # không đọc nhật ký qua liên kết / never read a journal through a link
     with io.open(path, encoding='utf-8') as f:
         j = json.load(f)
-    if j.get('schema') != SCHEMA:
+    if j.get('schema') not in (SCHEMA, CREATE_SCHEMA):
         raise TransactionError(L('Nhật ký không đúng schema.', 'Journal has an unexpected schema.'))
+    _validate_create_journal(j)
     return j
+
+def _validate_create_journal(j):
+    """v2 is opt-in: old readers reject it instead of treating a create as a replace."""
+    ops = j.get('ops')
+    if j.get('schema') == SCHEMA:
+        # Legacy callers used create/create_exclusive as informational labels, including mixed ordering.
+        return
+    if (j.get('status') not in ('prepared', 'committing', 'committed', 'rolled_back', 'rollback_partial') or
+            not isinstance(j.get('id'), str) or not j['id'] or any(c in j['id'] for c in '/\\.') or
+            not isinstance(ops, list) or not ops or not any(isinstance(o, dict) and o.get('action') == 'create' for o in ops)):
+        raise TransactionError('Malformed transaction-v2 operations')
+    seen, writing = set(), False
+    for op in ops:
+        if not isinstance(op, dict) or set(op) != {'path', 'action', 'before', 'after', 'size', 'state'}:
+            raise TransactionError('Malformed transaction-v2 operation')
+        path = op.get('path')
+        if (not isinstance(path, str) or not path or path.startswith('/') or ':' in path or '\\' in path or
+                any(p in ('', '.', '..') for p in path.split('/')) or path in seen or
+                op.get('action') not in ('create', 'write') or
+                op.get('state') not in ('pending', 'done', 'skipped_conflict', 'rolled_back') or
+                not isinstance(op.get('after'), str) or len(op['after']) != 64 or
+                any(c not in '0123456789abcdef' for c in op['after']) or
+                type(op.get('size')) is not int or op['size'] < 0):
+            raise TransactionError('Malformed transaction-v2 operation')
+        seen.add(path)
+        if op['action'] == 'create':
+            if writing or op.get('before') is not None:
+                raise TransactionError('Create operations must precede replacements and start absent')
+        else:
+            writing = True
+            before = op.get('before')
+            if not isinstance(before, str) or len(before) != 64 or any(c not in '0123456789abcdef' for c in before):
+                raise TransactionError('Malformed transaction-v2 replacement basis')
+
+def _owns_created(project, folder, op):
+    dst = os.path.join(project, *op['path'].split('/'))
+    staged = os.path.join(folder, 'staging', *op['path'].split('/'))
+    guard(project, dst, staged)
+    try:
+        return os.path.samefile(dst, staged) and sha_file(dst) == op['after'] and sha_file(staged) == op['after']
+    except FileNotFoundError:
+        return False
+
+def _check_created_dependencies(project, folder, journal, current):
+    """A catalog replacement may not follow a missing, edited or foreign created file."""
+    if current['action'] == 'create':
+        return
+    for prior in journal['ops']:
+        if prior['action'] == 'create' and (prior['state'] != 'done' or not _owns_created(project, folder, prior)):
+            raise CommitConflict('Created-file dependency changed; catalog not written: ' + prior['path'])
 
 def _save_journal(project, txid, journal):
     journal['updated'] = _now()
@@ -513,14 +602,41 @@ def resume(project_root, txid):
     for op in j['ops']:
         if op['state'] != 'pending':
             continue
+        if j.get('schema') == CREATE_SCHEMA:
+            try:
+                _check_created_dependencies(project, txdir(project, txid), j, op)
+            except CommitConflict:
+                skipped.append(op['path'])
+                break
         dst = os.path.join(project, *op['path'].split('/'))
         staged = os.path.join(txdir(project, txid), 'staging', *op['path'].split('/'))
         did_apply = False
         # Băm và quyết định nằm trong vùng bảo vệ, sau hook, sát trước replace / hash and decide inside the protected span
         with held(project, dst, staged, create=(dst,), point='resume') as check:
             check()
+            if j.get('schema') == CREATE_SCHEMA:
+                try:
+                    _check_created_dependencies(project, txdir(project, txid), j, op)
+                except CommitConflict:
+                    skipped.append(op['path'])
+                    break
             cur = sha_file(dst)
-            if cur == op['after']:
+            if op.get('action') == 'create' and j.get('schema') == CREATE_SCHEMA:
+                if _owns_created(project, txdir(project, txid), op):
+                    op['state'] = 'done'; finished.append(op['path'])
+                elif cur is None and not os.path.lexists(dst) and os.path.isfile(staged) and sha_file(staged) == op['after']:
+                    check()
+                    try:
+                        os.link(staged, dst)
+                    except FileExistsError:
+                        op['state'] = 'skipped_conflict'; skipped.append(op['path'])
+                    else:
+                        op['state'] = 'done'; applied.append(op['path']); did_apply = True
+                elif cur is None:
+                    unstaged.append(op['path'])
+                else:
+                    op['state'] = 'skipped_conflict'; skipped.append(op['path'])
+            elif cur == op['after']:
                 op['state'] = 'done'; finished.append(op['path'])
             elif cur == op['before'] and os.path.isfile(staged) and sha_file(staged) == op['after']:
                 check()
@@ -531,6 +647,8 @@ def resume(project_root, txid):
             else:
                 op['state'] = 'skipped_conflict'; skipped.append(op['path'])
         _save_journal(project, txid, j)
+        if j.get('schema') == CREATE_SCHEMA and op['state'] != 'done':
+            break
         if did_apply:
             n += 1
             if commit_limit is not None and n >= commit_limit:
@@ -598,7 +716,8 @@ def rollback(project_root, txid):
             if op['before'] is None:
                 if cur is None:
                     op['state'] = 'rolled_back'
-                elif cur == op['after']:
+                elif cur == op['after'] and (j.get('schema') != CREATE_SCHEMA or
+                                             _owns_created(project, tdir, op)):
                     check()
                     os.remove(dst); op['state'] = 'rolled_back'; removed.append(op['path'])
                 else:
@@ -666,6 +785,9 @@ def blocked_message(project):
             'Unfinished transaction %s: nothing new written. Run ONE of the two commands above.') % (t, t, t, t)
 
 def _cli(argv):
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(encoding='utf-8')
     global LANG
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('cmd', choices=['status', 'resume', 'rollback'])
@@ -675,8 +797,6 @@ def _cli(argv):
     ap.add_argument('--lang', choices=['vi', 'en'], default='vi')
     a = ap.parse_args(argv)
     LANG = a.lang
-    if hasattr(sys.stdout, 'reconfigure'):
-        sys.stdout.reconfigure(encoding='utf-8'); sys.stderr.reconfigure(encoding='utf-8')
     project = os.path.abspath(a.project)
     if a.cmd == 'status':
         problem = runtime_problem(project)

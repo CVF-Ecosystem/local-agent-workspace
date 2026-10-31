@@ -20,6 +20,8 @@ reused without asking for approval again each time.
 
 ## Scripts supporting skills and tasks
 
+Source download scripts must verify TLS and check HTTP/MIME and signatures together with a format parser/structure, bound bytes/redirects/hostnames, stage without overwriting, and retain final URL/errors. Never present guessed links as checked, bypass CAPTCHA or obtain accounts; use authorised authentication. Magic bytes do not prove full text.
+
 These rules cover agent-written task scripts, including `.py` files. Create a file only
 when needed for the assigned work; short calculations or checks can run directly without
 keeping a script. Check existing relevant instructions and scripts before writing another.
@@ -132,6 +134,39 @@ be NOT APPLICABLE with a reason, but a whole condition cannot be dropped.
 
 Reading a source does not prove it ran; a trial run does not prove every branch is safe. Missing evidence blocks
 only the claim and the actions that depend on it, not work that can go on the existing way.
+
+### Maintainer builder lane
+
+This lane applies when the operator assigns a maintainer to create or update a skill/pack in the source library.
+Real-use count is evidence, not a hard threshold. Record all six conditions, scaled to the risk and scope; task
+count, a passing structure check, or results from the underlying application cannot replace evidence for the
+skill's own effect (condition 4) or evidence that it separates reusable guidance from project-specific rules/data
+(condition 6). If evidence is insufficient, keep `DEFER`/`REVIEW`. This lane does not grant source-write
+permission, make a candidate `ROOT_ELIGIBLE`, or replace confirmation by users in their projects.
+
+<a id="developer-product-acceptance"></a>
+
+### Developer responsibility before a usable delivery
+
+When developing core, downstream products, skills/packs or templates, developers own the output standard, cases, evidence-grounded expected results, source checks, tests and internal review. Do not transfer test/answer design, debugging or assessment preparation to end users. Users state goals and business decisions; suitability feedback follows a usable delivery.
+
+For core/templates, use the existing roadmap or acceptance record; skills/packs use their existing intake record, without a new ledger. Record: when to use/not use it, inputs/outputs, sources and limits, content criteria set before running, representative/missing-input/failure cases proportionate to risk, exact-revision evidence and the packaged consumer workflow. Cases used to tune the skill are regressions; claims about new tasks need appropriate evidence beyond those cases. Mechanical checks do not establish context or reasoning; an AI writing and approving its own answer is not sufficient evidence alone. Developers prepare cases, sources, rubrics, questions and the parts requiring judgement for specialist assessment. If recruitment or cost needs ungranted authority, ask the operator once in business language about the assessor/budget; reuse existing decisions and do not contact or pay anyone without authorization. Until assessment exists, dependent claims remain blocked and the component stays explicitly experimental with its gaps; continue independent checks without self-certifying expertise.
+
+All six intake conditions still apply to skills/packs; intake is not a procedure for every core edit. Claim readiness only for the tested scope; insufficient components remain candidates, without silently dropping committed requirements to close a milestone. Missing user feedback does not block internal preparation/testing/acceptance and does not prove user acceptance. Installation, confirmation, source-write and publishing permissions remain separate; confirmation must not offload developer QA to the user.
+
+#### A compact record with proportionate evidence
+
+Use the five questions below in the existing roadmap/acceptance record (intake record for skills/packs). The reusable pack template is at `packs/_template/references/intake-record.md`, relative to the project/package root: (1) what job and trigger; (2) what output standard; (3) what evidence; (4) what specific added value; (5) which delivered workflow and environment. For skills/packs, this organises evidence for all six intake conditions without replacing or relaxing them or adding a separate ledger. Shared skills use the same questions in their own record.
+
+Technical checks are the first layer; developers also assess content and product workflows before business feedback. Ordinary tasks need representative and missing-input cases plus output review. Numeric or format constraints add measurable checks and typical failures. High-consequence claims need authoritative source checks, wrong/missing-source cases and qualified assessment of the part requiring domain judgement; mechanical checks need not all wait for an expert. AI self-agreement is not a sole oracle, and not every skill needs a large benchmark.
+
+State one concrete value claim (for example template compliance or fewer numeric errors) and test that claim; duplicates still follow the native comparison below. Changeable sources need revision, check date, unresolved verification and risk-based recheck events/dates. A due date triggers reassessment; it does not establish validity or automatically change status. When using an overdue source not yet rechecked, state "not rechecked since <last check date>" in the output; say unknown if the date is unknown. For high-consequence content, do not present it as current authority. The OS/Python/host/tool/format matrix claims only evidenced scope; untested entries say NOT_TESTED. Delivered-package workflows cover both new projects and upgrades when supported, preserving user files, permissions and choices; missing evidence remains explicit.
+
+#### Required checks and evidence custody
+
+Before a ready-for-use claim, developers run the applicable required release/package suite on the exact candidate in the declared environment. Focused checks do not replace that suite when the delivered change requires it; unrelated suites need not run for every documentation edit. The existing report names each skipped test, reason/environment, equivalent coverage attempted and claim impact (or NONE if no skips); a skip is not PASS. Reviewers reuse valid revision-bound producer evidence, repeating only required gates or checks justified by a concrete gap/contradiction.
+
+Before replacing an unversioned coordination document, preserve its prior bytes in an appropriate archive and record the hash and replacement identity. When authorized to change CVF rules, edit their canonical source and use the existing forward projection. Authorized temporary changes in generated/downstream copies retain a hashed patch, NOT_UPSTREAMED label and source owner/destination until forward reconciliation; do not claim upstream adoption from a local copy. These duties apply to assigned development/maintenance, without turning ordinary office drafts into intake procedures.
 
 ### When saying "better than native"
 
