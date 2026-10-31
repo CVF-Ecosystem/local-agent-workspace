@@ -146,7 +146,7 @@ def status(project_root):
         out['problems'] = ['CHECKPOINT_OWNER_UNAVAILABLE']
         out['result'] = 'HELD'
         return out
-    cache, total_bytes = {}, [0]
+    cache, digest_cache, total_bytes = {}, {}, [0]
 
     def named_read(project, rel):
         if rel not in cache:
@@ -155,8 +155,22 @@ def status(project_root):
                 total_bytes[0] += len(blob)
                 if total_bytes[0] > 16 * 1024 * 1024:
                     blob, problem = None, 'VIEW_READ_BUDGET_EXCEEDED'
+                elif rel in digest_cache and tc.sha(blob) != digest_cache[rel][0]:
+                    blob, problem = None, 'CHANGED_DURING_VIEW'
             cache[rel] = blob, problem
         return cache[rel]
+
+    def named_digest(project, rel):
+        if rel in cache:
+            blob, problem = cache[rel]
+            return (tc.sha(blob), len(blob), None) if blob is not None else (None, 0, problem)
+        if rel not in digest_cache:
+            digest, size, problem = tc.file_digest(project, rel, limit=max(0, 16 * 1024 * 1024 - total_bytes[0]))
+            total_bytes[0] += size
+            if problem == 'TOO_LARGE':
+                problem = 'VIEW_READ_BUDGET_EXCEEDED'
+            digest_cache[rel] = digest, size, problem
+        return digest_cache[rel]
 
     for ref in doc['tasks']:
         task, raw, why = tc.read_record(v3, root, ref['task'], 'task', reader=named_read)
@@ -202,7 +216,12 @@ def status(project_root):
                     return None, 'READ_SCOPE_UNSUPPORTED'
                 return named_read(project, rel)
 
-            cp = tc.checkpoint(v3, root, ref['task'], result_rel, reader=scoped_reader)
+            def scoped_digest(project, rel):
+                if rel not in allowed or not rel.startswith(('references/', 'working/', 'output/', 'archive/', 'roles/', 'skills/')):
+                    return None, 0, 'READ_SCOPE_UNSUPPORTED'
+                return named_digest(project, rel)
+
+            cp = tc.checkpoint(v3, root, ref['task'], result_rel, reader=scoped_reader, digest_reader=scoped_digest)
             if cp.get('raw', {}).get('task') != raw:
                 cp['problems'].append('TASK_CHANGED_DURING_VIEW')
             result = cp.get('result')
@@ -228,8 +247,9 @@ def status(project_root):
 
 
 def main():
-    if hasattr(sys.stdout, 'reconfigure'):
-        sys.stdout.reconfigure(encoding='utf-8')
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(encoding='utf-8')
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--project', default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     args = ap.parse_args()

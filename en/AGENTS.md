@@ -34,6 +34,13 @@ mandatory for source-repository work; the other sections are guidance for the ag
     Complete this account in the brief before assigning implementation. Completing a task,
     tranche or check does not by itself mean the product milestone has been reached.
 
+## Responsibility when developing a product
+
+When developing core, packages, skills or templates, apply the [internal acceptance standard](skills/README.md#developer-product-acceptance).
+Developers own output criteria, checks and review before usable delivery; noncoders provide goals, business decisions and suitability feedback.
+Preserve committed criteria, authority to recruit/pay specialists, experimental status and install/publish authority under that standard.
+The detailed standard and record template ship with LAW; no sibling CVF repository is required. Ordinary office tasks need no development ceremony.
+
 ## Maintaining LAW itself (source repository only)
 
 When the operator assigns changes to LAW code, schemas, framework guides, or releases,
@@ -112,6 +119,8 @@ the exceptions line of PROJECT (never fill it in yourself); a rename or move rej
 mean its content or legal status was verified.
 Before quoting a legal document or internal regulation, look it up in the index (`python tools/library.py find <keyword>`); quote
 verbatim only from a file in the library; without a file, mark "[not checked against full text]" and use no quotation marks (skill `source-library`).
+
+When a task needs project forms, sources or business rules, check the “Use when” column in `.agent/SKILL_INDEX.md` before settling the method; read a relevant skill and follow confirmed requirements. A one-sentence edit can be direct. Version/hash only detects divergence: use the revision accepted for the canonical source and scope, without automatically choosing a higher version, mirroring or activating a candidate.
 
 ## Choose what fits
 
@@ -271,6 +280,9 @@ edits a Markdown guide and wants the HTML updated, run `python tools/build_guide
 Cloud environments may not keep `.agent/` between sessions; in that case rely on the
 project instructions (see `en/PROJECT_INSTRUCTIONS_SNIPPET.md`) and keep STATE (same template,
 same limit) in one Project document, overwriting it there.
+
+<!-- law-host-session-guidance -->
+On Cowork, Codex Desktop, Antigravity or another host, do not treat the Claude Code exporter's tools as every native role's limits. See "Native session versus exporter" in `roles/office/MAIN.md`; `office.py compose` offers a read-only `host_session` preparation route with bound declared evidence, never registration, authority or host verification. Retain profile-owned authority; separate requested from actual model and container/app-project documents from Windows files. An app-project `ROLES.md` is not automatically an on-disk file: name the storage location. Preserve error detail and exit codes instead of piping through `head`; report missing dependencies without installing them automatically.
 
 ## Respect sources and user data
 

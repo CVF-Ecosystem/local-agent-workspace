@@ -129,6 +129,9 @@ def copy_tree(src, dst):
             DONE.append({'path': t, 'action': 'copy'})
 
 def main():
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(encoding='utf-8')
     global LANG
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--dest', default=os.path.join('~', '.claude', 'skills'))
@@ -139,8 +142,6 @@ def main():
     ap.add_argument('--yes', action='store_true', help='thực hiện sao chép / actually copy')
     ap.add_argument('--result-json', action='store_true', help=argparse.SUPPRESS)
     a = ap.parse_args()
-    if hasattr(sys.stdout, 'reconfigure'):
-        sys.stdout.reconfigure(encoding='utf-8')
     try:
         LANG = json.load(io.open(os.path.join(ROOT, '.agent', 'PACKAGE_INFO.json'), encoding='utf-8')).get('language', 'vi')
     except (OSError, ValueError):

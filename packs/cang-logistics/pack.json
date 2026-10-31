@@ -1,24 +1,25 @@
 {
   "name": "cang-logistics",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "requires_core": "1.6",
   "title": {
-    "vi": "Cảng - logistics: báo cáo khai thác tàu, sà lan và sự cố thiết bị",
-    "en": "Ports and logistics: ship and barge operation and equipment incident reports"
+    "vi": "Cảng - logistics: báo cáo khai thác và kiểm tra dữ liệu bãi container",
+    "en": "Ports and logistics: operations reports and container-yard data checks"
   },
   "description": {
-    "vi": "Báo cáo khai thác tàu và sà lan, thời gian chờ cầu, năng suất, gián đoạn và sự cố thiết bị, đối soát sự cố với chuyến tàu; chỉ số và quy tắc tính đã dùng trong việc thật. Kèm căn cứ pháp lý hàng hải, hải quan, an toàn lao động có ngày đối chiếu.",
-    "en": "Ship and barge operation reports, berth waiting time, productivity, stoppages and equipment incidents, matching incidents to voyages; indicators and calculation rules used in real work. With a dated maritime, customs and safety legal basis."
+    "vi": "Bổ sung hai phạm vi tách biệt: báo cáo khai thác tàu/sà lan và sự cố thiết bị; xây dựng hoặc rà soát công cụ kiểm tra dữ liệu vị trí bãi container từ TOS. Quy tắc, mã và ngưỡng riêng phải được project xác nhận và cấu hình. Kèm ghi chú căn cứ pháp lý hàng hải, hải quan, an toàn lao động còn cần đội dev đối chiếu nguồn trước khi công bố sẵn dùng.",
+    "en": "Two separate scopes: ship/barge operations and equipment-incident reporting; and building or reviewing a tool for checking container-yard position data from a TOS. Project-specific rules, codes, and thresholds require confirmation and configuration. Includes maritime, customs, and occupational-safety legal notes that still require developer source verification before readiness claims."
   },
   "domain": "ports",
   "skills": [
-    "port-operations-reports"
+    "port-operations-reports",
+    "container-yard-check"
   ],
   "intake": {
     "decision": "DEFER",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "relation": "SUPPLEMENT",
     "record": "references/intake-record.md",
-    "note": "Thiếu đối chiếu căn cứ với văn bản chính thức, ba việc thật của người dùng và đánh giá của người dùng; xem hồ sơ."
+    "note": "DEFER: còn thiếu căn cứ nguồn/xuất xứ và bằng chứng hiệu quả, tái dùng theo hồ sơ. Đội dev hoàn thiện nghiệm thu nội bộ trước feedback; điều kiện làn nhận folder giữ riêng. Không tự cài, xác nhận hoặc quảng bá gói."
   }
 }

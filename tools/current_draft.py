@@ -654,6 +654,9 @@ def _human(res):
 
 
 def _cli(argv):
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(encoding='utf-8')
     global LANG
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('cmd', choices=['status', 'list', 'select', 'open'])
@@ -667,9 +670,6 @@ def _cli(argv):
     ap.add_argument('--lang', choices=['vi', 'en'], default='vi')
     a = ap.parse_args(argv)
     LANG = a.lang
-    if hasattr(sys.stdout, 'reconfigure'):
-        sys.stdout.reconfigure(encoding='utf-8')
-        sys.stderr.reconfigure(encoding='utf-8')
     if a.cmd in ('select', 'open') and not a.rid:
         ap.error('--rid is required')
     if a.cmd == 'select' and a.apply and not (a.expected_state and a.expected_selection):

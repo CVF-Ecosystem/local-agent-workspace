@@ -313,6 +313,9 @@ def check_declaration(text):
     return must, note
 
 def main():
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(encoding='utf-8')
     global LANG
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('files', nargs='+')
@@ -322,8 +325,6 @@ def main():
     ap.add_argument('--declaration', action='store_true', help='kiểm khối Khai báo thực hiện trong câu trả lời đã lưu / check the Execution declaration block in a saved reply')
     ap.add_argument('--result-json', action='store_true', help=argparse.SUPPRESS)
     a = ap.parse_args()
-    if hasattr(sys.stdout, 'reconfigure'):
-        sys.stdout.reconfigure(encoding='utf-8')
     LANG = a.lang or LANG
     if a.lang is None:
         try:

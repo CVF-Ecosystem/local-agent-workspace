@@ -5,7 +5,7 @@ Setup wizard: asks a few questions, then runs tools/init_project.py and fills in
 Cách chạy / How to run: bấm đúp SETUP.bat (Windows) hoặc SETUP.command (macOS), hoặc: python tools/setup_wizard.py
 Chỉ cần Python 3.8+. Không dùng mạng. Chỉ ghi file qua init_project.py (không xóa file nào).
 """
-import io, json, os, re, subprocess, sys, webbrowser
+import argparse, io, json, os, re, subprocess, sys, webbrowser
 sys.dont_write_bytecode = True  # không để lại __pycache__ trong bộ mẫu / leave no __pycache__ in the template
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -135,8 +135,12 @@ def to_clipboard(text):
         return False
 
 def main():
-    if hasattr(sys.stdout, 'reconfigure'):
-        sys.stdout.reconfigure(encoding='utf-8')
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(encoding='utf-8')
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.parse_args()
+    if hasattr(sys.stdin, 'reconfigure'):
         sys.stdin.reconfigure(encoding='utf-8')
     if os.path.exists(os.path.join(ROOT, '.agent', 'PACKAGE_INFO.json')):
         lang0 = 'vi'

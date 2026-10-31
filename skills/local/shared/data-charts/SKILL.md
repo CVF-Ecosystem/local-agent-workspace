@@ -34,6 +34,8 @@ Không dành cho ứng dụng web hoặc hệ thống dashboard triển khai.
 4. **Trình bày:** tiêu đề nêu điều cần thấy, ghi đơn vị, kỳ và nguồn, nhãn trực tiếp, bảng dữ
    liệu đi kèm để tra số chính xác.
 
+Chỉ so sánh trực tiếp khi cùng đơn vị, định nghĩa, cách xác định kỳ và phạm vi thu thập tương đương. Với tỷ lệ có mẫu số khác nhau, ghi n/N từng nhóm; tỷ lệ gộp bằng tổng n chia tổng N, không lấy trung bình các tỷ lệ. Ví dụ 1/2 và 9/10 cho tỷ lệ gộp 10/12 ≈ 83,3%, còn trung bình hai tỷ lệ là 70%. Thiếu căn cứ thì tách bảng hoặc ghi chưa so sánh được; không suy diễn nhân quả.
+
 ## Quy tắc trình bày
 
 - Cột bắt đầu từ 0. Không dùng 3D, không đổ bóng, không trang trí không mang dữ liệu.

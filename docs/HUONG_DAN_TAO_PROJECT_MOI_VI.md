@@ -72,11 +72,11 @@ Bộ công cụ đã có mười bốn kỹ năng gọn trong `skills/local/shar
 `.agent/SKILL_INDEX.md`. Không cần tạo hoặc cài thêm kỹ năng để bắt đầu.
 
 Công việc thuộc một mảng chuyên sâu thì cài thêm **gói lĩnh vực**: `phap-ly`, `van-thu-luu-tru`, `cang-logistics`,
-`hanh-chinh-nhan-su`, `ke-toan-noi-bo`. Cách dễ nhất: bấm đúp `APP.bat` (Windows) hoặc `APP.command` (macOS), mở nhóm
+`hanh-chinh-nhan-su`, `ke-toan-noi-bo`, `academic-research`. Cách dễ nhất: bấm đúp `APP.bat` (Windows) hoặc `APP.command` (macOS), mở nhóm
 "Quản lý và bảo trì" → "Quản lý kỹ năng", phần "Gói bổ sung theo lĩnh vực", bấm "Cài để dùng thử". Gói đã cài được ghi vào `.agent/SKILL_INDEX.md`, nên trợ lý AI tự tìm thấy khi việc cần; bạn
 không cần nhắc tên gói khi giao việc. Gói có nhãn "Thử nghiệm" chưa qua tiếp nhận: trợ lý AI dùng thử và nói rõ là bản thử. Gói có hồ sơ tiếp nhận hợp lệ có thêm nút "Cài và cho phép dùng"; cho phép dùng là quyết định của bạn cho dự án này, không phải bằng chứng gói đã được kiểm an toàn. Gói có hồ sơ tiếp nhận hợp lệ có thêm nút "Cài và cho phép dùng"; cho phép dùng là quyết định của bạn cho dự án này, không phải bằng chứng gói đã được kiểm an toàn.
 
-**Lưu ý:** năm gói đi kèm hiện là bản thử nghiệm, chưa qua tiếp nhận. Căn cứ pháp lý trong gói được tổng hợp từ trang tin và trang tư vấn, chưa đối chiếu từng điều với văn bản chính thức (Công báo, cổng văn bản của Nhà nước); khi thử, trợ lý AI vẫn có lúc đưa ra câu "trích nguyên văn" không có trong gói. Dùng để tham khảo và soạn nháp; với văn bản trình ký hoặc gửi ra ngoài, tự đối chiếu căn cứ với văn bản chính thức trước khi dùng.
+**Lưu ý:** các gói đi kèm hiện là bản thử nghiệm, chưa được nhận làm mặc định. Gói nghiên cứu học thuật vẫn ở mức dùng thử, cần kiểm nguồn và chất lượng theo từng việc. Căn cứ pháp lý trong các gói có nội dung pháp lý được tổng hợp từ trang tin và trang tư vấn, chưa đối chiếu từng điều với văn bản chính thức (Công báo, cổng văn bản của Nhà nước); khi thử, trợ lý AI vẫn có lúc đưa ra câu "trích nguyên văn" không có trong gói. Dùng để tham khảo và soạn nháp; với văn bản trình ký hoặc gửi ra ngoài, tự đối chiếu căn cứ với văn bản chính thức trước khi dùng.
 
 Để trợ lý AI chọn kỹ năng sẵn có (native), kỹ năng bổ sung của bộ công cụ hoặc làm trực tiếp theo công việc. Một
 kỹ năng viết riêng cho dự án chỉ đáng thêm khi có mẫu/kinh nghiệm thực tế cần dùng lại.

@@ -24,6 +24,35 @@ def read_file(project, rel):
     return office.read_rel(project, rel, limit=2 * 1024 * 1024)
 
 
+def file_digest(project, rel, limit=None):
+    """(digest, bytes read, error) for a named binary input, in bounded chunks.
+
+    Uses the same path/link boundary as read_file; limit optionally bounds a
+    caller's aggregate I/O budget. This does not parse records or load candidates.
+    """
+    import publish_new
+    import transaction
+    if publish_new.path_form_problem(rel):
+        return None, 0, 'PATH_UNSUPPORTED_FORM'
+    path = os.path.join(project, *rel.split('/'))
+    count, digest = 0, hashlib.sha256()
+    try:
+        if not transaction.link_free(path, project) or os.path.islink(path) or not os.path.isfile(path):
+            return None, 0, 'MISSING_OR_NOT_REGULAR'
+        with open(path, 'rb') as fh:
+            while True:
+                chunk = fh.read(65536 if limit is None else min(65536, limit - count + 1))
+                if not chunk:
+                    break
+                count += len(chunk)
+                if limit is not None and count > limit:
+                    return None, count, 'TOO_LARGE'
+                digest.update(chunk)
+    except OSError:
+        return None, count, 'UNREADABLE'
+    return 'sha256:' + digest.hexdigest(), count, None
+
+
 def load_v3(law=None):
     """Nạp package v3 từ cây LAW cố định `law` (có .cvf và tools). Không import gì từ data root hay tests."""
     trusted = Path(__file__).resolve().parents[1]
@@ -71,8 +100,12 @@ def read_record(v3, project, rel, want, reader=None):
     return bundle, sha(data), None
 
 
-def checkpoint(v3, project, task_rel, result_rel, staged=None, reader=None):
+def checkpoint(v3, project, task_rel, result_rel, staged=None, reader=None, digest_reader=None):
     """Danh sách `problems` rỗng nghĩa là các quan hệ ĐÃ KIỂM khớp; không phải PASS, quyền hay nghiệm thu của người dùng."""
+    # A custom byte reader remains authoritative unless its caller explicitly
+    # supplies an input digest reader with the same scope/snapshot contract.
+    if reader is None and digest_reader is None:
+        digest_reader = file_digest
     reader = reader or read_file
     problems, cp = [], {'problems': [], 'candidate': None, 'ledger_snapshot': None}
     cp['problems'] = problems
@@ -95,10 +128,14 @@ def checkpoint(v3, project, task_rel, result_rel, staged=None, reader=None):
         problems.append('BINDING B-OUT-RESULT=%s' % states.get('B-OUT-RESULT'))
     # 2. bytes hiện tại của input và context_refs đúng digest đã bound
     for obj in task['inputs'] + task.get('context_refs', []):
-        data, why = reader(project, obj['path'])
-        if data is None:
+        if digest_reader is None:
+            data, why = reader(project, obj['path'])
+            digest = sha(data) if data is not None else None
+        else:
+            digest, _, why = digest_reader(project, obj['path'])
+        if digest is None:
             problems.append('INPUT %s %s' % (obj['path'], why))
-        elif sha(data) != obj['digest']:
+        elif digest != obj['digest']:
             problems.append('INPUT_CHANGED %s' % obj['path'])
     # 3. metadata sổ cho input có source_id
     library, wanted = v3['library'], [o for o in task['inputs'] + task.get('context_refs', []) if 'source_id' in o]

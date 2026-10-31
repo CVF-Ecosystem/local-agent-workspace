@@ -13,7 +13,7 @@ Runs on this computer only (127.0.0.1) with a per-session access code. No networ
 Each button calls one existing script in tools/ with fixed arguments; writing actions always have a preview step.
 Shuts down about 3 minutes after the page is closed, or with "Quit". Python 3.8+ only.
 """
-import datetime, getpass, http.server, importlib.util, io, json, os, platform, re, secrets, socketserver, subprocess, sys, threading, time, webbrowser, zipfile
+import argparse, datetime, getpass, http.server, importlib.util, io, json, os, platform, re, secrets, socketserver, subprocess, sys, threading, time, webbrowser, zipfile
 import urllib.parse
 import hashlib
 sys.dont_write_bytecode = True  # không để lại __pycache__ trong bộ mẫu / leave no __pycache__ in the template
@@ -37,7 +37,7 @@ STRUCTURED_TOOLS = {'init_project.py', 'new_project.py', 'adopt_project.py', 'up
                     'check_package.py', 'pack.py', 'install_skills.py', 'library.py', 'build_guides_html.py', 'transaction.py'}
 # tên thao tác được phép ghi vào lịch sử; còn lại ghi là 'unknown' / action names allowed in the history
 ACTION_NAMES = {'init', 'new_project', 'project_open', 'upgrade', 'upgrade_other', 'adopt', 'pack_list', 'pack_add', 'pack_remove', 'pack_update', 'pack_confirm',
-                'check_output', 'install_skills', 'library_init', 'library_check', 'library_stats', 'library_find', 'library_sync',
+                'check_output', 'install_skills', 'library_init', 'library_check', 'library_stats', 'library_find', 'library_sync', 'library_intake',
                 'check_package', 'build_guides', 'build_release', 'merge_state', 'merge_diff', 'diagnostics',
                 'tx_resume', 'tx_rollback', 'history_clear'}
 # đọc thư viện (tìm, thống kê) không phải tác động: không ghi lịch sử / reading the library (search, stats) is not an effect: never logged
@@ -313,6 +313,9 @@ def status():
 # ------------------------------------------------------------------ chạy script / run scripts
 def run_tool(script, args, timeout=600):
     env = dict(os.environ, PYTHONIOENCODING='utf-8', PYTHONUTF8='1')
+    # Intake preview is read-only even when the launcher did not export -B.
+    if script == 'library.py' and args and args[0] == 'intake':
+        env['PYTHONDONTWRITEBYTECODE'] = '1'
     tool_args = list(args) + (['--result-json'] if script in STRUCTURED_TOOLS else [])
     cmd = [sys.executable, os.path.join(TOOLS, script)] + tool_args
     shown = 'python tools/%s %s' % (script, ' '.join('"%s"' % a if (' ' in a or not a) else a for a in args))
@@ -380,6 +383,19 @@ def need_project():
 
 
 def action(name, p):
+    if name == 'library_intake':
+        if set(p) - {'apply', 'lang', 'plan_token'}:
+            raise BadInput('Tham số không hỗ trợ / Unsupported intake parameters.')
+        if 'apply' in p and type(p['apply']) is not bool:
+            raise BadInput('apply phải là boolean / apply must be boolean.')
+        if 'lang' in p and p['lang'] not in ('vi', 'en'):
+            raise BadInput('Ngôn ngữ không hợp lệ / Invalid language.')
+        apply = p.get('apply', False)
+        token = p.get('plan_token')
+        if (apply and (not isinstance(token, str) or not re.fullmatch(r'[0-9a-f]{64}', token))) or (not apply and 'plan_token' in p):
+            raise BadInput('Cần xem trước lại / Preview again before applying.')
+        args = ['intake'] + (['--apply', '--expect-plan', token] if apply else [])
+        return run_tool('library.py', args)
     apply = bool(p.get('apply'))
     if name in ('upgrade', 'pack_add', 'pack_remove', 'pack_update', 'pack_confirm'):
         need_project()
@@ -897,18 +913,21 @@ def run_api(body):
     name = body.get('action', '')
     if not isinstance(name, str):
         name = ''
-    params = body.get('params') or {}
+    raw_params = body.get('params')
+    params = raw_params or {}
     if not isinstance(params, dict):
         params = {}
     started, http_code = time.time(), 200
     try:
+        if name == 'library_intake' and raw_params is not None and not isinstance(raw_params, dict):
+            raise BadInput('Tham số phải là object / Parameters must be an object.')
         res = action(name, params)
     except BadInput as e:
         res = {'code': 2, 'out': str(e), 'cmd': '', 'input_error': True,
                'result': make('blocked', code=2, message=str(e), changes=False)}
     except Exception as e:  # lỗi bất ngờ vẫn trả về trang / unexpected errors still reach the page
         res, http_code = {'code': -1, 'out': 'Lỗi / Error: %r' % (e,), 'cmd': '', 'result': unexpected_result(e)}, 500
-    if name != 'history_clear' and name not in NO_LOG_ACTIONS:  # xóa lịch sử, đọc thư viện: không ghi dòng nào / clearing the history and reading the library write no line
+    if name != 'history_clear' and name not in NO_LOG_ACTIONS and not (name == 'library_intake' and params.get('apply') is not True):  # xóa lịch sử, đọc thư viện: không ghi dòng nào / clearing the history and reading the library write no line
         _record(name, res, started)
     return http_code, res
 
@@ -1006,15 +1025,14 @@ def watchdog():
 
 
 def main(argv):
-    if hasattr(sys.stdout, 'reconfigure'):
-        sys.stdout.reconfigure(encoding='utf-8', errors='replace', line_buffering=True)
-    port = 0
-    if '--port' in argv:
-        try:
-            port = int(argv[argv.index('--port') + 1])
-        except (IndexError, ValueError):
-            print('Dùng / Usage: python tools/app.py [--port N] [--no-browser]')
-            return 2
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(encoding='utf-8', errors='replace', line_buffering=True)
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument('--port', type=int, default=0)
+    ap.add_argument('--no-browser', action='store_true')
+    args = ap.parse_args(argv)
+    port = args.port
     if not os.path.isfile(UI_FILE):
         print('Thiếu tools/app_ui.html / Missing tools/app_ui.html')
         return 1
@@ -1026,7 +1044,7 @@ def main(argv):
     print('Giữ cửa sổ này mở trong lúc dùng; đóng trang hoặc bấm "Thoát" để tắt.')
     print('Keep this window open while using it; close the page or press "Quit" to stop.')
     threading.Thread(target=watchdog, daemon=True).start()
-    if '--no-browser' not in argv:
+    if not args.no_browser:
         threading.Timer(0.6, lambda: webbrowser.open(url)).start()
     try:
         srv.serve_forever()

@@ -18,13 +18,20 @@ Mọi thay đổi ghi qua một giao dịch có nhật ký (tools/transaction.py
 All changes go through one journaled transaction; if interrupted, run resume or rollback.
 Script không xóa file nào và không dùng mạng. Chỉ cần Python 3.8+.
 """
-import argparse, datetime, io, json, os, re, sys
+import argparse, datetime, io, json, ntpath, os, re, sys
 from result_schema import emit, make
 import transaction as tx
 import execution_profile as ep
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OVERLAY_SKIP = {'en/PROJECT_INSTRUCTIONS_SNIPPET.md'}
+INTAKE_CONFIG_REL = '.agent/SOURCE_INTAKE.json'
+
+
+def intake_config(rel):
+    """Private choices must never become an English overlay; standalone init needs no package import."""
+    path = ntpath.normpath(rel).replace('\\', '/').casefold()
+    return path in (INTAKE_CONFIG_REL.casefold(), ('en/' + INTAKE_CONFIG_REL).casefold())
 
 def overlay_pairs():
     """Mọi file trong en/ (trừ OVERLAY_SKIP) và đường dẫn đích ở thư mục gốc."""
@@ -34,7 +41,7 @@ def overlay_pairs():
         dirs.sort()
         for f in sorted(files):
             src = os.path.relpath(os.path.join(d, f), ROOT).replace(os.sep, '/')
-            if src in OVERLAY_SKIP or f.endswith('.bak') or '.bak-' in f:
+            if intake_config(src) or intake_config(src[3:]) or src in OVERLAY_SKIP or f.endswith('.bak') or '.bak-' in f:
                 continue
             out.append((src, src[3:]))
     return out
@@ -76,6 +83,9 @@ def is_original(rel):
         return False
 
 def main():
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(encoding='utf-8')
     global LANG, LAST_RESULT
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--name', required=True, help='tên project / project name')
@@ -87,8 +97,6 @@ def main():
     ap.add_argument('--result-json', action='store_true', help=argparse.SUPPRESS)
     a = ap.parse_args()
     LANG = a.lang
-    if hasattr(sys.stdout, 'reconfigure'):
-        sys.stdout.reconfigure(encoding='utf-8'); sys.stderr.reconfigure(encoding='utf-8')
     name = a.name.strip()
     if not name:
         sys.exit(L('Tên project không được để trống.', 'The project name must not be empty.'))

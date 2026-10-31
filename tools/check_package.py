@@ -12,12 +12,12 @@ Mã thoát: 0 đạt; 1 có lỗi (chế độ kiểm tra) hoặc có file đã 
 Kiểm tra cũng gồm tương thích Python 3.8 (heuristic, xem check_py38). Cờ ẩn --result-json xuất envelope
 có cấu trúc (local-agent-workspace/result-v1); mã trong envelope luôn bằng mã thoát.
 """
-import argparse, ast, hashlib, io, json, os, re, subprocess, sys, tokenize
+import argparse, ast, hashlib, io, json, ntpath, os, re, subprocess, sys, tokenize
 from result_schema import emit, make
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEXT_EXT = ('.md', '.html', '.py', '.json', '.txt', '.sha256', '.css', '.js', '')
-SKIP_DIRS = {'.git', '__pycache__', 'dist', 'node_modules'}
+SKIP_DIRS = {'.git', '__pycache__', '.pytest_cache', 'dist', 'node_modules'}
 # Chỉ ở thư mục gốc: nơi quản lý feedback của người duy trì, không đưa vào gói phát hành
 ROOT_ONLY_SKIP = {'feedback', '.github', 'roadmap', 'tests', 'release_templates'}
 # Native của host trong project (A-10: .claude/agents/...) là trạng thái riêng của project/người dùng: không vào MANIFEST, ZIP hay project mới tạo từ bản này.
@@ -28,9 +28,10 @@ ROOT_ONLY_SKIP = ROOT_ONLY_SKIP | {NATIVE_DIR}
 RUNTIME_DIR = '.agent/runtime'
 # File người dùng sửa trong project: không đưa vào MANIFEST
 PROFILE_REL = '.agent/EXECUTION_PROFILE.json'  # cùng hằng với tools/execution_profile.py (có test); import lười để --verify chạy độc lập / same constant, lazy import
+INTAKE_CONFIG_REL = '.agent/SOURCE_INTAKE.json'  # private choices, never a starter template
 USER_FILES = {'PROJECT.md', '.agent/STATE.md', '.agent/HANDOFF.md', '.agent/INDEX.md',
               '.agent/SKILL_INDEX.md', '.agent/PENDING_LESSONS.md', '.agent/PACKAGE_INFO.json',
-              '.agent/MERGE_STATUS.json', 'setup_answers.json', PROFILE_REL}
+              '.agent/MERGE_STATUS.json', 'setup_answers.json', PROFILE_REL, INTAKE_CONFIG_REL}
 # Profile hiệu lực của project (lựa chọn + quyền): của người dùng, KHÔNG vào MANIFEST; bản giao luôn là mẫu sạch / the live profile is user-owned,
 # never in a MANIFEST; what ships is always the clean template. Schema và helper là của package, vào MANIFEST như file thường.
 PROFILE_TEMPLATE = 'release_templates/' + PROFILE_REL  # bản sao kiểm được của mẫu sạch trong kho nguồn / checked mirror of the clean profile
@@ -168,17 +169,23 @@ def in_user_dir(rel):
     """Project data directories and their English overlay counterparts."""
     return (rel[3:] if rel.startswith('en/') else rel).startswith(USER_DIRS)
 
+def intake_config(rel):
+    """Only the private config and its English mirror, including Windows path aliases. No file access."""
+    path = ntpath.normpath(rel).replace('\\', '/').casefold()
+    return path in (INTAKE_CONFIG_REL.casefold(), ('en/' + INTAKE_CONFIG_REL).casefold())
+
+
 def user_owned(rel):
     """File do người dùng/project sở hữu (không phải của package): không áp quy tắc phát hành như số phiên bản,
     bản tiếng Anh hay đường dẫn trong tài liệu. Cùng một quy tắc với in_manifest.
     User/project-owned file (not the package's): release rules such as version strings, the English mirror and doc paths
     do not apply. Same ownership rule as in_manifest."""
-    if rel in USER_FILES:
+    if intake_config(rel) or rel in USER_FILES:
         return True
     return in_user_dir(rel) and not package_readme(rel)
 
 def in_manifest(rel):
-    if rel in GENERATED or rel == PROFILE_REL:
+    if intake_config(rel) or rel in GENERATED or rel == PROFILE_REL:
         return False
     if in_user_dir(rel):
         return package_readme(rel)
@@ -223,9 +230,15 @@ TEMPLATE_OVERLAYS = {  # kho nguồn: thay file người bảo trì bằng mẫu
     'PROJECT.md': 'release_templates/PROJECT.md',
     '.agent/STATE.md': 'release_templates/.agent/STATE.md',
     '.agent/HANDOFF.md': 'release_templates/.agent/HANDOFF.md',
+    '.agent/INDEX.md': 'release_templates/.agent/INDEX.md',
+    '.agent/SKILL_INDEX.md': 'release_templates/.agent/SKILL_INDEX.md',
+    '.agent/PENDING_LESSONS.md': 'release_templates/.agent/PENDING_LESSONS.md',
     'en/PROJECT.md': 'release_templates/en/PROJECT.md',
     'en/.agent/STATE.md': 'release_templates/en/.agent/STATE.md',
     'en/.agent/HANDOFF.md': 'release_templates/en/.agent/HANDOFF.md',
+    'en/.agent/INDEX.md': 'release_templates/en/.agent/INDEX.md',
+    'en/.agent/SKILL_INDEX.md': 'release_templates/en/.agent/SKILL_INDEX.md',
+    'en/.agent/PENDING_LESSONS.md': 'release_templates/en/.agent/PENDING_LESSONS.md',
 }
 _P_RULES, _P_POLICY, _P_CONTRACTS = '`.cvf/rules/CONTROL_RULES.md`', '`.cvf/rules/ROUTING_POLICY.json`', '`.cvf/contracts/`'
 _V_RULES, _V_POLICY, _V_CONTRACTS = '`.cvf/rules/v3/CONTROL_RULES.md`', '`.cvf/rules/v3/ROUTING_POLICY.json`', '`.cvf/contracts/v3/`'
@@ -239,6 +252,15 @@ REF_REPLACEMENTS = {
     'roles/reviewer/agent.md': ((_P_RULES, _V_RULES, 1),),
 }
 _NO_DELIVERY = {'.agent/PACKAGE_INFO.json', '.agent/MERGE_STATUS.json', 'setup_answers.json', 'MANIFEST.sha256'}
+_NO_DELIVERY.add(INTAKE_CONFIG_REL)
+_NO_DELIVERY |= {'en/' + r for r in _NO_DELIVERY} | {'en/' + PROFILE_REL}
+
+
+def _check_user_file_mapping():
+    classified = {r for r in TEMPLATE_OVERLAYS if not r.startswith('en/')} | _NO_DELIVERY | {PROFILE_REL}
+    missing = USER_FILES - classified
+    if missing:
+        raise ProjectionError('UNCLASSIFIED_USER_FILES', ', '.join(sorted(missing)))
 
 
 class ProjectionError(Exception):
@@ -261,8 +283,8 @@ def source_state():
     From file evidence: an initialized project is never a package source."""
     if os.path.exists(P('.agent/PACKAGE_INFO.json')):
         return 'initialized'
-    if os.path.isdir(P('release_templates')) and all(os.path.isfile(P(s)) for s in TEMPLATE_OVERLAYS.values()):
-        return 'maintainer'
+    if os.path.lexists(P('release_templates')):
+        return 'maintainer' if os.path.isdir(P('release_templates')) and all(os.path.isfile(P(s)) for s in TEMPLATE_OVERLAYS.values()) else 'unknown'
     m = read_manifest() or {}
     if os.path.isfile(P('PROJECT.md')) and (m.get('PROJECT.md') == sha('PROJECT.md') or m.get('en/PROJECT.md') == sha('PROJECT.md')):
         return 'clean'
@@ -333,10 +355,13 @@ def project_refs(rel, data):
 def delivery_selection(branding=True):
     """Danh sách file giao đi (đường dẫn tương đối, thứ tự duyệt thư mục), KHÔNG gồm MANIFEST.sha256. Dùng chung cho build/new/adopt.
     Mọi `.cvf/` của kho nguồn bị thay bằng đúng closure v3 tường minh. / The shipped file list; `.cvf/` is replaced by the explicit v3 closure."""
+    _check_user_file_mapping()
     brand = set(branding_files()) if branding else set()
-    rels = {f for f in all_files() if f not in _NO_DELIVERY and not f.startswith(CVF_DIR + '/')
+    rels = {f for f in all_files() if not intake_config(f) and f not in _NO_DELIVERY and not f.startswith(CVF_DIR + '/')
             and (in_manifest(f) or f in USER_FILES or f in brand)}
     rels.update(CVF_CLOSURE)
+    if source_state() == 'maintainer':
+        rels.update(TEMPLATE_OVERLAYS)
     rels.add(PROFILE_REL)  # luôn giao mẫu sạch, kể cả khi nguồn không có file profile / always the clean profile, even if the source has none
     if branding and branding_js() is not None:
         rels.add('assets/branding.js')  # dựng lại từ branding.json để trang hướng dẫn đúng ngay / rebuilt from branding.json
@@ -345,6 +370,9 @@ def delivery_selection(branding=True):
 
 def delivery_bytes(rel):
     """Bytes sẽ giao của rel: mẫu sạch (kho nguồn), overlay `.cvf/README.md`, phép thay tham chiếu; còn lại là bytes gốc."""
+    _check_user_file_mapping()
+    if intake_config(rel) or rel in _NO_DELIVERY:
+        raise ProjectionError('EXCLUDED_FILE', rel)
     if rel == 'assets/branding.js':
         js = branding_js()
         if js is not None:
@@ -352,7 +380,10 @@ def delivery_bytes(rel):
     if rel == PROFILE_REL:
         return _ep().clean_profile_bytes()  # không bao giờ mang profile sống (lựa chọn, grant) của nguồn / never a live profile of the source
     src = None
-    if source_state() == 'maintainer':
+    state = source_state()
+    if state not in ('maintainer', 'clean'):
+        raise ProjectionError('SOURCE_STATE_INVALID', state)
+    if state == 'maintainer':
         src = TEMPLATE_OVERLAYS.get(rel) or CVF_OVERLAY.get(rel)
     path = P(src or rel)
     try:
@@ -526,7 +557,7 @@ def source_package_problems(source):
                 continue
             h, rel = line.split('  ', 1)
             declared.add(rel)
-            if in_user_dir(rel) and not package_readme(rel):
+            if intake_config(rel) or (in_user_dir(rel) and not package_readme(rel)):
                 private.append(rel)
                 continue
             if rel in USER_FILES or rel == 'MANIFEST.sha256':
@@ -648,7 +679,7 @@ def verify(findings=None):
             pass
     changed, missing = [], []
     for rel, h in sorted(m.items()):
-        if rel in USER_FILES:
+        if intake_config(rel) or rel in USER_FILES:
             continue  # file người dùng sửa: có trong MANIFEST chỉ để biết còn nguyên bản mẫu hay chưa
         if not os.path.isfile(P(rel)):
             missing.append(rel); continue
@@ -751,11 +782,68 @@ def check_py38():
                 errs.append('%s:%d: không tương thích Python 3.8 — %s.' % (f, ln, msg))
     return errs
 
+def crlf_warning_paths(files):
+    """Warn on ordinary text only; byte-exact owners and Git -text retain raw bytes.
+
+    Packaged checks do not require Git. In a source checkout Git supplies effective
+    attributes (including local overrides). Without Git, only literal root paths
+    declared -text are exempt; wildcard rules stay conservative.
+    """
+    candidates = [f for f in files if f.endswith(('.md', '.html', '.py', '.json')) and '\r\n' in rd(f)]
+    raw_byte_paths = set(BYTE_EXACT)
+    git_attributes = False
+    if candidates and os.path.isdir(P('release_templates')) and os.path.exists(P('.git')):
+        try:
+            result = subprocess.run(['git', 'check-attr', '-z', '--stdin', 'text'], cwd=ROOT,
+                                    input=b''.join(os.fsencode(p) + b'\0' for p in candidates),
+                                    capture_output=True, timeout=10)
+            parts = result.stdout.split(b'\0')
+            if result.returncode == 0 and parts[-1:] == [b''] and len(parts[:-1]) == len(candidates) * 3:
+                git_attributes = True
+                raw_byte_paths.update(os.fsdecode(parts[i]) for i in range(0, len(parts) - 1, 3)
+                                      if parts[i + 1:i + 3] == [b'text', b'unset'])
+        except (OSError, subprocess.TimeoutExpired):
+            pass  # conservative fallback: ordinary CRLF still warns
+    if not git_attributes and os.path.isfile(P('.gitattributes')):
+        for line in rd('.gitattributes').splitlines():
+            fields = line.split()
+            if len(fields) == 2 and fields[1] == '-text':
+                path = fields[0]
+                if not any(c in path for c in '*?[]\\"') and not path.startswith(('#', '!', '/')) and '..' not in path.split('/'):
+                    raw_byte_paths.add(path)
+    return [f for f in candidates if f not in raw_byte_paths]
+
+
+def pack_index_problems():
+    """Installed PACK rows must resolve; clean delivery templates cannot install packs.
+
+    A dangling declared target is an error: the index would otherwise advertise
+    an unavailable capability. Live user index choices are never rewritten.
+    """
+    errors = []
+    for rel in ('.agent/SKILL_INDEX.md', 'en/.agent/SKILL_INDEX.md'):
+        for index, template in ((rel, False), ('release_templates/' + rel, True)):
+            if not os.path.isfile(P(index)):
+                continue
+            for line in rd(index).splitlines():
+                cells = [s.strip() for s in line.strip().strip('|').split('|')]
+                if len(cells) < 4 or cells[2] != 'PACK':
+                    continue
+                if template:
+                    errors.append('%s: mẫu sạch không được có dòng PACK (%s).' % (index, cells[0]))
+                elif not os.path.isfile(P(cells[3])):
+                    errors.append('%s: %s trỏ tới file không có (%s).' % (index, cells[0], cells[3]))
+    return errors
+
+
 def check_all(release=False):
     errs, warns = [], []
     raw_files = all_files()
-    files = raw_files
+    # Private config is diagnosed by path only, never by parsing or hashing choices.
+    files = [f for f in raw_files if not intake_config(f)]
     source_tree = os.path.isdir(P('release_templates'))
+    if release and not source_tree:
+        errs += ['Có file người dùng trong bản phát hành: %s.' % f for f in raw_files if intake_config(f)]
     if source_tree or not release:
         # Parse package code/docs only. A staged release retains the complete list
         # so unexpected project data still fails the release boundary below.
@@ -812,6 +900,7 @@ def check_all(release=False):
         for name, loc in rows:
             if not os.path.isfile(P(loc)): errs.append('%s: %s trỏ tới file không có (%s).' % (idxf, name, loc))
             if name not in sk: errs.append('%s liệt kê "%s" nhưng không có thư mục skill.' % (idxf, name))
+    errs += pack_index_problems()
     # cây en/ phủ đủ các file chỉ có nội dung tiếng Việt
     root_lang = [f for f in files if not f.startswith(('en/', 'docs/', 'tools/', 'dist/')) and f.endswith(('.md', '.html', '.csv', '.txt')) and
                  (f in ('AGENTS.md', 'CLAUDE.md', 'GEMINI.md', 'PROJECT.md', 'README.md') or f.startswith(('.agent/', 'archive/', 'output/', 'working/', 'references/', 'skills/', 'examples/')))
@@ -882,7 +971,7 @@ def check_all(release=False):
     for f in [f for f in files if f.endswith('.py')]:
         try: ast.parse(rd(f))
         except SyntaxError as e: errs.append('%s: lỗi cú pháp Python (%s).' % (f, e))
-    crlf = [f for f in files if f.endswith(('.md', '.html', '.py', '.json')) and '\r\n' in rd(f)]
+    crlf = crlf_warning_paths(files)
     if crlf: warns.append('Có %d file dùng CRLF (ví dụ %s); nên dùng LF.' % (len(crlf), crlf[0]))
     # 7a. schema profile và mặc định / profile schema and its default
     errs += _ep().schema_problems()
@@ -942,7 +1031,7 @@ def run_checks(release=False):
 
 def source_eol_problems(paths):
     """Maintainer-only, explicit files: ask Git for effective attributes, then check raw bytes.
-    No attributes parser, normalisation, package traversal or Git dependency in the ordinary checks.
+    This scoped check uses effective Git attributes; ordinary package warnings use a conservative literal -text fallback.
     """
     if not os.path.isdir(P('release_templates')) or not os.path.exists(P('.git')):
         return ['--check-eol chỉ dùng trong kho nguồn LAW có Git; không áp vào project người dùng.'], []
@@ -999,6 +1088,9 @@ def source_eol_problems(paths):
 
 
 def main():
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(encoding='utf-8')
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--release', action='store_true')
     ap.add_argument('--write-manifest', action='store_true')
@@ -1006,8 +1098,6 @@ def main():
     ap.add_argument('--check-eol', nargs='+', metavar='FILE', help='kho nguồn có Git: kiểm EOL đúng các file được nêu, chỉ đọc')
     ap.add_argument('--result-json', action='store_true', help=argparse.SUPPRESS)
     a = ap.parse_args()
-    if hasattr(sys.stdout, 'reconfigure'):
-        sys.stdout.reconfigure(encoding='utf-8')
     if a.check_eol is not None:
         if a.release or a.verify or a.write_manifest:
             ap.error('--check-eol dùng riêng, không kết hợp --release/--verify/--write-manifest')

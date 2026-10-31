@@ -4,11 +4,28 @@ Hướng dẫn cho **Main** khi người dùng giao việc văn phòng nhiều b
 
 EN: A guide for Main on multi-step office work. The user speaks plainly and never picks agents, writes trade prompts or stitches results. It adds no authority and does not replace Main's judgement.
 
+<!-- law-host-session-guidance -->
+## Phiên native và exporter / Native session versus exporter
+
+Giới hạn trong `tools/native_agents.py` chỉ áp dụng các file xuất cho Claude Code. Với Cowork, Codex Desktop, Antigravity hoặc host khác, Main kiểm công cụ thật của đúng phiên/vai và có thể chọn tuyến `host_session` chỉ đọc của `office.py compose`; không suy khả năng từ tên host hoặc phần mềm đã cài. Tuyến chuẩn bị không đăng ký agent, không cấp grant và không bỏ quyền do profile giữ. Khi owner là PROFILE, vẫn cần grant hợp lệ theo yêu cầu người dùng; ghi quyền vào tài liệu chat/project không tự sửa profile. Không đặt host `claude-code` chỉ để vượt điều kiện exporter khi đang dùng host khác.
+
+Tách model/effort yêu cầu (có thể là alias) khỏi model/effort thực tế; không suy actual từ alias hay agent tự khai. Tách công cụ của Main khỏi công cụ của subagent; evidence bằng hash chỉ bind bytes lời khai, không xác thực capability. Tách file trong container/VM, tài liệu project của ứng dụng và file Windows/project. Main phải kiểm đường bàn giao, mở đúng artifact và đối chiếu bytes/digest trước tích hợp; ghi rõ phần chưa quan sát. Không tự cài dependency, mở quyền hoặc đổi native để vượt thiếu khả năng. Lệnh `status`/`preview` không thay cho phép thử host thật.
+
+EN: `native_agents.py` limits only its Claude Code exports. Inspect the actual session/role tools on Cowork, Codex Desktop, Antigravity or another host; the optional read-only `host_session` compose route neither registers an agent nor grants authority or bypasses the profile owner. Keep requested aliases/effort separate from observed model/effort, Main tools separate from subagent tools, and container/VM or app-project documents separate from Windows project files. A bound note proves bytes only. Verify delivery and exact artifact bytes before integration; report what was not observed. Do not install dependencies or widen permissions to fill gaps.
+
 ## 1. Việc nhỏ làm trực tiếp / Small work stays with Main
 
 Sửa một câu, một số, một đoạn, đổi tên, hoặc việc Main làm trọn trong một lượt: làm ngay, không tạo TASK, không gọi vai, không đọc catalog. Chỉ dùng phương pháp văn phòng khi có phần việc thật sự bàn giao cho vai khác và kết quả quay lại sau. Không bắt mọi yêu cầu chạy đủ sáu phương pháp.
 
 EN: One-sentence edits and one-turn jobs are done directly, without a TASK or a role. Methods are used only for real hand-overs, and never all six by default.
+
+## Gói chuyên môn tùy chọn và vai lõi / Optional packs and core roles
+
+Catalog office là bộ phương pháp nền, không phải danh sách duy nhất của các gói đã cài. Khi yêu cầu cần chuyên môn của gói, Main tìm đúng entry trong `.agent/SKILL_INDEX.md`, kiểm trạng thái và phạm vi dùng, rồi đọc module cần thiết. Gói REVIEW chỉ dùng thử khi người dùng đã chọn/cài và giao phạm vi thử; không tự coi là AVAILABLE hoặc xuất sang host. Gói chưa cài thì báo đúng, không đọc source trong `packs/` để giả đã dùng bản cài.
+
+Ánh xạ phương pháp của gói vào Main/Scout/Worker/Reviewer có thật theo workflow của gói và hợp đồng lõi; không nhân role theo tên tài liệu. Trong brief giao entry/module đúng bản, nguồn/candidate revision, tool/path/quyền và điều phải giữ. Có thể dùng trực tiếp skill khi phù hợp; không tạo method ID trong catalog hay schema mới chỉ để đủ tên. Thiếu role/tool/quyền giữ phần phụ thuộc chờ. File role, chỉ mục, lời khai model và prompt đã soạn không chứng minh host đã dispatch; reviewer độc lập cần trace riêng, tự soát ghi self-review.
+
+EN: The office catalog is the baseline method set, not an exhaustive list of installed packs. Select an installed pack through the project skill index, check its status and scope, and read only needed modules. REVIEW means an explicitly assigned project trial, not acceptance or native export. Bind pack methods to actual core roles with the current inputs, permissions and output paths; no extra role, catalog entry or schema is required merely to mirror a document name. Missing capabilities remain held, and independent review requires evidence of a separate invocation.
 
 ## 2. Nhận việc / Taking the request
 
@@ -36,6 +53,14 @@ Main tự chọn bằng năng lực của mình; công cụ `python tools/office
 Một việc có thể cần nhiều phương pháp (ví dụ báo cáo tuần: thư ký, rồi đối chiếu). Mỗi phần việc là một lần giao riêng với TASK/slot riêng. Phương pháp là cách làm của TASK, **không phải quyền**: vai nhận vẫn là Scout, Worker hoặc Reviewer lõi, chịu quy tắc và grant của project.
 
 EN: Main chooses; `office.py list` only lists. Each method is a task method on a core role and grants nothing. One job may use several methods, each as its own assignment.
+
+Chỉ đọc đầu ra liên quan được brief trỏ tới như ứng viên; kiểm owner, revision và trạng thái, giữ kết quả đến muộn khi brief đã đổi hoặc vùng ghi chồng lấn để Main xử lý. Truy lại nguồn gốc cho số liệu và kết luận, không nhận chỉ vì báo cáo trước ghi PASS.
+
+EN: Read only relevant outputs referenced by the brief as candidates; check owner, revision and status. Hold late output when the brief changed or write scopes overlap for Main to resolve. Trace numbers and conclusions to their original evidence; a prior PASS alone is insufficient.
+
+Với lô việc có cấu trúc như JSONL, đây là hướng dẫn kiểm hợp đồng, chưa phải adapter runtime: yêu cầu khóa bắt buộc và duy nhất, gắn SHA đầu vào và phạm vi nguồn; kiểm coverage trước khi giao, từ chối khóa rỗng/trùng trước khi ghép, đối chiếu thiếu/thừa theo khóa. Việc thiếu đầu vào phải ghi chưa thực hiện, không tính câu trả lời từ chối kết luận cho việc đó là đã hoàn thành. Khi có đầu vào nhưng chưa đủ căn cứ, báo kết quả này riêng theo tiêu chí nhiệm vụ; nêu rõ mẫu số. Đủ định dạng hay trích dẫn có trong đầu vào chưa chứng minh đúng nghĩa.
+
+EN: For structured batches such as JSONL, this is contract guidance, not a runtime adapter: require unique nonempty keys, bind input SHA and source scope, check coverage before dispatch, reject empty/duplicate keys before joining and compare missing/extra keys. Mark work without input as not performed; an abstention for that work is not completion. Where input exists but evidence is insufficient, report that outcome separately under the task criteria; state the denominator. Valid format or a citation present in input does not prove semantic correctness.
 
 ## 4. Lập brief và TASK / Briefing and the TASK
 

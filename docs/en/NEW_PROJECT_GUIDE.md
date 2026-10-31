@@ -77,11 +77,11 @@ The package already includes fourteen compact skills in `skills/local/shared/` a
 files are written in Vietnamese; assistants read them without problems.
 
 For specialised work, also install a **domain pack**: `phap-ly`, `van-thu-luu-tru`, `cang-logistics`, `hanh-chinh-nhan-su`,
-`ke-toan-noi-bo`. The easiest way: double-click `APP.bat` (Windows) or `APP.command` (macOS), open the "Manage and maintain" group →
+`ke-toan-noi-bo`, `academic-research`. The easiest way: double-click `APP.bat` (Windows) or `APP.command` (macOS), open the "Manage and maintain" group →
 "Manage skills", "Domain packs" section, and press "Install to try". An installed pack is recorded in `.agent/SKILL_INDEX.md`, so the assistant finds it when the work needs it; you do
 not need to name the pack when giving work. A pack labelled "Trial" has not been through intake: the assistant tries it and says so. A pack with a valid intake record also has "Install and allow"; allowing it is your decision for this project, not proof that the pack was checked as safe.
 
-**Note:** the five bundled packs are trial versions that have not been through intake. Their legal basis was compiled from news and advisory sites and has not been checked article by article against official texts (the Official Gazette, government legal portals); in tests the AI assistant still sometimes produced "verbatim quotes" that are not in the pack. Use them for reference and drafting; for documents to be signed or sent outside, check the legal basis against the official texts yourself first.
+**Note:** the bundled packs are trial versions and have not been accepted as defaults. The academic research pack remains a trial; check its sources and output quality for each task. The legal basis in packs with legal content was compiled from news and advisory sites and has not been checked article by article against official texts (the Official Gazette, government legal portals); in tests the AI assistant still sometimes produced "verbatim quotes" that are not in the pack. Use them for reference and drafting; for documents to be signed or sent outside, check the legal basis against the official texts yourself first.
 
 Let the assistant choose a native skill, a local skill or direct work according to the task. A
 skill written for one project is only worth adding when there is a real template or lesson

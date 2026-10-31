@@ -5,6 +5,8 @@ Every build runs in a disposable copy of the package. Builds either set the nest
 suite) or run in a copy whose tests/ folder holds only a tiny synthetic test. Nothing in the source tree is written.
 """
 import json
+import contextlib
+import io
 import os
 from pathlib import Path
 import platform
@@ -66,33 +68,135 @@ def sha256(path):
 
 
 class BehaviourGateBudgetTests(unittest.TestCase):
-    def assertInvocation(self, run):
-        run.assert_called_once_with(
-            [sys.executable, '-B', '-m', 'unittest', 'discover', '-s', 'tests', '-v'],
-            cwd=br.ROOT, env=mock.ANY, capture_output=True, timeout=1800)
-        env = run.call_args.kwargs['env']
-        self.assertEqual(env[br.GATE_ENV], '1')
-        self.assertEqual(env['PYTHONUTF8'], '1')
-
-    def test_behaviour_gate_runs_with_the_finite_budget(self):
-        result = subprocess.CompletedProcess([], 0, b'', b'Ran 1 test in 0.001s\n\nOK\n')
-        # The parent suite can itself be inside the gate; restore its marker afterward.
-        with mock.patch.dict(os.environ, {br.GATE_ENV: '0'}), \
+    def test_default_budget_and_nested_source_only_do_not_spawn(self):
+        self.assertEqual(br.BEHAVIOUR_TEST_TIMEOUT_S, 1800)
+        with mock.patch.object(br.cp, 'P', return_value='absent'), \
+                mock.patch.object(br.os.path, 'isdir', return_value=False), \
+                mock.patch.object(br.subprocess, 'Popen') as spawn:
+            self.assertEqual(br.gate_behaviour_tests()['status'], 'skipped')
+            spawn.assert_not_called()
+        with mock.patch.dict(os.environ, {br.GATE_ENV: '1'}), \
                 mock.patch.object(br.os.path, 'isdir', return_value=True), \
-                mock.patch.object(br.subprocess, 'run', return_value=result) as run:
-            gate = br.gate_behaviour_tests()
-            self.assertInvocation(run)
+                mock.patch.object(br.subprocess, 'Popen') as spawn:
+            self.assertEqual(br.gate_behaviour_tests()['status'], 'nested')
+            spawn.assert_not_called()
+
+
+class BehaviourGateDurableDiagnosticsTests(unittest.TestCase):
+    def run_fixture(self, source, timeout=None):
+        with tempfile.TemporaryDirectory(prefix='gate-synthetic-') as directory:
+            tests = Path(directory) / 'tests'
+            tests.mkdir()
+            write_lf(tests / 'test_synthetic.py', source)
+            waits = []
+            real_popen = subprocess.Popen
+            def spawn(*args, **kwargs):
+                child = real_popen(*args, **kwargs)
+                original = child.wait
+                def wait(timeout=None):
+                    waits.append(timeout)
+                    return original(timeout=timeout)
+                child.wait = wait
+                return child
+            with mock.patch.object(br, 'ROOT', directory), \
+                    mock.patch.object(br.cp, 'P', return_value=str(tests)), \
+                    mock.patch.dict(os.environ, {br.GATE_ENV: '0'}), \
+                    mock.patch.object(br.subprocess, 'Popen', side_effect=spawn), \
+                    mock.patch.object(br, 'BEHAVIOUR_TEST_TIMEOUT_S',
+                                      1800 if timeout is None else timeout):
+                gate = br.gate_behaviour_tests()
+        diagnostic = Path(gate['detail'].split(': ')[-1])
+        self.addCleanup(shutil.rmtree, str(diagnostic))
+        self.assertTrue((diagnostic / 'stdout.log').exists())
+        self.assertTrue((diagnostic / 'stderr.log').exists())
+        records = [json.loads(line) for line in (diagnostic / 'events.jsonl').read_text(encoding='utf-8').splitlines()]
+        return gate, diagnostic, records, waits
+
+    def test_success_retains_raw_streams_order_duration_and_1800(self):
+        gate, path, records, waits = self.run_fixture(
+            'import unittest,sys\nclass Tiny(unittest.TestCase):\n'
+            ' def test_a(self):\n  print("raw stdout",flush=True)\n  print("raw stderr",file=sys.stderr,flush=True)\n'
+            ' def test_b(self): pass\n')
         self.assertEqual(gate['status'], 'passed')
-        self.assertIn('Ran 1 test', gate['detail'])
+        self.assertEqual(waits, [1800])
+        self.assertIn('raw stdout', (path / 'stdout.log').read_text())
+        self.assertIn('raw stderr', (path / 'stderr.log').read_text())
+        starts = [r for r in records if r['event'] == 'test_start']
+        ends = [r for r in records if r['event'] == 'test_end']
+        self.assertEqual([r['test'].rsplit('.', 1)[-1] for r in starts], ['test_a', 'test_b'])
+        self.assertEqual([r['outcome'] for r in ends], ['success', 'success'])
+        self.assertTrue(all(r['duration_s'] >= 0 and r['pid'] for r in ends))
+        self.assertEqual(records[-1]['current_unfinished'], None)
+        self.assertEqual(records[-1]['returncode'], 0)
 
-    def test_behaviour_timeout_is_failed_and_reports_the_same_budget(self):
-        expired = subprocess.TimeoutExpired('synthetic unittest', 1800)
-        with mock.patch.dict(os.environ, {br.GATE_ENV: '0'}), \
-                mock.patch.object(br.os.path, 'isdir', return_value=True), \
-                mock.patch.object(br.subprocess, 'run', side_effect=expired) as run:
-            gate = br.gate_behaviour_tests()
-            self.assertInvocation(run)
-        self.assertEqual((gate['status'], gate['detail']), ('failed', 'quá 1800 giây'))
+    def test_failure_and_subtest_failures_preserve_exit(self):
+        for body in ['self.fail("synthetic")',
+                     'with self.subTest(n=1): self.fail("subtest")']:
+            with self.subTest(body=body):
+                gate, path, records, waits = self.run_fixture(
+                    'import unittest\nclass Tiny(unittest.TestCase):\n def test_a(self):\n  ' + body + '\n')
+                self.assertEqual(gate['status'], 'failed')
+                self.assertIn('mã thoát 1', gate['detail'])
+                self.assertEqual([r['outcome'] for r in records if r['event'] == 'test_end'], ['failure'])
+
+    def test_skip_is_recorded_without_turning_into_success(self):
+        gate, path, records, waits = self.run_fixture(
+            'import unittest\nclass Tiny(unittest.TestCase):\n @unittest.skip("fixture reason")\n def test_a(self): pass\n')
+        self.assertEqual(gate['status'], 'passed')
+        self.assertIn('fixture reason', gate['detail'])
+        self.assertEqual([r['outcome'] for r in records if r['event'] == 'test_end'], ['skip'])
+
+    def test_class_setup_error_and_cleanup_have_separate_phase_evidence(self):
+        gate, path, records, waits = self.run_fixture(
+            'import unittest\nclass Tiny(unittest.TestCase):\n @classmethod\n'
+            ' def setUpClass(cls): raise RuntimeError("setup failure")\n def test_a(self): pass\n')
+        self.assertEqual(gate['status'], 'failed')
+        self.assertFalse(any(r['event'] == 'test_start' for r in records))
+        self.assertTrue(any(r['event'] == 'outcome' and r['outcome'] == 'error' for r in records))
+        self.assertTrue(any(r.get('phase') == 'class_setup' and 'duration_s' in r for r in records))
+        gate, path, records, waits = self.run_fixture(
+            'import unittest\nclass Tiny(unittest.TestCase):\n def test_a(self): self.addCleanup(lambda: None)\n')
+        phases = {r.get('phase') for r in records if r['event'] == 'phase_end'}
+        self.assertTrue({'test_setup', 'test_body', 'test_teardown', 'test_cleanup'} <= phases)
+
+    def test_timeout_keeps_partial_raw_current_pid_and_body_phase(self):
+        gate, path, records, waits = self.run_fixture(
+            'import unittest,time\nclass Tiny(unittest.TestCase):\n def test_a(self):\n'
+            '  print("before hang",flush=True)\n  time.sleep(30)\n', timeout=0.8)
+        self.assertEqual(gate['status'], 'failed')
+        self.assertIn('quá 0 giây', gate['detail'])
+        self.assertIn('unfinished', gate['errors'][0])
+        self.assertIn('before hang', (path / 'stdout.log').read_text())
+        self.assertTrue(records[-1]['timed_out'])
+        self.assertEqual(records[-1]['phase'], 'test_body')
+        self.assertTrue(records[-1]['current_unfinished'].endswith('.test_a'))
+        self.assertEqual(records[-1]['child_pid'], next(r['child_pid'] for r in records if r['event'] == 'spawn'))
+        self.assertFalse(any(r['event'] == 'test_end' for r in records))
+
+    def test_trace_survives_body_mocks_of_global_clock_json_and_open(self):
+        gate, path, records, waits = self.run_fixture(
+            'import unittest,time,json,builtins\nfrom unittest.mock import patch\n'
+            'class Tiny(unittest.TestCase):\n def test_a(self):\n'
+            '  for target in ["time.monotonic", "json.dumps", "builtins.open"]:\n'
+            '   p=patch(target,side_effect=RuntimeError("body mock"));p.start();self.addCleanup(p.stop)\n')
+        self.assertEqual(gate['status'], 'passed')
+        self.assertTrue(any(r.get('outcome') == 'success' for r in records))
+
+    def test_timeout_before_test_body_identifies_discovery_or_class_setup(self):
+        sources = {
+            'discovery': 'import time\ntime.sleep(30)\n',
+            'class_setup': ('import unittest,time\nclass Tiny(unittest.TestCase):\n'
+                            ' @classmethod\n def setUpClass(cls): time.sleep(30)\n'
+                            ' def test_a(self): pass\n'),
+        }
+        for phase, source in sources.items():
+            with self.subTest(phase=phase):
+                gate, path, records, waits = self.run_fixture(source, timeout=0.8)
+                self.assertEqual(gate['status'], 'failed')
+                self.assertTrue(records[-1]['timed_out'])
+                self.assertEqual(records[-1]['phase'], phase)
+                self.assertIsNone(records[-1]['current_unfinished'])
+                self.assertFalse(any(r['event'] == 'test_start' for r in records))
 
 
 class ReleaseGateTests(unittest.TestCase):

@@ -751,6 +751,9 @@ def _emit(res, args, message):
 
 
 def main(argv=None):
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(encoding='utf-8', errors='replace')
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest='cmd')
     for name in ('status', 'preview', 'apply', 'preview-retire', 'retire'):
@@ -761,8 +764,6 @@ def main(argv=None):
         if name in ('apply', 'retire'):
             p.add_argument('--expect-plan', default=None, help='plan_sha256 từ lần xem trước')
     a = ap.parse_args(argv)
-    if hasattr(sys.stdout, 'reconfigure'):
-        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
     if not a.cmd:
         ap.print_usage(sys.stderr)
         return 2

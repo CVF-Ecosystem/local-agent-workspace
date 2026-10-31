@@ -72,6 +72,30 @@ Văn bản bị
 thay thế: không xóa dòng, đổi Tình trạng và ghi văn bản thay thế (còn cần cho vụ việc cũ). Agent chỉ ghi vào chỉ mục khi người
 dùng yêu cầu; sửa bằng thư viện Excel nhưng giữ định dạng, kiểm lại bằng `check`.
 
+### File chờ cần tiếp nhận
+
+Khi được giao nhập file chờ, dùng `python tools/library.py intake` (mặc định chỉ xem trước), rồi
+`intake --apply --expect-plan TOKEN` đúng bản xem trước. Agent chuẩn bị `<project>/.agent/SOURCE_INTAKE.json` chỉ khi được giao;
+không tự bật hoặc lấy config làm quyền. Config `law.source-intake/1` có `enabled`, `staging`, `mappings` gồm
+`code`, `canonical_name`, `destination`; xem định dạng và giới hạn ở `tools/README.md`. Staging dưới
+`references/<nhóm>/` có thư mục bắt đầu `_`, bị scanner thường bỏ qua. Chỉ đọc file trực tiếp trong staging;
+64 KiB config, 100 mapping/entry, 20 MiB/file và tổng 100 MiB. Cả kiểm kê staging được đọc/hash, kể cả chọn một file.
+
+Mã đúng một chuỗi, tên chuẩn chính xác hoặc `--file BASENAME --code CODE` chỉ giúp phân loại; không chứng minh
+danh tính, bản gốc/VBHN, toàn văn hay hiệu lực. Mã khác nhau/thiếu/nhiều file cùng mã thì dừng; không chọn bản mới nhất.
+Luật cũ/cùng chủ đề chỉ gợi ý; hậu tố `_ban-gioi-thieu` bị từ chối. Đích có sẵn luôn từ chối, cả cùng SHA;
+dòng đã có đường dẫn/căn cứ cũ thuộc luồng thay thế riêng, không gắn lại theo hash/tên. Dòng chưa có file/căn cứ có thể
+giữ ID khi số hiệu khớp duy nhất. File mới revision 1, SHA thực, `Cần đối chiếu`; **Có toàn văn để trống** (chưa xác nhận).
+Không đổi thành Có để hết cảnh báo `check`. Nguồn staging giữ nguyên cả sau commit.
+
+Config/sổ/nguồn/lựa chọn/plan đổi thì phải preview lại. Apply có thể tạo khóa runtime dù sau đó từ chối.
+Owner `library_sync` ghi file+sổ qua transaction, không copy rồi sync rời; đây là nhiều bước có phục hồi,
+không nguyên tử toàn bộ. Create dùng hard link no-clobber, không fallback overwrite. Chỉ importer bật chế độ create-only/v2,
+cần bộ tools mới để `transaction.py status`, `resume TXID` hoặc `rollback TXID`; caller mặc định vẫn v1, kể cả nhãn create cũ. Phục hồi kiểm identity+SHA,
+giữ file người dùng lưu sau sự cố và chặn ghi sổ khi file tạo đã đổi/thiếu. Không xóa nhật ký để bỏ guard;
+không tự retry, không mạng/API. Scope/hash checks vẫn có cửa sổ với external writer; không phải sandbox.
+Apply bị lỗi có thể đã ghi một phần: xem trạng thái `partial`, transaction ID và tác động trong kết quả trước khi phục hồi.
+
 ## Nội dung đã đọc, căn cứ và quyết định theo phiên bản nguồn
 
 Khi cần giữ điều đã đọc để dùng lại (đoạn trích, số liệu, suy luận, kiểm theo phạm vi, quyết định của người dùng), ghi vào sheet `LAW content` bằng
@@ -87,6 +111,18 @@ Khi cần giữ điều đã đọc để dùng lại (đoạn trích, số li�
 
 `python tools/library.py check` báo: thiếu file, file chưa vào chỉ mục, trùng số hiệu, trùng Mã (nêu mã và các dòng, mã thoát 1; sổ cũ chưa có cột Mã giữ như trước), "Còn hiệu lực" nhưng đã ghi bị thay
 thế, ngày kiểm quá 180 ngày, mức "Cần đối chiếu", văn bản Mật. `stats` cho số lượng theo nhóm và tình trạng.
+
+## Kiểm sâu và tải nguồn
+
+Khi tiếp nhận nguồn, agent có thể chạy `python tools/library.py check --content-audit`: chỉ đọc trong phạm vi nguồn cho phép, báo SHA đã ghi và SHA thực, lời khai kiểm gắn revision/SHA theo đúng phạm vi khai, cùng dấu hiệu lớp chữ PDF theo trang. Lời khai không chứng thực toàn văn; ít chữ không chứng minh bản quét. PDF cần `pdfminer.six` tùy chọn; thiếu engine, lỗi hoặc vượt giới hạn là chưa kiểm. Giới hạn: 20 MiB/file, 100 trang và 15 giây/PDF; Office ZIP tối đa 2.000 entry, 40 MiB giải nén và 1 MiB/XML được kiểm. Không OCR, không xác minh hiệu lực. Chỉ cảnh báo giữ mã thoát cơ bản, không nâng trạng thái hay sửa file/sổ.
+
+Khi tải nguồn theo quyền và adapter phù hợp: bật kiểm TLS; đối chiếu HTTP, MIME, chữ ký file và parser/cấu trúc định dạng. `%PDF` hoặc `PK` riêng lẻ không chứng minh file hợp lệ hay toàn văn. Tải vào staging, không ghi đè; đặt giới hạn byte, redirect và hostname theo adapter; giữ URL cuối và lỗi. Không dùng link đoán như kết quả đã kiểm, không vượt CAPTCHA hay tự lấy tài khoản; đăng nhập hợp lệ chỉ theo cơ chế và quyền đã cấp. Đối chiếu số hiệu và trích yếu với nguồn thật.
+
+Tách đánh giá metadata, định danh, file/nội dung, bằng chứng đối chiếu, tình trạng hiệu lực và lời khai kiểm; đủ trường hoặc lớp chữ không chứng minh đúng văn bản, toàn văn hay hiệu lực. Heuristic chỉ là dấu hiệu có lý do và giới hạn; cảnh báo không phải gate mới. Dùng lại `LAW content`/`DECLARED_CHECK` gắn nguồn, revision, SHA và phạm vi; lời khai không chứng thực toàn văn.
+
+Nếu có raw và clean, giữ evidence, phương pháp, ngày và revision nguồn cho clean; làm mới raw không âm thầm ghi đè xác minh hoặc dữ liệu clean người dùng sửa. Với OCR, giữ file/ảnh gốc và liên kết bản nhận dạng tới revision nguồn; round-trip lớp chữ chỉ kiểm xuất/encoding, không đo đúng ảnh. Trước trích dẫn, đối chiếu đúng trang ảnh.
+
+Mẫu [ghi nhận truy cập nguồn](references/source-access-record.md) giúp mô tả quyền, capability và evidence; mẫu không cấp quyền hay thực hiện truy cập.
 
 ## Dữ liệu nhạy cảm
 

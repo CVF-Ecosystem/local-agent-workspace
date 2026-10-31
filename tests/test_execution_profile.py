@@ -5,6 +5,7 @@ registers a role, calls a host, a model, the network or CVF, and no real maintai
 module's own test hook. The repository tree is only ever read.
 """
 import copy
+import hashlib
 import importlib.util
 import json
 import os
@@ -13,6 +14,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 from unittest import mock
 
@@ -814,24 +816,74 @@ class SourceTree(unittest.TestCase):
 
 class Delivery(SourceTree):
     def test_selection_ownership_and_bytes_without_a_source_profile(self):
-        self.assertFalse((ROOT / PROFILE).exists(), 'the repository must not hold a live profile (maintainer profile is out of scope)')
-        self.assertIn(PROFILE, cp.delivery_selection())
-        self.assertEqual(cp.delivery_bytes(PROFILE), ep.clean_profile_bytes())
-        self.assertEqual(cp.PROFILE_REL, ep.PROFILE_REL)  # one constant in two modules (check_package imports lazily so --verify stays standalone)
-        self.assertEqual(cp.PROFILE_REL, ep.PROFILE_REL)  # one constant in two modules (check_package imports lazily so --verify stays standalone)
-        self.assertFalse(cp.in_manifest(PROFILE))
-        self.assertTrue(cp.user_owned(PROFILE))
-        self.assertTrue(cp.in_manifest(ep.SCHEMA_REL) and not cp.user_owned(ep.SCHEMA_REL))
-        self.assertTrue(cp.in_manifest('tools/execution_profile.py'))
-        self.assertEqual(cp.delivery_problems(), [])
-        dest = self.work / 'pkg'
-        rels = cp.materialize(str(dest))
-        self.assertIn(PROFILE, rels)
-        manifest = (dest / 'MANIFEST.sha256').read_text(encoding='utf-8')
-        self.assertNotIn(PROFILE, manifest)
-        self.assertIn(ep.SCHEMA_REL, manifest)
-        self.assertIn('tools/execution_profile.py', manifest)
-        self.assertEqual((dest / PROFILE).read_bytes(), ep.clean_profile_bytes())
+        # Source profiles are allowed; delivery must be clean in both cases.
+        # Keep this identifier to trace the original B7 regression.
+        def profile_state(path):
+            return hashlib.sha256(path.read_bytes()).hexdigest() if path.exists() else None
+
+        original_state = profile_state(ROOT / PROFILE)
+        self.addCleanup(lambda: self.assertEqual(profile_state(ROOT / PROFILE), original_state))
+        sentinel = 'SOURCE_PROFILE_SENTINEL_B7_20261029'
+        live = profile_doc('PROFILE', host='claude-code', grants=[fake_grant(gid=sentinel)])
+        live['roles']['worker'].update(model='claude-sonnet-5-5', effort='high')
+        for label, raw_profile in (('absent', None), ('live', ep.serialize(live))):
+            with self.subTest(source_profile=label):
+                source = self.work / ('source-' + label)
+                shutil.copytree(str(self.src), str(source))
+                profile = source / PROFILE
+                if profile.exists():
+                    profile.unlink()  # Only this disposable fixture, never ROOT.
+                if raw_profile is not None:
+                    profile.write_bytes(raw_profile)
+                self.assertEqual(profile.exists(), raw_profile is not None)
+                before = profile_state(profile)
+                dest = self.work / ('pkg-' + label)
+                with mock.patch.object(cp, 'ROOT', str(source)):
+                    self.assertEqual(Path(cp.P(PROFILE)), profile)
+                    self.assertIn(PROFILE, cp.delivery_selection())
+                    self.assertEqual(cp.delivery_bytes(PROFILE), ep.clean_profile_bytes())
+                    self.assertEqual(cp.PROFILE_REL, ep.PROFILE_REL)
+                    self.assertFalse(cp.in_manifest(PROFILE))
+                    self.assertTrue(cp.user_owned(PROFILE))
+                    self.assertTrue(cp.in_manifest(ep.SCHEMA_REL) and not cp.user_owned(ep.SCHEMA_REL))
+                    self.assertTrue(cp.in_manifest('tools/execution_profile.py'))
+                    self.assertEqual(cp.delivery_problems(), [])
+                    rels = cp.materialize(str(dest))
+                    self.assertIn(PROFILE, rels)
+                    manifest = (dest / 'MANIFEST.sha256').read_text(encoding='utf-8')
+                    self.assertNotIn(PROFILE, manifest)
+                    self.assertIn(ep.SCHEMA_REL, manifest)
+                    self.assertIn('tools/execution_profile.py', manifest)
+                    self.assertEqual((dest / PROFILE).read_bytes(), ep.clean_profile_bytes())
+                self.assertEqual(profile_state(profile), before)
+                for path in dest.rglob('*'):
+                    self.assertNotIn(sentinel, path.relative_to(dest).as_posix())
+                    if path.is_file():
+                        self.assertNotIn(sentinel.encode('ascii'), path.read_bytes(), str(path))
+
+                # Real serialization coverage from a distribution, not source-gate proof.
+                # Its missing tests/ legitimately yields SKIPPED, never a gate PASS.
+                out = self.work / ('zip-' + label)
+                result = run(dest, 'build_release.py', '--out', out, '--rc', '7', '--no-branding', '--result-json')
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                archives = list(out.glob('*.zip'))
+                self.assertEqual(len(archives), 1)
+                gate = json.loads(Path(str(archives[0]) + '.gate.json').read_text(encoding='utf-8'))
+                behaviour = next(g for g in gate['gates'] if g['name'] == 'behaviour_tests')
+                self.assertEqual(behaviour['status'], 'skipped')
+                self.assertIn('không có thư mục tests/', behaviour['detail'])
+                with zipfile.ZipFile(archives[0]) as archive:
+                    names = archive.namelist()
+                    prefix = names[0].split('/', 1)[0] + '/'
+                    self.assertEqual(archive.read(prefix + PROFILE), ep.clean_profile_bytes())
+                    zipped_manifest = archive.read(prefix + 'MANIFEST.sha256').decode('utf-8')
+                    self.assertNotIn(PROFILE, zipped_manifest)
+                    self.assertIn(ep.SCHEMA_REL, zipped_manifest)
+                    self.assertIn('tools/execution_profile.py', zipped_manifest)
+                    for name in names:
+                        self.assertNotIn(sentinel, name)
+                        self.assertNotIn(sentinel.encode('ascii'), archive.read(name), name)
+                self.assertEqual(profile_state(profile), before)
 
     def test_live_choices_and_grants_in_the_source_never_ship(self):
         src = self.work / 'live-src'
