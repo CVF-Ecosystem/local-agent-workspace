@@ -1,5 +1,39 @@
 # Roadmap LAW — Văn phòng trung tâm phục vụ công việc cá nhân
 
+## Trạng thái công khai — 01/11/2026
+
+**Sản phẩm: `PRERELEASE_NOT_READY`.** Bản nguồn đã review được tích hợp qua PR #9. Đây là cập nhật tiến độ, không phải công bố bản phát hành mới, nghiệm thu toàn sản phẩm hoặc mở lại nhánh học thuật.
+
+Đích giữ nguyên: người dùng giao việc cho một Main, nhận đầu ra có căn cứ, sửa và tiếp đúng bản; bộ phân phối giữ dữ liệu, quyền và các lựa chọn riêng. Tiêu chí chi tiết V0–V7 bên dưới tiếp tục áp dụng. Các nhãn trạng thái trong phần lịch sử phản ánh thời điểm ghi nhận, không thay bảng hiện hành này.
+
+| Phần của mốc sản phẩm | Bằng chứng đã có và giới hạn | Phần còn mở |
+|---|---|---|
+| V1/V2/V4 — tổ chức việc và chất lượng | Có các ca nghiệp vụ và công cụ đã nhận trong phạm vi kiểm | Lựa chọn/phối hợp chuyên môn ổn định, nội dung và căn cứ ngoài các ca đã kiểm |
+| V2/V5/V6 — sửa, lỗi và tiếp phiên | Antigravity có nội dung/tiếp đúng file được nhận giới hạn; hai transcript child hỗ trợ hai pha cùng Worker và Reviewer phiên riêng đọc nguồn trước candidate | Protocol chưa đạt: thiếu context bắt buộc, Worker dùng `Overwrite=true`; xử lý lỗi và mở lại phiên native đầy đủ còn thiếu. Không có bằng chứng đã ghi đè hoặc mất dữ liệu |
+| V4/V7 — host, định dạng và hỗ trợ | Một số ca Word/HTML và host được kiểm có giới hạn | Ma trận host, hỗ trợ và nghiệm thu native Excel chưa đủ; backend và cơ chế cưỡng chế không được suy từ metadata |
+| V7/P1 — bảo toàn và vòng đời | ZIP50 trong hồ sơ bảo trì có sáu ca kiểm trước và năm ca bổ sung được nhận riêng, không lỗi hoặc skip ở các lượt này. Bản giải nén 311 file và các file ràng buộc giữ nguyên | Chưa nhận toàn P1: UI, nhiều kiểu lưu/thay file, phục hồi, Undo/schema và W3/W4 còn thiếu. Không coi đây là một lượt suite mới gồm 11 test |
+| V3/V4/V7 — nguồn và gói nghiệp vụ | Có kiểm source, classifier và đường nhập file chờ trong phạm vi đã ghi | Năm gói vẫn DEFER; provenance/hiệu lực/intake còn thiếu. P2 chưa hoạt động; D1–D5 tiếp tục hoãn |
+| V4/AC — nghiên cứu và viết học thuật | Audit local đã xác định giới hạn, lệch mô tả entry và các điều kiện tiếp nhận còn thiếu | Triển khai vẫn PAUSED; ứng viên REVIEW/DEFER. Nhu cầu/phần tăng thêm và hiệu quả chưa đủ bằng chứng; chưa mở pilot, đồng bộ, confirm/export hoặc phân phối gói |
+| V7 — nguồn, artifact và nghiệm thu | Có bản artifact cũ cùng bằng chứng kiểm; source mới đã được review trong phạm vi tương ứng | Artifact54 timeout 1800 giây, nguyên nhân toàn suite chưa xác định, chưa có ZIP mới đạt gate. Còn full gates, fresh/upgrade, luồng dùng và review đúng artifact |
+| V6 — phù hợp và phát hành | Chuẩn nội bộ và bằng chứng có giới hạn được giữ | Feedback thực sau bản dùng được; quyền phát hành/rollout bản mới là quyết định riêng. M6 tiếp tục held |
+
+### Phần bảo toàn bổ sung đã kiểm
+
+Năm ca bổ sung dùng nguyên test body đã pin và owner từ exact ZIP50: thay đối tượng bằng cùng bytes theo cách unlink/recreate; tạo đích foreign ngay trước hard link với cùng hoặc khác bytes; giả lập hardlink không khả dụng; `KeyboardInterrupt` sau link trước cập nhật journal; và xóa staging trước phục hồi. Kết quả: **5 test, 0 failure, 0 error, 0 skip**.
+
+Đây là các tình huống có kiểm soát. Race dùng hook xác định, không phải stress nhiều tiến trình; ngắt bằng `KeyboardInterrupt` không thay bằng chứng kill process thật; ca staging chỉ xóa staging, chưa kiểm mọi dạng corruption. Sổ nguồn gốc tại workspace bảo trì đang vắng, nên không tuyên bố đã bảo toàn một sổ người dùng hiện hữu ở đó. Sáu ca trước được tái sử dụng làm bằng chứng riêng, không chạy lại để tăng số test.
+
+### Điều kiện tiếp tục
+
+- Không lặp full gate artifact54 chỉ để có thêm log: cần nguyên nhân, giải pháp hoặc phép phân biệt hữu hạn có căn cứ; giữ timeout, các test và tiêu chí nghiệm thu hiện có.
+- Giữ kết quả và finding Antigravity; không lặp cùng bài để xóa finding. Quyền tạm của batch đã thu hồi, các lựa chọn trước trial đã phục hồi; không có grant sản phẩm hoạt động trong snapshot sau cleanup.
+- Học thuật chỉ mở lại theo quyết định riêng. Nếu mở, ưu tiên chứng minh lợi ích bổ sung cụ thể trên công việc có nguồn, với đối chứng công bằng và điểm dừng định trước; kiểm cấu trúc không thay hiệu quả nghiên cứu/viết.
+- Các biên nhận chi tiết, dữ liệu thử, profile và transcript được giữ trong workspace bảo trì local; không đưa vào bản cập nhật public này. Các phần còn thiếu vẫn là nghĩa vụ mở, không phải đã được loại khỏi acceptance.
+
+## Biên nhận và kế hoạch lịch sử đến 24/10/2026
+
+Phần dưới giữ nguyên nội dung public đã có để bảo toàn tiêu chí và lịch sử. Trạng thái hiện tại đọc ở bảng ngày 01/11/2026 phía trên.
+
 **Cập nhật:** 23/10/2026 — revision 3, giữ acceptance và cập nhật thi công trực tiếp Codex theo operator.  
 **Hiện hành:** V1–V5 `ACCEPTED_WITH_LIMITS`; V6 `TECHNICAL_ACCEPTED_WITH_LIMITS / REAL_USER_FEEDBACK_DEFERRED`; V7 `WINDOWS_PROTOTYPE_RC4_PRERELEASE_PUBLISHED_WITH_LIMITS`. Cập nhật24/10/2026: phần công bố subset Windows đã xong; không nhận toànV7/MVP/roadmap hoặc usability thật. Codex thi công trực tiếp, không giao Claude.
 **Lịch sử trước khi chốt V2 ngày23/10 (không phải trạng thái hiện hành):** `V1_ACCEPTED_WITH_LIMITS / V2_ACCEPTED_WITH_LIMITS`; V2-A (`WORKORDER_V2A_2026-10-21.md`) và V2-B (`WORKORDER_V2B_2026-10-21.md`) đã nhận subset chuẩn bị/recipe quan sát digest và RESULT fixture. V2-C (`WORKORDER_V2C_2026-10-21.md`) đã chạy đúng một lượt (22/10/2026) và PARTIAL: init CLI 2.1.81 không nạp SendMessage nên chuỗi Worker→observe→tiếp việc→RESULT→checkpoint chưa chạy (Codex/Sol Medium review giữ PARTIAL ngày22/10). V2-D (`WORKORDER_V2D_2026-10-22.md`) đã chạy một lượt (22/10/2026) và PARTIAL-reviewed bởi Codex/Sol Medium: hai invocation native tuần tự và Main observe/checkpoint thật; RESULT schema HOLD, gói giao thiếu cấu trúc con và Worker tự đoán. V2-E (`WORKORDER_V2E_2026-10-22.md`) đã nhận subset offline sau review, Root19test tập trung và2Delivery có mục tiêu đạt/0skip; subset E chỉ offline/không lượt AI mới. V2-F (`WORKORDER_V2F_2026-10-22.md`) PARTIAL-reviewed: đã có RESULT native schema/binding đúng trên kiểm readonly Codex, Main live chưa checkpoint do budget stop; bridge pin thiếu policy v3. V2-G (`WORKORDER_V2G_2026-10-22.md`) đã thu hồi theo correction operator22/10: không chia tranche riêng cho sửa nhỏ/đọc lại; tiếp tục acceptance V2 gốc. Chưa grant hoặc luồng V2 trọn vòng; evidence cũ và giới hạn giữ nguyên.
