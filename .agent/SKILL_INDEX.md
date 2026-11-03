@@ -3,6 +3,8 @@
 Danh mục để tìm skill theo công việc. Không phải thứ tự ưu tiên. Khi một skill bổ sung đúng phần việc cần và khớp cột
 "Use when", đọc `SKILL.md` của skill đó trước khi làm (xem `AGENTS.md`). Có thể dùng native skill, local skill, kết hợp hoặc xử lý trực tiếp.
 
+Khi cần mẫu, nguồn hoặc quy tắc nghiệp vụ của project, tìm “Use when” trước khi chốt phương pháp và đọc skill phù hợp; sửa một câu không bắt buộc tra chỉ mục. Dùng revision đã tiếp nhận theo nguồn canonical và phạm vi; version/hash chỉ báo lệch, không tự chọn bản cao hơn hoặc kích hoạt ứng viên.
+
 | Skill ID | Origin | Scope | Location / Provider | Use when | Status | Provenance / Notes |
 |---|---|---|---|---|---|---|
 | office-documents | LOCAL | SHARED | skills/local/shared/office-documents/SKILL.md | Soạn hoặc chỉnh tài liệu nghiệp vụ tiếng Việt từ nguồn và mẫu: quy trình/SOP, biểu mẫu, hướng dẫn nội bộ hoặc báo cáo có cấu trúc, bằng Word hay văn bản. Dùng khi cần tổ chức nội dung theo người đọc và công việc; câu ngắn có thể sửa trực tiếp. Văn bản hành chính cần thể thức có thể dùng thêm vn-admin-documents. | AVAILABLE | Bổ sung cấu hình/kiểm Word, không thay native. Checker stdlib; helper python-docx; renderer thêm beautifulsoup4, ND30 chỉ trong LAW. Hồ sơ: docs/NGUON_THAM_KHAO_VI.md |
