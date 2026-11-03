@@ -1,0 +1,30 @@
+{
+  "host": "codex-desktop",
+  "roles": {
+    "scout": {
+      "model": null,
+      "tier": null,
+      "effort": null
+    },
+    "worker": {
+      "model": "gpt-6.1-terra",
+      "tier": null,
+      "effort": "high"
+    },
+    "reviewer": {
+      "model": "gpt-6.1-sol",
+      "tier": null,
+      "effort": "medium"
+    }
+  },
+  "fallback": {
+    "allowed": false,
+    "model": null,
+    "tier": null,
+    "effort": null
+  },
+  "requested_limits": {
+    "max_concurrency": 1,
+    "max_depth": 1
+  }
+}

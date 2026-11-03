@@ -161,14 +161,14 @@ Không có mạng, font ngoài hay dependency. Chỉ đặt isDemo=false khi đ�
 
   /* Cột ngang: so sánh giữa các nhóm, sắp theo giá trị, trục bắt đầu từ 0. */
   function bars(){
-    var o=D.bar,cats=o.categories.slice().sort(function(a,b){return b.value-a.value}),W=520,rowH=40,L=104,R=56,H=cats.length*rowH+10,max=niceMax(Math.max.apply(null,cats.map(function(c){return c.value}))),g='';
+    var o=D.bar,cats=o.categories.slice().sort(function(a,b){return a.value===null?(b.value===null?0:1):b.value===null?-1:b.value-a.value}),W=520,rowH=40,L=104,R=56,H=cats.length*rowH+10,max=niceMax(Math.max.apply(null,cats.map(function(c){return c.value===null?0:c.value}))),g='',missing=cats.some(function(c){return c.value===null});
     cats.forEach(function(c,i){var w=(W-L-R)*c.value/max,yy=i*rowH+6;
-      g+='<text x="'+(L-10)+'" y="'+(yy+17)+'" text-anchor="end">'+esc(c.name)+'</text><rect x="'+L+'" y="'+yy+'" width="'+w+'" height="24" rx="4" fill="'+COL[0]+'"><title>'+esc(c.name+': '+fmt(c.value))+'</title></rect><text class="val" x="'+(L+w+8)+'" y="'+(yy+17)+'">'+fmt(c.value)+'</text>'});
+      g+='<text x="'+(L-10)+'" y="'+(yy+17)+'" text-anchor="end">'+esc(c.name)+'</text>';if(c.value===null){g+='<text class="val" x="'+(L+8)+'" y="'+(yy+17)+'">—</text>';return}g+='<rect x="'+L+'" y="'+yy+'" width="'+w+'" height="24" rx="4" fill="'+COL[0]+'"><title>'+esc(c.name+': '+fmt(c.value))+'</title></rect><text class="val" x="'+(L+w+8)+'" y="'+(yy+17)+'">'+fmt(c.value)+'</text>'});
     g+='<line class="axis" x1="'+L+'" x2="'+L+'" y1="0" y2="'+H+'"/>';
     var tot=cats.reduce(function(a,c){return a+c.value},0);
-    setHead('bar',o,'Đơn vị: '+D.unit+(o.period?' · '+o.period:''));
+    setHead('bar',o,'Đơn vị: '+D.unit+(o.period?' · '+o.period:'')+(missing?' · Chưa đủ dữ liệu để tính tỷ trọng.':''));
     $('c-bar').innerHTML=frame(W,H,o.title+'. '+cats.map(function(c){return c.name+' '+fmt(c.value)}).join(', '),g)+
-      dataTable(['Nhóm',D.unit,'Tỷ trọng'],cats.map(function(c){return[c.name,fmt(c.value),pct(c.value,tot)]}));
+      dataTable(['Nhóm',D.unit,'Tỷ trọng'],cats.map(function(c){return[c.name,fmt(c.value),missing?'—':pct(c.value,tot)]}));
   }
 
   /* Cột xếp chồng: cơ cấu theo kỳ; tổng ghi trên đầu cột. */
@@ -187,6 +187,8 @@ Không có mạng, font ngoài hay dependency. Chỉ đặt isDemo=false khi đ�
   /* Vành khuyên: cơ cấu một thời điểm, từ 5 phần trở xuống. */
   function donut(){
     var o=D.donut,W=360,H=260,cx=120,cy=130,r=84,w=34,tot=o.parts.reduce(function(a,p){return a+p.value},0),a0=-Math.PI/2,g='';
+    var missing=o.parts.some(function(p){return p.value===null});
+    if(missing||!tot){setHead('donut',o,'Đơn vị: '+D.unit+(o.period?' · '+o.period:'')+(o.note?', '+o.note:'')+(missing?' · Chưa đủ dữ liệu để tính tỷ trọng.':' · Tổng bằng 0, không tính tỷ trọng.'));$('lg-donut').innerHTML='';$('c-donut').innerHTML=dataTable(['Trạng thái',D.unit,'Tỷ trọng'],o.parts.map(function(p){return[p.name,fmt(p.value),'—']}));return}
     o.parts.forEach(function(p,i){var a1=a0+2*Math.PI*p.value/tot,large=a1-a0>Math.PI?1:0,R=r,r2=r-w,
       d='M'+(cx+R*Math.cos(a0))+' '+(cy+R*Math.sin(a0))+'A'+R+' '+R+' 0 '+large+' 1 '+(cx+R*Math.cos(a1))+' '+(cy+R*Math.sin(a1))+'L'+(cx+r2*Math.cos(a1))+' '+(cy+r2*Math.sin(a1))+'A'+r2+' '+r2+' 0 '+large+' 0 '+(cx+r2*Math.cos(a0))+' '+(cy+r2*Math.sin(a0))+'Z';
       g+='<path d="'+d+'" fill="'+COL[i]+'" stroke="#fff" stroke-width="2"><title>'+esc(p.name+': '+fmt(p.value)+' ('+pct(p.value,tot)+')')+'</title></path>';a0=a1;
@@ -199,7 +201,8 @@ Không có mạng, font ngoài hay dependency. Chỉ đặt isDemo=false khi đ�
 
   /* Bảng kèm thanh nhỏ: tra số chính xác, thanh chỉ hỗ trợ so sánh. */
   function table(){
-    var o=D.table,max=Math.max.apply(null,o.rows.map(function(r){return r.value})),tot=o.rows.reduce(function(a,r){return a+r.value},0);
+    var o=D.table,max=Math.max.apply(null,o.rows.map(function(r){return r.value})),tot=o.rows.reduce(function(a,r){return a+r.value},0),known=o.rows.filter(function(r){return r.value!==null}).length,missing=known!==o.rows.length;
+    if(missing||!tot){setHead('table',o,'Đơn vị: '+D.unit+(o.period?' · '+o.period:'')+(missing?' · Chưa đủ dữ liệu để tính tỷ trọng.':' · Tổng bằng 0, không tính tỷ trọng.'));$('c-table').innerHTML='<table><thead><tr><th scope="col">Kênh</th><th scope="col">'+esc(D.unit)+'</th><th scope="col">Tỷ trọng</th></tr></thead><tbody>'+o.rows.map(function(r){return '<tr><th scope="row">'+esc(r.name)+'</th><td>'+fmt(r.value)+(r.value===null?'':'<span class="inbar" style="width:'+Math.round(max?80*r.value/max:0)+'px" aria-hidden="true"></span>')+'</td><td>—</td></tr>'}).join('')+'</tbody><tfoot><tr><th scope="row">'+(missing?(known?'Tổng phần đã biết ('+known+'/'+o.rows.length+')':'Chưa có dữ liệu'):'Tổng')+'</th><td>'+(known?fmt(tot):'—')+'</td><td>—</td></tr></tfoot></table>';return}
     setHead('table',o,'Đơn vị: '+D.unit+(o.period?' · '+o.period:''));
     $('c-table').innerHTML='<table><thead><tr><th scope="col">Kênh</th><th scope="col">'+esc(D.unit)+'</th><th scope="col">Tỷ trọng</th></tr></thead><tbody>'+
       o.rows.map(function(r){return'<tr><th scope="row">'+esc(r.name)+'</th><td>'+fmt(r.value)+'<span class="inbar" style="width:'+Math.round(80*r.value/max)+'px" aria-hidden="true"></span></td><td>'+pct(r.value,tot)+'</td></tr>'}).join('')+

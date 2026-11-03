@@ -1,0 +1,438 @@
+[
+  {
+    "schema_version": "law.cvf.control/3",
+    "record_type": "grant",
+    "evaluation_basis": "COOPERATIVE_WORKFLOW",
+    "example_only": true,
+    "note": "MAIN_PROPOSAL inactive example only; semantic tool requirements require current native per-role mapping. No authority/send/overwrite/delete/install/globalconfig.",
+    "grant_id": "antigravity-role-20261101-main-read",
+    "grant_revision": 1,
+    "issuer": {
+      "actor_id": "antigravity-role-main-20261101",
+      "role": "main"
+    },
+    "issuer_ref": {
+      "ref_id": "scope-authority-proposal",
+      "kind": "grant",
+      "locator": "working/antigravity-role-loop-20261101/SCOPE.md",
+      "digest": "sha256:935c784dbf2e1ab941f4098140d8b543bb13c3d08ff8a89a490cacb3a69bd875",
+      "attribution": {
+        "source_class": "MAIN_PROPOSAL",
+        "channel": "MAIN_AUTHORED",
+        "recorded_by": {
+          "actor_id": "antigravity-role-main-20261101",
+          "role": "main"
+        },
+        "note": "Main proposal only; no operator confirmation or real grant."
+      }
+    },
+    "subject": {
+      "roles": [
+        "main"
+      ],
+      "actor_ids": [
+        "antigravity-role-main-20261101"
+      ]
+    },
+    "scope": {
+      "task_classes": [
+        "antigravity-role-correspondence-trial"
+      ],
+      "operations": [
+        "read"
+      ],
+      "paths": [
+        "working/antigravity-role-loop-20261101/run/TASK.json",
+        "working/antigravity-role-loop-20261101/SCOPE.md",
+        "working/v4-office/scripts/fixtures/mail-thread.md",
+        "working/v4-office/scripts/fixtures/policy-local.md",
+        "working/v4-office/acceptance-20261031/report-v2.md",
+        "roles/office/catalog.json",
+        "roles/office/correspondence.md",
+        ".cvf/contracts/v3/control.schema.json",
+        "working/antigravity-role-loop-20261101/run/assignments/a1/candidate/reply.md",
+        "working/antigravity-role-loop-20261101/run/assignments/a1/RESULT.json",
+        "roles/office/evidence-reviewer.md",
+        "working/antigravity-role-loop-20261101/run/review.md",
+        "working/antigravity-role-loop-20261101/run/final.md",
+        "working/antigravity-role-loop-20261101/CHOICES_PROPOSAL.json",
+        "working/antigravity-role-loop-20261101/GRANTS_PROPOSAL.json",
+        "working/antigravity-role-loop-20261101/TASK_PROPOSAL.json",
+        "working/antigravity-role-loop-20261101/PREPARATION.json",
+        ".agent/EXECUTION_PROFILE.json",
+        ".agent/EXECUTION_PROFILE.schema.json",
+        ".cvf/contracts/v3/CONTROL_CONTRACT.md",
+        ".cvf/rules/CONTROL_RULES.md",
+        ".cvf/rules/ROUTING_POLICY.json",
+        "roles/README.md",
+        "roles/office/MAIN.md",
+        "tools/execution_profile.py",
+        "tools/office.py",
+        "tools/task_checkpoint.py",
+        "tools/transaction.py",
+        "AGENTS.md",
+        "roles/worker/agent.md",
+        "roles/reviewer/agent.md",
+        "tools/artifacts.py",
+        "tools/library_sync.py",
+        "tools/library.py",
+        "tools/publish_new.py",
+        ".cvf/rules/v3/ROUTING_POLICY.json",
+        "working/antigravity-role-loop-20261101/PROMPT_ANTIGRAVITY.md",
+        "working/antigravity-role-loop-20261101/responses/RESPONSE.md"
+      ],
+      "tools": [
+        "Read",
+        "owner-readonly"
+      ]
+    },
+    "limits": {
+      "max_retries": 0,
+      "max_concurrency": 1
+    },
+    "status": "EXAMPLE_INACTIVE"
+  },
+  {
+    "schema_version": "law.cvf.control/3",
+    "record_type": "grant",
+    "evaluation_basis": "COOPERATIVE_WORKFLOW",
+    "example_only": true,
+    "note": "MAIN_PROPOSAL inactive example only; semantic tool requirements require current native per-role mapping. No authority/send/overwrite/delete/install/globalconfig.",
+    "grant_id": "antigravity-role-20261101-main-create",
+    "grant_revision": 1,
+    "issuer": {
+      "actor_id": "antigravity-role-main-20261101",
+      "role": "main"
+    },
+    "issuer_ref": {
+      "ref_id": "scope-authority-proposal",
+      "kind": "grant",
+      "locator": "working/antigravity-role-loop-20261101/SCOPE.md",
+      "digest": "sha256:935c784dbf2e1ab941f4098140d8b543bb13c3d08ff8a89a490cacb3a69bd875",
+      "attribution": {
+        "source_class": "MAIN_PROPOSAL",
+        "channel": "MAIN_AUTHORED",
+        "recorded_by": {
+          "actor_id": "antigravity-role-main-20261101",
+          "role": "main"
+        },
+        "note": "Main proposal only; no operator confirmation or real grant."
+      }
+    },
+    "subject": {
+      "roles": [
+        "main"
+      ],
+      "actor_ids": [
+        "antigravity-role-main-20261101"
+      ]
+    },
+    "scope": {
+      "task_classes": [
+        "antigravity-role-correspondence-trial"
+      ],
+      "operations": [
+        "create_new"
+      ],
+      "paths": [
+        "working/antigravity-role-loop-20261101/run/TASK.json",
+        "working/antigravity-role-loop-20261101/run/review.md",
+        "working/antigravity-role-loop-20261101/run/final.md",
+        "working/antigravity-role-loop-20261101/responses/RESPONSE.md"
+      ],
+      "tools": [
+        "Write"
+      ]
+    },
+    "limits": {
+      "max_retries": 0,
+      "max_concurrency": 1
+    },
+    "status": "EXAMPLE_INACTIVE"
+  },
+  {
+    "schema_version": "law.cvf.control/3",
+    "record_type": "grant",
+    "evaluation_basis": "COOPERATIVE_WORKFLOW",
+    "example_only": true,
+    "note": "MAIN_PROPOSAL inactive example only; semantic tool requirements require current native per-role mapping. No authority/send/overwrite/delete/install/globalconfig.",
+    "grant_id": "antigravity-role-20261101-main-delegate",
+    "grant_revision": 1,
+    "issuer": {
+      "actor_id": "antigravity-role-main-20261101",
+      "role": "main"
+    },
+    "issuer_ref": {
+      "ref_id": "scope-authority-proposal",
+      "kind": "grant",
+      "locator": "working/antigravity-role-loop-20261101/SCOPE.md",
+      "digest": "sha256:935c784dbf2e1ab941f4098140d8b543bb13c3d08ff8a89a490cacb3a69bd875",
+      "attribution": {
+        "source_class": "MAIN_PROPOSAL",
+        "channel": "MAIN_AUTHORED",
+        "recorded_by": {
+          "actor_id": "antigravity-role-main-20261101",
+          "role": "main"
+        },
+        "note": "Main proposal only; no operator confirmation or real grant."
+      }
+    },
+    "subject": {
+      "roles": [
+        "main"
+      ],
+      "actor_ids": [
+        "antigravity-role-main-20261101"
+      ]
+    },
+    "scope": {
+      "task_classes": [
+        "antigravity-role-correspondence-trial"
+      ],
+      "operations": [
+        "delegate"
+      ],
+      "paths": [
+        "working/antigravity-role-loop-20261101/run/TASK.json",
+        "working/antigravity-role-loop-20261101/SCOPE.md",
+        "working/v4-office/scripts/fixtures/mail-thread.md",
+        "working/v4-office/scripts/fixtures/policy-local.md",
+        "working/v4-office/acceptance-20261031/report-v2.md",
+        "roles/office/catalog.json",
+        "roles/office/correspondence.md",
+        ".cvf/contracts/v3/control.schema.json",
+        "working/antigravity-role-loop-20261101/run/assignments/a1/candidate/reply.md",
+        "working/antigravity-role-loop-20261101/run/assignments/a1/RESULT.json",
+        "roles/office/evidence-reviewer.md",
+        "AGENTS.md",
+        ".agent/EXECUTION_PROFILE.json",
+        ".agent/EXECUTION_PROFILE.schema.json",
+        ".cvf/rules/CONTROL_RULES.md",
+        ".cvf/rules/ROUTING_POLICY.json",
+        "roles/worker/agent.md",
+        "roles/reviewer/agent.md",
+        ".cvf/rules/v3/ROUTING_POLICY.json",
+        ".cvf/contracts/v3/CONTROL_CONTRACT.md"
+      ],
+      "tools": [
+        "native-role-call"
+      ],
+      "delegate_callees": [
+        {
+          "role_class": "core",
+          "role_name": "worker"
+        },
+        {
+          "role_class": "core",
+          "role_name": "reviewer"
+        }
+      ]
+    },
+    "limits": {
+      "max_retries": 0,
+      "max_concurrency": 1
+    },
+    "status": "EXAMPLE_INACTIVE"
+  },
+  {
+    "schema_version": "law.cvf.control/3",
+    "record_type": "grant",
+    "evaluation_basis": "COOPERATIVE_WORKFLOW",
+    "example_only": true,
+    "note": "MAIN_PROPOSAL inactive example only; semantic tool requirements require current native per-role mapping. No authority/send/overwrite/delete/install/globalconfig.",
+    "grant_id": "antigravity-role-20261101-worker-read",
+    "grant_revision": 1,
+    "issuer": {
+      "actor_id": "antigravity-role-main-20261101",
+      "role": "main"
+    },
+    "issuer_ref": {
+      "ref_id": "scope-authority-proposal",
+      "kind": "grant",
+      "locator": "working/antigravity-role-loop-20261101/SCOPE.md",
+      "digest": "sha256:935c784dbf2e1ab941f4098140d8b543bb13c3d08ff8a89a490cacb3a69bd875",
+      "attribution": {
+        "source_class": "MAIN_PROPOSAL",
+        "channel": "MAIN_AUTHORED",
+        "recorded_by": {
+          "actor_id": "antigravity-role-main-20261101",
+          "role": "main"
+        },
+        "note": "Main proposal only; no operator confirmation or real grant."
+      }
+    },
+    "subject": {
+      "roles": [
+        "worker"
+      ],
+      "actor_ids": [
+        "antigravity-role-worker-20261101"
+      ]
+    },
+    "scope": {
+      "task_classes": [
+        "antigravity-role-correspondence-trial"
+      ],
+      "operations": [
+        "read"
+      ],
+      "paths": [
+        "working/antigravity-role-loop-20261101/run/TASK.json",
+        "working/antigravity-role-loop-20261101/SCOPE.md",
+        "working/v4-office/scripts/fixtures/mail-thread.md",
+        "working/v4-office/scripts/fixtures/policy-local.md",
+        "working/v4-office/acceptance-20261031/report-v2.md",
+        "roles/office/catalog.json",
+        "roles/office/correspondence.md",
+        ".cvf/contracts/v3/control.schema.json",
+        "working/antigravity-role-loop-20261101/run/assignments/a1/candidate/reply.md",
+        "working/antigravity-role-loop-20261101/run/assignments/a1/RESULT.json",
+        "AGENTS.md",
+        ".agent/EXECUTION_PROFILE.json",
+        ".agent/EXECUTION_PROFILE.schema.json",
+        ".cvf/rules/CONTROL_RULES.md",
+        ".cvf/rules/ROUTING_POLICY.json",
+        "roles/worker/agent.md",
+        ".cvf/rules/v3/ROUTING_POLICY.json",
+        ".cvf/contracts/v3/CONTROL_CONTRACT.md"
+      ],
+      "tools": [
+        "Read"
+      ]
+    },
+    "limits": {
+      "max_retries": 0,
+      "max_concurrency": 1
+    },
+    "status": "EXAMPLE_INACTIVE"
+  },
+  {
+    "schema_version": "law.cvf.control/3",
+    "record_type": "grant",
+    "evaluation_basis": "COOPERATIVE_WORKFLOW",
+    "example_only": true,
+    "note": "MAIN_PROPOSAL inactive example only; semantic tool requirements require current native per-role mapping. No authority/send/overwrite/delete/install/globalconfig.",
+    "grant_id": "antigravity-role-20261101-worker-create",
+    "grant_revision": 1,
+    "issuer": {
+      "actor_id": "antigravity-role-main-20261101",
+      "role": "main"
+    },
+    "issuer_ref": {
+      "ref_id": "scope-authority-proposal",
+      "kind": "grant",
+      "locator": "working/antigravity-role-loop-20261101/SCOPE.md",
+      "digest": "sha256:935c784dbf2e1ab941f4098140d8b543bb13c3d08ff8a89a490cacb3a69bd875",
+      "attribution": {
+        "source_class": "MAIN_PROPOSAL",
+        "channel": "MAIN_AUTHORED",
+        "recorded_by": {
+          "actor_id": "antigravity-role-main-20261101",
+          "role": "main"
+        },
+        "note": "Main proposal only; no operator confirmation or real grant."
+      }
+    },
+    "subject": {
+      "roles": [
+        "worker"
+      ],
+      "actor_ids": [
+        "antigravity-role-worker-20261101"
+      ]
+    },
+    "scope": {
+      "task_classes": [
+        "antigravity-role-correspondence-trial"
+      ],
+      "operations": [
+        "create_new"
+      ],
+      "paths": [
+        "working/antigravity-role-loop-20261101/run/assignments/a1/candidate/reply.md",
+        "working/antigravity-role-loop-20261101/run/assignments/a1/RESULT.json"
+      ],
+      "tools": [
+        "Write"
+      ]
+    },
+    "limits": {
+      "max_retries": 0,
+      "max_concurrency": 1
+    },
+    "status": "EXAMPLE_INACTIVE"
+  },
+  {
+    "schema_version": "law.cvf.control/3",
+    "record_type": "grant",
+    "evaluation_basis": "COOPERATIVE_WORKFLOW",
+    "example_only": true,
+    "note": "MAIN_PROPOSAL inactive example only; semantic tool requirements require current native per-role mapping. No authority/send/overwrite/delete/install/globalconfig.",
+    "grant_id": "antigravity-role-20261101-reviewer-read",
+    "grant_revision": 1,
+    "issuer": {
+      "actor_id": "antigravity-role-main-20261101",
+      "role": "main"
+    },
+    "issuer_ref": {
+      "ref_id": "scope-authority-proposal",
+      "kind": "grant",
+      "locator": "working/antigravity-role-loop-20261101/SCOPE.md",
+      "digest": "sha256:935c784dbf2e1ab941f4098140d8b543bb13c3d08ff8a89a490cacb3a69bd875",
+      "attribution": {
+        "source_class": "MAIN_PROPOSAL",
+        "channel": "MAIN_AUTHORED",
+        "recorded_by": {
+          "actor_id": "antigravity-role-main-20261101",
+          "role": "main"
+        },
+        "note": "Main proposal only; no operator confirmation or real grant."
+      }
+    },
+    "subject": {
+      "roles": [
+        "reviewer"
+      ],
+      "actor_ids": [
+        "antigravity-role-reviewer-20261101"
+      ]
+    },
+    "scope": {
+      "task_classes": [
+        "antigravity-role-correspondence-trial"
+      ],
+      "operations": [
+        "read"
+      ],
+      "paths": [
+        "working/antigravity-role-loop-20261101/run/TASK.json",
+        "working/antigravity-role-loop-20261101/SCOPE.md",
+        "working/v4-office/scripts/fixtures/mail-thread.md",
+        "working/v4-office/scripts/fixtures/policy-local.md",
+        "working/v4-office/acceptance-20261031/report-v2.md",
+        "roles/office/catalog.json",
+        "roles/office/correspondence.md",
+        ".cvf/contracts/v3/control.schema.json",
+        "working/antigravity-role-loop-20261101/run/assignments/a1/candidate/reply.md",
+        "working/antigravity-role-loop-20261101/run/assignments/a1/RESULT.json",
+        "roles/office/evidence-reviewer.md",
+        "AGENTS.md",
+        ".agent/EXECUTION_PROFILE.json",
+        ".agent/EXECUTION_PROFILE.schema.json",
+        ".cvf/rules/CONTROL_RULES.md",
+        ".cvf/rules/ROUTING_POLICY.json",
+        "roles/reviewer/agent.md",
+        ".cvf/rules/v3/ROUTING_POLICY.json",
+        ".cvf/contracts/v3/CONTROL_CONTRACT.md"
+      ],
+      "tools": [
+        "Read"
+      ]
+    },
+    "limits": {
+      "max_retries": 0,
+      "max_concurrency": 1
+    },
+    "status": "EXAMPLE_INACTIVE"
+  }
+]

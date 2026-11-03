@@ -34,9 +34,10 @@ làm kho nguồn; các phần còn lại là gợi ý để agent tự cân nh�
 
 ## Trách nhiệm khi phát triển sản phẩm
 
-Khi được giao xây dựng hoặc sửa sản phẩm, đội agents dev chịu trách nhiệm lập roadmap theo đầu ra, chuẩn chất lượng, ca kiểm/kết quả kỳ vọng có căn cứ, thực hiện kiểm và review để giao bản dùng được. Áp dụng cả core, package, skill và template. Noncoder nêu mục tiêu, quyết định nghiệp vụ và quyền tác động; không bị yêu cầu viết test, oracle, debug hay tự tổ chức QA thay đội dev. Chỉ hỏi dữ kiện/quyết định thật sự thiếu bằng ngôn ngữ công việc; tự làm phần độc lập trong quyền đã cấp.
-
-Nghiệm thu nội bộ có trước feedback độ phù hợp. Thiếu feedback không chặn kiểm và hoàn thiện nội bộ; cũng không được giả user đã nhận. Chuyên môn sâu cần xác nhận thì không coi AI tự chấm hoặc checker xanh là chứng nhận. Đội dev chuẩn bị đủ ca, nguồn, rubric, câu hỏi và phần cần phán đoán để chuyên gia thẩm định. Nếu cần mời người hoặc có chi phí chưa được cấp quyền, hỏi operator một lần bằng lời công việc về người duyệt/ngân sách; không hỏi lại quyết định đã có, không tự liên hệ hoặc trả phí. Chưa có thẩm định thì claim phụ thuộc vẫn bị chặn, thành phần giữ nhãn thử nghiệm với giới hạn rõ; tiếp tục các kiểm độc lập, không tự chấm thay chuyên gia. Giữ yêu cầu nguồn/chất lượng/bảo toàn, không tự bỏ scope đã chốt hoặc promote gói để ship; quyền install/publish vẫn riêng. Quy tắc này không thêm quy trình phát triển cho việc văn phòng thông thường.
+Khi phát triển core, package, skill hoặc template, bắt buộc áp dụng [chuẩn nghiệm thu nội bộ](skills/README.md#developer-product-acceptance).
+Đội dev chịu chuẩn đầu ra, kiểm và review trước khi giao bản dùng được; noncoder nêu mục tiêu, quyết định nghiệp vụ và feedback.
+Giữ nguyên tiêu chí đã chốt, quyền mời/trả phí chuyên gia, trạng thái thử nghiệm và quyền install/publish theo chuẩn đó.
+Chuẩn chi tiết và mẫu hồ sơ nằm trong LAW, không cần kho CVF bên cạnh. Việc văn phòng thông thường không phải mở quy trình phát triển.
 
 ## Bảo trì bộ khung LAW (chỉ kho nguồn)
 
@@ -47,6 +48,11 @@ ghi cấu hình thực tế và chất lượng trong HANDOFF khi thực hiện 
 Mục này không tạo thêm thủ tục cho công việc văn phòng của người dùng. Bắt đầu từ tranche
 hiện hành và diff thật; hàng roadmap là phiếu việc mặc định, không lập work order riêng
 cho mỗi thay đổi. Chỉ lập brief ngắn khi phạm vi vượt một tranche hoặc nhiều owner cùng sửa.
+
+Khi mới nhận bảo trì hoặc đổi yêu cầu/rủi ro, chủ động áp dụng phần
+`Project Development Application` ở mục 8.3: nối quy tắc chung, kiểm soát riêng
+LAW-DA01..05 và bằng chứng nhiệm vụ trong hàng roadmap/HANDOFF hiện hữu trước phần
+thi công phụ thuộc. Không biến quy trình phát triển này thành quy trình dùng LAW.
 
 Mọi tranche code cần tự xem diff và ghi rõ phần đã kiểm/chưa kiểm. Thay đổi có thể mất dữ liệu,
 đổi quyền hoặc ranh giới nguồn, tích hợp host/native, migration hay release cần review độc lập
@@ -107,6 +113,8 @@ xác nhận bằng `sync --rename`, cùng hash hay cùng tên chưa đủ.
 Sổ ghi nhận file và revision; một dòng tự động mới chưa có nghĩa nội dung/hiệu lực đã được xác minh.
 Trước khi trích dẫn một văn bản pháp luật hoặc quy định nội bộ, tra chỉ mục (`python tools/library.py find <từ khóa>`); chỉ trích
 nguyên văn từ file có trong thư viện, không có file thì ghi "[chưa đối chiếu toàn văn]" và không đặt trong ngoặc kép (skill `source-library`).
+
+Khi nhiệm vụ cần biểu mẫu, nguồn hoặc quy tắc nghiệp vụ của project, tra cột “Use when” trong `.agent/SKILL_INDEX.md` trước khi chốt phương pháp; đọc skill phù hợp và dùng yêu cầu đã xác nhận. Sửa một câu có thể làm trực tiếp. Version/hash chỉ phát hiện lệch: chọn revision đã tiếp nhận theo nguồn canonical và phạm vi, không tự dùng bản cao hơn, tạo mirror hay kích hoạt ứng viên.
 
 ## Chọn cách phù hợp
 

@@ -1,0 +1,407 @@
+{
+  "schemaVersion": "cvf.downstreamFindingIntakeRegistry@1.0.0",
+  "owner": "docs/reference/CVF_FINDING_TO_GOVERNANCE_LEARNING_TRIGGER_STANDARD.md",
+  "recordingRule": "Parent-owned. Generation of an intake is not acceptance; only the Local reviewer records accept/decline. No new ADIF ID is assigned here.",
+  "entries": [
+    {
+      "intakeId": "CCMAI-DOWNSTREAM-GATE-2026-10-01",
+      "sourceSnapshot": {"path": "docs/reviews/evidence/ccmai-to-cvf-downstream-gate-learning-intake-2026-10-01.txt", "sha256": "26c17a4a4891bc0aad95e9e9ecded9531f768f8824d57176b2d37aa0f9ba2545"},
+      "authority": "ADVISORY_INTAKE_NOT_PRIVATE_CVF_PROOF",
+      "sourceProjectClaims": "UNVERIFIED: project commits, PR runs and review outcomes in the snapshot are worker-reported; only the Core gaps were re-verified against current Core source",
+      "parentWorkOrder": "docs/work_orders/CVF_AGENT_WORK_ORDER_DGIP_T1_R1_DOWNSTREAM_GATE_INHERITANCE_2026-10-03.md",
+      "findings": [
+        {
+          "id": "F1-continuity-drift",
+          "defectClass": "MACHINE_GATE_GAP",
+          "dedup": [{"owner": "docs/reference/CVF_GOLDEN_DOWNSTREAM_BOOTSTRAP_LEARNING_INTAKE_2026-07-23.md", "disposition": "EXTENDS_EXISTING", "reason": "executable drift/golden proof learning extended to continuity"}, {"owner": "docs/reference/agent_defect_intelligence/entries/CVF_ADIF-0052.md", "disposition": "EXTENDS_EXISTING", "reason": "continuity pin and post-mode literal class"}],
+          "reusableControl": "CVF-DG-CONT-01",
+          "workerProposedDisposition": "MACHINE_CHECK_ADDED",
+          "parentDisposition": "ACCEPTED_BOUNDED_HERMETIC_FILE_CONTROL_ONLY"
+        },
+        {"id": "F2-status-fail-open", "defectClass": "MACHINE_GATE_GAP", "dedup": [{"owner": "docs/reference/agent_defect_intelligence/entries/CVF_ADIF-0058.md", "disposition": "INDEPENDENT_REASON", "reason": "ADIF-0058 is dispatch-release readiness, not status-grammar applicability"}], "reusableControl": "CVF-DG-APPL-01 / work-order status grammar", "workerProposedDisposition": "MACHINE_CHECK_ADDED", "parentDisposition": "ACCEPTED_BOUNDED_HERMETIC_FILE_CONTROL_ONLY"},
+        {"id": "F3-installed-not-invoked", "defectClass": "RULE_GAP", "dedup": [{"owner": "docs/reference/CVF_GOLDEN_DOWNSTREAM_BOOTSTRAP_LEARNING_INTAKE_2026-07-23.md", "disposition": "EXTENDS_EXISTING", "reason": "doctor/bridge claims narrowed to installed/invoked/proven states"}], "reusableControl": "CVF-DG-INST-01 / CVF-DG-CLAIM-01 / coverage readout", "workerProposedDisposition": "MACHINE_CHECK_ADDED", "parentDisposition": "ACCEPTED_BOUNDED_HERMETIC_FILE_CONTROL_ONLY"},
+        {"id": "F4-project-to-parent-intake", "defectClass": "PHASE_GATE_PLACEMENT_GAP", "dedup": [{"owner": "docs/reference/CVF_FINDING_TO_GOVERNANCE_LEARNING_TRIGGER_STANDARD.md", "disposition": "EXTENDS_EXISTING", "reason": "F2G owner gains a bounded downstream intake template"}], "reusableControl": "runner intake subcommand and intake schema", "workerProposedDisposition": "STANDARD_ADDED", "parentDisposition": "ACCEPTED_BOUNDED_HERMETIC_FILE_CONTROL_ONLY"},
+        {
+          "id": "F5-reviewer-local-repair",
+          "defectClass": "ORCHESTRATOR_PACKET_GAP",
+          "dedup": [{"owner": "docs/reference/agent_defect_intelligence/entries/CVF_ADIF-0026.md", "disposition": "EXTENDS_EXISTING", "reason": "parent reviewer-local repair route projected into the downstream template and checked as a decision envelope"}, {"owner": "docs/reference/agent_defect_intelligence/entries/CVF_ADIF-0050.md", "disposition": "NOT_A_DUPLICATE", "reason": "different defect; consulted only for the private/public boundary"}],
+          "reusableControl": "CVF-DG-ROUTE-01 and downstream template section",
+          "workerProposedDisposition": "TEMPLATE_UPDATED",
+          "parentDisposition": "ACCEPTED_BOUNDED_HERMETIC_FILE_CONTROL_ONLY"
+        }
+      ],
+      "parentLinks": {"standard": "docs/reference/downstream_gate_profile/CVF_DOWNSTREAM_GATE_PROFILE_STANDARD.md", "goldenProof": "scripts/test_cvf_downstream_gate_profile.ps1", "checker": "governance/compat/check_gate_to_role_closeability.py", "workerReturn": "docs/reviews/CVF_DGIP_T1_R1_DOWNSTREAM_GATE_INHERITANCE_WORKER_RETURN_2026-10-03.md", "completionReview": "docs/reviews/CVF_DGIP_T1_DOWNSTREAM_GATE_INHERITANCE_COMPLETION_2026-10-03.md", "independentProbe": "docs/reviews/evidence/cvf-dgip-t1-r1-local-probe-2026-10-03.json"},
+      "deferred": ["real CCMAI adoption", "hosted PR verification", "public rollout"]
+    },
+    {
+      "intakeId": "CCMA-PROJECT-LEARNINGS-2026-10-04",
+      "sourceSnapshot": {"path": "docs/reviews/evidence/cvf-pll-source-README-2026-10-04.txt", "sha256": "691e2b2f33b9a297459c4f6a1f13cad9ca0ddcdd4f8551ce3eacfccc715244a7"},
+      "sourceRecords": [
+        {"sourcePath": "D:\\UNG DUNG AI\\TOOL AI 2026\\CVF-Workspace\\Customer-Care-Monitor\\docs\\reviews\\learnings\\README.md", "sourceRawSha256": "a455c99faaa9240ceb7c7beeddf97a5d5077ffe29c1798b970a04219de1d2ae8", "snapshotPath": "docs/reviews/evidence/cvf-pll-source-README-2026-10-04.txt", "snapshotSha256": "691e2b2f33b9a297459c4f6a1f13cad9ca0ddcdd4f8551ce3eacfccc715244a7", "readDisposition": "READ_FULL_SELECTED_FILE", "sourceAuthority": "PROJECT_SHARED_LEARNING_ADVISORY; linked historical claims not independently replayed", "normalization": "UTF-8 bytes; CRLF normalized to LF for Git snapshot"},
+        {
+          "sourcePath": "D:\\UNG DUNG AI\\TOOL AI 2026\\CVF-Workspace\\Customer-Care-Monitor\\docs\\reviews\\learnings\\feedback_shell_cleanup_and_paths.md",
+          "sourceRawSha256": "bd63ce96c4ca5b6be9ba6a692f342d89e25ff430fba0794a14e1ef4b7d7c445e",
+          "snapshotPath": "docs/reviews/evidence/cvf-pll-source-feedback_shell_cleanup_and_paths-2026-10-04.txt",
+          "snapshotSha256": "7a1c6d7da6fdff3eded4d465752d0ca28920ed0655e62dd9d41f2ed9ded10be1",
+          "readDisposition": "READ_FULL_SELECTED_FILE",
+          "sourceAuthority": "PROJECT_SHARED_LEARNING_ADVISORY; linked historical claims not independently replayed",
+          "normalization": "UTF-8 bytes; CRLF normalized to LF for Git snapshot"
+        },
+        {
+          "sourcePath": "D:\\UNG DUNG AI\\TOOL AI 2026\\CVF-Workspace\\Customer-Care-Monitor\\docs\\reviews\\learnings\\feedback_cvf_repair_workflow.md",
+          "sourceRawSha256": "ee3620fecf55dc0d1207a31c6fe676d39a6882a63000e53f8226f65ede4c1124",
+          "snapshotPath": "docs/reviews/evidence/cvf-pll-source-feedback_cvf_repair_workflow-2026-10-04.txt",
+          "snapshotSha256": "61656d751e4a5acdaaceea4762676360ef12f60d2e5a0b3e9ac60f22f890db09",
+          "readDisposition": "READ_FULL_SELECTED_FILE",
+          "sourceAuthority": "PROJECT_SHARED_LEARNING_ADVISORY; linked historical claims not independently replayed",
+          "normalization": "UTF-8 bytes; CRLF normalized to LF for Git snapshot"
+        },
+        {
+          "sourcePath": "D:\\UNG DUNG AI\\TOOL AI 2026\\CVF-Workspace\\Customer-Care-Monitor\\docs\\reviews\\learnings\\feedback_sync_coverage_evidence_layers.md",
+          "sourceRawSha256": "f9783778e58afde533a85f2be1cf8e4e2977e4208c7bb9b02358cd976f1a1c30",
+          "snapshotPath": "docs/reviews/evidence/cvf-pll-source-feedback_sync_coverage_evidence_layers-2026-10-04.txt",
+          "snapshotSha256": "4ef7df271ae25edc50d749406215efac770d4b184c4f50fd62407b5e207fbb2f",
+          "readDisposition": "READ_FULL_SELECTED_FILE",
+          "sourceAuthority": "PROJECT_SHARED_LEARNING_ADVISORY; linked historical claims not independently replayed",
+          "normalization": "UTF-8 bytes; CRLF normalized to LF for Git snapshot"
+        }
+      ],
+      "authority": "ADVISORY_PROJECT_SHARED_RECORDS_NOT_PRIVATE_CVF_PROOF",
+      "sourceProjectClaims": "ATTRIBUTED_NOT_REPLAYED; CCMA pilot and application PARKED_BY_OPERATOR",
+      "parentBaseline": "docs/baselines/CVF_GC018_PLL_T1_PROJECT_LEARNING_LOOP_2026-10-04.md",
+      "findings": [
+        {
+          "id": "PLL-SHELL",
+          "sourceRecord": "docs/reviews/evidence/cvf-pll-source-feedback_shell_cleanup_and_paths-2026-10-04.txt",
+          "defectClass": "WORKER_EXECUTION_ERROR",
+          "learningLane": "GOVERNANCE_CONTROL_PLANE",
+          "dedup": [{"owner": "docs/reference/CVF_AGENT_OPERATION_TRACE_AND_WORKSPACE_INTEGRITY_STANDARD_2026-06-13.md", "disposition": "EXTENDS_EXISTING", "reason": "Existing boundary/evidence controls; add discoverable command, resolved-target and rejection checklist, not historical root-cause attribution"}],
+          "incrementalValue": "Common cleanup/path/rejection record in learning templates and checklist",
+          "parentDisposition": "MERGED_INTO_EXISTING_PARENT_OWNERS",
+          "reusableControl": "docs/reference/downstream_gate_profile/CVF_BUILD_LEARNING_EVIDENCE_CHECKLIST.md#shell-cleanup-and-paths",
+          "parentImplementation": "IMPLEMENTED_BOUNDED",
+          "returnDelivery": "PARKED_BY_OPERATOR",
+          "sourceProjectApplication": "PARKED_BY_OPERATOR",
+          "historicalProjectProof": "ATTRIBUTED_NOT_REPLAYED"
+        },
+        {
+          "id": "PLL-REPAIR",
+          "sourceRecord": "docs/reviews/evidence/cvf-pll-source-feedback_cvf_repair_workflow-2026-10-04.txt",
+          "defectClass": "WORKER_EXECUTION_ERROR",
+          "learningLane": "GOVERNANCE_CONTROL_PLANE",
+          "dedup": [{"owner": "docs/reference/review_cost_control/CVF_REVIEW_COST_AND_DIMINISHING_RETURN_CONTROL_STANDARD.md", "disposition": "EXTENDS_EXISTING", "reason": "Consume returned evidence; add match-count/applied diff/intended failure/restoration outcome grammar"}, {"owner": "docs/reference/CVF_AGENT_WORK_ORDER_EPISTEMIC_PROCESS_BLOCK_ADDENDUM_2026-06-13.md", "disposition": "EXTENDS_EXISTING", "reason": "Keep failure, skip and timeout distinct from later partitioned pass"}],
+          "incrementalValue": "Explicit NOT_APPLIED/INCONCLUSIVE/KILLED/SURVIVED and restoration evidence in shared checklist",
+          "parentDisposition": "MERGED_INTO_EXISTING_PARENT_OWNERS",
+          "reusableControl": "docs/reference/downstream_gate_profile/CVF_BUILD_LEARNING_EVIDENCE_CHECKLIST.md#repair-negative-fixtures-and-mutations",
+          "parentImplementation": "IMPLEMENTED_BOUNDED",
+          "returnDelivery": "PARKED_BY_OPERATOR",
+          "sourceProjectApplication": "PARKED_BY_OPERATOR",
+          "historicalProjectProof": "ATTRIBUTED_NOT_REPLAYED"
+        },
+        {
+          "id": "PLL-COVERAGE",
+          "sourceRecord": "docs/reviews/evidence/cvf-pll-source-feedback_sync_coverage_evidence_layers-2026-10-04.txt",
+          "defectClass": "WORKER_EXECUTION_ERROR",
+          "learningLane": "GOVERNANCE_CONTROL_PLANE",
+          "dedup": [{"owner": "docs/reference/downstream_gate_profile/CVF_DOWNSTREAM_GATE_PROFILE_STANDARD.md", "disposition": "EXTENDS_EXISTING", "reason": "Installed/invoked/proven claim boundary extended to enumeration/content/storage/checkpoint/adapter/provider/runtime layers"}],
+          "incrementalValue": "Layer-bound evidence matrix for project sync claims; local fixture not live provider or product completion",
+          "parentDisposition": "MERGED_INTO_EXISTING_PARENT_OWNERS",
+          "reusableControl": "docs/reference/downstream_gate_profile/CVF_BUILD_LEARNING_EVIDENCE_CHECKLIST.md#sync-coverage-and-claims",
+          "parentImplementation": "IMPLEMENTED_BOUNDED",
+          "returnDelivery": "PARKED_BY_OPERATOR",
+          "sourceProjectApplication": "PARKED_BY_OPERATOR",
+          "historicalProjectProof": "ATTRIBUTED_NOT_REPLAYED"
+        }
+      ],
+      "parentLinks": {"admissionRecord": "docs/reviews/CVF_PLL_T1_PROJECT_LEARNING_LOOP_COMPLETION_2026-10-04.md", "standard": "docs/reference/downstream_gate_profile/CVF_PROJECT_LEARNING_LOOP_STANDARD.md", "evidenceChecklist": "docs/reference/downstream_gate_profile/CVF_BUILD_LEARNING_EVIDENCE_CHECKLIST.md", "proof": "docs/reviews/evidence/cvf-pll-t1-evidence-2026-10-04.json", "focusedTests": "governance/compat/test_project_learning_loop.py"},
+      "deferred": ["CCMA pilot", "CCMA loopback/adoption", "hosted CI", "Linux", "runtime/provider/public effects"]
+    },
+    {
+      "intakeId": "CVF-CORE-LEARNING-APPLICATION-20261009",
+      "authority": "LOCAL_VERIFIED_STRUCTURAL_CONTROL",
+      "findings": [
+        {
+          "id": "NCR-LEARNING-APPLICATION-OBSERVABILITY",
+          "defectClass": "MACHINE_GATE_GAP",
+          "learningRecordPath": "docs/reviews/learnings/CVF_ORCHESTRATOR_PREAPPROVAL_FEASIBILITY_LEARNING_2026-10-08.md",
+          "dispatchBindingRequired": true,
+          "parentEvidence": {
+            "schemaVersion": "cvf.parentLearningEvidence@1.0.0",
+            "findingId": "NCR-LEARNING-APPLICATION-OBSERVABILITY",
+            "source": {"sourceProject": "CVF-CORE", "evidence": {"path": "docs/reviews/learnings/CVF_ORCHESTRATOR_PREAPPROVAL_FEASIBILITY_LEARNING_2026-10-08.md", "sha256": "3d004c1de601a352ffc215fedd9b059f67b342d3ac378685dcfb3bb581e1cf2b", "fragment": "Forward Application Control", "evidenceClass": "OBSERVED_LOCAL"}},
+            "valueChecks": {
+              "sourceConfidence": {"status": "SUPPORTED", "reason": "Current Local record and R2 failure attribution are observed and hash-bound", "evidence": [{"path": "docs/reviews/learnings/CVF_ORCHESTRATOR_PREAPPROVAL_FEASIBILITY_LEARNING_2026-10-08.md", "sha256": "3d004c1de601a352ffc215fedd9b059f67b342d3ac378685dcfb3bb581e1cf2b", "fragment": "R2 Result And Cost-Aware Dispatcher Learning", "evidenceClass": "OBSERVED_LOCAL"}], "limits": "Selected structural/local-owner evidence only;no universal agent or behavioral outcome"},
+              "reusableMechanism": {"status": "SUPPORTED", "reason": "Recorded learning without application proof can recur across agents", "evidence": [{"path": "docs/baselines/CVF_GC018_LEARNING_APPLICATION_BINDING_2026-10-09.md", "sha256": "f3ea36af70a235ebde9caa0d1dfbe307ca838f5146a96657b64f43d4bc9f5b43", "fragment": "Decision / Baseline", "evidenceClass": "OBSERVED_LOCAL"}], "limits": "Selected structural/local-owner evidence only;no universal agent or behavioral outcome"},
+              "existingCoverage": {"status": "SUPPORTED", "reason": "Reuse PLL,F2G and existing receipt validator;no competing ledger", "evidence": [{"path": "docs/reference/downstream_gate_profile/CVF_PROJECT_LEARNING_LOOP_STANDARD.md", "sha256": "61124b8674f2323be6f71746312cd47fbb2b49b550eedf863ff79d5aaef8b878", "fragment": "Forward Application Binding", "evidenceClass": "OBSERVED_LOCAL"}], "limits": "Selected structural/local-owner evidence only;no universal agent or behavioral outcome"},
+              "incrementalValue": {"status": "SUPPORTED", "reason": "Mandatory forward binding and separate lifecycle counts change early declaration control", "evidence": [{"path": "docs/reviews/CVF_LEARNING_APPLICATION_BINDING_COMPLETION_2026-10-09.md", "sha256": "f798dfd4eda51cf1f8e6606a7968dcb5f16dda417b792a9752073ef13ed2ee96", "fragment": "Findings / Position", "evidenceClass": "OBSERVED_LOCAL"}], "limits": "Selected structural/local-owner evidence only;no universal agent or behavioral outcome"},
+              "boundedProof": {"status": "SUPPORTED", "reason": "Synthetic positive and negative structural tests support the selected guard", "evidence": [{"path": "docs/reviews/evidence/cvf-learning-application-binding-2026-10-09.json", "sha256": "709372cc41b8c143cde3234f5c52c18b7ea9782f758c1dc7bccbd7644127cc6a", "fragment": "observedCases", "evidenceClass": "SYNTHETIC_OFFLINE"}], "limits": "Selected structural/local-owner evidence only;no universal agent or behavioral outcome"}
+            },
+            "decision": {"state": "MERGE", "reason": "Extend existing F2G/PLL;close enrollment/plan observability gap,not semantic agent compliance", "reviewer": "LOCAL_MAINTAINER_REVIEWER", "owner": "docs/reference/downstream_gate_profile/CVF_PROJECT_LEARNING_LOOP_STANDARD.md", "f2gDisposition": "MACHINE_CHECK_ADDED", "evidence": [{"path": "docs/reviews/CVF_LEARNING_APPLICATION_BINDING_COMPLETION_2026-10-09.md", "sha256": "f798dfd4eda51cf1f8e6606a7968dcb5f16dda417b792a9752073ef13ed2ee96", "fragment": "Decision / Disposition", "evidenceClass": "OBSERVED_LOCAL"}]},
+            "implementation": {
+              "state": "IMPLEMENTED_BOUNDED",
+              "reason": "Structural learning enrollment,dispatch plan validation and lifecycle readout",
+              "evidence": [
+                {"path": "governance/compat/learning_application_binding.py", "sha256": "84068b6f197c19404a23daa643266d7f9ed334f313cd2d8bbe2f2e6d37d7b7b8", "fragment": "control:forward-binding", "evidenceClass": "OBSERVED_LOCAL"},
+                {"path": "docs/reviews/evidence/cvf-learning-application-binding-2026-10-09.json", "sha256": "709372cc41b8c143cde3234f5c52c18b7ea9782f758c1dc7bccbd7644127cc6a", "fragment": "proof-positive:valid-chain", "evidenceClass": "SYNTHETIC_OFFLINE"},
+                {"path": "docs/reviews/evidence/cvf-learning-application-binding-2026-10-09.json", "sha256": "709372cc41b8c143cde3234f5c52c18b7ea9782f758c1dc7bccbd7644127cc6a", "fragment": "proof-negative:missing-drifted-unsupported-claims", "evidenceClass": "SYNTHETIC_OFFLINE"}
+              ]
+            },
+            "projectResolution": {"state": "OPEN", "reason": "OPEN: one Local dispatch/result application observed, but universal adherence, original source R2 gaps and broader outcome effectiveness remain unresolved.", "evidence": []},
+            "returnDelivery": {"state": "RETURNED", "reason": "Observed Local reception of the pinned source/control before final qualification; a distinct typed DELIVERY receipt records timing and same-actor scope. No pre-initial-write full-record-reading claim.", "evidence": [{"path": "docs/reviews/evidence/cvf-video-storyboard-reconciliation-2026-10-09-delivery.json", "sha256": "3ade0d62e6887e4c5ef1d30570480b7d8c5a49c5624598b710d9534e39941e9e", "fragment": "delivery-receipt", "evidenceClass": "OBSERVED_LOCAL"}]},
+            "projectApplication": {"state": "APPLIED", "reason": "Local adjudicated the first real offline UI work-order dispatch and returned-result review; observed authorization, control identity and delivery proof are bound by the new typed receipt. One task only; broader effectiveness and source R2 remain open.", "evidence": [{"path": "docs/reviews/evidence/cvf-offline-preview-learning-application-receipt-2026-10-09.json", "sha256": "6278930304dcbb8af58a30dd9b76bfda793dd6d0602efcb63b6c20556f5bec06", "fragment": "application-receipt", "evidenceClass": "OBSERVED_LOCAL"}]},
+            "claimLimits": "APPLIED for one Local offline UI dispatch and returned-result review only. Same Local actor authored dispatch and adjudicated learning; implementation worker was distinct. Positive/negative control observations are structural. No attestation of every preparation read, zero defects, universal compliance, source R2 resolution, AI runtime governance, production readiness, cost savings or provider capability. Original worker and prior learning receipt bytes retained; parent projectResolution remains OPEN."
+          }
+        }
+      ]
+    },
+    {
+      "intakeId": "CVF-CORE-O3-CONTINUITY-DISPATCH-20261011",
+      "authority": "LOCAL_VERIFIED_BOUNDED_CONTROL",
+      "findings": [
+        {
+          "id": "O3",
+          "sourceRecord": "docs/reviews/CVF_MODEL_SELECTION_ORCHESTRATOR_LEARNING_DISPOSITION_2026-10-11.md",
+          "defectClass": "MACHINE_GATE_GAP",
+          "parentEvidence": {
+            "schemaVersion": "cvf.parentLearningEvidence@1.0.0",
+            "findingId": "O3",
+            "source": {"sourceProject": "CVF-CORE", "evidence": {"path": "docs/reviews/CVF_MODEL_SELECTION_ORCHESTRATOR_LEARNING_DISPOSITION_2026-10-11.md", "sha256": "3e90e2eddc554966cef77cd3942b541ac411e669bfff974364d908fa644bd94e", "fragment": "O3", "evidenceClass": "OBSERVED_LOCAL"}},
+            "valueChecks": {
+              "sourceConfidence": {
+                "status": "SUPPORTED",
+                "reason": "Original O3 source, retained producer/consumer contradiction and distinct Local review are pinned.",
+                "evidence": [{"path": "docs/reviews/CVF_MODEL_SELECTION_ORCHESTRATOR_LEARNING_DISPOSITION_2026-10-11.md", "sha256": "3e90e2eddc554966cef77cd3942b541ac411e669bfff974364d908fa644bd94e", "fragment": "O3", "evidenceClass": "OBSERVED_LOCAL"}, {"path": "docs/reviews/CVF_CONTINUITY_DISPATCH_O3_COMPLETION_2026-10-11.md", "sha256": "2d13378d37ef173afd654ec79e38f0420ff7784e8fd7586dd63b9cbb34b6028e", "fragment": "Findings / Position", "evidenceClass": "OBSERVED_LOCAL"}],
+                "limits": "Only declared opt-in Git/filesystem control and disposable proof; no universal adherence, OS race or real-project application."
+              },
+              "reusableMechanism": {"status": "SUPPORTED", "reason": "A producer-generated continuity marker can lose identity required by a downstream release consumer.", "evidence": [{"path": "docs/reviews/CVF_MODEL_SELECTION_ORCHESTRATOR_LEARNING_DISPOSITION_2026-10-11.md", "sha256": "3e90e2eddc554966cef77cd3942b541ac411e669bfff974364d908fa644bd94e", "fragment": "Candidate Proof Required", "evidenceClass": "OBSERVED_LOCAL"}], "limits": "Only declared opt-in Git/filesystem control and disposable proof; no universal adherence, OS race or real-project application."},
+              "existingCoverage": {
+                "status": "SUPPORTED",
+                "reason": "Merge at existing GC020 helper/Step4A and unchanged DR checker; no new gate, catalog, ADIF or LSC root.",
+                "evidence": [{"path": "docs/reference/CVF_TRANCHE_COMMIT_CHOREOGRAPHY_STANDARD_2026-06-03.md", "sha256": "1b96c81fa8d6e7dca8f02d51ca091db19a36c64b56b0c5903591ecdfc48cea9b", "fragment": "Step4A", "evidenceClass": "OBSERVED_LOCAL"}, {"path": "governance/compat/check_dispatch_release_readiness.py", "sha256": "4c4247343d406af9ec06d54913c75f573adf9c4b26f080af355d0888dc8caed5", "fragment": "evaluate", "evidenceClass": "OBSERVED_LOCAL"}],
+                "limits": "Only declared opt-in Git/filesystem control and disposable proof; no universal adherence, OS race or real-project application."
+              },
+              "incrementalValue": {
+                "status": "SUPPORTED",
+                "reason": "Bound producer now validates and retains source identity before mutation and rejects actual failed release.",
+                "evidence": [{"path": "scripts/cvf_commit_tranche.py", "sha256": "1a296b55e9590d80f83f3a57f9f88f0ddc3d8071c7ca909682a817ac38284754", "fragment": "control:bound-resume", "evidenceClass": "OBSERVED_LOCAL"}, {"path": "docs/reviews/CVF_CONTINUITY_DISPATCH_O3_COMPLETION_2026-10-11.md", "sha256": "2d13378d37ef173afd654ec79e38f0420ff7784e8fd7586dd63b9cbb34b6028e", "fragment": "Decision / Disposition", "evidenceClass": "OBSERVED_LOCAL"}],
+                "limits": "Only declared opt-in Git/filesystem control and disposable proof; no universal adherence, OS race or real-project application."
+              },
+              "boundedProof": {"status": "SUPPORTED", "reason": "Fifteen source-derived independent actual CLI/Git controls plus consumed focused legacy/dispatch proof.", "evidence": [{"path": "docs/reviews/evidence/continuity-dispatch-o3-local-20261011.json", "sha256": "7742ea5b6653518bc7644b844b514540cc6655b8ee295a8d27f2b28316e610de", "fragment": "independentProbe.results", "evidenceClass": "SYNTHETIC_OFFLINE"}], "limits": "Only declared opt-in Git/filesystem control and disposable proof; no universal adherence, OS race or real-project application."}
+            },
+            "decision": {"state": "MERGE", "reason": "Extend existing continuity producer/release join; preserve checker and generator owners.", "reviewer": "LOCAL_REVIEWER_CODEX_ROOT", "owner": "docs/reference/CVF_TRANCHE_COMMIT_CHOREOGRAPHY_STANDARD_2026-06-03.md", "f2gDisposition": "MACHINE_CHECK_ADDED", "evidence": [{"path": "docs/reviews/CVF_CONTINUITY_DISPATCH_O3_COMPLETION_2026-10-11.md", "sha256": "2d13378d37ef173afd654ec79e38f0420ff7784e8fd7586dd63b9cbb34b6028e", "fragment": "Decision / Disposition", "evidenceClass": "OBSERVED_LOCAL"}]},
+            "implementation": {
+              "state": "IMPLEMENTED_BOUNDED",
+              "reason": "Optional bound source/marker/generated/release composition implemented and independently checked.",
+              "evidence": [
+                {"path": "scripts/cvf_commit_tranche.py", "sha256": "1a296b55e9590d80f83f3a57f9f88f0ddc3d8071c7ca909682a817ac38284754", "fragment": "control:bound-resume", "evidenceClass": "OBSERVED_LOCAL"},
+                {"path": "docs/reviews/evidence/continuity-dispatch-o3-local-20261011.json", "sha256": "7742ea5b6653518bc7644b844b514540cc6655b8ee295a8d27f2b28316e610de", "fragment": "proof-positive:actual-lifecycle", "evidenceClass": "SYNTHETIC_OFFLINE"},
+                {"path": "docs/reviews/evidence/continuity-dispatch-o3-local-20261011.json", "sha256": "7742ea5b6653518bc7644b844b514540cc6655b8ee295a8d27f2b28316e610de", "fragment": "proof-negative:identity-and-release-rejection", "evidenceClass": "SYNTHETIC_OFFLINE"}
+              ]
+            },
+            "projectResolution": {"state": "OPEN", "reason": "Selected helper gap handled bounded; broader orchestrator application/adherence is unproved.", "evidence": []},
+            "returnDelivery": {"state": "NOT_RETURNED", "reason": "No typed DELIVERY receipt is created by implementation acceptance.", "evidence": []},
+            "projectApplication": {"state": "NOT_APPLIED", "reason": "No authorized real-project APPLICATION receipt; disposable fixtures only.", "evidence": []},
+            "claimLimits": "Only declared opt-in Git/filesystem control and disposable proof; no universal adherence, OS race or real-project application. Expense and other parked projects remain unopened."
+          }
+        }
+      ]
+    },
+    {
+      "intakeId": "CCMA-SHARED-LEARNING-20261012",
+      "authority": "LOCAL_VERIFIED_BOUNDED_DOCUMENTARY_MERGE",
+      "sourceProjectClaims": "ATTRIBUTED_NOT_REPLAYED; source-project application PARKED_BY_OPERATOR",
+      "findings": [
+        {
+          "id": "CCMA-PROOF-PREPARATION-DELTA-20261012",
+          "sourceRecord": "docs/reviews/learnings/CVF_CCMA_PROOF_PREPARATION_LEARNING_2026-10-12.md",
+          "defectClass": "ORCHESTRATOR_PACKET_GAP",
+          "parentEvidence": {
+            "schemaVersion": "cvf.parentLearningEvidence@1.0.0",
+            "findingId": "CCMA-PROOF-PREPARATION-DELTA-20261012",
+            "source": {"sourceProject": "Customer-Care-Monitor", "evidence": {"path": "docs/reviews/learnings/CVF_CCMA_PROOF_PREPARATION_LEARNING_2026-10-12.md", "sha256": "52429607fb609a46d696dd82ad99b51c6a3f0f36c4f66b4da62ba26c1895c316", "fragment": "Target / Source", "evidenceClass": "OBSERVED_LOCAL"}},
+            "valueChecks": {
+              "sourceConfidence": {"status": "SUPPORTED", "reason": "Pinned shared records with raw source and documentary snapshot hashes; project history remains attributed.", "evidence": [{"path": "docs/reviews/evidence/ccma-learning-source-manifest-20261012.json", "sha256": "6fbd611032f866eb0d1c7824fef3fe12c30e17a3a5d647ee88f2e94fa7366308", "fragment": "processingLedger", "evidenceClass": "ATTRIBUTED_SOURCE"}], "limits": "Bounded written guidance and disposable offline examples; historical project claims attributed, no agent adherence or project/runtime proof."},
+              "reusableMechanism": {"status": "SUPPORTED", "reason": "Proof preparation can confuse invalid fixtures, archive bytes, publication targets and durable receipt layers.", "evidence": [{"path": "docs/reviews/learnings/CVF_CCMA_PROOF_PREPARATION_LEARNING_2026-10-12.md", "sha256": "52429607fb609a46d696dd82ad99b51c6a3f0f36c4f66b4da62ba26c1895c316", "fragment": "Findings / Position", "evidenceClass": "OBSERVED_LOCAL"}], "limits": "Bounded written guidance and disposable offline examples; historical project claims attributed, no agent adherence or project/runtime proof."},
+              "existingCoverage": {"status": "SUPPORTED", "reason": "Local owner reconciliation preserves lifecycle, O6 and ADIF routing without duplicate controls.", "evidence": [{"path": "docs/reviews/learnings/CVF_CCMA_PROOF_PREPARATION_LEARNING_2026-10-12.md", "sha256": "52429607fb609a46d696dd82ad99b51c6a3f0f36c4f66b4da62ba26c1895c316", "fragment": "Source Authority", "evidenceClass": "OBSERVED_LOCAL"}], "limits": "Bounded written guidance and disposable offline examples; historical project claims attributed, no agent adherence or project/runtime proof."},
+              "incrementalValue": {"status": "SUPPORTED", "reason": "Existing checklist gains specific archive-member, target-shape and durable-prefix guidance.", "evidence": [{"path": "docs/reference/downstream_gate_profile/CVF_BUILD_LEARNING_EVIDENCE_CHECKLIST.md", "sha256": "152bfb5a9097c58122778179bc26c143727634990937c578ed9ab68d477cd153", "fragment": "control:proof-preparation", "evidenceClass": "OBSERVED_LOCAL"}], "limits": "Bounded written guidance and disposable offline examples; historical project claims attributed, no agent adherence or project/runtime proof."},
+              "boundedProof": {"status": "SUPPORTED", "reason": "Nine offline checks demonstrate selected distinctions, including actual disposable Git archive bytes.", "evidence": [{"path": "docs/reviews/evidence/ccma-learning-parent-probe-20261012.json", "sha256": "8d132e269fd0ad52e84e908153b3742e46d81164522c98f6bad529b5c6e91af1", "fragment": "cases", "evidenceClass": "SYNTHETIC_OFFLINE"}], "limits": "Bounded written guidance and disposable offline examples; historical project claims attributed, no agent adherence or project/runtime proof."}
+            },
+            "decision": {"state": "MERGE", "reason": "Extend existing evidence-preparation checklist; covered cases retain existing owners.", "reviewer": "LOCAL_REVIEWER_CODEX_ROOT", "owner": "docs/reference/downstream_gate_profile/CVF_BUILD_LEARNING_EVIDENCE_CHECKLIST.md", "f2gDisposition": "TEMPLATE_UPDATED", "evidence": [{"path": "docs/reviews/learnings/CVF_CCMA_PROOF_PREPARATION_LEARNING_2026-10-12.md", "sha256": "52429607fb609a46d696dd82ad99b51c6a3f0f36c4f66b4da62ba26c1895c316", "fragment": "Decision / Disposition", "evidenceClass": "OBSERVED_LOCAL"}]},
+            "implementation": {
+              "state": "IMPLEMENTED_BOUNDED",
+              "reason": "Written checklist guidance only; no machine gate or global worker obligation.",
+              "evidence": [
+                {"path": "docs/reference/downstream_gate_profile/CVF_BUILD_LEARNING_EVIDENCE_CHECKLIST.md", "sha256": "152bfb5a9097c58122778179bc26c143727634990937c578ed9ab68d477cd153", "fragment": "control:proof-preparation", "evidenceClass": "OBSERVED_LOCAL"},
+                {"path": "docs/reviews/evidence/ccma-learning-parent-probe-20261012.json", "sha256": "8d132e269fd0ad52e84e908153b3742e46d81164522c98f6bad529b5c6e91af1", "fragment": "proof-positive:cases", "evidenceClass": "SYNTHETIC_OFFLINE"},
+                {"path": "docs/reviews/evidence/ccma-learning-parent-probe-20261012.json", "sha256": "8d132e269fd0ad52e84e908153b3742e46d81164522c98f6bad529b5c6e91af1", "fragment": "proof-negative:cases", "evidenceClass": "SYNTHETIC_OFFLINE"}
+              ]
+            },
+            "projectResolution": {"state": "PARKED_BY_OPERATOR", "reason": "Operator permits parent processing only; no source-project action or delivery/application receipt.", "evidence": []},
+            "returnDelivery": {"state": "PARKED_BY_OPERATOR", "reason": "Operator permits parent processing only; no source-project action or delivery/application receipt.", "evidence": []},
+            "projectApplication": {"state": "PARKED_BY_OPERATOR", "reason": "Operator permits parent processing only; no source-project action or delivery/application receipt.", "evidence": []},
+            "claimLimits": "Bounded written guidance and disposable offline examples; historical project claims attributed, no agent adherence or project/runtime proof."
+          }
+        }
+      ]
+    },
+    {
+      "intakeId": "CCMA-SEVEN-FINDING-20261013",
+      "sourceSnapshot": {"path": "docs/reviews/evidence/ccma-seven-finding-learning-source-20261013.json", "sha256": "b7e2a9d8833c9515f3efa0131a318900812fad537abb8c1da62e3bf8cda82796"},
+      "authority": "SELECTED_PROJECT_EVIDENCE_PARENT_LOCAL_DISPOSITION",
+      "sourceProjectClaims": "Three final Local project reviews accepted bounded fixes; historical execution is attributed, selected source comparison performed in Core intake. Later prospective documentary application is recorded in the typed project loopback receipts.",
+      "findings": [
+        {
+          "id": "CCMA-OUTPUT-DELIVERY-TRUTH-20261013",
+          "defectClass": "RUNTIME_SIGNAL_GAP",
+          "dedup": [{"owner": "docs/reference/downstream_gate_profile/CVF_BUILD_LEARNING_EVIDENCE_CHECKLIST.md", "disposition": "EXTENDS_EXISTING", "reason": "Retain hash-bound terminal-write owner; add per-output guidance as a companion without rewriting prior typed evidence."}],
+          "reusableControl": "docs/reference/downstream_gate_profile/CVF_PER_OUTPUT_DELIVERY_EVIDENCE_CHECKLIST.md#evidence-contract",
+          "workerProposedDisposition": "TEMPLATE_UPDATED",
+          "parentDisposition": "MERGED_BOUNDED_WRITTEN_GUIDANCE_ONLY",
+          "parentEvidence": {
+            "schemaVersion": "cvf.parentLearningEvidence@1.0.0",
+            "findingId": "CCMA-OUTPUT-DELIVERY-TRUTH-20261013",
+            "source": {"sourceProject": "Customer-Care-Monitor-AI", "evidence": {"path": "docs/reviews/learnings/CVF_CCMA_SEVEN_FINDING_DELIVERY_LEARNING_2026-10-13.md", "sha256": "9339aee500efa4faafc3b6853281e2262b81e337e2cc4a4cd0e81af7ef3a9d1b", "fragment": "Source Confidence And Scope", "evidenceClass": "OBSERVED_LOCAL"}},
+            "valueChecks": {
+              "sourceConfidence": {
+                "status": "SUPPORTED",
+                "reason": "Local observed pinned selected project files and review records; historical project test outcomes remain attributed.",
+                "evidence": [{"path": "docs/reviews/evidence/ccma-seven-finding-learning-source-20261013.json", "sha256": "b7e2a9d8833c9515f3efa0131a318900812fad537abb8c1da62e3bf8cda82796", "fragment": "selected-12-path-source-manifest", "evidenceClass": "ATTRIBUTED_SOURCE"}, {"path": "docs/reviews/learnings/CVF_CCMA_SEVEN_FINDING_DELIVERY_LEARNING_2026-10-13.md", "sha256": "9339aee500efa4faafc3b6853281e2262b81e337e2cc4a4cd0e81af7ef3a9d1b", "fragment": "Five Parent Value Checks", "evidenceClass": "OBSERVED_LOCAL"}],
+                "limits": "Selected project source and final reviews are pinned but historical runtime tests are attributed. Later return/application receipts prove prospective documentation adoption only; no live SMTP, project runtime rerun or universal agent compliance is claimed; public export is written guidance only."
+              },
+              "reusableMechanism": {
+                "status": "SUPPORTED",
+                "reason": "A multi-output job can have distinct accepted, failed, unknown and persisted states; aggregate sent status loses retry safety.",
+                "evidence": [{"path": "docs/reviews/evidence/ccma-seven-finding-learning-source-20261013.json", "sha256": "b7e2a9d8833c9515f3efa0131a318900812fad537abb8c1da62e3bf8cda82796", "fragment": "selected-12-path-source-manifest", "evidenceClass": "ATTRIBUTED_SOURCE"}, {"path": "docs/reviews/learnings/CVF_CCMA_SEVEN_FINDING_DELIVERY_LEARNING_2026-10-13.md", "sha256": "9339aee500efa4faafc3b6853281e2262b81e337e2cc4a4cd0e81af7ef3a9d1b", "fragment": "Five Parent Value Checks", "evidenceClass": "OBSERVED_LOCAL"}],
+                "limits": "Selected project source and final reviews are pinned but historical runtime tests are attributed. Later return/application receipts prove prospective documentation adoption only; no live SMTP, project runtime rerun or universal agent compliance is claimed; public export is written guidance only."
+              },
+              "existingCoverage": {
+                "status": "SUPPORTED",
+                "reason": "Existing terminal persistence and attempt principles cover adjacent facts; the companion makes per-output remote acceptance and retry eligibility explicit without altering the prior hash-bound checklist.",
+                "evidence": [{"path": "docs/reference/downstream_gate_profile/CVF_PROJECT_LEARNING_LOOP_STANDARD.md", "sha256": "61124b8674f2323be6f71746312cd47fbb2b49b550eedf863ff79d5aaef8b878", "fragment": "Value Admission", "evidenceClass": "OBSERVED_LOCAL"}, {"path": "docs/reference/downstream_gate_profile/CVF_PER_OUTPUT_DELIVERY_EVIDENCE_CHECKLIST.md", "sha256": "13126809f82d4e05384fb3c293db84c8ce6925540ef55766a815a772d445bda3", "fragment": "control:per-output-outbound-delivery", "evidenceClass": "OBSERVED_LOCAL"}],
+                "limits": "Selected project source and final reviews are pinned but historical runtime tests are attributed. Later return/application receipts prove prospective documentation adoption only; no live SMTP, project runtime rerun or universal agent compliance is claimed; public export is written guidance only."
+              },
+              "incrementalValue": {
+                "status": "SUPPORTED",
+                "reason": "A companion checklist under the same owner adds identity-specific acceptance and durable-outcome guidance for reviewers.",
+                "evidence": [{"path": "docs/reference/downstream_gate_profile/CVF_PER_OUTPUT_DELIVERY_EVIDENCE_CHECKLIST.md", "sha256": "13126809f82d4e05384fb3c293db84c8ce6925540ef55766a815a772d445bda3", "fragment": "control:per-output-outbound-delivery", "evidenceClass": "OBSERVED_LOCAL"}, {"path": "docs/reviews/learnings/CVF_CCMA_SEVEN_FINDING_DELIVERY_LEARNING_2026-10-13.md", "sha256": "9339aee500efa4faafc3b6853281e2262b81e337e2cc4a4cd0e81af7ef3a9d1b", "fragment": "Five Parent Value Checks", "evidenceClass": "OBSERVED_LOCAL"}],
+                "limits": "Selected project source and final reviews are pinned but historical runtime tests are attributed. Later return/application receipts prove prospective documentation adoption only; no live SMTP, project runtime rerun or universal agent compliance is claimed; public export is written guidance only."
+              },
+              "boundedProof": {
+                "status": "SUPPORTED",
+                "reason": "Pinned final source reviews describe positive accepted/mixed-output and negative ambiguity/persistence cases, attributed rather than rerun in Core.",
+                "evidence": [{"path": "docs/reviews/evidence/ccma-seven-finding-learning-source-20261013.json", "sha256": "b7e2a9d8833c9515f3efa0131a318900812fad537abb8c1da62e3bf8cda82796", "fragment": "proof-positive:explicit-acceptance-mixed-output-reentry", "evidenceClass": "ATTRIBUTED_SOURCE"}, {"path": "docs/reviews/evidence/ccma-seven-finding-learning-source-20261013.json", "sha256": "b7e2a9d8833c9515f3efa0131a318900812fad537abb8c1da62e3bf8cda82796", "fragment": "proof-negative:uncertain-transport-and-outcome-persistence", "evidenceClass": "ATTRIBUTED_SOURCE"}],
+                "limits": "Selected project source and final reviews are pinned but historical runtime tests are attributed. Later return/application receipts prove prospective documentation adoption only; no live SMTP, project runtime rerun or universal agent compliance is claimed; public export is written guidance only."
+              }
+            },
+            "decision": {
+              "state": "MERGE",
+              "reason": "Add a companion per-output evidence checklist under the existing profile owner while preserving the hash-bound earlier checklist; six other findings deduplicate.",
+              "reviewer": "LOCAL_CODEX_ROOT",
+              "owner": "docs/reference/downstream_gate_profile/CVF_PER_OUTPUT_DELIVERY_EVIDENCE_CHECKLIST.md",
+              "f2gDisposition": "TEMPLATE_UPDATED",
+              "evidence": [{"path": "docs/reviews/learnings/CVF_CCMA_SEVEN_FINDING_DELIVERY_LEARNING_2026-10-13.md", "sha256": "9339aee500efa4faafc3b6853281e2262b81e337e2cc4a4cd0e81af7ef3a9d1b", "fragment": "Five Parent Value Checks", "evidenceClass": "OBSERVED_LOCAL"}]
+            },
+            "implementation": {
+              "state": "IMPLEMENTED_BOUNDED",
+              "reason": "Written companion checklist only; no machine/runtime guard, and selected project evidence remains attributed.",
+              "evidence": [
+                {"path": "docs/reference/downstream_gate_profile/CVF_PER_OUTPUT_DELIVERY_EVIDENCE_CHECKLIST.md", "sha256": "13126809f82d4e05384fb3c293db84c8ce6925540ef55766a815a772d445bda3", "fragment": "control:per-output-outbound-delivery", "evidenceClass": "OBSERVED_LOCAL"},
+                {"path": "docs/reviews/evidence/ccma-seven-finding-learning-source-20261013.json", "sha256": "b7e2a9d8833c9515f3efa0131a318900812fad537abb8c1da62e3bf8cda82796", "fragment": "proof-positive:explicit-acceptance-mixed-output-reentry", "evidenceClass": "ATTRIBUTED_SOURCE"},
+                {"path": "docs/reviews/evidence/ccma-seven-finding-learning-source-20261013.json", "sha256": "b7e2a9d8833c9515f3efa0131a318900812fad537abb8c1da62e3bf8cda82796", "fragment": "proof-negative:uncertain-transport-and-outcome-persistence", "evidenceClass": "ATTRIBUTED_SOURCE"}
+              ]
+            },
+            "projectResolution": {"state": "RESOLVED", "reason": "Project final Local reviews accepted all seven selected fixes within local/synthetic bounds.", "evidence": [{"path": "docs/reviews/evidence/ccma-seven-finding-learning-source-20261013.json", "sha256": "b7e2a9d8833c9515f3efa0131a318900812fad537abb8c1da62e3bf8cda82796", "fragment": "selected-12-path-source-manifest", "evidenceClass": "ATTRIBUTED_SOURCE"}]},
+            "returnDelivery": {"state": "RETURNED", "reason": "The project published and acknowledged the exact Core checklist as a portable learning record on its branch; remote readback and typed delivery receipt are pinned.", "evidence": [{"path": "docs/reviews/evidence/ccma-seven-finding-delivery-receipt-20261013.json", "sha256": "1167abc10f9ddc1e663a0e6f02d713d0592e3cab53e00b587faee9caa25816a2", "fragment": "projectReception", "evidenceClass": "OBSERVED_LOCAL"}]},
+            "projectApplication": {"state": "APPLIED", "reason": "Project adopted the checklist as prospective documentation-only review criteria and registered discovery pointers. R091 runtime fixes predate the parent checklist and are not retroactively credited.", "evidence": [{"path": "docs/reviews/evidence/ccma-seven-finding-application-receipt-20261013.json", "sha256": "486161c08b561961bbc21c9c7890b0bc9f739fb22740e6646c3b589012784c17", "fragment": "projectVerification", "evidenceClass": "OBSERVED_LOCAL"}]},
+            "claimLimits": "Selected project source and final reviews are pinned but historical runtime tests are attributed. Return and application receipts cover prospective documentation adoption only; no live SMTP, project runtime rerun or universal agent compliance is claimed; public export is written guidance only."
+          }
+        }
+      ],
+      "parentLinks": {
+        "standard": "docs/reference/downstream_gate_profile/CVF_PROJECT_LEARNING_LOOP_STANDARD.md",
+        "learningRecord": "docs/reviews/learnings/CVF_CCMA_SEVEN_FINDING_DELIVERY_LEARNING_2026-10-13.md",
+        "legacyChecklist": "docs/reference/downstream_gate_profile/CVF_BUILD_LEARNING_EVIDENCE_CHECKLIST.md",
+        "companionChecklist": "docs/reference/downstream_gate_profile/CVF_PER_OUTPUT_DELIVERY_EVIDENCE_CHECKLIST.md",
+        "sourceManifest": "docs/reviews/evidence/ccma-seven-finding-learning-source-20261013.json",
+        "loopbackObservation": "docs/reviews/evidence/ccma-seven-finding-project-loopback-20261013.json",
+        "deliveryReceipt": "docs/reviews/evidence/ccma-seven-finding-delivery-receipt-20261013.json",
+        "applicationReceipt": "docs/reviews/evidence/ccma-seven-finding-application-receipt-20261013.json",
+        "publicExportCommit": "fa34ed49e56648acafe8b0388e48e0aa0523f007",
+        "publicExportPath": "docs/reference/downstream_gate_profile/CVF_PER_OUTPUT_DELIVERY_EVIDENCE_CHECKLIST.md"
+      },
+      "deferred": ["live SMTP/provider/browser/deploy"]
+    },
+    {
+      "intakeId": "NCR-REVIEW-OVERHEAD-20261018",
+      "authority": "LOCAL_VERIFIED_INTERNAL_DOCUMENTARY_MERGE",
+      "sourceProjectClaims": "Selected committed Local R2C evidence; no external project absorption or product architecture claim.",
+      "findings": [
+        {
+          "id": "NCR-REVIEW-OVERHEAD-20261018",
+          "sourceRecord": "docs/reviews/learnings/CVF_NCR_REVIEW_OVERHEAD_LEARNING_2026-10-18.md",
+          "defectClass": "ORCHESTRATOR_PACKET_GAP",
+          "parentDisposition": "MERGED_EXISTING_RULE",
+          "dispatchBindingRequired": false,
+          "parentEvidence": {
+            "schemaVersion": "cvf.parentLearningEvidence@1.0.0",
+            "findingId": "NCR-REVIEW-OVERHEAD-20261018",
+            "source": {"sourceProject": "CVF-NCR internal Local review", "evidence": {"path": "docs/reviews/learnings/CVF_NCR_REVIEW_OVERHEAD_LEARNING_2026-10-18.md", "sha256": "719c73cefc9c4164d7411d7ee6d07d4af35d95c8c5221d56e3ca4669a95cd2f4", "fragment": "Scope And Source Confidence", "evidenceClass": "OBSERVED_LOCAL"}},
+            "valueChecks": {
+              "sourceConfidence": {"status": "SUPPORTED", "reason": "Committed Local completion reports 17 review minutes and multiple avoidable delays.", "evidence": [{"path": "docs/reviews/CVF_NCR_HTML_B_E_R2C_RUNTIME_LOCAL_COMPLETION_2026-10-18.md", "sha256": "a6e691620e3969b68f7354b0f6b256ec4c419291addaea3797c509b292d5b265", "fragment": "Review Cost Telemetry And Stop Disposition", "evidenceClass": "OBSERVED_LOCAL"}], "limits": "Written capture of internal process overhead only; no architecture audit, new control, behavioral application or measured cost reduction."},
+              "reusableMechanism": {"status": "SUPPORTED", "reason": "Sequential documentary repairs consume effort without closing a new product acceptance gap.", "evidence": [{"path": "docs/reviews/learnings/CVF_NCR_REVIEW_OVERHEAD_LEARNING_2026-10-18.md", "sha256": "719c73cefc9c4164d7411d7ee6d07d4af35d95c8c5221d56e3ca4669a95cd2f4", "fragment": "Scope And Source Confidence", "evidenceClass": "OBSERVED_LOCAL"}], "limits": "Written capture of internal process overhead only; no architecture audit, new control, behavioral application or measured cost reduction."},
+              "existingCoverage": {"status": "SUPPORTED", "reason": "Existing consolidated review and proportional cost controls cover this finding.", "evidence": [{"path": "docs/reference/review_cost_control/CVF_REVIEW_COST_AND_DIMINISHING_RETURN_CONTROL_STANDARD.md", "sha256": "59ab670a0b3d723b50f8fed690e6c40be76cb14f1b0a5b72085a38efbb4f27a7", "fragment": "Bounded Local Review Fast Path", "evidenceClass": "OBSERVED_LOCAL"}], "limits": "Written capture of internal process overhead only; no architecture audit, new control, behavioral application or measured cost reduction."},
+              "incrementalValue": {"status": "SUPPORTED", "reason": "A focused NCR example supplies a next-task read trigger and concrete Root actions under existing owners.", "evidence": [{"path": "docs/reviews/learnings/CVF_NCR_REVIEW_OVERHEAD_LEARNING_2026-10-18.md", "sha256": "719c73cefc9c4164d7411d7ee6d07d4af35d95c8c5221d56e3ca4669a95cd2f4", "fragment": "Apply At The Next Task", "evidenceClass": "OBSERVED_LOCAL"}], "limits": "Written capture of internal process overhead only; no architecture audit, new control, behavioral application or measured cost reduction."},
+              "boundedProof": {"status": "SUPPORTED", "reason": "Retained Local telemetry supports the problem; written guidance is captured but future effectiveness remains unproven.", "evidence": [{"path": "docs/reviews/CVF_NCR_HTML_B_E_R2C_RUNTIME_LOCAL_COMPLETION_2026-10-18.md", "sha256": "a6e691620e3969b68f7354b0f6b256ec4c419291addaea3797c509b292d5b265", "fragment": "Review Cost Telemetry And Stop Disposition", "evidenceClass": "OBSERVED_LOCAL"}], "limits": "Written capture of internal process overhead only; no architecture audit, new control, behavioral application or measured cost reduction."}
+            },
+            "decision": {"state": "MERGE", "reason": "Record the NCR recurrence under existing Review Cost and lifecycle owners; no new policy or checker.", "reviewer": "LOCAL_CODEX_ROOT", "owner": "docs/reference/review_cost_control/CVF_REVIEW_COST_AND_DIMINISHING_RETURN_CONTROL_STANDARD.md", "f2gDisposition": "RULE_EXISTS", "evidence": [{"path": "docs/reviews/learnings/CVF_NCR_REVIEW_OVERHEAD_LEARNING_2026-10-18.md", "sha256": "719c73cefc9c4164d7411d7ee6d07d4af35d95c8c5221d56e3ca4669a95cd2f4", "fragment": "Parent Value And Dedup", "evidenceClass": "OBSERVED_LOCAL"}]},
+            "implementation": {"state": "NOT_IMPLEMENTED", "reason": "No new control introduced; existing controls apply.", "evidence": []},
+            "projectResolution": {"state": "OPEN", "reason": "A later matching task must evidence actual reduction.", "evidence": []},
+            "returnDelivery": {"state": "NOT_RETURNED", "reason": "Internal CVF record; no separate project delivery receipt.", "evidence": []},
+            "projectApplication": {"state": "NOT_APPLIED", "reason": "Saving learning does not prove subsequent application or cost reduction.", "evidence": []},
+            "claimLimits": "Written capture of internal process overhead only; no architecture audit, new control, behavioral application or measured cost reduction."
+          }
+        }
+      ]
+    },
+    {
+      "intakeId": "CVF-PRODUCT-MILESTONE-COVERAGE-20261023",
+      "authority": "LOCAL_OPERATOR_DIRECTED_FOUNDATION",
+      "findings": [
+        {
+          "id": "CVF-PRODUCT-MILESTONE-COVERAGE",
+          "defectClass": "ORCHESTRATOR_PACKET_GAP",
+          "dedup": [{"owner": "docs/reviews/learnings/CVF_OUTCOME_BOUND_CONTINUATION_LEARNING_2026-10-07.md", "disposition": "EXTENDS_EXISTING", "reason": "Same outcome selection family, upstream milestone reconciliation"}],
+          "parentDisposition": "MERGED_BOUNDED_MACHINE_CONTROL",
+          "learningRecordPath": "docs/reviews/learnings/CVF_PRODUCT_MILESTONE_COVERAGE_LEARNING_2026-10-23.md",
+          "dispatchBindingRequired": true,
+          "parentEvidence": {
+            "schemaVersion": "cvf.parentLearningEvidence@1.0.0",
+            "findingId": "CVF-PRODUCT-MILESTONE-COVERAGE",
+            "source": {"sourceProject": "CVF-Core foundation; source HTML parked", "evidence": {"path": "docs/reviews/learnings/CVF_PRODUCT_MILESTONE_COVERAGE_LEARNING_2026-10-23.md", "sha256": "139ff9d01281d098659bb892faf336f0c19e9ecdbe26511cc0f7efcb9569d586", "fragment": "NCR Direction Preservation Recurrence - 2026-10-25", "evidenceClass": "OBSERVED_LOCAL"}},
+            "valueChecks": {
+              "sourceConfidence": {"status": "SUPPORTED", "reason": "Local selected source inspection and operator-directed scope recorded; no assertion of all-history coverage.", "evidence": [{"path": "docs/reviews/learnings/CVF_PRODUCT_MILESTONE_COVERAGE_LEARNING_2026-10-23.md", "sha256": "139ff9d01281d098659bb892faf336f0c19e9ecdbe26511cc0f7efcb9569d586", "fragment": "Current Local Loopback", "evidenceClass": "OBSERVED_LOCAL"}], "limits": "Declared mechanical joins and disposable inheritance only; real-project behavior and semantic acceptance unproved."},
+              "reusableMechanism": {"status": "SUPPORTED", "reason": "Dispatcher scope selection can omit milestone requirements across projects even when selected outputs pass.", "evidence": [{"path": "docs/reviews/learnings/CVF_PRODUCT_MILESTONE_COVERAGE_LEARNING_2026-10-23.md", "sha256": "139ff9d01281d098659bb892faf336f0c19e9ecdbe26511cc0f7efcb9569d586", "fragment": "Current Local Loopback", "evidenceClass": "OBSERVED_LOCAL"}], "limits": "Declared mechanical joins and disposable inheritance only; real-project behavior and semantic acceptance unproved."},
+              "existingCoverage": {"status": "SUPPORTED", "reason": "Merge into lifecycle/outcome-bound family; ledger and APPL retain their narrower responsibilities.", "evidence": [{"path": "docs/reviews/learnings/CVF_PRODUCT_MILESTONE_COVERAGE_LEARNING_2026-10-23.md", "sha256": "139ff9d01281d098659bb892faf336f0c19e9ecdbe26511cc0f7efcb9569d586", "fragment": "Current Local Loopback", "evidenceClass": "OBSERVED_LOCAL"}], "limits": "Declared mechanical joins and disposable inheritance only; real-project behavior and semantic acceptance unproved."},
+              "incrementalValue": {"status": "SUPPORTED", "reason": "Mandatory pre-selection matrix, owned remainder, checkpoints and distinct product conclusion; generated carrier discovery.", "evidence": [{"path": "docs/reviews/learnings/CVF_PRODUCT_MILESTONE_COVERAGE_LEARNING_2026-10-23.md", "sha256": "139ff9d01281d098659bb892faf336f0c19e9ecdbe26511cc0f7efcb9569d586", "fragment": "Current Local Loopback", "evidenceClass": "OBSERVED_LOCAL"}], "limits": "Declared mechanical joins and disposable inheritance only; real-project behavior and semantic acceptance unproved."},
+              "boundedProof": {"status": "SUPPORTED", "reason": "Observed validator19, inherited runner9 and profile40 tests; source-derived criteria and explicit version migration.", "evidence": [{"path": "docs/reviews/evidence/cvf-milestone-coverage-machine-20261023.json", "sha256": "99a75d63c32a4d8313564f386ecc488efe63d92b3c2b44acaa295134b4a36d93", "fragment": "suites", "evidenceClass": "OBSERVED_LOCAL"}], "limits": "Declared mechanical joins and disposable inheritance only; real-project behavior and semantic acceptance unproved."}
+            },
+            "decision": {"state": "MERGE", "reason": "Explicit Local re-admission extends the same lifecycle finding with shared Core/profile1.2 control; source cases read-only.", "reviewer": "Local Root", "owner": "CVF lifecycle / downstream profile maintainers", "f2gDisposition": "MACHINE_CHECK_ADDED", "evidence": [{"path": "docs/reviews/CVF_MILESTONE_COVERAGE_MACHINE_LOCAL_REVIEW_2026-10-23.md", "sha256": "518677c3b809ddb2ba0a28070b935ad8b0b0e3c21e10feb05c15b80910485ab7", "fragment": "Verification / Evidence", "evidenceClass": "OBSERVED_LOCAL"}]},
+            "implementation": {
+              "state": "IMPLEMENTED_BOUNDED",
+              "reason": "Existing coverage control retained; all-role root/downstream carrier omission checks added with five bounded probes. Intent and native reuse remain semantic reviewer duties; no automated comprehension claim.",
+              "evidence": [
+                {"path": "docs/reference/CVF_PRODUCT_MILESTONE_COVERAGE_CONTRACT_2026-10-23.md", "sha256": "1b169c88a11a6b172c2b32fb30545bd28ba70ea1f975a3fa46fcac258203b81f", "fragment": "control:milestone-coverage", "evidenceClass": "OBSERVED_LOCAL"},
+                {"path": "docs/reviews/evidence/cvf-milestone-coverage-machine-20261023.json", "sha256": "99a75d63c32a4d8313564f386ecc488efe63d92b3c2b44acaa295134b4a36d93", "fragment": "proof-positive:declared-reconciliation-and-disposable-inheritance", "evidenceClass": "OBSERVED_LOCAL"},
+                {"path": "docs/reviews/evidence/cvf-milestone-coverage-machine-20261023.json", "sha256": "99a75d63c32a4d8313564f386ecc488efe63d92b3c2b44acaa295134b4a36d93", "fragment": "proof-negative:omissions-drift-phase-encoding-upgrade", "evidenceClass": "OBSERVED_LOCAL"}
+              ]
+            },
+            "projectResolution": {"state": "OPEN", "reason": "F3 complete; F4 disposable portion proved but real-project receipt absent; F5 operator resume parked.", "evidence": []},
+            "returnDelivery": {"state": "NOT_RETURNED", "reason": "No existing downstream project or public kit delivery.", "evidence": []},
+            "projectApplication": {"state": "PARKED_BY_OPERATOR", "reason": "HTML roadmap paused explicitly; no product application claimed.", "evidence": []},
+            "claimLimits": "Mechanical criterion/source/phase joins and disposable inherited runner only; no semantic acceptance, AI behavior, real-project rollout or resumed HTML."
+          }
+        }
+      ]
+    }
+  ]
+}

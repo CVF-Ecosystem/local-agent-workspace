@@ -7,8 +7,8 @@
     "en": "Ports and logistics: operations reports and container-yard data checks"
   },
   "description": {
-    "vi": "Bổ sung hai phạm vi tách biệt: báo cáo khai thác tàu/sà lan và sự cố thiết bị; xây dựng hoặc rà soát công cụ kiểm tra dữ liệu vị trí bãi container từ TOS. Quy tắc, mã và ngưỡng riêng phải được project xác nhận và cấu hình. Kèm ghi chú căn cứ pháp lý hàng hải, hải quan, an toàn lao động cần người dùng đối chiếu.",
-    "en": "Two separate scopes: ship/barge operations and equipment-incident reporting; and building or reviewing a tool for checking container-yard position data from a TOS. Project-specific rules, codes, and thresholds require confirmation and configuration. Includes maritime, customs, and occupational-safety legal notes that still require user verification."
+    "vi": "Bổ sung hai phạm vi tách biệt: báo cáo khai thác tàu/sà lan và sự cố thiết bị; xây dựng hoặc rà soát công cụ kiểm tra dữ liệu vị trí bãi container từ TOS. Quy tắc, mã và ngưỡng riêng phải được project xác nhận và cấu hình. Kèm ghi chú căn cứ pháp lý hàng hải, hải quan, an toàn lao động còn cần đội dev đối chiếu nguồn trước khi công bố sẵn dùng.",
+    "en": "Two separate scopes: ship/barge operations and equipment-incident reporting; and building or reviewing a tool for checking container-yard position data from a TOS. Project-specific rules, codes, and thresholds require confirmation and configuration. Includes maritime, customs, and occupational-safety legal notes that still require developer source verification before readiness claims."
   },
   "domain": "ports",
   "skills": [
@@ -20,6 +20,6 @@
     "version": "0.3.0",
     "relation": "SUPPLEMENT",
     "record": "references/intake-record.md",
-    "note": "DEFER cho cả gói: căn cứ pháp lý và phản hồi dùng thật còn mở; hiệu quả riêng và phạm vi tái dùng của container-yard-check chưa đủ bằng chứng. Xem hồ sơ; chưa xác nhận hoặc quảng bá."
+    "note": "DEFER: còn thiếu căn cứ nguồn/xuất xứ và bằng chứng hiệu quả, tái dùng theo hồ sơ. Đội dev hoàn thiện nghiệm thu nội bộ trước feedback; điều kiện làn nhận folder giữ riêng. Không tự cài, xác nhận hoặc quảng bá gói."
   }
 }

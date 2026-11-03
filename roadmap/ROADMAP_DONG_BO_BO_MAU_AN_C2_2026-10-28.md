@@ -1,5 +1,7 @@
 # Roadmap đồng bộ bộ mẫu AN C2 về kho nguồn
 
+**Disposition hiện hành rev167, 29/10/2026:** V7/S4 technicalsource/exactZIP đã POST PASS_WITH_LIMITS trênlocalcommit27761d1b/Gitclean:4gatespassed,1713tests0failure7skip,307fileZIP972cde12…94940a,actualVIEN/manifest đạt. Hai fixturebugs166b đã đóng; logFAIL166 giữlịch sử. Mainprofile/WIP/learning/stash/worktreecũ giữ, khôngpublish. Quality/provenance/intake/host/luồng/supportmatrix/recovery/usability toànmốc cònmở, academicPAUSED, PRERELEASE_NOT_READY. Xem roadmapvănphòngrevision12/HANDOFFrev167.
+
 **Đính chính phạm vi CVF 28/10, rev157:** lượt đồng bộ rev156 đã sửa LAW, public clone `.Controlled-Vibe-Framework-CVF` trong CVF-Workspace và hướng dẫn workspace; chưa sửa hoặc tiếp nhận learning tại kho gốc `TOOL AI 2026/Controlled-Vibe-Framework-CVF`. Bằng chứng review/generated output giữ đúng phạm vi public clone; parent admission, upstream implementation và loopback còn mở. Không coi đây là CVF gốc đã nhận hoặc rollout mọi project.
 
 **Revision:** rev156 — **Trạng thái:** đồng bộ trách nhiệm nghiệm thu nội bộ toàn LAW/CVF; patch trước có giới hạn; học thuật tạm ngừng; S4/V7 chưa đạt — **Cập nhật:** 28/10/2026.

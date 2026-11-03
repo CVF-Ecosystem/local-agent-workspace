@@ -61,31 +61,169 @@ def gate_python38():
     errs = cp.check_py38()
     return gate_result('failed' if errs else 'passed', '%d vấn đề (heuristic, xem check_package.py)' % len(errs), errs)
 
+def run_behaviour_child(events_path):
+    """Observe the ordinary unittest discovery/run without replacing its oracle.
+
+    These hooks are process-local. Unknown phases remain explicit if a custom TestCase
+    bypasses the standard hooks. Raw stdout/stderr are owned by the parent launcher.
+    """
+    import unittest
+    trace = open(events_path, 'a', encoding='utf-8', buffering=1)
+    clock, dumps, getpid = time.monotonic, json.dumps, os.getpid
+    now, utc = datetime.datetime.now, datetime.timezone.utc
+    utcnow = lambda: now(utc).isoformat()
+    started = clock()
+
+    def event(kind, **fields):
+        fields.update(event=kind, pid=getpid(), elapsed_s=round(clock() - started, 6),
+                      utc=utcnow())
+        trace.write(dumps(fields, ensure_ascii=True) + '\n')
+        trace.flush()
+
+    class Result(unittest.TextTestResult):
+        def startTest(self, test):
+            self._gate_started = clock()
+            self._gate_outcome = 'UNKNOWN'
+            event('test_start', test=test.id())
+            super().startTest(test)
+
+        def stopTest(self, test):
+            super().stopTest(test)
+            event('test_end', test=test.id(), outcome=self._gate_outcome,
+                  duration_s=round(clock() - self._gate_started, 6))
+
+    def outcome_hook(name, outcome):
+        original = getattr(unittest.TextTestResult, name)
+        def observed(self, test, *args, **kwargs):
+            # Fixture errors have no startTest/stopTest; preserve them as distinct events.
+            event('outcome', test=test.id(), outcome=outcome)
+            self._gate_outcome = outcome
+            return original(self, test, *args, **kwargs)
+        setattr(Result, name, observed)
+
+    for name, outcome in [('addSuccess', 'success'), ('addFailure', 'failure'),
+                          ('addError', 'error'), ('addSkip', 'skip'),
+                          ('addExpectedFailure', 'expected_failure'),
+                          ('addUnexpectedSuccess', 'unexpected_success')]:
+        outcome_hook(name, outcome)
+    original_subtest = unittest.TextTestResult.addSubTest
+    def subtest(self, test, subtest, err):
+        if err is not None:
+            self._gate_outcome = 'failure' if issubclass(err[0], test.failureException) else 'error'
+            event('outcome', test=test.id(), outcome=self._gate_outcome, subtest=True)
+        return original_subtest(self, test, subtest, err)
+    Result.addSubTest = subtest
+
+    def phase_hook(owner, name, phase):
+        original = getattr(owner, name)
+        def observed(self, *args, **kwargs):
+            identity = self.id() if isinstance(self, unittest.TestCase) else None
+            event('phase_start', phase=phase, test=identity)
+            begin = clock()
+            try:
+                return original(self, *args, **kwargs)
+            finally:
+                event('phase_end', phase=phase, test=identity,
+                      duration_s=round(clock() - begin, 6))
+        setattr(owner, name, observed)
+
+    for name, phase in [('_callSetUp', 'test_setup'), ('_callTestMethod', 'test_body'),
+                        ('_callTearDown', 'test_teardown'), ('doCleanups', 'test_cleanup')]:
+        phase_hook(unittest.TestCase, name, phase)
+    for name, phase in [('_handleModuleFixture', 'module_fixture'),
+                        ('_handleClassSetUp', 'class_setup'),
+                        ('_tearDownPreviousClass', 'class_teardown'),
+                        ('_handleModuleTearDown', 'module_teardown')]:
+        phase_hook(unittest.TestSuite, name, phase)
+    phase_hook(unittest.TestLoader, 'discover', 'discovery')
+    event('suite_start', phase='discovery')
+    try:
+        unittest.main(module=None, argv=['python -m unittest', 'discover', '-s', 'tests', '-v'],
+                      testRunner=unittest.TextTestRunner(verbosity=2, resultclass=Result))
+    finally:
+        event('suite_exit')
+        trace.close()
+
+
+def _behaviour_trace_event(path, kind, **fields):
+    fields.update(event=kind, pid=os.getpid(), utc=datetime.datetime.now(datetime.timezone.utc).isoformat())
+    with open(path, 'a', encoding='utf-8') as trace:
+        trace.write(json.dumps(fields, ensure_ascii=True) + '\n')
+        trace.flush()
+
+
 def gate_behaviour_tests():
     if not os.path.isdir(cp.P('tests')):
         return gate_result('skipped', 'không có thư mục tests/ (không phải kho nguồn)')
     if os.environ.get(GATE_ENV) == '1':
         return gate_result('nested', 'build lồng trong bộ kiểm thử; tiến trình cha đã chạy bộ kiểm thử')
-    env = dict(os.environ, PYTHONUTF8='1', **{GATE_ENV: '1'})
-    try:
-        r = subprocess.run([sys.executable, '-B', '-m', 'unittest', 'discover', '-s', 'tests', '-v'],
-                           cwd=ROOT, env=env, capture_output=True, timeout=BEHAVIOUR_TEST_TIMEOUT_S)
-    except subprocess.TimeoutExpired:
-        return gate_result('failed', 'quá %d giây' % BEHAVIOUR_TEST_TIMEOUT_S)
-    lines = [l for l in (r.stdout + r.stderr).decode('utf-8', 'replace').splitlines() if l.strip()]
-    ran = next((l for l in lines if l.startswith('Ran ')), '')
-    detail = ('%s; %s' % (ran, lines[-1] if lines else '')).strip('; ')
-    skips, test_label = [], ''
-    for line in lines:
-        if line.startswith('test') and ' (' in line:
-            test_label = line.split(' ... ', 1)[0]
-        if '... skipped ' in line:
-            skips.append(line if line.startswith('test') else test_label + ' | ' + line)
+    env = dict(os.environ, PYTHONUTF8='1', PYTHONUNBUFFERED='1', **{GATE_ENV: '1'})
+    # Unique persistent diagnostics: no cleanup-on-exit and no caller-controlled log names.
+    diagnostic = tempfile.mkdtemp(prefix='local-agent-behaviour-')
+    events = os.path.join(diagnostic, 'events.jsonl')
+    outpath, errpath = (os.path.join(diagnostic, name) for name in ('stdout.log', 'stderr.log'))
+    bootstrap = ('import sys; sys.path.insert(0, %r); import build_release; '
+                 'build_release.run_behaviour_child(%r)') % (HERE, events)
+    command = [sys.executable, '-B', '-c', bootstrap]
+    begin, timed_out = time.monotonic(), False
+    _behaviour_trace_event(events, 'parent_start', timeout_s=BEHAVIOUR_TEST_TIMEOUT_S)
+    with open(outpath, 'xb') as stdout, open(errpath, 'xb') as stderr:
+        child = subprocess.Popen(command, cwd=ROOT, env=env, stdout=stdout, stderr=stderr)
+        _behaviour_trace_event(events, 'spawn', child_pid=child.pid)
+        try:
+            code = child.wait(timeout=BEHAVIOUR_TEST_TIMEOUT_S)
+        except subprocess.TimeoutExpired:
+            timed_out = True
+            child.kill()
+            code = child.wait()
+    # The exact child has exited. Descendant state is not inferred from its exit.
+    active, current = [], None
+    with open(events, encoding='utf-8') as trace:
+        for line in trace:
+            try:
+                record = json.loads(line)
+            except ValueError:
+                continue  # abrupt termination may leave a final partial record
+            kind = record.get('event')
+            if kind == 'test_start':
+                current = record.get('test')
+            elif kind == 'test_end':
+                current = None
+            elif kind == 'phase_start':
+                active.append(record.get('phase'))
+            elif kind == 'phase_end' and active:
+                active.pop()
+    _behaviour_trace_event(events, 'parent_end', child_pid=child.pid, returncode=code,
+                          timed_out=timed_out, elapsed_s=round(time.monotonic() - begin, 6),
+                          current_unfinished=current, phase=active[-1] if active else 'UNKNOWN',
+                          descendants='UNKNOWN')
+    # Stream the durable raw files; keep only the existing bounded error tail in memory.
+    from collections import deque
+    tail, ran, last, skips, test_label = deque(maxlen=40), '', '', [], ''
+    for path in (outpath, errpath):
+        with open(path, encoding='utf-8', errors='replace') as raw:
+            for line in raw:
+                line = line.rstrip('\r\n')
+                if not line.strip():
+                    continue
+                tail.append(line)
+                last = line
+                if line.startswith('Ran '):
+                    ran = line
+                if line.startswith('test') and ' (' in line:
+                    test_label = line.split(' ... ', 1)[0]
+                if '... skipped ' in line:
+                    skips.append(line if line.startswith('test') else test_label + ' | ' + line)
+    reference = '; diagnostics (internal raw stdout/stderr/events): ' + diagnostic
+    if timed_out:
+        errors = ['Partial output — unfinished test run; not a complete summary:'] + list(tail)
+        return gate_result('failed', 'quá %d giây' % BEHAVIOUR_TEST_TIMEOUT_S + reference, errors)
+    detail = ('%s; %s' % (ran, last)).strip('; ')
     if skips:
         detail += '; skipped tests:\n' + '\n'.join(skips)
-    if r.returncode == 0:
-        return gate_result('passed', detail)
-    return gate_result('failed', 'mã thoát %d; %s' % (r.returncode, detail), lines[-40:])
+    if code == 0:
+        return gate_result('passed', detail + reference)
+    return gate_result('failed', 'mã thoát %d; %s' % (code, detail) + reference, list(tail))
 
 def run_gates(skip):
     """Chạy các cổng theo thứ tự. Trả về (bản ghi cho báo cáo, chi tiết lỗi theo tên cổng)."""

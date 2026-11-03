@@ -30,6 +30,15 @@ class SyncError(Exception):
     pass
 
 
+class IntakeWriteError(SyncError):
+    """Preserve known effects (or unknown effects) when a multi-file intake is interrupted."""
+    def __init__(self, message, tx):
+        SyncError.__init__(self, message)
+        self.files = [{'path': op['path'], 'action': op['action']} for op in tx.journal['ops'] if op['state'] == 'done']
+        self.changes = True if self.files else (None if tx.journal['status'] in ('committing', 'committed') else False)
+        self.transaction = tx.txid if os.path.isfile(os.path.join(tx.dir, 'journal.json')) else None
+
+
 class PreviewMismatch(SyncError):
     """expected_preview thiếu, sai cấu trúc hoặc không còn khớp plan tính lại dưới khóa; reason: invalid | snapshot | sources | scopes.
     expected_preview is malformed or no longer matches the plan recomputed under the lock."""
@@ -701,19 +710,136 @@ def locked_commit(root, prepare, check=None, recheck=None, operation='library-sy
         refuse_if_lossy(result['notices'])
         if recheck is not None:
             recheck(result)
-        tx = transaction.Transaction(root, operation)
+        tx = (transaction.Transaction(root, operation, create_only=True) if result.get('create_files')
+              else transaction.Transaction(root, operation))
         try:
+            for item in result.get('create_files', ()):
+                tx.add(item['path'], item['data'], action='create', expected_before=None)
             tx.add('references/_INDEX.xlsx', result['bytes'], expected_before=result['snapshot'])
             tx.run()
         except transaction.TransactionError as e:
+            if result.get('create_files'):
+                raise IntakeWriteError(str(e), tx) from e
             raise SyncError(str(e))
         except OSError as e:
             tail = transaction.blocked_message(root)
+            if result.get('create_files'):
+                raise IntakeWriteError('Intake transaction did not finish cleanly: %s%s' %
+                                       (e, ('\n' + tail) if tail else ''), tx) from e
             raise SyncError('Writing the index did not finish; the index may be unchanged or partly written / '
                             'Ghi sổ chưa hoàn tất, sổ có thể chưa đổi hoặc mới ghi một phần: %s%s' % (e, ('\n' + tail) if tail else ''))
         # 'held': thư mục được giữ mở suốt lúc kiểm→ghi (Windows). 'recheck_only': chỉ kiểm lại sát trước ghi, cửa sổ ngắn còn mở.
         # 'held': folders held open from check to write (Windows). 'recheck_only': re-check right before the write only; a short window stays open.
         return dict(result, protection='held' if held_ref and tx.protection == 'held' else 'recheck_only')
+
+
+def intake_plan(root, selection):
+    """Prepare create-only source files and their catalog rows in this owner's single write path."""
+    import library_intake
+    observation = library_intake.observe(root, selection)
+    original, snapshot, wb = open_index(root)
+    opx = library.need_openpyxl()
+    try:
+        history = wb['LAW history'] if 'LAW history' in wb.sheetnames else None
+        history_state(history)
+        check_registry(wb)
+        entries = library.parse_content(wb[library.CONTENT_SHEET]) if library.CONTENT_SHEET in wb.sheetnames else []
+        ws = wb[library.SHEET]
+        old_columns = ws.max_column
+        cols = columns(ws)
+        if 'number' not in cols:
+            raise SyncError('Intake needs the Number/code column; no source was imported')
+        by_id, by_path, by_code, maximum = {}, {}, {}, 0
+        for row in range(library.HEADER_ROW + 1, ws.max_row + 1):
+            ident = str(ws.cell(row, cols['id']).value or '').strip()
+            path = library.norm_path(ws.cell(row, cols['file']).value)
+            if ident:
+                if ident in by_id:
+                    raise SyncError(duplicate_id_message(ident, [by_id[ident], row]))
+                by_id[ident] = row
+                match = ID_PATTERN.fullmatch(ident)
+                maximum = max(maximum, int(match.group(1))) if match else maximum
+            if path:
+                folded = path.casefold()
+                if folded in by_path:
+                    raise SyncError('Duplicate source path: ' + path)
+                by_path[folded] = row
+            code = str(ws.cell(row, cols['number']).value or '').strip() if 'number' in cols else ''
+            if code:
+                by_code.setdefault(code, []).append(row)
+        observed = datetime.date.today().isoformat()
+        items, creates, allowed = [], [], set()
+        for selected in observation['selected']:
+            code, path = selected['code'], selected['destination']
+            if path.casefold() in by_path:
+                raise SyncError('Replacement refused: destination is already cataloged: ' + path)
+            rows = by_code.get(code, [])
+            if len(rows) > 1:
+                raise SyncError('Multiple catalog rows for code: ' + code)
+            row = rows[0] if rows else next((n for n in range(library.HEADER_ROW + 1, ws.max_row + 1)
+                                            if all(ws.cell(n, col).value in (None, '')
+                                                   for col in range(1, ws.max_column + 1))),
+                                           max(library.HEADER_ROW + 1, ws.max_row + 1))
+            ident = str(ws.cell(row, cols['id']).value or '').strip()
+            if rows:
+                if library.norm_path(ws.cell(row, cols['file']).value):
+                    raise SyncError('Replacement refused: code already has a path: ' + code)
+                if (ws.cell(row, cols['LAW revision']).value not in (None, '') or
+                        ws.cell(row, cols['LAW SHA-256']).value not in (None, '') or
+                        any(e['source_id'] == ident for e in entries) or
+                        (history is not None and any(str(history.cell(n, 1).value or '').strip() == ident
+                                                    for n in range(2, history.max_row + 1)))):
+                    raise SyncError('Reattachment refused: source has a prior observation/history/content basis: ' + code)
+                if library.fold(ws.cell(row, cols['fulltext']).value) == 'co':
+                    raise SyncError('Pathless source declares full text; confirm its basis before intake: ' + code)
+            if not ident:
+                maximum += 1
+                ident = 'SRC-%06d' % maximum
+            values = {'id': ident, 'file': path, 'verify': 'Cần đối chiếu', 'LAW revision': 1,
+                      'LAW SHA-256': selected['sha256'], 'LAW observed': observed, 'LAW file state': 'PRESENT'}
+            if not rows:
+                values.update(group=library.GROUP_DIRS[path.split('/')[0]][0], title=selected['canonical_name'], fulltext=None)
+                if 'number' in cols:
+                    values['number'] = code
+                # Full text stays blank: receiving bytes is not a declaration of completeness.
+            for key, value in values.items():
+                put(ws, row, cols[key], value)
+                allowed.add((row, cols[key]))
+            items.append({'source': selected['source'], 'destination': path, 'id': ident, 'row': row,
+                          'revision': 1, 'sha256': selected['sha256'], 'verification': 'Cần đối chiếu',
+                          'fulltext': ws.cell(row, cols['fulltext']).value, 'observed': observed})
+            creates.append({'path': 'references/' + path, 'data': selected['data']})
+            by_path[path.casefold()] = row
+        staged = save_workbook(wb)
+        wb = None
+        verify_staged(opx, original, staged, lambda name, key: name == library.SHEET and
+                      (key in allowed or (key[0] == library.HEADER_ROW and key[1] > old_columns)))
+        basis = library_intake.binding(observation)
+        token = plan_token('intake', selection, snapshot, {'observation': basis, 'items': items})
+        return {'snapshot': snapshot, 'plan_token': token, 'items': items, 'bytes': staged,
+                'create_files': creates, 'notices': lossy_notices(original), 'observation': basis,
+                'warning': 'Classification only; identity, full text and current validity are not verified. Staging is retained.'}
+    finally:
+        if wb is not None:
+            wb.close()
+
+
+def intake_apply(root, selection, token):
+    import library_intake
+    if not isinstance(token, str) or not _SHA256.fullmatch(token):
+        raise SyncError('Apply needs the exact preview plan token')
+
+    def check(result):
+        if token != result['plan_token']:
+            raise SyncError('Intake config, index, sources, selection or plan changed; preview again; no new transaction created')
+
+    def recheck(result):
+        now = library_intake.observe(root, selection)
+        if library_intake.binding(now) != result['observation']:
+            raise SyncError('Intake source/config changed while preparing; no new transaction created')
+
+    return locked_commit(root, lambda: intake_plan(root, selection), check=check, recheck=recheck,
+                         operation='library-intake')
 
 
 def apply(root, renames=(), expected_preview=None):

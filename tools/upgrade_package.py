@@ -155,7 +155,7 @@ def plan(project, source, lang):
         ov = 'en/' + rel
         return lang == 'en' and not rel.startswith('en/') and ov in mf and ov not in OVERLAY_SKIP
     for rel in sorted(new):
-        if rel == 'MANIFEST.sha256':
+        if cp.intake_config(rel) or rel == 'MANIFEST.sha256':
             continue
         src_rel = ('en/' + rel) if use_overlay(rel, new) else rel
         new_h = new[src_rel]
@@ -192,7 +192,7 @@ def plan(project, source, lang):
     for rel, _ in out['user_missing']:
         out['snapshot'].setdefault(rel, tx.sha_file(os.path.join(project, *rel.split('/'))))
     for rel in sorted(old):
-        if rel not in new and rel != 'MANIFEST.sha256' and rel not in USER_FILES and os.path.isfile(os.path.join(project, *rel.split('/'))):
+        if not cp.intake_config(rel) and rel not in new and rel != 'MANIFEST.sha256' and rel not in USER_FILES and os.path.isfile(os.path.join(project, *rel.split('/'))):
             out['obsolete'].append(rel)
     return out
 

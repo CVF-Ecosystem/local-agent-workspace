@@ -1,0 +1,337 @@
+{
+  "status": "PREPARED_ONLY",
+  "brief_revision": "revision1 ACTIVE_PREPARATION_NO_AUTHORITY",
+  "canonical_brief_section_digest": "sha256:609288cffd50990bb7c38d05f6c5f973a4ef3a7819df51ed480df718a97681ff",
+  "maintenance_requested": "Sol6.1Medium",
+  "maintenance_actual_backend": "UNKNOWN",
+  "product_requested": {
+    "host": "antigravity",
+    "worker": "gemini-3.8-flash/high",
+    "reviewer": "gemini-3.8-flash/high",
+    "status": "REQUESTED"
+  },
+  "actual_host_backend_effort_inheritance": "UNKNOWN",
+  "current_native_roletools": "NOT_TESTED",
+  "root_profile_summary": {
+    "digest": "sha256:290232d2386baee96808de7f83492ce75954d70d225bfe96c0b3f17ad5af6d59",
+    "owner": "PROFILE",
+    "old18REVOKED": 18,
+    "ACTIVE": 0,
+    "old_records_digest": "sha256:71d3772497bcc5118775525072eacc3c472329d80e5b839af2792384573cfdfa",
+    "requested_host_before": "claude-cowork"
+  },
+  "input_bindings": [
+    {
+      "path": "AGENTS.md",
+      "digest": "sha256:2fea32c2957e90c9162940aba70994913c7e517a0717470250a128688f55a6ab"
+    },
+    {
+      "path": "PROJECT.md",
+      "digest": "sha256:78c87d9d5bbbe2caca6646866219bb92ae1c37a728a0d79db0c92df3e759e0ef"
+    },
+    {
+      "path": ".agent/STATE.md",
+      "digest": "sha256:dae5afecda75f46593960efefc7f289f6c5ff99986095acf914d5da2518bf298"
+    },
+    {
+      "path": ".agent/EXECUTION_PROFILE.json",
+      "digest": "sha256:290232d2386baee96808de7f83492ce75954d70d225bfe96c0b3f17ad5af6d59"
+    },
+    {
+      "path": ".agent/EXECUTION_PROFILE.schema.json",
+      "digest": "sha256:a550fcdb358a8df4f4bd7905836e3af4df1544b090c1ec93e0e5cafac0169225"
+    },
+    {
+      "path": ".cvf/rules/CONTROL_RULES.md",
+      "digest": "sha256:ad3337b9baee23e45da8fe63534036fcb8b2eb0e69b3301da509b4ccac547865"
+    },
+    {
+      "path": ".cvf/rules/ROUTING_POLICY.json",
+      "digest": "sha256:8db011baf5d5c5a09a00e44036157f6a742b50c68d3e1693f3de2387202a42f8"
+    },
+    {
+      "path": ".cvf/rules/v3/ROUTING_POLICY.json",
+      "digest": "sha256:4577f71406997acbb492c6e163bdb0a2322810ef9664e7c0580489cc1eae2ca2"
+    },
+    {
+      "path": ".cvf/contracts/v3/CONTROL_CONTRACT.md",
+      "digest": "sha256:7b3aae2943d6786b30760b9ecf88b1aa805eaa8518f6a8fa6bfae75ccae4f9d1"
+    },
+    {
+      "path": ".cvf/contracts/v3/control.schema.json",
+      "digest": "sha256:21d3b192151b84f6d999d17bf0ed8e209678e6db39fc685c7c9c26918b2a3642"
+    },
+    {
+      "path": "roles/README.md",
+      "digest": "sha256:2a529764615bdfaa444d39b5dd14faac5352db92eb1a081e9d246823dd312c3c"
+    },
+    {
+      "path": "roles/worker/agent.md",
+      "digest": "sha256:2a2f06b9809ad7f21b566ac959d430d010ec41b5aaf3c14ecdaba667cc78eb2e"
+    },
+    {
+      "path": "roles/reviewer/agent.md",
+      "digest": "sha256:631fb59df243376f9e29f3cc476417ffd9d8e91a5f4dc02b1dcb7e111677c3e1"
+    },
+    {
+      "path": "roles/office/MAIN.md",
+      "digest": "sha256:025b3ebd93a22a294c1f64bd02e2cf80e33b590f2f2a3452429101d7a19eb480"
+    },
+    {
+      "path": "roles/office/catalog.json",
+      "digest": "sha256:033a3a53b5db60a7db070fdb4c9e89afd10b5e796a26b1aa6072bb67fc2e39fa"
+    },
+    {
+      "path": "roles/office/correspondence.md",
+      "digest": "sha256:93272feff0afe441da9520ead0652830e82d483dfb234bdcfc49cbd1cab0221d"
+    },
+    {
+      "path": "roles/office/evidence-reviewer.md",
+      "digest": "sha256:0eda6a4ede12dfe23cadf601988a2f2969269c4a8f89d58a4228d6a4891792ee"
+    },
+    {
+      "path": "tools/execution_profile.py",
+      "digest": "sha256:8e72d18ced688649aedb66d89bc78bb61900b46b42a5e5057ffe8236452ee8ad"
+    },
+    {
+      "path": "tools/transaction.py",
+      "digest": "sha256:5aa6482007e0c0c27a53b3de0e20c180316a5a976abc6f0526b7ace1dc6e3fce"
+    },
+    {
+      "path": "tools/task_checkpoint.py",
+      "digest": "sha256:ee33d6cba8d5a9e0d4f57989d036b3e2e0a58b6b0ed89f938699bcfc13115eac"
+    },
+    {
+      "path": "tools/office.py",
+      "digest": "sha256:85dc1d8793e390ae3df11050a78011ca461eb9b7d5427c967817b7c17138450e"
+    },
+    {
+      "path": "tools/artifacts.py",
+      "digest": "sha256:b52fa338605292fa603dd2d95be2de84fd8b8fb4ce9e0609ac2ea40354665dda"
+    },
+    {
+      "path": "tools/library.py",
+      "digest": "sha256:4a84931974f96f6f85b7e9c6c87013d04fd84e5b31dd559b7699911c83b5d0a8"
+    },
+    {
+      "path": "tools/library_sync.py",
+      "digest": "sha256:cfa67170730fef25428ec4a229b3766dc3b39faff3ba74945ea3aab9f94aaca8"
+    },
+    {
+      "path": "tools/publish_new.py",
+      "digest": "sha256:8a4e5914d0892ea1d28566f96f7114afd857b441e2013d8534dc9cb93e4bd852"
+    },
+    {
+      "path": "skills/README.md",
+      "digest": "sha256:7bcc809625b8eb931e615f3ea9367a6807fd7b8deb4909c2b22a22d0a0069c81"
+    },
+    {
+      "path": "working/v4-office/scripts/fixtures/mail-thread.md",
+      "digest": "sha256:1dd0d6ae4f3b96085447d2af872bdbce6038538b613b9227051e148da661c3d4"
+    },
+    {
+      "path": "working/v4-office/scripts/fixtures/policy-local.md",
+      "digest": "sha256:3abeabc4c5e8e30cacd3394e0a1acdb7273bed3fb183c1376729b73673cb0da8"
+    },
+    {
+      "path": "working/v4-office/acceptance-20261031/report-v2.md",
+      "digest": "sha256:fb214fb03c32222f96a136e52e08b6e49247e36cf4302a3cdb29b6d53d165b87"
+    },
+    {
+      "path": "working/office-host-integration-20261031/SCOPE.md",
+      "digest": "sha256:59fedaae6793f31773f4f1b9f6d3b80be5461cb94ab31ec7bde599b02dcb4962"
+    },
+    {
+      "path": "working/office-host-integration-20261031/CHOICES_PROPOSAL.json",
+      "digest": "sha256:702b084e5debfc62a3cd36264f4ddbd18376e7c3bb8adf5450ea8b78163b550d"
+    },
+    {
+      "path": "working/office-host-integration-20261031/GRANTS_PROPOSAL.json",
+      "digest": "sha256:47a459438dbec9d10ad3771f47a98a6121657c6eb180e5aa685a750fdd458f23"
+    },
+    {
+      "path": "working/office-host-integration-20261031/TASK_PROPOSAL.json",
+      "digest": "sha256:9dbd266be66393d2a8d32574519ec3595af4a40e90e7a21463e17532b6ccb70f"
+    },
+    {
+      "path": "working/office-host-integration-20261031/PREPARATION.json",
+      "digest": "sha256:03e78f3be0678c8db8058f4f450392691429bcc8ca7146922c5dd16317c86840"
+    },
+    {
+      "path": "working/office-host-integration-20261031/run/TASK.json",
+      "digest": "sha256:56a7e685b0a37c177380abedb2c90c65b0b3acdc08bf702c39e18697a61d44a7"
+    },
+    {
+      "path": "working/office-host-integration-20261031/run/review.md",
+      "digest": "sha256:b2f795e46bc8569b1dd368dee6aa3fd59eef3967575e3e9569d58d520758228c"
+    }
+  ],
+  "read_extent": "3businesssources fully; old TASK/review and proposal shapes; control/schema/owner selected relevant sections. Large combinedread outputs truncated; no fullreview claim for those. Binding hashes do not imply fulltext inspection.",
+  "source_bindings": [
+    {
+      "path": "working/v4-office/scripts/fixtures/mail-thread.md",
+      "digest": "sha256:1dd0d6ae4f3b96085447d2af872bdbce6038538b613b9227051e148da661c3d4"
+    },
+    {
+      "path": "working/v4-office/scripts/fixtures/policy-local.md",
+      "digest": "sha256:3abeabc4c5e8e30cacd3394e0a1acdb7273bed3fb183c1376729b73673cb0da8"
+    },
+    {
+      "path": "working/v4-office/acceptance-20261031/report-v2.md",
+      "digest": "sha256:fb214fb03c32222f96a136e52e08b6e49247e36cf4302a3cdb29b6d53d165b87"
+    }
+  ],
+  "source_library_metadata": "UNCHECKED DATAMOCK only; no invented SourceID/revision.",
+  "scope_binding": "sha256:935c784dbf2e1ab941f4098140d8b543bb13c3d08ff8a89a490cacb3a69bd875",
+  "future_paths": [
+    "working/antigravity-role-loop-20261101/run/TASK.json",
+    "working/antigravity-role-loop-20261101/run/assignments/a1/candidate/reply.md",
+    "working/antigravity-role-loop-20261101/run/assignments/a1/RESULT.json",
+    "working/antigravity-role-loop-20261101/run/review.md",
+    "working/antigravity-role-loop-20261101/run/final.md",
+    "working/antigravity-role-loop-20261101/responses/RESPONSE.md"
+  ],
+  "caps": {
+    "worker_initial": 1,
+    "sameworker_continuation": 1,
+    "reviewer_initial": 1,
+    "retry": 0,
+    "replacement": 0,
+    "children": 0,
+    "concurrency": 1,
+    "depth": 1,
+    "fallback": false,
+    "readonly_staleprobe": 1,
+    "preparation_target_minutes": 10,
+    "command_seconds_max": 60,
+    "cooperative_only": true
+  },
+  "validation": {
+    "command": "python -X utf8 -B - (inline via exec_command, no saved script)",
+    "exit": 0,
+    "result": "PASS_STRUCTURE_ONLY_INACTIVE",
+    "checks": {
+      "choices_in_memory": [],
+      "grants": {
+        "antigravity-role-20261101-main-read": [],
+        "antigravity-role-20261101-main-create": [],
+        "antigravity-role-20261101-main-delegate": [],
+        "antigravity-role-20261101-worker-read": [],
+        "antigravity-role-20261101-worker-create": [],
+        "antigravity-role-20261101-reviewer-read": []
+      },
+      "TASK": [],
+      "office_guard": [],
+      "future_absent": {
+        "working/antigravity-role-loop-20261101/run/TASK.json": true,
+        "working/antigravity-role-loop-20261101/run/assignments/a1/candidate/reply.md": true,
+        "working/antigravity-role-loop-20261101/run/assignments/a1/RESULT.json": true,
+        "working/antigravity-role-loop-20261101/run/review.md": true,
+        "working/antigravity-role-loop-20261101/run/final.md": true,
+        "working/antigravity-role-loop-20261101/responses/RESPONSE.md": true
+      },
+      "path_forms": {
+        ".agent/EXECUTION_PROFILE.json": null,
+        ".agent/EXECUTION_PROFILE.schema.json": null,
+        ".cvf/contracts/v3/CONTROL_CONTRACT.md": null,
+        ".cvf/contracts/v3/control.schema.json": null,
+        ".cvf/rules/CONTROL_RULES.md": null,
+        ".cvf/rules/ROUTING_POLICY.json": null,
+        ".cvf/rules/v3/ROUTING_POLICY.json": null,
+        "AGENTS.md": null,
+        "roles/README.md": null,
+        "roles/office/MAIN.md": null,
+        "roles/office/catalog.json": null,
+        "roles/office/correspondence.md": null,
+        "roles/office/evidence-reviewer.md": null,
+        "roles/reviewer/agent.md": null,
+        "roles/worker/agent.md": null,
+        "tools/artifacts.py": null,
+        "tools/execution_profile.py": null,
+        "tools/library.py": null,
+        "tools/library_sync.py": null,
+        "tools/office.py": null,
+        "tools/publish_new.py": null,
+        "tools/task_checkpoint.py": null,
+        "tools/transaction.py": null,
+        "working/antigravity-role-loop-20261101/CHOICES_PROPOSAL.json": null,
+        "working/antigravity-role-loop-20261101/GRANTS_PROPOSAL.json": null,
+        "working/antigravity-role-loop-20261101/PREPARATION.json": null,
+        "working/antigravity-role-loop-20261101/PROMPT_ANTIGRAVITY.md": null,
+        "working/antigravity-role-loop-20261101/SCOPE.md": null,
+        "working/antigravity-role-loop-20261101/TASK_PROPOSAL.json": null,
+        "working/antigravity-role-loop-20261101/responses/RESPONSE.md": null,
+        "working/antigravity-role-loop-20261101/run/TASK.json": null,
+        "working/antigravity-role-loop-20261101/run/assignments/a1/RESULT.json": null,
+        "working/antigravity-role-loop-20261101/run/assignments/a1/candidate/reply.md": null,
+        "working/antigravity-role-loop-20261101/run/final.md": null,
+        "working/antigravity-role-loop-20261101/run/review.md": null,
+        "working/v4-office/acceptance-20261031/report-v2.md": null,
+        "working/v4-office/scripts/fixtures/mail-thread.md": null,
+        "working/v4-office/scripts/fixtures/policy-local.md": null
+      }
+    },
+    "initial_errors": [
+      "Exactheading StopIteration; heading read console cp1252 UnicodeEncodeError; UTF-8 read succeeded.",
+      "office.guard_task callback bytes instead of (bytes,None) ValueError before writes; one known fix supplied tuple, corrected check passed."
+    ],
+    "no_native_trial_build_test_network": true
+  },
+  "owner_recipe": {
+    "decision": "Main selected existing trusted owner recipe, no publicCLI blocker",
+    "activation": "After actual exactSCOPE approval locator: _preflight_write(root,[PROFILE_REL]); preserve18oldrecords and beforechoices/privatebackup; construct6new realACTIVE grants with actual USER_CONFIRMATION; evaluate_doc(candidate)==OK; _write_group(root,operation,[(PROFILE_REL,newbytes,beforeSHA)],backups=[(private jobarchivepath,oldrawbytes)]); check _after_run/compare; Transaction prune=False/addcreate_exclusive/writeexpected_before. PROJECT/fixedinputs compare before too.",
+    "cleanup": "Only Codex Main after hostreport/reconcile ended/stopped: compare expectedprofile, revoke exactly6newgrant records/restore all beforechoices; preserve18oldrecords/rawoutputs/history; same trusted validated transaction recipe.",
+    "not_executed": true,
+    "forbidden": "No apply-migration on PROFILE owner, ad-hoc jsonsave, native/globalconfig or inventedAPI."
+  },
+  "blockers": [
+    {
+      "id": "ACTUAL_APPROVAL",
+      "status": "PENDING_MAIN_REVIEW_THEN_OPERATOR",
+      "detail": "No confirmation copied/created. Actual reply locator bound only after approval."
+    },
+    {
+      "id": "CURRENT_NATIVE_CAPABILITY",
+      "status": "NOT_TESTED_BLOCK_BEFORE_CALL",
+      "detail": "Need observed actualtool mapping for eachrole, sameWorkercontinuation and independentReviewer; requestedmodel/readiness/CLI do not prove these."
+    }
+  ],
+  "future_sequence": [
+    "Main independently review6files/ownerrecipe; small correction narrowcheck if needed.",
+    "Operator approves exactSCOPE; bind actual reply locator; compare currentprofile/18records/sources/context/futurepaths; mismatch HOLD.",
+    "Trusted owner transaction temporarychoices+append6realgrants/privatebackup/journal; create realTASK with realauthority refs/fresh binding via task_checkpoint binding_stub/load_v3.",
+    "Current per-role toolmapping and R-DELEGATE parent/child gate before call; missing BLOCKED.",
+    "Worker phase1; Main trusted observation; sameWorkerphase2RESULT; checkpoint; Reviewer sources-first nativeindependent; Main saves review/disposition, integration_gate then final or HOLD.",
+    "Optional≤1readonly/inmemory controlledfixture staleprobe, no realbytes changed.",
+    "Host RESPONSE raw evidence and ended/stop state; Codex Main reconcile then revoke6new/restorechoices; no background/hardTTL."
+  ],
+  "limits": [
+    "No actualinvocation/host/model/rolePASS/enforcement/freshnative/prerelease; all8gaps SCOPE remain.",
+    "Semantic toolnames not proof native; proposalgrants inactive/TASKgrant_refs empty; no fakebinding.",
+    "Totalwalltime/tokens/billing UNKNOWN/priorbranchcost not reset.",
+    "PREPARATION excludes selfdigest; final response supplies rawSHA.",
+    "Only6newrequestedfiles; nofutureoutputs/profile/state/source/coordination edits. Main sole coordinationwriter."
+  ],
+  "output_bindings": [
+    {
+      "path": "working/antigravity-role-loop-20261101/SCOPE.md",
+      "digest": "sha256:935c784dbf2e1ab941f4098140d8b543bb13c3d08ff8a89a490cacb3a69bd875"
+    },
+    {
+      "path": "working/antigravity-role-loop-20261101/CHOICES_PROPOSAL.json",
+      "digest": "sha256:671380a357e7533d5e9e4e3bcdde808c4ef3cc3191dda10e923c1a2ad4a586f2"
+    },
+    {
+      "path": "working/antigravity-role-loop-20261101/GRANTS_PROPOSAL.json",
+      "digest": "sha256:3587b020e71fcd97d22937e679fe4697714a0fc9033c436b7c5fb3e6e63d5d2f"
+    },
+    {
+      "path": "working/antigravity-role-loop-20261101/TASK_PROPOSAL.json",
+      "digest": "sha256:414b750bc766fa745663c0f10e0ced20dc3474c9c3fdb6e44e6ef8d8b86f5ca9"
+    },
+    {
+      "path": "working/antigravity-role-loop-20261101/PROMPT_ANTIGRAVITY.md",
+      "digest": "sha256:3d34ba7febfe3003627193c75bf6910d2800bbf0b3ddc8ae03f667f57d9dbaf6"
+    }
+  ]
+}

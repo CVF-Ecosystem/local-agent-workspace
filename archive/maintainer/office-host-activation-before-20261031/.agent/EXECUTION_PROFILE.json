@@ -1,0 +1,862 @@
+{
+  "schema_version": "law.execution-profile/1",
+  "authority_owner": "PROFILE",
+  "host": "claude-cowork",
+  "roles": {
+    "scout": {
+      "model": null,
+      "tier": null,
+      "effort": null
+    },
+    "worker": {
+      "model": "claude-sonnet-5-5",
+      "tier": null,
+      "effort": null
+    },
+    "reviewer": {
+      "model": "claude-sonnet-5-5",
+      "tier": null,
+      "effort": null
+    }
+  },
+  "fallback": {
+    "model": null,
+    "tier": null,
+    "effort": null,
+    "allowed": false
+  },
+  "requested_limits": {
+    "max_concurrency": 1,
+    "max_depth": 1
+  },
+  "grants": [
+    {
+      "schema_version": "law.cvf.control/3",
+      "record_type": "grant",
+      "evaluation_basis": "COOPERATIVE_WORKFLOW",
+      "grant_id": "HOST-S1-CODEX-MAIN-READ-20261027",
+      "grant_revision": 2,
+      "issuer": {
+        "actor_id": "codex-orchestrator",
+        "role": "main"
+      },
+      "issuer_ref": {
+        "ref_id": "HOST-S1-CODEX-MAIN-READ-20261027-AUTH",
+        "kind": "grant",
+        "locator": "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+        "digest": "sha256:322b676f84fd828d8f3375feeee6a1ffd8144b1d73cd628a4bac5e44a2e2258a",
+        "attribution": {
+          "source_class": "USER_CONFIRMATION",
+          "channel": "USER_MESSAGE",
+          "recorded_by": {
+            "actor_id": "codex-orchestrator",
+            "role": "main"
+          },
+          "evidence_locator": "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+          "note": "Main-recorded direct operator confirmation; cooperative claim only, not authenticated transcript or host enforcement."
+        }
+      },
+      "subject": {
+        "roles": [
+          "main"
+        ]
+      },
+      "scope": {
+        "task_classes": [
+          "HOST_ACADEMIC_STAGE1",
+          "HOST_ACADEMIC_REOPEN"
+        ],
+        "operations": [
+          "read"
+        ],
+        "paths": [
+          ".agent/EXECUTION_PROFILE.json",
+          ".agent/EXECUTION_PROFILE.schema.json",
+          ".agent/SKILL_INDEX.md",
+          ".cvf/checks/",
+          ".cvf/contracts/",
+          ".cvf/contracts/v3/control.schema.json",
+          ".cvf/rules/",
+          "AGENTS.md",
+          "PROJECT.md",
+          "roles/office/MAIN.md",
+          "roles/reviewer/agent.md",
+          "roles/worker/agent.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/SKILL.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/common-standard.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/research.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/review.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/workflow.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/writing.md",
+          "tools/artifacts.py",
+          "tools/execution_profile.py",
+          "tools/library.py",
+          "tools/office.py",
+          "tools/publish_new.py",
+          "tools/task_checkpoint.py",
+          "tools/transaction.py",
+          "working/academic-research/host-acceptance-20261027/responses/codex/RESPONSE.md",
+          "working/academic-research/host-acceptance-20261027/responses/codex/final-v1.md",
+          "working/academic-research/host-acceptance-20261027/responses/codex/reopen/REOPEN_RESPONSE.md",
+          "working/academic-research/host-acceptance-20261027/responses/codex/review-v1.md",
+          "working/academic-research/host-acceptance-20261027/stage1/CASE.md",
+          "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+          "working/academic-research/host-acceptance-20261027/stage1/PROMPT_STAGE1_CODEX.md",
+          "working/academic-research/host-acceptance-20261027/stage1/RESULT_GUIDANCE.md",
+          "working/academic-research/host-acceptance-20261027/stage1/STAGE1_LOCK.json",
+          "working/academic-research/host-acceptance-20261027/stage1/codex/DISPATCH.json",
+          "working/academic-research/host-acceptance-20261027/stage1/inputs/S05.pdf",
+          "working/academic-research/host-acceptance-20261027/stage1/inputs/S06.pdf",
+          "working/host-academic-20261027/codex/TASK.json",
+          "working/host-academic-20261027/codex/assignments/a1/RESULT.json",
+          "working/host-academic-20261027/codex/assignments/a1/candidate/worker-v1.md"
+        ],
+        "delegate_callees": []
+      },
+      "limits": {
+        "max_concurrency": 1,
+        "max_retries": 0
+      },
+      "status": "REVOKED"
+    },
+    {
+      "schema_version": "law.cvf.control/3",
+      "record_type": "grant",
+      "evaluation_basis": "COOPERATIVE_WORKFLOW",
+      "grant_id": "HOST-S1-CODEX-MAIN-CREATE-20261027",
+      "grant_revision": 2,
+      "issuer": {
+        "actor_id": "codex-orchestrator",
+        "role": "main"
+      },
+      "issuer_ref": {
+        "ref_id": "HOST-S1-CODEX-MAIN-CREATE-20261027-AUTH",
+        "kind": "grant",
+        "locator": "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+        "digest": "sha256:322b676f84fd828d8f3375feeee6a1ffd8144b1d73cd628a4bac5e44a2e2258a",
+        "attribution": {
+          "source_class": "USER_CONFIRMATION",
+          "channel": "USER_MESSAGE",
+          "recorded_by": {
+            "actor_id": "codex-orchestrator",
+            "role": "main"
+          },
+          "evidence_locator": "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+          "note": "Main-recorded direct operator confirmation; cooperative claim only, not authenticated transcript or host enforcement."
+        }
+      },
+      "subject": {
+        "roles": [
+          "main"
+        ]
+      },
+      "scope": {
+        "task_classes": [
+          "HOST_ACADEMIC_STAGE1",
+          "HOST_ACADEMIC_REOPEN"
+        ],
+        "operations": [
+          "create_new"
+        ],
+        "paths": [
+          "working/academic-research/host-acceptance-20261027/responses/codex/RESPONSE.md",
+          "working/academic-research/host-acceptance-20261027/responses/codex/final-v1.md",
+          "working/academic-research/host-acceptance-20261027/responses/codex/reopen/REOPEN_RESPONSE.md",
+          "working/academic-research/host-acceptance-20261027/responses/codex/review-v1.md"
+        ],
+        "delegate_callees": []
+      },
+      "limits": {
+        "max_concurrency": 1,
+        "max_retries": 0
+      },
+      "status": "REVOKED"
+    },
+    {
+      "schema_version": "law.cvf.control/3",
+      "record_type": "grant",
+      "evaluation_basis": "COOPERATIVE_WORKFLOW",
+      "grant_id": "HOST-S1-CODEX-MAIN-DELEGATE-20261027",
+      "grant_revision": 2,
+      "issuer": {
+        "actor_id": "codex-orchestrator",
+        "role": "main"
+      },
+      "issuer_ref": {
+        "ref_id": "HOST-S1-CODEX-MAIN-DELEGATE-20261027-AUTH",
+        "kind": "grant",
+        "locator": "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+        "digest": "sha256:322b676f84fd828d8f3375feeee6a1ffd8144b1d73cd628a4bac5e44a2e2258a",
+        "attribution": {
+          "source_class": "USER_CONFIRMATION",
+          "channel": "USER_MESSAGE",
+          "recorded_by": {
+            "actor_id": "codex-orchestrator",
+            "role": "main"
+          },
+          "evidence_locator": "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+          "note": "Main-recorded direct operator confirmation; cooperative claim only, not authenticated transcript or host enforcement."
+        }
+      },
+      "subject": {
+        "roles": [
+          "main"
+        ]
+      },
+      "scope": {
+        "task_classes": [
+          "HOST_ACADEMIC_STAGE1"
+        ],
+        "operations": [
+          "delegate"
+        ],
+        "paths": [
+          ".agent/EXECUTION_PROFILE.json",
+          ".cvf/contracts/v3/control.schema.json",
+          "AGENTS.md",
+          "roles/reviewer/agent.md",
+          "roles/worker/agent.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/SKILL.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/common-standard.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/research.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/review.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/workflow.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/writing.md",
+          "working/academic-research/host-acceptance-20261027/stage1/CASE.md",
+          "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+          "working/academic-research/host-acceptance-20261027/stage1/RESULT_GUIDANCE.md",
+          "working/academic-research/host-acceptance-20261027/stage1/STAGE1_LOCK.json",
+          "working/academic-research/host-acceptance-20261027/stage1/codex/DISPATCH.json",
+          "working/academic-research/host-acceptance-20261027/stage1/inputs/S05.pdf",
+          "working/academic-research/host-acceptance-20261027/stage1/inputs/S06.pdf",
+          "working/host-academic-20261027/codex/TASK.json",
+          "working/host-academic-20261027/codex/assignments/a1/RESULT.json",
+          "working/host-academic-20261027/codex/assignments/a1/candidate/worker-v1.md",
+          ".cvf/rules/CONTROL_RULES.md",
+          ".cvf/rules/ROUTING_POLICY.json"
+        ],
+        "delegate_callees": [
+          {
+            "role_class": "core",
+            "role_name": "worker"
+          },
+          {
+            "role_class": "core",
+            "role_name": "reviewer"
+          }
+        ]
+      },
+      "limits": {
+        "max_concurrency": 1,
+        "max_retries": 0
+      },
+      "status": "REVOKED"
+    },
+    {
+      "schema_version": "law.cvf.control/3",
+      "record_type": "grant",
+      "evaluation_basis": "COOPERATIVE_WORKFLOW",
+      "grant_id": "HOST-S1-CODEX-WORKER-READ-20261027",
+      "grant_revision": 2,
+      "issuer": {
+        "actor_id": "codex-orchestrator",
+        "role": "main"
+      },
+      "issuer_ref": {
+        "ref_id": "HOST-S1-CODEX-WORKER-READ-20261027-AUTH",
+        "kind": "grant",
+        "locator": "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+        "digest": "sha256:322b676f84fd828d8f3375feeee6a1ffd8144b1d73cd628a4bac5e44a2e2258a",
+        "attribution": {
+          "source_class": "USER_CONFIRMATION",
+          "channel": "USER_MESSAGE",
+          "recorded_by": {
+            "actor_id": "codex-orchestrator",
+            "role": "main"
+          },
+          "evidence_locator": "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+          "note": "Main-recorded direct operator confirmation; cooperative claim only, not authenticated transcript or host enforcement."
+        }
+      },
+      "subject": {
+        "roles": [
+          "worker"
+        ]
+      },
+      "scope": {
+        "task_classes": [
+          "HOST_ACADEMIC_STAGE1"
+        ],
+        "operations": [
+          "read"
+        ],
+        "paths": [
+          ".agent/EXECUTION_PROFILE.json",
+          ".cvf/contracts/v3/control.schema.json",
+          "AGENTS.md",
+          "roles/reviewer/agent.md",
+          "roles/worker/agent.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/SKILL.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/common-standard.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/research.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/review.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/workflow.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/writing.md",
+          "working/academic-research/host-acceptance-20261027/stage1/CASE.md",
+          "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+          "working/academic-research/host-acceptance-20261027/stage1/RESULT_GUIDANCE.md",
+          "working/academic-research/host-acceptance-20261027/stage1/STAGE1_LOCK.json",
+          "working/academic-research/host-acceptance-20261027/stage1/codex/DISPATCH.json",
+          "working/academic-research/host-acceptance-20261027/stage1/inputs/S05.pdf",
+          "working/academic-research/host-acceptance-20261027/stage1/inputs/S06.pdf",
+          "working/host-academic-20261027/codex/TASK.json",
+          "working/host-academic-20261027/codex/assignments/a1/RESULT.json",
+          "working/host-academic-20261027/codex/assignments/a1/candidate/worker-v1.md",
+          ".cvf/rules/CONTROL_RULES.md",
+          ".cvf/rules/ROUTING_POLICY.json"
+        ],
+        "delegate_callees": []
+      },
+      "limits": {
+        "max_concurrency": 1,
+        "max_retries": 0
+      },
+      "status": "REVOKED"
+    },
+    {
+      "schema_version": "law.cvf.control/3",
+      "record_type": "grant",
+      "evaluation_basis": "COOPERATIVE_WORKFLOW",
+      "grant_id": "HOST-S1-CODEX-WORKER-CREATE-20261027",
+      "grant_revision": 2,
+      "issuer": {
+        "actor_id": "codex-orchestrator",
+        "role": "main"
+      },
+      "issuer_ref": {
+        "ref_id": "HOST-S1-CODEX-WORKER-CREATE-20261027-AUTH",
+        "kind": "grant",
+        "locator": "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+        "digest": "sha256:322b676f84fd828d8f3375feeee6a1ffd8144b1d73cd628a4bac5e44a2e2258a",
+        "attribution": {
+          "source_class": "USER_CONFIRMATION",
+          "channel": "USER_MESSAGE",
+          "recorded_by": {
+            "actor_id": "codex-orchestrator",
+            "role": "main"
+          },
+          "evidence_locator": "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+          "note": "Main-recorded direct operator confirmation; cooperative claim only, not authenticated transcript or host enforcement."
+        }
+      },
+      "subject": {
+        "roles": [
+          "worker"
+        ]
+      },
+      "scope": {
+        "task_classes": [
+          "HOST_ACADEMIC_STAGE1"
+        ],
+        "operations": [
+          "create_new"
+        ],
+        "paths": [
+          "working/host-academic-20261027/codex/assignments/a1/RESULT.json",
+          "working/host-academic-20261027/codex/assignments/a1/candidate/worker-v1.md"
+        ],
+        "delegate_callees": []
+      },
+      "limits": {
+        "max_concurrency": 1,
+        "max_retries": 0
+      },
+      "status": "REVOKED"
+    },
+    {
+      "schema_version": "law.cvf.control/3",
+      "record_type": "grant",
+      "evaluation_basis": "COOPERATIVE_WORKFLOW",
+      "grant_id": "HOST-S1-CODEX-REVIEWER-READ-20261027",
+      "grant_revision": 2,
+      "issuer": {
+        "actor_id": "codex-orchestrator",
+        "role": "main"
+      },
+      "issuer_ref": {
+        "ref_id": "HOST-S1-CODEX-REVIEWER-READ-20261027-AUTH",
+        "kind": "grant",
+        "locator": "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+        "digest": "sha256:322b676f84fd828d8f3375feeee6a1ffd8144b1d73cd628a4bac5e44a2e2258a",
+        "attribution": {
+          "source_class": "USER_CONFIRMATION",
+          "channel": "USER_MESSAGE",
+          "recorded_by": {
+            "actor_id": "codex-orchestrator",
+            "role": "main"
+          },
+          "evidence_locator": "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+          "note": "Main-recorded direct operator confirmation; cooperative claim only, not authenticated transcript or host enforcement."
+        }
+      },
+      "subject": {
+        "roles": [
+          "reviewer"
+        ]
+      },
+      "scope": {
+        "task_classes": [
+          "HOST_ACADEMIC_STAGE1"
+        ],
+        "operations": [
+          "read"
+        ],
+        "paths": [
+          ".agent/EXECUTION_PROFILE.json",
+          ".cvf/contracts/v3/control.schema.json",
+          "AGENTS.md",
+          "roles/reviewer/agent.md",
+          "roles/worker/agent.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/SKILL.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/common-standard.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/research.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/review.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/workflow.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/writing.md",
+          "working/academic-research/host-acceptance-20261027/stage1/CASE.md",
+          "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+          "working/academic-research/host-acceptance-20261027/stage1/RESULT_GUIDANCE.md",
+          "working/academic-research/host-acceptance-20261027/stage1/STAGE1_LOCK.json",
+          "working/academic-research/host-acceptance-20261027/stage1/codex/DISPATCH.json",
+          "working/academic-research/host-acceptance-20261027/stage1/inputs/S05.pdf",
+          "working/academic-research/host-acceptance-20261027/stage1/inputs/S06.pdf",
+          "working/host-academic-20261027/codex/TASK.json",
+          "working/host-academic-20261027/codex/assignments/a1/RESULT.json",
+          "working/host-academic-20261027/codex/assignments/a1/candidate/worker-v1.md",
+          ".cvf/rules/CONTROL_RULES.md",
+          ".cvf/rules/ROUTING_POLICY.json"
+        ],
+        "delegate_callees": []
+      },
+      "limits": {
+        "max_concurrency": 1,
+        "max_retries": 0
+      },
+      "status": "REVOKED"
+    },
+    {
+      "schema_version": "law.cvf.control/3",
+      "record_type": "grant",
+      "evaluation_basis": "COOPERATIVE_WORKFLOW",
+      "grant_id": "HOST-S1-CLAUDE-MAIN-READ-20261027",
+      "grant_revision": 2,
+      "issuer": {
+        "actor_id": "codex-orchestrator",
+        "role": "main"
+      },
+      "issuer_ref": {
+        "ref_id": "HOST-S1-CLAUDE-MAIN-READ-20261027-AUTH",
+        "kind": "grant",
+        "locator": "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+        "digest": "sha256:322b676f84fd828d8f3375feeee6a1ffd8144b1d73cd628a4bac5e44a2e2258a",
+        "attribution": {
+          "source_class": "USER_CONFIRMATION",
+          "channel": "USER_MESSAGE",
+          "recorded_by": {
+            "actor_id": "codex-orchestrator",
+            "role": "main"
+          },
+          "evidence_locator": "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+          "note": "Main-recorded direct operator confirmation; cooperative claim only, not authenticated transcript or host enforcement."
+        }
+      },
+      "subject": {
+        "roles": [
+          "main"
+        ]
+      },
+      "scope": {
+        "task_classes": [
+          "HOST_ACADEMIC_STAGE1",
+          "HOST_ACADEMIC_REOPEN"
+        ],
+        "operations": [
+          "read"
+        ],
+        "paths": [
+          ".agent/EXECUTION_PROFILE.json",
+          ".agent/EXECUTION_PROFILE.schema.json",
+          ".agent/SKILL_INDEX.md",
+          ".cvf/checks/",
+          ".cvf/contracts/",
+          ".cvf/contracts/v3/control.schema.json",
+          ".cvf/rules/",
+          "AGENTS.md",
+          "PROJECT.md",
+          "roles/office/MAIN.md",
+          "roles/reviewer/agent.md",
+          "roles/worker/agent.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/SKILL.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/common-standard.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/research.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/review.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/workflow.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/writing.md",
+          "tools/artifacts.py",
+          "tools/execution_profile.py",
+          "tools/library.py",
+          "tools/office.py",
+          "tools/publish_new.py",
+          "tools/task_checkpoint.py",
+          "tools/transaction.py",
+          "working/academic-research/host-acceptance-20261027/responses/claude/RESPONSE.md",
+          "working/academic-research/host-acceptance-20261027/responses/claude/final-v1.md",
+          "working/academic-research/host-acceptance-20261027/responses/claude/reopen/REOPEN_RESPONSE.md",
+          "working/academic-research/host-acceptance-20261027/responses/claude/review-v1.md",
+          "working/academic-research/host-acceptance-20261027/stage1/CASE.md",
+          "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+          "working/academic-research/host-acceptance-20261027/stage1/PROMPT_STAGE1_CLAUDE.md",
+          "working/academic-research/host-acceptance-20261027/stage1/RESULT_GUIDANCE.md",
+          "working/academic-research/host-acceptance-20261027/stage1/STAGE1_LOCK.json",
+          "working/academic-research/host-acceptance-20261027/stage1/claude/DISPATCH.json",
+          "working/academic-research/host-acceptance-20261027/stage1/inputs/S05.pdf",
+          "working/academic-research/host-acceptance-20261027/stage1/inputs/S06.pdf",
+          "working/host-academic-20261027/claude/TASK.json",
+          "working/host-academic-20261027/claude/assignments/a1/RESULT.json",
+          "working/host-academic-20261027/claude/assignments/a1/candidate/worker-v1.md"
+        ],
+        "delegate_callees": []
+      },
+      "limits": {
+        "max_concurrency": 1,
+        "max_retries": 0
+      },
+      "status": "REVOKED"
+    },
+    {
+      "schema_version": "law.cvf.control/3",
+      "record_type": "grant",
+      "evaluation_basis": "COOPERATIVE_WORKFLOW",
+      "grant_id": "HOST-S1-CLAUDE-MAIN-CREATE-20261027",
+      "grant_revision": 2,
+      "issuer": {
+        "actor_id": "codex-orchestrator",
+        "role": "main"
+      },
+      "issuer_ref": {
+        "ref_id": "HOST-S1-CLAUDE-MAIN-CREATE-20261027-AUTH",
+        "kind": "grant",
+        "locator": "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+        "digest": "sha256:322b676f84fd828d8f3375feeee6a1ffd8144b1d73cd628a4bac5e44a2e2258a",
+        "attribution": {
+          "source_class": "USER_CONFIRMATION",
+          "channel": "USER_MESSAGE",
+          "recorded_by": {
+            "actor_id": "codex-orchestrator",
+            "role": "main"
+          },
+          "evidence_locator": "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+          "note": "Main-recorded direct operator confirmation; cooperative claim only, not authenticated transcript or host enforcement."
+        }
+      },
+      "subject": {
+        "roles": [
+          "main"
+        ]
+      },
+      "scope": {
+        "task_classes": [
+          "HOST_ACADEMIC_STAGE1",
+          "HOST_ACADEMIC_REOPEN"
+        ],
+        "operations": [
+          "create_new"
+        ],
+        "paths": [
+          "working/academic-research/host-acceptance-20261027/responses/claude/RESPONSE.md",
+          "working/academic-research/host-acceptance-20261027/responses/claude/final-v1.md",
+          "working/academic-research/host-acceptance-20261027/responses/claude/reopen/REOPEN_RESPONSE.md",
+          "working/academic-research/host-acceptance-20261027/responses/claude/review-v1.md"
+        ],
+        "delegate_callees": []
+      },
+      "limits": {
+        "max_concurrency": 1,
+        "max_retries": 0
+      },
+      "status": "REVOKED"
+    },
+    {
+      "schema_version": "law.cvf.control/3",
+      "record_type": "grant",
+      "evaluation_basis": "COOPERATIVE_WORKFLOW",
+      "grant_id": "HOST-S1-CLAUDE-MAIN-DELEGATE-20261027",
+      "grant_revision": 2,
+      "issuer": {
+        "actor_id": "codex-orchestrator",
+        "role": "main"
+      },
+      "issuer_ref": {
+        "ref_id": "HOST-S1-CLAUDE-MAIN-DELEGATE-20261027-AUTH",
+        "kind": "grant",
+        "locator": "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+        "digest": "sha256:322b676f84fd828d8f3375feeee6a1ffd8144b1d73cd628a4bac5e44a2e2258a",
+        "attribution": {
+          "source_class": "USER_CONFIRMATION",
+          "channel": "USER_MESSAGE",
+          "recorded_by": {
+            "actor_id": "codex-orchestrator",
+            "role": "main"
+          },
+          "evidence_locator": "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+          "note": "Main-recorded direct operator confirmation; cooperative claim only, not authenticated transcript or host enforcement."
+        }
+      },
+      "subject": {
+        "roles": [
+          "main"
+        ]
+      },
+      "scope": {
+        "task_classes": [
+          "HOST_ACADEMIC_STAGE1"
+        ],
+        "operations": [
+          "delegate"
+        ],
+        "paths": [
+          ".agent/EXECUTION_PROFILE.json",
+          ".cvf/contracts/v3/control.schema.json",
+          "AGENTS.md",
+          "roles/reviewer/agent.md",
+          "roles/worker/agent.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/SKILL.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/common-standard.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/research.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/review.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/workflow.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/writing.md",
+          "working/academic-research/host-acceptance-20261027/stage1/CASE.md",
+          "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+          "working/academic-research/host-acceptance-20261027/stage1/RESULT_GUIDANCE.md",
+          "working/academic-research/host-acceptance-20261027/stage1/STAGE1_LOCK.json",
+          "working/academic-research/host-acceptance-20261027/stage1/claude/DISPATCH.json",
+          "working/academic-research/host-acceptance-20261027/stage1/inputs/S05.pdf",
+          "working/academic-research/host-acceptance-20261027/stage1/inputs/S06.pdf",
+          "working/host-academic-20261027/claude/TASK.json",
+          "working/host-academic-20261027/claude/assignments/a1/RESULT.json",
+          "working/host-academic-20261027/claude/assignments/a1/candidate/worker-v1.md",
+          ".cvf/rules/CONTROL_RULES.md",
+          ".cvf/rules/ROUTING_POLICY.json"
+        ],
+        "delegate_callees": [
+          {
+            "role_class": "core",
+            "role_name": "worker"
+          },
+          {
+            "role_class": "core",
+            "role_name": "reviewer"
+          }
+        ]
+      },
+      "limits": {
+        "max_concurrency": 1,
+        "max_retries": 0
+      },
+      "status": "REVOKED"
+    },
+    {
+      "schema_version": "law.cvf.control/3",
+      "record_type": "grant",
+      "evaluation_basis": "COOPERATIVE_WORKFLOW",
+      "grant_id": "HOST-S1-CLAUDE-WORKER-READ-20261027",
+      "grant_revision": 2,
+      "issuer": {
+        "actor_id": "codex-orchestrator",
+        "role": "main"
+      },
+      "issuer_ref": {
+        "ref_id": "HOST-S1-CLAUDE-WORKER-READ-20261027-AUTH",
+        "kind": "grant",
+        "locator": "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+        "digest": "sha256:322b676f84fd828d8f3375feeee6a1ffd8144b1d73cd628a4bac5e44a2e2258a",
+        "attribution": {
+          "source_class": "USER_CONFIRMATION",
+          "channel": "USER_MESSAGE",
+          "recorded_by": {
+            "actor_id": "codex-orchestrator",
+            "role": "main"
+          },
+          "evidence_locator": "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+          "note": "Main-recorded direct operator confirmation; cooperative claim only, not authenticated transcript or host enforcement."
+        }
+      },
+      "subject": {
+        "roles": [
+          "worker"
+        ]
+      },
+      "scope": {
+        "task_classes": [
+          "HOST_ACADEMIC_STAGE1"
+        ],
+        "operations": [
+          "read"
+        ],
+        "paths": [
+          ".agent/EXECUTION_PROFILE.json",
+          ".cvf/contracts/v3/control.schema.json",
+          "AGENTS.md",
+          "roles/reviewer/agent.md",
+          "roles/worker/agent.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/SKILL.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/common-standard.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/research.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/review.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/workflow.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/writing.md",
+          "working/academic-research/host-acceptance-20261027/stage1/CASE.md",
+          "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+          "working/academic-research/host-acceptance-20261027/stage1/RESULT_GUIDANCE.md",
+          "working/academic-research/host-acceptance-20261027/stage1/STAGE1_LOCK.json",
+          "working/academic-research/host-acceptance-20261027/stage1/claude/DISPATCH.json",
+          "working/academic-research/host-acceptance-20261027/stage1/inputs/S05.pdf",
+          "working/academic-research/host-acceptance-20261027/stage1/inputs/S06.pdf",
+          "working/host-academic-20261027/claude/TASK.json",
+          "working/host-academic-20261027/claude/assignments/a1/RESULT.json",
+          "working/host-academic-20261027/claude/assignments/a1/candidate/worker-v1.md",
+          ".cvf/rules/CONTROL_RULES.md",
+          ".cvf/rules/ROUTING_POLICY.json"
+        ],
+        "delegate_callees": []
+      },
+      "limits": {
+        "max_concurrency": 1,
+        "max_retries": 0
+      },
+      "status": "REVOKED"
+    },
+    {
+      "schema_version": "law.cvf.control/3",
+      "record_type": "grant",
+      "evaluation_basis": "COOPERATIVE_WORKFLOW",
+      "grant_id": "HOST-S1-CLAUDE-WORKER-CREATE-20261027",
+      "grant_revision": 2,
+      "issuer": {
+        "actor_id": "codex-orchestrator",
+        "role": "main"
+      },
+      "issuer_ref": {
+        "ref_id": "HOST-S1-CLAUDE-WORKER-CREATE-20261027-AUTH",
+        "kind": "grant",
+        "locator": "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+        "digest": "sha256:322b676f84fd828d8f3375feeee6a1ffd8144b1d73cd628a4bac5e44a2e2258a",
+        "attribution": {
+          "source_class": "USER_CONFIRMATION",
+          "channel": "USER_MESSAGE",
+          "recorded_by": {
+            "actor_id": "codex-orchestrator",
+            "role": "main"
+          },
+          "evidence_locator": "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+          "note": "Main-recorded direct operator confirmation; cooperative claim only, not authenticated transcript or host enforcement."
+        }
+      },
+      "subject": {
+        "roles": [
+          "worker"
+        ]
+      },
+      "scope": {
+        "task_classes": [
+          "HOST_ACADEMIC_STAGE1"
+        ],
+        "operations": [
+          "create_new"
+        ],
+        "paths": [
+          "working/host-academic-20261027/claude/assignments/a1/RESULT.json",
+          "working/host-academic-20261027/claude/assignments/a1/candidate/worker-v1.md"
+        ],
+        "delegate_callees": []
+      },
+      "limits": {
+        "max_concurrency": 1,
+        "max_retries": 0
+      },
+      "status": "REVOKED"
+    },
+    {
+      "schema_version": "law.cvf.control/3",
+      "record_type": "grant",
+      "evaluation_basis": "COOPERATIVE_WORKFLOW",
+      "grant_id": "HOST-S1-CLAUDE-REVIEWER-READ-20261027",
+      "grant_revision": 2,
+      "issuer": {
+        "actor_id": "codex-orchestrator",
+        "role": "main"
+      },
+      "issuer_ref": {
+        "ref_id": "HOST-S1-CLAUDE-REVIEWER-READ-20261027-AUTH",
+        "kind": "grant",
+        "locator": "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+        "digest": "sha256:322b676f84fd828d8f3375feeee6a1ffd8144b1d73cd628a4bac5e44a2e2258a",
+        "attribution": {
+          "source_class": "USER_CONFIRMATION",
+          "channel": "USER_MESSAGE",
+          "recorded_by": {
+            "actor_id": "codex-orchestrator",
+            "role": "main"
+          },
+          "evidence_locator": "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+          "note": "Main-recorded direct operator confirmation; cooperative claim only, not authenticated transcript or host enforcement."
+        }
+      },
+      "subject": {
+        "roles": [
+          "reviewer"
+        ]
+      },
+      "scope": {
+        "task_classes": [
+          "HOST_ACADEMIC_STAGE1"
+        ],
+        "operations": [
+          "read"
+        ],
+        "paths": [
+          ".agent/EXECUTION_PROFILE.json",
+          ".cvf/contracts/v3/control.schema.json",
+          "AGENTS.md",
+          "roles/reviewer/agent.md",
+          "roles/worker/agent.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/SKILL.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/common-standard.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/research.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/review.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/workflow.md",
+          "skills/local/packs/academic-research/skills/law-academic-research/references/modules/writing.md",
+          "working/academic-research/host-acceptance-20261027/stage1/CASE.md",
+          "working/academic-research/host-acceptance-20261027/stage1/OPERATOR_CONFIRMATION.md",
+          "working/academic-research/host-acceptance-20261027/stage1/RESULT_GUIDANCE.md",
+          "working/academic-research/host-acceptance-20261027/stage1/STAGE1_LOCK.json",
+          "working/academic-research/host-acceptance-20261027/stage1/claude/DISPATCH.json",
+          "working/academic-research/host-acceptance-20261027/stage1/inputs/S05.pdf",
+          "working/academic-research/host-acceptance-20261027/stage1/inputs/S06.pdf",
+          "working/host-academic-20261027/claude/TASK.json",
+          "working/host-academic-20261027/claude/assignments/a1/RESULT.json",
+          "working/host-academic-20261027/claude/assignments/a1/candidate/worker-v1.md",
+          ".cvf/rules/CONTROL_RULES.md",
+          ".cvf/rules/ROUTING_POLICY.json"
+        ],
+        "delegate_callees": []
+      },
+      "limits": {
+        "max_concurrency": 1,
+        "max_retries": 0
+      },
+      "status": "REVOKED"
+    }
+  ]
+}

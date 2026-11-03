@@ -36,9 +36,10 @@ mandatory for source-repository work; the other sections are guidance for the ag
 
 ## Responsibility when developing a product
 
-When assigned to build or change a product, the development agents own an outcome-based roadmap, quality criteria, grounded cases/expected results, execution of checks and review before delivering a usable version. This covers core, packages, skills and templates. Noncoders supply goals, business decisions and authority; do not require them to write tests/oracles, debug or organize the team's QA. Ask only for genuinely missing decisions/data in business language and continue independent authorized work.
-
-Internal acceptance precedes suitability feedback. Missing feedback must not block internal testing/completion, nor be reported as user acceptance. AI self-grading or a passing checker is not certification. Developers prepare cases, sources, rubrics, questions and the parts requiring judgement for specialist assessment. If recruitment or cost needs ungranted authority, ask the operator once in business language about the assessor/budget; reuse existing decisions and do not contact or pay anyone without authorization. Until assessment exists, dependent claims remain blocked and the component stays explicitly experimental with its gaps; continue independent checks without self-certifying expertise. Preserve source/quality/data-safety requirements; do not silently drop committed scope or promote a pack to ship. Installation/publishing authority remains separate. This adds no development ceremony to ordinary office work.
+When developing core, packages, skills or templates, apply the [internal acceptance standard](skills/README.md#developer-product-acceptance).
+Developers own output criteria, checks and review before usable delivery; noncoders provide goals, business decisions and suitability feedback.
+Preserve committed criteria, authority to recruit/pay specialists, experimental status and install/publish authority under that standard.
+The detailed standard and record template ship with LAW; no sibling CVF repository is required. Ordinary office tasks need no development ceremony.
 
 ## Maintaining LAW itself (source repository only)
 
@@ -49,6 +50,12 @@ assignments for implementation; record actual settings and quality in HANDOFF pe
 This adds no ceremony to the user's office work. Start from the current tranche and
 actual diff. Its roadmap row is the default task brief; create a short separate brief
 only when work crosses tranche boundaries or has multiple owners.
+
+When starting maintenance or when requirements/risks change, proactively apply
+`Project Development Application` in section 8.3: connect the common baseline,
+relevant LAW-DA01..05 controls and task evidence in the existing roadmap row or
+HANDOFF before dependent implementation. This development process does not become
+a process required for ordinary LAW office work.
 
 Self-review the diff for every code tranche and record what was and was not checked.
 Changes that may lose data, change grants or source boundaries, integrate a native
@@ -118,6 +125,8 @@ the exceptions line of PROJECT (never fill it in yourself); a rename or move rej
 mean its content or legal status was verified.
 Before quoting a legal document or internal regulation, look it up in the index (`python tools/library.py find <keyword>`); quote
 verbatim only from a file in the library; without a file, mark "[not checked against full text]" and use no quotation marks (skill `source-library`).
+
+When a task needs project forms, sources or business rules, check the “Use when” column in `.agent/SKILL_INDEX.md` before settling the method; read a relevant skill and follow confirmed requirements. A one-sentence edit can be direct. Version/hash only detects divergence: use the revision accepted for the canonical source and scope, without automatically choosing a higher version, mirroring or activating a candidate.
 
 ## Choose what fits
 

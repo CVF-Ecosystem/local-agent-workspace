@@ -12,7 +12,7 @@ Mã thoát: 0 đạt; 1 có lỗi (chế độ kiểm tra) hoặc có file đã 
 Kiểm tra cũng gồm tương thích Python 3.8 (heuristic, xem check_py38). Cờ ẩn --result-json xuất envelope
 có cấu trúc (local-agent-workspace/result-v1); mã trong envelope luôn bằng mã thoát.
 """
-import argparse, ast, hashlib, io, json, os, re, subprocess, sys, tokenize
+import argparse, ast, hashlib, io, json, ntpath, os, re, subprocess, sys, tokenize
 from result_schema import emit, make
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -28,9 +28,10 @@ ROOT_ONLY_SKIP = ROOT_ONLY_SKIP | {NATIVE_DIR}
 RUNTIME_DIR = '.agent/runtime'
 # File người dùng sửa trong project: không đưa vào MANIFEST
 PROFILE_REL = '.agent/EXECUTION_PROFILE.json'  # cùng hằng với tools/execution_profile.py (có test); import lười để --verify chạy độc lập / same constant, lazy import
+INTAKE_CONFIG_REL = '.agent/SOURCE_INTAKE.json'  # private choices, never a starter template
 USER_FILES = {'PROJECT.md', '.agent/STATE.md', '.agent/HANDOFF.md', '.agent/INDEX.md',
               '.agent/SKILL_INDEX.md', '.agent/PENDING_LESSONS.md', '.agent/PACKAGE_INFO.json',
-              '.agent/MERGE_STATUS.json', 'setup_answers.json', PROFILE_REL}
+              '.agent/MERGE_STATUS.json', 'setup_answers.json', PROFILE_REL, INTAKE_CONFIG_REL}
 # Profile hiệu lực của project (lựa chọn + quyền): của người dùng, KHÔNG vào MANIFEST; bản giao luôn là mẫu sạch / the live profile is user-owned,
 # never in a MANIFEST; what ships is always the clean template. Schema và helper là của package, vào MANIFEST như file thường.
 PROFILE_TEMPLATE = 'release_templates/' + PROFILE_REL  # bản sao kiểm được của mẫu sạch trong kho nguồn / checked mirror of the clean profile
@@ -168,17 +169,23 @@ def in_user_dir(rel):
     """Project data directories and their English overlay counterparts."""
     return (rel[3:] if rel.startswith('en/') else rel).startswith(USER_DIRS)
 
+def intake_config(rel):
+    """Only the private config and its English mirror, including Windows path aliases. No file access."""
+    path = ntpath.normpath(rel).replace('\\', '/').casefold()
+    return path in (INTAKE_CONFIG_REL.casefold(), ('en/' + INTAKE_CONFIG_REL).casefold())
+
+
 def user_owned(rel):
     """File do người dùng/project sở hữu (không phải của package): không áp quy tắc phát hành như số phiên bản,
     bản tiếng Anh hay đường dẫn trong tài liệu. Cùng một quy tắc với in_manifest.
     User/project-owned file (not the package's): release rules such as version strings, the English mirror and doc paths
     do not apply. Same ownership rule as in_manifest."""
-    if rel in USER_FILES:
+    if intake_config(rel) or rel in USER_FILES:
         return True
     return in_user_dir(rel) and not package_readme(rel)
 
 def in_manifest(rel):
-    if rel in GENERATED or rel == PROFILE_REL:
+    if intake_config(rel) or rel in GENERATED or rel == PROFILE_REL:
         return False
     if in_user_dir(rel):
         return package_readme(rel)
@@ -223,11 +230,15 @@ TEMPLATE_OVERLAYS = {  # kho nguồn: thay file người bảo trì bằng mẫu
     'PROJECT.md': 'release_templates/PROJECT.md',
     '.agent/STATE.md': 'release_templates/.agent/STATE.md',
     '.agent/HANDOFF.md': 'release_templates/.agent/HANDOFF.md',
+    '.agent/INDEX.md': 'release_templates/.agent/INDEX.md',
     '.agent/SKILL_INDEX.md': 'release_templates/.agent/SKILL_INDEX.md',
+    '.agent/PENDING_LESSONS.md': 'release_templates/.agent/PENDING_LESSONS.md',
     'en/PROJECT.md': 'release_templates/en/PROJECT.md',
     'en/.agent/STATE.md': 'release_templates/en/.agent/STATE.md',
     'en/.agent/HANDOFF.md': 'release_templates/en/.agent/HANDOFF.md',
+    'en/.agent/INDEX.md': 'release_templates/en/.agent/INDEX.md',
     'en/.agent/SKILL_INDEX.md': 'release_templates/en/.agent/SKILL_INDEX.md',
+    'en/.agent/PENDING_LESSONS.md': 'release_templates/en/.agent/PENDING_LESSONS.md',
 }
 _P_RULES, _P_POLICY, _P_CONTRACTS = '`.cvf/rules/CONTROL_RULES.md`', '`.cvf/rules/ROUTING_POLICY.json`', '`.cvf/contracts/`'
 _V_RULES, _V_POLICY, _V_CONTRACTS = '`.cvf/rules/v3/CONTROL_RULES.md`', '`.cvf/rules/v3/ROUTING_POLICY.json`', '`.cvf/contracts/v3/`'
@@ -241,6 +252,15 @@ REF_REPLACEMENTS = {
     'roles/reviewer/agent.md': ((_P_RULES, _V_RULES, 1),),
 }
 _NO_DELIVERY = {'.agent/PACKAGE_INFO.json', '.agent/MERGE_STATUS.json', 'setup_answers.json', 'MANIFEST.sha256'}
+_NO_DELIVERY.add(INTAKE_CONFIG_REL)
+_NO_DELIVERY |= {'en/' + r for r in _NO_DELIVERY} | {'en/' + PROFILE_REL}
+
+
+def _check_user_file_mapping():
+    classified = {r for r in TEMPLATE_OVERLAYS if not r.startswith('en/')} | _NO_DELIVERY | {PROFILE_REL}
+    missing = USER_FILES - classified
+    if missing:
+        raise ProjectionError('UNCLASSIFIED_USER_FILES', ', '.join(sorted(missing)))
 
 
 class ProjectionError(Exception):
@@ -263,8 +283,8 @@ def source_state():
     From file evidence: an initialized project is never a package source."""
     if os.path.exists(P('.agent/PACKAGE_INFO.json')):
         return 'initialized'
-    if os.path.isdir(P('release_templates')) and all(os.path.isfile(P(s)) for s in TEMPLATE_OVERLAYS.values()):
-        return 'maintainer'
+    if os.path.lexists(P('release_templates')):
+        return 'maintainer' if os.path.isdir(P('release_templates')) and all(os.path.isfile(P(s)) for s in TEMPLATE_OVERLAYS.values()) else 'unknown'
     m = read_manifest() or {}
     if os.path.isfile(P('PROJECT.md')) and (m.get('PROJECT.md') == sha('PROJECT.md') or m.get('en/PROJECT.md') == sha('PROJECT.md')):
         return 'clean'
@@ -335,10 +355,13 @@ def project_refs(rel, data):
 def delivery_selection(branding=True):
     """Danh sách file giao đi (đường dẫn tương đối, thứ tự duyệt thư mục), KHÔNG gồm MANIFEST.sha256. Dùng chung cho build/new/adopt.
     Mọi `.cvf/` của kho nguồn bị thay bằng đúng closure v3 tường minh. / The shipped file list; `.cvf/` is replaced by the explicit v3 closure."""
+    _check_user_file_mapping()
     brand = set(branding_files()) if branding else set()
-    rels = {f for f in all_files() if f not in _NO_DELIVERY and not f.startswith(CVF_DIR + '/')
+    rels = {f for f in all_files() if not intake_config(f) and f not in _NO_DELIVERY and not f.startswith(CVF_DIR + '/')
             and (in_manifest(f) or f in USER_FILES or f in brand)}
     rels.update(CVF_CLOSURE)
+    if source_state() == 'maintainer':
+        rels.update(TEMPLATE_OVERLAYS)
     rels.add(PROFILE_REL)  # luôn giao mẫu sạch, kể cả khi nguồn không có file profile / always the clean profile, even if the source has none
     if branding and branding_js() is not None:
         rels.add('assets/branding.js')  # dựng lại từ branding.json để trang hướng dẫn đúng ngay / rebuilt from branding.json
@@ -347,6 +370,9 @@ def delivery_selection(branding=True):
 
 def delivery_bytes(rel):
     """Bytes sẽ giao của rel: mẫu sạch (kho nguồn), overlay `.cvf/README.md`, phép thay tham chiếu; còn lại là bytes gốc."""
+    _check_user_file_mapping()
+    if intake_config(rel) or rel in _NO_DELIVERY:
+        raise ProjectionError('EXCLUDED_FILE', rel)
     if rel == 'assets/branding.js':
         js = branding_js()
         if js is not None:
@@ -354,7 +380,10 @@ def delivery_bytes(rel):
     if rel == PROFILE_REL:
         return _ep().clean_profile_bytes()  # không bao giờ mang profile sống (lựa chọn, grant) của nguồn / never a live profile of the source
     src = None
-    if source_state() == 'maintainer':
+    state = source_state()
+    if state not in ('maintainer', 'clean'):
+        raise ProjectionError('SOURCE_STATE_INVALID', state)
+    if state == 'maintainer':
         src = TEMPLATE_OVERLAYS.get(rel) or CVF_OVERLAY.get(rel)
     path = P(src or rel)
     try:
@@ -528,7 +557,7 @@ def source_package_problems(source):
                 continue
             h, rel = line.split('  ', 1)
             declared.add(rel)
-            if in_user_dir(rel) and not package_readme(rel):
+            if intake_config(rel) or (in_user_dir(rel) and not package_readme(rel)):
                 private.append(rel)
                 continue
             if rel in USER_FILES or rel == 'MANIFEST.sha256':
@@ -650,7 +679,7 @@ def verify(findings=None):
             pass
     changed, missing = [], []
     for rel, h in sorted(m.items()):
-        if rel in USER_FILES:
+        if intake_config(rel) or rel in USER_FILES:
             continue  # file người dùng sửa: có trong MANIFEST chỉ để biết còn nguyên bản mẫu hay chưa
         if not os.path.isfile(P(rel)):
             missing.append(rel); continue
@@ -810,8 +839,11 @@ def pack_index_problems():
 def check_all(release=False):
     errs, warns = [], []
     raw_files = all_files()
-    files = raw_files
+    # Private config is diagnosed by path only, never by parsing or hashing choices.
+    files = [f for f in raw_files if not intake_config(f)]
     source_tree = os.path.isdir(P('release_templates'))
+    if release and not source_tree:
+        errs += ['Có file người dùng trong bản phát hành: %s.' % f for f in raw_files if intake_config(f)]
     if source_tree or not release:
         # Parse package code/docs only. A staged release retains the complete list
         # so unexpected project data still fails the release boundary below.

@@ -1,0 +1,9 @@
+=== CVF Agent Operation Trace And Workspace Integrity Gate ===
+Standard: docs/reference/CVF_AGENT_OPERATION_TRACE_AND_WORKSPACE_INTEGRITY_STANDARD_2026-06-13.md
+Range: HEAD..HEAD
+Changed paths observed: 4
+Trace artifacts checked: 0
+Protected delete/rename paths observed: 0
+Violations: 0
+
+COMPLIANT - agent operation trace and repo-local workspace integrity evidence are aligned.

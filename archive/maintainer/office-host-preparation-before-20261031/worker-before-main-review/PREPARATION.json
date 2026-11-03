@@ -1,0 +1,212 @@
+{
+  "status": "PREPARED_STRUCTURAL_ONLY_NO_AUTHORITY",
+  "brief_revision": "revision1 ACTIVE",
+  "attribution": {
+    "source_class": "MAIN_PROPOSAL",
+    "channel": "MAIN_AUTHORED",
+    "recorded_by": {
+      "actor_id": "codex-main",
+      "role": "main"
+    },
+    "note": "Main proposal only; no operator confirmation or real grant."
+  },
+  "maintenance_requested": {
+    "model": "gpt-6.1-sol",
+    "effort": "medium"
+  },
+  "maintenance_actual_backend": "UNKNOWN",
+  "actual_host": "UNKNOWN; current IDE session not verified Desktop",
+  "actual_registration": "UNKNOWN",
+  "product_actual_model_effort": "UNKNOWN",
+  "scope_binding": {
+    "path": "working/office-host-integration-20261031/SCOPE.md",
+    "digest": "sha256:bfd99846580facf297682402dcf88e62bd503770a9990acf984250e1c3784890"
+  },
+  "output_bindings": [
+    {
+      "path": "working/office-host-integration-20261031/CHOICES_PROPOSAL.json",
+      "digest": "sha256:702b084e5debfc62a3cd36264f4ddbd18376e7c3bb8adf5450ea8b78163b550d"
+    },
+    {
+      "path": "working/office-host-integration-20261031/GRANTS_PROPOSAL.json",
+      "digest": "sha256:77837bce7513d2709224dfbdc5f8ce02cb9ba126928a6799da7abb6868017af1"
+    },
+    {
+      "path": "working/office-host-integration-20261031/TASK_PROPOSAL.json",
+      "digest": "sha256:4c58b9136e754994d3a6c41850a3a4e05f746ea8c269a29d828432eeb31c071e"
+    }
+  ],
+  "source_bindings": [
+    {
+      "path": "working/v4-office/scripts/fixtures/mail-thread.md",
+      "digest": "sha256:1dd0d6ae4f3b96085447d2af872bdbce6038538b613b9227051e148da661c3d4"
+    },
+    {
+      "path": "working/v4-office/scripts/fixtures/policy-local.md",
+      "digest": "sha256:3abeabc4c5e8e30cacd3394e0a1acdb7273bed3fb183c1376729b73673cb0da8"
+    },
+    {
+      "path": "working/v4-office/acceptance-20261031/report-v2.md",
+      "digest": "sha256:fb214fb03c32222f96a136e52e08b6e49247e36cf4302a3cdb29b6d53d165b87"
+    }
+  ],
+  "source_library_metadata": "UNCHECKED; no SourceID or revision invented, no library index in prep read scope. Main checks existing library owner before actual TASK; no registry write authorized.",
+  "context_bindings": [
+    {
+      "path": "roles/office/catalog.json",
+      "digest": "sha256:033a3a53b5db60a7db070fdb4c9e89afd10b5e796a26b1aa6072bb67fc2e39fa"
+    },
+    {
+      "path": "roles/office/correspondence.md",
+      "digest": "sha256:93272feff0afe441da9520ead0652830e82d483dfb234bdcfc49cbd1cab0221d"
+    }
+  ],
+  "owner_and_schema_bindings": [
+    {
+      "path": "tools/execution_profile.py",
+      "digest": "sha256:8e72d18ced688649aedb66d89bc78bb61900b46b42a5e5057ffe8236452ee8ad"
+    },
+    {
+      "path": "tools/office.py",
+      "digest": "sha256:85dc1d8793e390ae3df11050a78011ca461eb9b7d5427c967817b7c17138450e"
+    },
+    {
+      "path": "tools/task_checkpoint.py",
+      "digest": "sha256:ee33d6cba8d5a9e0d4f57989d036b3e2e0a58b6b0ed89f938699bcfc13115eac"
+    },
+    {
+      "path": "tools/transaction.py",
+      "digest": "sha256:5aa6482007e0c0c27a53b3de0e20c180316a5a976abc6f0526b7ace1dc6e3fce"
+    },
+    {
+      "path": ".agent/EXECUTION_PROFILE.schema.json",
+      "digest": "sha256:a550fcdb358a8df4f4bd7905836e3af4df1544b090c1ec93e0e5cafac0169225"
+    },
+    {
+      "path": ".cvf/contracts/v3/control.schema.json",
+      "digest": "sha256:21d3b192151b84f6d999d17bf0ed8e209678e6db39fc685c7c9c26918b2a3642"
+    },
+    {
+      "path": ".cvf/contracts/v3/CONTROL_CONTRACT.md",
+      "digest": "sha256:7b3aae2943d6786b30760b9ecf88b1aa805eaa8518f6a8fa6bfae75ccae4f9d1"
+    },
+    {
+      "path": ".cvf/rules/CONTROL_RULES.md",
+      "digest": "sha256:ad3337b9baee23e45da8fe63534036fcb8b2eb0e69b3301da509b4ccac547865"
+    },
+    {
+      "path": ".cvf/rules/ROUTING_POLICY.json",
+      "digest": "sha256:8db011baf5d5c5a09a00e44036157f6a742b50c68d3e1693f3de2387202a42f8"
+    },
+    {
+      "path": "roles/README.md",
+      "digest": "sha256:2a529764615bdfaa444d39b5dd14faac5352db92eb1a081e9d246823dd312c3c"
+    },
+    {
+      "path": "roles/office/MAIN.md",
+      "digest": "sha256:025b3ebd93a22a294c1f64bd02e2cf80e33b590f2f2a3452429101d7a19eb480"
+    },
+    {
+      "path": "roles/office/evidence-reviewer.md",
+      "digest": "sha256:0eda6a4ede12dfe23cadf601988a2f2969269c4a8f89d58a4228d6a4891792ee"
+    }
+  ],
+  "root_profile_hash_before": "sha256:19c84b40fbd97931d6fea8d678e8c53274cce139220b4b9c37ef1933c63f3499",
+  "root_profile_summary": {
+    "host": "claude-cowork",
+    "authority_owner": "PROFILE",
+    "grants_total": 12,
+    "grant_status": "ALL_REVOKED"
+  },
+  "validation": {
+    "command": "python -X utf8 -B - (inline, no saved script)",
+    "fixed_owners": "execution_profile.profile_validator/control_validator/schema_errors; office.guard_task; publish_new.path_form_problem; Python recipe assertions",
+    "jsonschema_version": "4.23.0",
+    "result": "PASS_STRUCTURE_ONLY",
+    "checks": {
+      "choices_in_synthetic_profile": [],
+      "grants": {
+        "office-host-main-read": [],
+        "office-host-main-create": [],
+        "office-host-main-delegate": [],
+        "office-host-worker-read": [],
+        "office-host-worker-create": [],
+        "office-host-reviewer-read": []
+      },
+      "task_v3": [],
+      "office_guard": [],
+      "path_forms": {
+        "working/office-host-integration-20261031/run/TASK.json": null,
+        "working/office-host-integration-20261031/SCOPE.md": null,
+        "working/v4-office/scripts/fixtures/mail-thread.md": null,
+        "working/v4-office/scripts/fixtures/policy-local.md": null,
+        "working/v4-office/acceptance-20261031/report-v2.md": null,
+        "roles/office/catalog.json": null,
+        "roles/office/correspondence.md": null,
+        ".cvf/contracts/v3/control.schema.json": null,
+        "working/office-host-integration-20261031/run/assignments/a1/candidate/thu-nhap-tra-loi.md": null,
+        "working/office-host-integration-20261031/run/assignments/a1/RESULT.json": null,
+        "roles/office/evidence-reviewer.md": null,
+        "working/office-host-integration-20261031/run/review.md": null,
+        "working/office-host-integration-20261031/run/final.md": null,
+        "working/office-host-integration-20261031/CHOICES_PROPOSAL.json": null,
+        "working/office-host-integration-20261031/GRANTS_PROPOSAL.json": null,
+        "working/office-host-integration-20261031/TASK_PROPOSAL.json": null,
+        "working/office-host-integration-20261031/PREPARATION.json": null,
+        ".agent/EXECUTION_PROFILE.json": null,
+        ".agent/EXECUTION_PROFILE.schema.json": null,
+        ".cvf/contracts/v3/CONTROL_CONTRACT.md": null,
+        ".cvf/rules/CONTROL_RULES.md": null,
+        ".cvf/rules/ROUTING_POLICY.json": null,
+        "roles/README.md": null,
+        "roles/office/MAIN.md": null,
+        "tools/execution_profile.py": null,
+        "tools/office.py": null,
+        "tools/task_checkpoint.py": null,
+        "tools/transaction.py": null
+      },
+      "recipe_exact_two_targets": true
+    },
+    "initial_failure": "delegate_callees role shape rejected before writes; one narrow correction to role_class=core/role_name; corrected check passed",
+    "no_trial_or_role_call": true
+  },
+  "future_paths": {
+    "task": "working/office-host-integration-20261031/run/TASK.json",
+    "candidate": "working/office-host-integration-20261031/run/assignments/a1/candidate/thu-nhap-tra-loi.md",
+    "result": "working/office-host-integration-20261031/run/assignments/a1/RESULT.json",
+    "review_by_main": "working/office-host-integration-20261031/run/review.md",
+    "final_by_main": "working/office-host-integration-20261031/run/final.md"
+  },
+  "trial_caps": {
+    "worker_initial_calls": 1,
+    "worker_continuations_same_worker": 1,
+    "reviewer_initial_calls": 1,
+    "retries": 0,
+    "subagents": 0,
+    "scout_calls": 0,
+    "max_concurrency": 1,
+    "max_depth": 1,
+    "fallback": false,
+    "target_minutes_each_role": 10,
+    "billing_tokens": "UNKNOWN",
+    "enforcement": "COOPERATIVE; no hard host cap claimed"
+  },
+  "binding_status": "PROPOSAL_RAW_HASH_ONLY; binding_stub and bound parent/child R-DELEGATE descriptors NOT_ISSUED until authorized real TASK/parent exists; proposal hashes are not accepted-task/context digests",
+  "future_sequence": [
+    "Operator decision first; proposal records never activate permission.",
+    "Existing owner transaction updates requested choices/adds exactly6real grants after real confirmation; preserve12REVOKED. Capture private local restore snapshot only when permitted. No native/global change.",
+    "Main checks library metadata and bytes/context, creates real TASK with actual intent/grant refs, retains raw TASK digest and computes binding_stub using fixed owners. Check bound parent/child R-DELEGATE descriptors and actual per-role capabilities before any paid invocation.",
+    "Worker phase1 writes candidate only; Main observes digest through recipe observe_candidate/artifacts.observe_file and passes observation verbatim, never adds observation to TASK/context. Same Worker phase2 writes own RESULT.",
+    "Main checkpoint reads back TASK/RESULT/inputs/context/candidate exact bytes; Reviewer opens same bytes independently, returns native findings only. Main saves review.md, handles findings then creates final.md or holds dependent integration. Never edits old RESULT to fit changed bytes.",
+    "At completion/stop reconcile existing state; revoke exactly6trial grants with existing owner, restore pretrial requested choices, preserve history/source/output. Unknown/late effects never cleared by retry."
+  ],
+  "limitations": [
+    "No operator confirmation/active grant/registration/role invocation/independent review/product acceptance or host enforcement. codex-desktop is requested only.",
+    "Sources fully read as DATAMOCK.22pack/2670000VND are source report values, not recalculated against original CSV. Quote comparison lacks source in exact three-file scope.",
+    "Only structure, path forms and office guard checked. Live binding/checkpoint/observer/routing gates/owner apply/migration/fullsuite/builder/wholehost NOT_RUN.",
+    "Exact grants do not authorize runtime evidence writes beyond listed paths; if owner tooling needs other writes, hold and scope before execution. Read-only owner imports are not arbitrary shell or data-read permission.",
+    "Milestone remains PRERELEASE_NOT_READY; host invocation/stable quality/lifecycle/P1/other hosts/provenance/intake/P2/exactartifact/fullgates/install-upgrade/review remain."
+  ],
+  "canonical_brief_section_hash": "sha256:7a3383d20eb3cf15d117f45fa327c4c252a44246e97b68c25be34b4bd3b325df",
+  "prewrite_revision_check": "Exact section re-read immediately before writing: revision1 ACTIVE; no revocation or overlap observed in this section"
+}

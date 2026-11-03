@@ -1,0 +1,31 @@
+# HANDOFF
+
+**Rev169 — V7/R7/D-01–D-02, exact-artifact upgrade và phục hồi — IN_PROGRESS / Main Codex owner tích hợp,29/10/2026.**
+
+## Đối chiếu toàn mốc và phần sẽ đóng
+
+Đã nhận bounded: rev167 clean source27761d1b/4gates/1713tests0failure7skip; ZIP972cde12…94940a/307entries, actualVIEN/manifest; rev165realDung_SATESCOupgrade giữ573file/26customfile. Rev168 content/file-continuity ba skill/sáu output WITH_LIMITS, nhưng protocolreadscopeNOT_MET/no-send enforcementUNVERIFIED, không wholehost/skillPASS.
+
+Toàn V4/V6/V7 còn content từng capability, provenance/license/intake; supportedhost/native/model/roles/error/reopen/supportmatrix/usability/recovery và acceptance toàn artifact. Actual3.8/mac/CI/file-symlink/cloud-only chưa đo, legalexpertclaims chưa nhận, CVFM6held. Academic PAUSED (F1/F3/F5/F6/intake/sync/lifecycle/host), không resume để chạy thử. Toàn LAW PRERELEASE_NOT_READY; feedbackuser cuối, dev tự kiểm.
+
+Lần này chỉ đóng evidence upgrade/conflict/manual recovery/refusal trên Windows local filesystem cho đúng hai artifact và scratchVIEN nếu đạt. Tái dùng fullgates167 và lifecycle tests cũ đúnggiới hạn, không chạy fullsuite hoặc công bố host/Undo/atomicity/schema migration. Sau bàn giao toàn gap phía trên còn, ngoài finite subset này. Không tạo tranche theo mỗi case.
+
+## Brief169 rev1 / ACTIVE / PRE_ACCEPTED_WITH_LIMITS
+
+- Main trực tiếp làm helper ở working/artifact-recovery-20261029/scripts/; Reviewer độc lập Sol Medium PRE plan/helper và POST actualdelta/receipts/limits. Requested/actual tách, actual UNKNOWN nếu khôngtoolproof. Quyền maintenancePROJECT18/20, khác productgrants; không gọi vai sản phẩm/paidAPI/provider hoặc hostnative. Main/Reviewer chỉ đọc STATE/HANDOFF/PROJECT/roadmap/rules, đúng ownercode/tests/docs và taskartifact cần; không đọc các project thật/usercorpus/privateprofilepayload ngoài hash kiểm bảo toàn.
+- Inputsimmutable: dist/local-agent-workspace-v1.8.0.zip và gate (SHAa27eb50e1b93cf65cbfb1489412e3d14b5ca228c734c24038e042204cc924bc7,223entries); ZIP167SHA972cde1272b9e5346e6790e19eaea434e3aecd2aca8246e42f336f832d94940a. Dùng exact extracted167 có receipt; hash cảtree trước/sau để không nhầm packagecũ. Không sửa/versionbump/regenMANIFEST hoặc fake baseline, không chạy installer/script của candidate chưa nhận. Hai artifact công cụ localđã có gate, không tải mạng.
+- Trước execution kiểm PRE/revisionACTIVE ngay trước ghi; nếu scope/revision/ownerđổi dừngphầnphụthuộc. Giải nén1.8 vào duy nhất taskold-extracted, kiểm traversal/duplicate/link, không overwrite; new_project.py thật tạoVIEN trong taskconsumers. Tạo DATAMOCK personaledits ở1guide+AGENTS, PROJECT/STATE/HANDOFF usercontext, references/output vàopaque native/customfile markers, defaultnullprofile từartifact167 (nogrants/nohost/nochoices), khônggrant/bootstrap quyền mới. Đây là scratchfixtures, không native registration/realuserchoices.
+- Snapshot rawuserfiles trước và maps toànproject; preview upgradeCLI167 phải read-only. Apply đúng1lượt mỗi ngônngữ sau PRE; delta phải nằm trong previewplan+manifest/version/PACKAGE_INFO/indexappend/transactionjournals; không mất file/userbytes. Guide vàAGENTS edited được giữ, incoming .new đúngartifactprojectedbytes; không assume xungđột trước khi thấy plan, thiếuexpectedconflict thì ghi blocked case không chếbaseline giả.
+- Kiểm previewstale: sửa thêm currentguide scratch saupreview, applycặp hash cũ phải stale/no write toàntree; ghi rawbefore/after khôngretry blindly. Sau từchối, preview mới cho userintent đãchốt trongcase: VI dùngbảnmới cho guide với archivecurrent/incoming, EN giữguide củauser. Cảhai finish lưu.new củaguide vàAGENTS nhưng giữAGENTScurrent; verify archive/retired hashes/current, observe_finish chỉđọc saufinish (môphỏng đãmấtresponse bằng quan sát, không kill/networkfailure injection).
+- Manualrecovery đúngguide: copy archived current/incoming sang fileMỚI output/recovered-*.md, sohash byteexact, không ghiđè current hoặc gọi là nativeUndo/rollback. Các công cụ owner là merge_center API thật củaartifact167; chưa kiểm UI/human/editor, không monkeypatchguard/hookfault hoặc suyatomicity.
+- Sauupgrade, chạy CLI167 với --from package1.8, không --force phảiblocked, changesfalse và toàntree nguyên; không force/downgrade thật. Verify manifest giữ diagnostic localdeltas vì guide/AGENTS/indexpersonal, không regen manifest/hidewarnings. Hash protectedprofile/userfiles/oldnewZIP/extractedsource trước-sau, 0unexpecteddelta/missing. InitialrawSTATE đượcsnapshot trước các lượt ghi nếuclaimhistory. Runtimejournalbackup thật giữ đểaudit.
+- Chỉ taskroot cómutations; không sourceproduction/tests/schema/pins/policy/grants/profile/cvfchanges, không .claude/nativeglobal, network/admin/dependency/Gitpush/tag/publish hoặcprojectđãgiao. Nếu failure giữrawlogs/exit vàpartialstate, dừng nhánhphụthuộc,không tựretry upgrade/write; instrumentationlỗi rõ sửa1lần/kiểmhẹp cùngtranche, reviewerphânbiệt productionfinding. Reviewerđược sửanhỏ taskinstrument nhưng không tự đổi acceptance/productdataflow.
+- Evidence hữu hạn tại taskroot, rawlogs/JSON/snapshots/helper và review; không sổworkorder mới. Final Main cập nhật STATE/HANDOFF/roadmap cùnghàngV7support/recovery. Audit vịtríscript giữexit/hints củanestedproductcopy, không thaythreshold/di chuyển fixture đểxanh. Selfdiff/EOL cácfile Mainchạm. Không stage/commit/publish trong lượt này.
+
+## Bàn giao trước giữ nguyên bytes
+
+Rev168 tại archive/maintainer/HANDOFF_rev168_before_recovery_20261029.md SHA256 b5bc2ea6ea0ce1dcf08511225211ddad5512dec77515b58096c1d4e9e6ab68bb; protocolfinding và acceptance giới hạn giữ nguyên, không thu hồi hoặc sửa evidence.
+
+## PRE và binding trước execution
+
+Reviewer Sol Medium PRE PASS_WITH_LIMITS, actualUNKNOWN; PRE_REVIEW.md giữ giới hạn. Reviewer sửa3lỗi nhỏ taskhelper: journalprefix.runtime/transactions, checkreparseancestors trướcghi kểcảfailurewriter, partialstdout/stderrtimeout. Chỉ helper, không code sản phẩm hoặc acceptance. HelperSHA cd7f555984b30401aaa1ee420f3a30af7a827a1d0d0131d5ca7b8407854bf54b; AST/read-only boundary/artifact307binding đạt, chưa execute. Main đọc PRE/đối chiếu cùngbriefrev1 và hash rồi ACTIVE để chạy đúng1lượt; owner Main, không worker khác đang ghi consumer/helper. Không vòngreviewmới cho3sửa nhỏ này.

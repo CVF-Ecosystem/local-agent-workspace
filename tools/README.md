@@ -161,6 +161,52 @@ Nút "Cập nhật sổ" chạy `library_sync.plan` (xem trước, không ghi); 
 
 ## library.py
 
+Lõi/helper `library_audit.py` giữ Python 3.8+; extractor tùy chọn đã thử cục bộ là `pdfminer.six`20250506/Python3.11, bản engine này yêu cầu Python>=3.9. Không tự cài, vendored hoặc thêm dependency bắt buộc. `python -B -m unittest discover -s tests -p test_library_audit.py -v` dùng fixture giả bằng stdlib; khi thiếu engine, hai ca extraction thật ghi skip/NOT_TESTED. Office chỉ kiểm content-types, root relationship và main XML của OOXML transitional, không kiểm mọi thành phần hoặc nội dung. Engine/dependency nếu được phân phối phải rà license/attribution đúng phiên bản.
+
+`check --content-audit` bổ sung cảnh báo chỉ đọc về hash, lời khai kiểm theo phạm vi và dấu hiệu PDF theo trang. Engine `pdfminer.six` là tùy chọn, không tự cài; giới hạn 20 MiB/file, 100 trang, 15 giây/PDF, ZIP 2.000 entry/40 MiB giải nén/1 MiB XML. Lỗi, thiếu engine hoặc quá giới hạn là chưa kiểm; cảnh báo không đổi mã thoát cơ bản. Không OCR hay xác minh hiệu lực/toàn văn; kiểm scope liên kết không chống mọi race.
+
+**Nhập file chờ (offline, create-only).** `python tools/library.py intake [--json]` chỉ xem trước;
+`intake --apply --expect-plan TOKEN` ghi đúng bản đã xem. Có thể chọn một file bằng
+`--file BASENAME --code CODE` ở cả hai lượt. Agent chuẩn bị cấu hình khi được giao, không bắt người dùng soạn JSON;
+công cụ không tự tạo hoặc bật `<project>/.agent/SOURCE_INTAKE.json`. Cấu hình project có đúng các trường sau (ví dụ giả):
+
+```json
+{"schema":"law.source-intake/1","enabled":true,"staging":"references/legal/_moi_tai","mappings":[{"code":"DOC-01","canonical_name":"DOC-01_nguon.txt","destination":"legal/linh-vuc/DOC-01_nguon.txt"}]}
+```
+
+Thư mục đích phải có sẵn; staging nằm dưới `references/<nhóm>/` và có thư mục bắt đầu `_`, nên các scanner thường
+không tự nhập file chờ. Chỉ đọc file trực tiếp trong staging, không quét cả lĩnh vực; subfolder, liên kết, đuôi không hỗ trợ,
+config thiếu/tắt/sai, không hoặc nhiều mã, nhiều file cùng mã đều bị từ chối. Mã được tìm nguyên chuỗi (ranh giới chữ/số,
+`_` là dấu phân cách), hoặc tên file đúng tên chuẩn, hoặc lựa chọn tường minh. Số hiệu có `/` cần tên chuẩn hoặc lựa chọn
+tường minh nếu tên file dùng cách viết khác. Không đoán tên mới nhất, không tự đổi tên, không nối ID theo SHA/tên.
+Luật cũ/cùng chủ đề chỉ là gợi ý; hậu tố `_ban-gioi-thieu` bị từ chối. Tên/mã đúng không chứng minh danh tính, VBHN,
+toàn văn hoặc hiệu lực. Importer không tải mạng và không kiểm parser nội dung; dùng `check --content-audit` cho dấu hiệu sau nhập.
+
+Giới hạn: config 64 KiB/100 mapping; staging 100 entry, 20 MiB/file, tổng 100 MiB. Mọi file trong staging được kiểm kê/hash,
+kể cả khi chỉ chọn một file; không dùng staging để chứa dữ liệu ngoài phạm vi được giao. Plan buộc bytes config/sổ,
+kiểm kê/SHA nguồn, lựa chọn, đích chưa có, ID/row/revision và ngày quan sát; thay đổi phải xem trước lại. Preview không tạo
+runtime; apply có thể tạo thư mục khóa và `index.lock` dù sau đó từ chối. Kiểm đường dẫn/đầu vào giữa đọc và ghi là hợp tác,
+không phải sandbox hay atomic no-follow với mọi tiến trình ngoài.
+
+Owner `library_sync` ghi file mới và sổ trong cùng transaction; giữ nguyên nguồn staging cả sau thành công. Đích đã tồn tại
+luôn bị từ chối, kể cả SHA giống. Dòng đã có đường dẫn hoặc căn cứ revision/SHA/history/content cũ không được gắn lại;
+dòng chưa có đường dẫn/căn cứ có thể giữ ID khi mã khớp duy nhất. Revision mới 1, SHA thực, verification `Cần đối chiếu`;
+fulltext dòng mới để trống (chưa xác nhận), dòng cũ giữ nguyên trừ khai `Có` khi chưa có file thì từ chối.
+`check` vẫn có thể cảnh báo có file nhưng chưa khai Có: đó không phải yêu cầu tự nâng xác minh.
+
+Đây là giao dịch nhiều bước **có phục hồi**, không nguyên tử toàn bộ file+sổ. Atomic no-clobber dùng hard link cùng filesystem,
+không fallback ghi đè; filesystem không hỗ trợ thì từ chối. Chỉ importer bật `Transaction(..., create_only=True)` và dùng
+`local-agent-workspace/transaction-v2`; owner mới đọc v1/v2, owner cũ từ chối v2, nên phục hồi bằng bộ tools mới đi cùng importer.
+Caller mặc định vẫn v1, kể cả các nhãn `create`/`create_exclusive` cũ; không đổi hành vi upgrade/adopt.
+Khi gián đoạn, chạy `python tools/transaction.py status`, rồi chọn `resume TXID` hoặc `rollback TXID`.
+Staged name được giữ đến commit để đối chiếu identity+SHA; file người dùng lưu lại (kể cả thay file bằng cùng bytes) được giữ,
+và nguồn tạo bị đổi/thiếu/xung đột chặn ghi tiếp sổ. Rollback một phần giữ bản người dùng, không cho resume; đọc hướng dẫn
+trong kết quả thay vì xóa nhật ký để bỏ guard. Compare-before của sổ thu hẹp cửa sổ lưu đồng thời, không ngăn mọi external writer.
+Không có retry tự động hay chi phí API; lỗi công cụ chỉ thử lại tối đa một lần sau khi hiểu trạng thái.
+Kết quả lỗi sau khi ghi một phần có `status=partial`, mã thoát 1, transaction ID và các file đã biết đã ghi;
+`changes=null` nếu chưa xác định được tác động. Không lấy lỗi apply làm bằng chứng chưa ghi gì. Lỗi sổ/nội dung đã biết được báo
+từ chối, không traceback. Dòng mới dùng ô trống thực sự, không kế thừa `Có` hoặc ghi đè ghi chú có sẵn.
+
 Thư viện nguồn trong `references/` (xem skill `source-library`). `init` tạo các thư mục nhóm (legal, policies, templates,
 source-documents) kèm README và chép mẫu chỉ mục thành `references/_INDEX.xlsx` nếu chưa có (không ghi đè). `check [--days 180]`
 kiểm chỉ mục, báo theo số dòng: thiếu file, file chưa vào chỉ mục, trùng số hiệu, trùng Mã (khi sổ có cột Mã: nêu mã và các dòng, cùng quy tắc với `sync`; sổ cũ không có cột Mã đọc như trước), "Còn hiệu lực" nhưng đã ghi bị thay thế, ngày
@@ -196,6 +242,8 @@ thì các kiểm tra hiện có tiếp tục áp dụng. Từ chối x14, `x14_s
 
 Ghi lại **điều đã đọc** từ một nguồn, gắn với đúng phiên bản nguồn làm căn cứ, rồi tra lại sau này mà không phải đọc lại nguồn. Cùng một sổ `references/_INDEX.xlsx`, cùng writer với `sync`
 (`library_sync.locked_commit`: khóa, nhật ký strict, từ chối x14, Transaction `expected_before`); không có database, cache, đồ thị hay giao diện riêng.
+
+Caller phải đóng workbook và stream do mình giữ trước `locked_commit` thay file; khi phù hợp đọc snapshot bytes qua `BytesIO` và dùng `try/finally` đóng tài nguyên. Sự cố handle ở script project chưa chứng minh lỗi core LAW.
 
 - `content preview --request FILE` / `content apply --request FILE --expect-plan TOKEN` ghi **một** entry (`entry_id` do người gọi chọn) vào sheet `LAW content` (A1 = `law.source-content/1`, tiêu đề ở dòng 4, dữ liệu từ dòng 5; sheet chỉ được tạo ở lần `apply` đầu tiên, xem trước và tra không tạo). Request là JSON dữ liệu thuần, khóa lạ bị từ chối:
   `entry_id, source_id, source_revision, source_sha256, locator, read_scope, kind (EXTRACT|FACT|CALCULATION|INFERENCE), text, limits, recorded_by`, tùy chọn `check_level (NOT_CHECKED|DECLARED_CHECK)` kèm `check_scope, check_evidence_ref, checked_by, checked_at`, `user_decision`+`user_confirmation_ref` (đi cùng nhau), `supersedes`.
@@ -923,3 +971,47 @@ checker never extracts documents or confirms entailment/current legal validity. 
 inside the declared root, links/reparse points and traversal are refused, and source/quote
 limits are 8 MiB/64 KiB. Use Python `-B` to suppress interpreter bytecode caches. Exit codes
 0/1/2/3 mean MATCH/MISMATCH/UNVERIFIED/input ERROR; `--json` emits result-v1 on UTF-8 stdout.
+
+## source_response.py
+
+Kiểm phản hồi đã lưu **offline** bằng Python 3.8+ và thư viện chuẩn; không tải trang,
+không nhận đường dẫn/URL, không đọc hay ghi file, không tạo nhật ký/cache. Agent dùng
+khi đã có bytes phản hồi và HTTP status/headers; không đoán quyền hay hợp đồng nguồn.
+API `classify_response(status, headers, body, expected_content=False)` nhận `body`
+bytes hoặc chuỗi UTF-8, headers là dict chuỗi. API trả quyết định và evidence an toàn;
+đầu vào sai trả `unknown` với `input_error`. Không sửa đầu vào.
+
+CLI chỉ đọc một JSON UTF-8 từ STDIN. Ví dụ dưới đây là dữ liệu giả: body base64 của
+`<main>ok</main>`. PowerShell, chạy từ gốc project:
+
+```powershell
+'{"status":200,"headers":{"Content-Type":"text/html"},"body_base64":"PG1haW4+b2s8L21haW4+","expected_content":true}' | python -X utf8 -B tools/source_response.py
+python -X utf8 -B tools/source_response.py --help
+```
+
+`expected_content` là khai báo của caller rằng phản hồi thuộc loại nội dung đang chờ;
+chỉ cho phép parse tiếp, không xác minh danh tính, nội dung, toàn văn, giấy phép, hiệu lực
+hay điều kiện import. `identity_verified`, `fulltext_verified`, `importable` luôn false.
+Thiếu khai báo này thì `unknown`. HTTP 401/403/429, Cf-Mitigated challenge và dấu hiệu
+challenge/đăng nhập bắt buộc ưu tiên chặn; form mật khẩu hiện thấy thì `unknown`.
+Script/comment/nội dung ẩn và nút đăng nhập phụ không tự làm thành trang chặn.
+
+Chỉ HTML UTF-8 có cấu trúc đầy đủ trong phạm vi bộ kiểm mới có thể `allow_parse`;
+PDF, nhị phân, MIME khác, HTML giả PDF, UTF-8 lỗi, HTML dở dang hoặc thuộc tính HTML
+trùng gây mơ hồ trả `unknown`.
+Đây không phải trình parse PDF hay đầy đủ HTML/CSS: không tính CSS bên ngoài, selector
+hoặc layout trình duyệt. Parser giới hạn 64 tầng và 20.000 sự kiện, không phải sandbox OS.
+Hạn mức: JSON STDIN 2 MiB; body giải mã 1 MiB; tổng UTF-8 tên/giá trị header 64 KiB.
+JSON key trùng, NaN, base64 không chuẩn, kiểu/range sai hoặc vượt hạn mức bị từ chối.
+Không in body, header thô, URL, secret hay thông báo exception; evidence chỉ có status,
+số bytes, SHA-256 body và Retry-After chuẩn hóa (giây hoặc ngày UTC, sai thì null).
+
+CLI dùng envelope `result-v1`, trường `response_check`; mã thoát 0 chỉ `allow_parse`,
+1 cho `blocked`/`unknown`, 2 cho đầu vào/cách gọi sai. Mọi kết quả đều chưa phải nhận nguồn.
+Không tích hợp downloader, thư viện nguồn, nhật ký source hay giao diện APP trong phạm vi này.
+
+### APP: nhập file chờ / import waiting files
+
+Thư viện nguồn → **Nhập file chờ** xem trước cả lô đã được cấu hình bởi agent theo yêu cầu đã xác nhận; bấm **Thực hiện** riêng để nhập đúng bản vừa xem. Công cụ giữ file chờ, không ghi đè đích và không xác minh danh tính/toàn văn/hiệu lực nguồn. Nếu nguồn hoặc cấu hình đã đổi, xem trước lại. Thiếu cấu hình hợp lệ thì chưa thể nhập; APP không sửa cấu hình hay staging.
+
+Source library → **Import waiting files** previews the configured batch. A separate **Apply** click imports that preview. Waiting files are retained, destinations are never overwritten, and source identity, full text and validity remain unverified. Preview again if sources or configuration change. An agent prepares the configuration from confirmed requirements; APP does not edit configuration or staging.

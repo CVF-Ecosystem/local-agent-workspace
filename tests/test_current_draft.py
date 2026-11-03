@@ -39,8 +39,9 @@ HEADINGS = cu.STATE_HEADINGS
 # Reviewed owner-byte regression pins (SHA256 prefixes); AN C2 refreshes only reviewed owner deltas.
 # Context/policy and transaction pins include the permitted CLI UTF-8 maintenance; other pins stay fixed.
 # P-CTX1 revision 28/10/2026: derived vectors refresh; see HANDOFF rev144.
+# Transaction pin follows reviewed P1 opt-in owner (p1/REVIEW.md + custody.json); default v1 remains.
 OWNER_PINS = {
-    'tools/publish_new.py': '8a4e5914d0892ea1', 'tools/context_update.py': '65fd87929e886393', 'tools/transaction.py': '4bea09cfd85e6654',
+    'tools/publish_new.py': '8a4e5914d0892ea1', 'tools/context_update.py': '65fd87929e886393', 'tools/transaction.py': '5aa6482007e0c0c2',
     '.cvf/checks/v3/observer.py': '7c0a089e5eb03475', '.cvf/checks/v3/workflow.py': '3019bd55a70281d0', '.cvf/checks/v3/loader.py': '0a50424e8e767ce8',
     '.cvf/checks/v3/canon.py': '7ab1bf8e6b94e2b0', '.cvf/checks/v3/binding.py': 'f227eda4a8f73e5e', '.cvf/checks/v3/routing.py': '37845b6bc357ad24',
     '.cvf/checks/v3/refs.py': '33761fd35bd6b8f6', '.cvf/checks/control_check_v3.py': 'e4bcbf35faa3392d',

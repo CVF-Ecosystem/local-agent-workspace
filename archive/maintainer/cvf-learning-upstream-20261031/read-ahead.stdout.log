@@ -1,0 +1,10 @@
+=== CVF Governed Artifact Checker Read-Ahead Guard ===
+Range: HEAD..HEAD
+Checked governed artifacts: 2
+Violations: 0
+
+Checked paths:
+  - docs/reviews/learnings/CVF_PRODUCT_MILESTONE_COVERAGE_LEARNING_2026-10-23.md
+  - docs/reviews/learnings/README.md
+
+COMPLIANT - checker read-ahead blocks are present and reviewable.

@@ -81,6 +81,14 @@ Phiên sau, mở APP trong **dự án** và dùng mục **Tiếp tục công vi�
 | `archive/` | Bản cũ cần giữ |
 | `PROJECT.md` · `.agent/STATE.md` | Bối cảnh ổn định · tiến độ để tiếp tục |
 
+## Kỹ năng dùng chung
+
+- **Tài liệu và phối hợp:** `office-documents`, `vn-admin-documents`, `vietnamese-editing`, `document-comparison`, `meeting-minutes`, `process-mapping`, `internal-comms`, `doc-coauthoring`.
+- **Số liệu và trình bày:** `spreadsheet-check`, `excel-workbooks`, `excel-html-viewer`, `data-charts`, `html-reports`.
+- **Nguồn:** `source-library` giúp tra thư viện nguồn trước khi trích dẫn.
+
+Xem [danh mục kỹ năng](skills/local/shared/README.md) và [hướng dẫn chọn, sử dụng kỹ năng](docs/HUONG_DAN_SKILLS_VI.md); chỉ mở kỹ năng phù hợp với việc cần làm.
+
 ## Hướng dẫn theo nhu cầu
 
 | Bạn muốn… | Xem tại |

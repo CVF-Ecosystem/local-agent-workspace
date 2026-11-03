@@ -471,6 +471,7 @@ textarea{min-height:68px;resize:vertical}
       <button class="btn" data-open="references/_INDEX.xlsx"><span data-ico="file"></span><span data-t="lb_open_idx"></span></button>
       <button class="btn" data-open="references"><span data-ico="folder"></span>references</button>
       <button class="btn" id="lb-check"><span data-ico="shield"></span><span data-t="lb_check"></span></button>
+      <button class="btn" id="lb-intake" data-tt="lb_intake_note"><span data-ico="plus"></span><span data-t="lb_intake"></span></button>
       <button class="btn" id="lb-sync" data-tt="lb_sync_tt"><span data-ico="refresh"></span><span data-t="lb_sync"></span></button></div></div>
       <div class="card-b"><div class="inline"><label class="sr" for="lb-q" data-t="lb_q_label"></label><input type="text" id="lb-q"><button class="btn pri" id="lb-go"><span data-ico="search"></span><span data-t="lb_go"></span></button></div>
         <p class="lb-hint" id="lb-hint"></p></div>
@@ -756,6 +757,7 @@ var D={
  lb_open_no_locator:['Dòng này chưa ghi đường dẫn file.','This row has no file path recorded.'],lb_open_bad_locator:['Đường dẫn ghi trong sổ không hợp lệ; không mở.','The path recorded in the index is not valid; not opened.'],lb_open_out_of_scope:['Đường dẫn nằm ngoài references/ và ngoài thư mục nguồn cũ đã khai trong PROJECT.md; không mở.','The path is outside references/ and outside the old-source folders listed in PROJECT.md; not opened.'],
  lb_open_link:['Đường dẫn là hoặc đi qua liên kết (symlink/junction); không mở.','The path is, or passes through, a link (symlink/junction); not opened.'],lb_open_unsupported_type:['Định dạng này không thuộc các loại tài liệu nguồn được hỗ trợ; không mở.','This format is not a supported source document type; not opened.'],lb_open_missing:['Không thấy file tại đường dẫn đã ghi.','No file at the recorded path.'],lb_open_denied:['Không có quyền truy cập file này.','No permission to access this file.'],lb_open_not_regular:['Đường dẫn không phải file thường; không mở.','The path is not a regular file; not opened.'],lb_open_unreadable:['Không kiểm tra được file (lỗi hệ thống).','The file could not be checked (system error).'],lb_open_launch_failed:['Hệ điều hành không mở được file.','The operating system could not open the file.'],
  lb_open_transport:['Không nhận được trả lời từ bảng điều khiển; chưa biết file có mở hay không.','No reply from the panel; it is not known whether the file opened.'],
+ lb_intake:['Nhập file chờ','Import waiting files'],lb_intake_note:['Nguồn chưa được đối chiếu. Giữ nguyên file chờ; agent cấu hình theo yêu cầu đã xác nhận.','Sources remain unverified. Waiting files are retained; an agent configures intake from confirmed requirements.'],
  lb_err_denied:['Không có quyền đọc chỉ mục','No permission to read the index'],lb_err_unreadable:['Không đọc được chỉ mục','The index cannot be read'],lb_err_missing_sheet:['Chỉ mục thiếu sheet “Danh mục”','The index has no “Danh mục” sheet'],lb_err_no_header:['Chỉ mục không có dòng tiêu đề','The index has no header row'],lb_err_missing_columns:['Chỉ mục thiếu cột bắt buộc','The index is missing required columns'],lb_err_transport:['Không đọc được trả lời của bảng điều khiển','The panel’s reply could not be read'],
  lb_err_note:['Đây không phải sổ trống: chưa biết sổ có dòng nào hay không. Sửa hoặc khôi phục sổ rồi tải lại; nút “Tạo khung thư viện” không sửa được lỗi này và không bị gọi tự động.','This is not an empty index: it is not known whether it has any rows. Fix or restore the index, then reload; “Create the library” does not repair this and is never run automatically.'],lb_err_tr_note:['Chưa biết sổ ở trạng thái nào (có thể là lỗi kết nối hoặc lỗi nội bộ). Không phải “chưa có sổ”.','The state of the index is unknown (possibly a connection or internal error). It does not mean “no index”.'],
  lb_loaded_empty:['Sổ hợp lệ nhưng chưa có dòng nào. Thêm dòng vào sheet “Danh mục” hoặc chạy cập nhật sổ.','The index is valid but has no rows yet. Add rows to the “Danh mục” sheet or run the index update.'],lb_trunc:['Chỉ hiện %d trong %d dòng khớp; thu hẹp từ khóa hoặc nhóm.','Showing %d of %d matching rows; narrow the keyword or group.'],lb_matched:['%d dòng khớp.','%d matching row(s).'],
@@ -943,7 +945,7 @@ why_tk:['Python này không có tkinter','This Python has no tkinter'],why_py:['
  df_ro:['So sánh không sửa nội dung hai file hay hợp nhất tự động; thao tác có thể được ghi vào lịch sử. Xử lý .new theo loại file và lựa chọn được hỗ trợ; không xóa chỉ để hết cảnh báo.','Compare does not change either file or merge automatically; the action may be recorded in the operations history. Handle .new by file type and supported options; do not delete it just to clear the warning.'],
  act_init:['Khởi tạo dự án','Set up project'],act_adopt:['Đưa vào dự án đã có','Bring into existing project'],act_upgrade:['Cập nhật bộ công cụ','Upgrade package'],act_upgrade_other:['Cập nhật dự án khác','Upgrade another project'],
  act_pack_list:['Danh sách gói','Pack list'],act_pack_add:['Cài gói','Install pack'],act_pack_remove:['Gỡ gói','Remove pack'],act_pack_update:['Cập nhật gói','Update pack'],act_pack_confirm:['Cho phép dùng gói','Allow a pack'],act_check_output:['Kiểm tra trước khi giao','Check before delivery'],act_install_skills:['Cài kỹ năng vào ứng dụng','Install skills'],
- act_library_init:['Tạo khung thư viện','Create the library'],act_library_check:['Kiểm tra thư viện','Check the library'],act_library_stats:['Thống kê thư viện','Library statistics'],act_library_find:['Tra cứu thư viện','Library search'],
+ act_library_intake:['Nhập file chờ','Import waiting files'],act_library_init:['Tạo khung thư viện','Create the library'],act_library_check:['Kiểm tra thư viện','Check the library'],act_library_stats:['Thống kê thư viện','Library statistics'],act_library_find:['Tra cứu thư viện','Library search'],
  act_check_package:['Kiểm tra bộ công cụ','Check the package'],act_build_guides:['Dựng hướng dẫn HTML','Build HTML guides'],act_build_release:['Đóng gói phát hành','Build a release'],act_merge_state:['Đổi trạng thái hợp nhất','Change merge state'],act_merge_diff:['So sánh bản hợp nhất','Compare a merge item'],
  act_diagnostics:['Gói chẩn đoán','Diagnostics bundle'],act_tx_resume:['Tiếp tục lần lưu file','Resume a file save'],act_tx_rollback:['Phục hồi lần lưu file','Roll back a file save'],act_unknown:['Thao tác khác','Other action'],
  SEC_Goal:['Mục tiêu','Goal'],'SEC_Current phase':['Đang làm đến đâu','Where things stand'],SEC_Completed:['Đã xong','Completed'],'SEC_Current artifact':['Kết quả đang dùng','Current result'],'SEC_Open items':['Việc chưa giải quyết','Unresolved items'],'SEC_Waiting on user':['Đang chờ bạn','Waiting on you'],SEC_Decisions:['Quyết định','Decisions'],'SEC_Next milestone':['Bước tiếp theo','Next step'],
@@ -1131,8 +1133,8 @@ $('ag-task').addEventListener('input',function(){if(AGP!==null&&AGS!=='ag_state_
 document.querySelectorAll('[data-pick]').forEach(function(b){b.addEventListener('click',function(){b.disabled=true;
   api('/api/pick',{kind:'dir'}).then(function(r){b.disabled=false;if(r.paths&&r.paths.length){$(b.dataset.pick).value=r.paths[0];if(b.dataset.pick==='a-dir')autoName();}else if(r.error)toast(t('pick_fail'));}).catch(function(){b.disabled=false;toast(t('pick_fail'));});});});
 // result sheet
-var lastFocus=null;
-function openSheet(title,icon,steps){if(!$('sheet').classList.contains('on'))lastFocus=document.activeElement;$('sh-t').textContent=title;$('sh-ic').innerHTML=ico(icon||'terminal');$('sh-steps').hidden=!steps;$('sh-s1').classList.add('on');$('sh-s2').classList.remove('on');
+var lastFocus=null,intakeSheetSeq=0;
+function openSheet(title,icon,steps){intakeSheetSeq++;if(!$('sheet').classList.contains('on'))lastFocus=document.activeElement;$('sh-t').textContent=title;$('sh-ic').innerHTML=ico(icon||'terminal');$('sh-steps').hidden=!steps;$('sh-s1').classList.add('on');$('sh-s2').classList.remove('on');
   $('sh-tag').innerHTML='<span class="tag info"><span class="spin"></span>'+esc(t('running'))+'</span>';$('sh-cmd').hidden=true;$('sh-out').innerHTML='';$('sh-out').hidden=false;$('sh-msg').textContent='';$('sh-apply').hidden=true;
   $('sh-extra').hidden=true;$('sh-extra').innerHTML='';$('sh-diff').hidden=true;$('sh-diff').innerHTML='';
   setInert(true);$('sheet').classList.add('on');$('scrim').classList.add('on');setTimeout(function(){$('sh-x').focus();},50);}
@@ -1142,7 +1144,7 @@ function setInert(on){var a=document.querySelector('.app');if(a){if(on)a.setAttr
 function setBusy(on,btn){busy=on;if(btn)btn.disabled=on;$('sh-apply').disabled=on;$('sheet').setAttribute('aria-busy',on?'true':'false');}
 function focusable(root){return Array.prototype.filter.call(root.querySelectorAll('button,[href],input,select,textarea,[tabindex]'),function(el){return!el.disabled&&el.getAttribute('tabindex')!=='-1'&&el.getClientRects().length>0;});}
 // focus returns to the control that opened the sheet, or to the current page link when that control is gone
-function closeSheet(){$('sheet').classList.remove('on');$('scrim').classList.remove('on');pending=null;mpReset();setInert(false);
+function closeSheet(){intakeSheetSeq++;$('sheet').classList.remove('on');$('scrim').classList.remove('on');pending=null;mpReset();setInert(false);
   var back=lastFocus&&document.body.contains(lastFocus)&&!$('sheet').contains(lastFocus)&&!lastFocus.disabled&&lastFocus.getClientRects().length>0?lastFocus:document.querySelector('.nav button[aria-current="page"]');
   if(back)back.focus();}
 $('sh-x').addEventListener('click',closeSheet);$('sh-close').addEventListener('click',closeSheet);$('scrim').addEventListener('click',closeSheet);
@@ -1161,8 +1163,9 @@ function colorize(s){return esc(s).split('\n').map(function(l){
   if(/^\s*\[(XEM TRƯỚC|CHẠY THỬ|PREVIEW|DRY RUN)/i.test(l))return'<span class="dim">'+l+'</span>';return l;}).join('\n');}
 // one action at a time: its button and the sheet's Apply are disabled while it runs (no double submit)
 function run(title,icon,act,params,opts){opts=opts||{};if(busy){toast(t('busy_wait'));return;}var btn=opts.btn||null;
-  openSheet(title,icon,opts.preview);setBusy(true,btn);
+  openSheet(title,icon,opts.preview);var intakeSeq=intakeSheetSeq;if(act==='library_intake')pending=null;setBusy(true,btn);
   return api('/api/run',{action:act,params:params}).then(function(r){setBusy(false,btn);
+    if(act==='library_intake'&&(intakeSeq!==intakeSheetSeq||!$('sheet').classList.contains('on')))return;
     if(r.cmd){$('sh-code').textContent=r.cmd;$('sh-cmd').hidden=false;}
     $('sh-out').innerHTML=colorize(r.out||'');
     var res=r.result||{status:(r.code===0?'success':'error'),changes:null,merge_required:false},ok=r.code===0;
@@ -1177,7 +1180,14 @@ function run(title,icon,act,params,opts){opts=opts||{};if(busy){toast(t('busy_wa
     if(!ok)msg=res.status==='issues'?t(res.changes===false||opts.ro?'m_issues_ro':'m_issues'):res.status==='blocked'?t('err_blocked'):res.status==='not_checked'?t('ck_not_checked_next'):res.status==='partial'?'':t('err_tool');
     else if(params&&params.apply)msg=t(res.merge_required?'merge_msg':'m_done');
     else if(opts.preview){
-      if(res.changes===false){msg=t('m_nothing');}
+      if(act==='library_intake'){
+        var intakeToken=res.plan_token;
+        if(ok&&res.status==='preview'&&/^[0-9a-f]{64}$/.test(intakeToken||'')&&(res.files||[]).some(function(f){return f.action==='create';})){
+          msg=t('m_preview');var ia=$('sh-apply');ia.innerHTML=ico('check')+esc(t('apply'));ia.hidden=false;
+          pending=function(){if(intakeSeq!==intakeSheetSeq||!$('sheet').classList.contains('on'))return;pending=null;run(title,icon,act,{lang:params.lang,apply:true,plan_token:intakeToken},{preview:true,after:opts.after});};
+        }else msg=t('m_nothing');
+      }
+      else if(res.changes===false){msg=t('m_nothing');}
       else if(act==='library_sync'&&(res.notices||[]).some(function(n){return n==='x14_data_validation'||n==='x14_scan_incomplete';})){msg=t('lb_sync_blocked');}
       else{msg=t('m_preview');var a=$('sh-apply');a.innerHTML=ico('check')+esc(t('apply'));a.hidden=false;
         pending=function(){run(title,icon,act,Object.assign({},params,{apply:true}),{preview:true,after:opts.after,always:opts.always});};}}
@@ -1348,6 +1358,7 @@ $('lb-go').addEventListener('click',function(){lbLoad();});$('lb-q').addEventLis
 $('lb-check').addEventListener('click',function(){run(t('lb_t_check'),'shield','library_check',{},{ro:true,btn:$('lb-check')});});
 $('lb-init').addEventListener('click',function(){run(t('lb_t_init'),'library','library_init',{},{after:lbLoad,btn:$('lb-init')});});
 // preview first; Apply sends back the expected_preview of exactly what was shown, and the server refuses a stale one
+$('lb-intake').addEventListener('click',function(){run(t('lb_intake'),'plus','library_intake',{lang:lang==='en'?'en':'vi'},{preview:true,btn:$('lb-intake'),after:function(res){if(res.status==='success')lbLoad(true);}});});
 $('lb-sync').addEventListener('click',function(){var p={lang:lang==='en'?'en':'vi'};
   run(t('lb_t_sync'),'refresh','library_sync',p,{preview:true,btn:$('lb-sync'),after:function(res){if(res.expected_preview)p.expected_preview=res.expected_preview;if(res.status==='success'&&res.changes)lbLoad(true);}});});
 function lbChips(){var gs=[['','all']].concat(((LB&&LB.groups)||[]).map(function(g){return[g,g];}));

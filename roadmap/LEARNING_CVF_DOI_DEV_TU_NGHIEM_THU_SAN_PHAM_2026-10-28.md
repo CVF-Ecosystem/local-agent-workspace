@@ -2,7 +2,7 @@
 
 **Ngày:** 28/10/2026. **Nguồn:** project LAW (`local-agent-workspace`), operator chỉ định trong hội thoại 28/10/2026.
 **Người lập:** Claude (Opus 5.5). **Đích:** CVF gốc `D:\UNG DUNG AI\TOOL AI 2026\Controlled-Vibe-Framework-CVF`, sau đó các workspace thừa hưởng (LAW và project sau).
-**Trạng thái:** **ĐỀ XUẤT — chưa nộp vào CVF.** Claude không ghi vào kho CVF (ngoài phạm vi phiên, và LAW cấm sửa CVF cha khi chưa được giao).
+**Trạng thái hiện hành31/10:** phần bổ sung mục10 đã nhập vào source canonical CVF nền theo chỉ định mới của operator; contract/learning/registry đã kiểm bounded (mục10.5). Chưa commit/push hoặc đồng bộ public. Nhãn đề xuất/chưa nộp trong các phần28/10 là lịch sử của bản ban đầu.
 Operator chuyển file này cho agent bảo trì CVF; CVF tự xét theo `CVF_FINDING_TO_GOVERNANCE_LEARNING_TRIGGER_STANDARD.md`.
 
 ## 1. Chỉ định của operator (nguyên ý)
@@ -168,14 +168,19 @@ Quy tắc nói về nghiệm thu sản phẩm, nên tranche áp nó phải tự 
 1. Sau khi sửa governance và đồng bộ, chạy `new-cvf-workspace.ps1` vào thư mục tạm: workspace mới phải có quy tắc ở đúng file sinh ra.
 2. Chạy script cài wrapper vào thư mục tạm; so `WORKSPACE_RULES.md` sinh ra với bản chụp `1424b6ba…dd03` (khác ở đâu thì giải thích).
 3. Chạy các test/validator CVF liên quan contract và machine contract; full suite theo quy định của CVF cho thay đổi chạm public surface.
-4. Sau khi bản clone nhận bản mới từ GitHub, bỏ bản sửa tay: `git apply -R` đúng patch, rồi pull; kiểm clone không còn khác `origin/main` ở 8 file.
+4. Sau khi bản clone nhận bản mới từ GitHub, bỏ bản sửa tay rồi đồng bộ lại; kiểm clone không còn khác `origin/main` ở 8 file. **Hiện trạng 29/10
+   01:46:** bản sửa tay đã được commit cục bộ trong clone (`64edd93 docs: define developer-owned product acceptance`), kèm
+   `aea3ea5 chore: checkpoint local model gateway WIP`; clone `ahead 2, behind 2`, chưa push. Không push hai commit này. Khi đến bước này, tách
+   commit model gateway ra (thuộc owner khác) trước, rồi bỏ `64edd93` (ví dụ `git revert` hoặc đặt lại nhánh về `origin/main` sau khi đã giữ
+   commit model gateway ở nhánh riêng); patch `511b96da…beee` vẫn là bản lưu nội dung.
 5. LAW nhận lại bản CVF mới ở lượt riêng (C6 cho LAW), chạy lại full suite LAW.
 
 ### 9.6. Điều phối
 
 - Governance đang có việc khác (commit `618caaba2`, 29/10 00:42, "operator hold" M6). Trước khi sửa, đọc handoff/brief hiện hành của governance;
   không chen vào file đang có owner.
-- Không commit/push từ bản clone; bản clone còn WIP khác (`EXTENSIONS/CVF_MODEL_GATEWAY/...`) không thuộc tranche này.
+- Không push từ bản clone. Clone đã có 2 commit cục bộ chưa push (xem 9.5 bước 4), trong đó một commit là WIP model gateway
+  (`EXTENSIONS/CVF_MODEL_GATEWAY/...`) không thuộc tranche này; người làm tranche hỏi owner của WIP đó trước khi đụng tới nhánh.
 - Dedup trước khi viết (mục 7): `CVF_CI2_T4_PRODUCT_READINESS_PILOT_CORPUS_PACK_2026-06-02.md`, `CVF_MSEA_R35_T2_CVF_CURRENT_PRODUCT_CAPABILITY_SNAPSHOT_2026-07-05.md`,
   mục "noncoder interaction gaps" của contract, `docs/reviews/learnings/`.
 
@@ -183,3 +188,80 @@ Quy tắc nói về nghiệm thu sản phẩm, nên tranche áp nó phải tự 
 
 Đã đọc chỉ đọc: `AGENTS.md` CVF dòng 85–125; hợp đồng mốc dòng 1–45 và các dòng có từ user/operator/acceptance/noncoder; trigger standard dòng 48–80.
 Chưa đọc đủ hai standard đó, chưa đọc `CVF_PROJECT_LEARNING_LOOP_STANDARD.md`, chưa kiểm cách overlay mang quy tắc xuống workspace.
+
+## 10. Bổ sung 31/10/2026 — kiểm soát giá trị tiến độ và chi phí
+
+**Chỉ định mới:** operator xác nhận công việc kỹ thuật có giá trị, nhưng quy tắc bám roadmap phải giữ; thời gian/chi phí bỏ ra phải tương xứng với mức tiến tới sản phẩm XONG. Chính operator phải yêu cầu kiểm tra vì roadmap kéo dài. Không diễn giải thành cho phép bỏ gate hoặc coi công việc trước là vô ích.
+
+**Trạng thái tiếp nhận trước upstream31/10 (lịch sử):** learning28–29/10 đã được LAW ghi nhận tiếp nhận CVF bounded tại PROJECT.md (public15e3945/operator-local4043caf14); nhãn “chưa nộp” đầu tài liệu là lịch sử của đề xuất28/10. Phần bổ sung31/10 này được áp vào hướng dẫn LAW §8.3; **chưa đối chiếu/ghi/tiếp nhận ở CVF gốc**, chưa kiểm hiệu quả thực thi. CVF owner cần dedup và nhập vào contract/cơ chế hiện hữu, không tạo thêm ledger hay tầng phê duyệt. Không suy cập nhật LAW thành upstream COMPLETE.
+
+### 10.1. Lỗi tái diễn và nguyên nhân kiểm soát
+
+Quy tắc10 và §8.3 đã yêu cầu mốc, toàn gap, phần lần giao đóng và phần còn lại. Sai ở thực thi: Main liệt kê đủ gap nhưng vẫn lấy việc kỹ thuật gần nhất làm việc tiếp theo; đối chiếu mốc không chi phối quyết định tiếp/dừng. Reviewer tập trung đúng nguồn/hash/phạm vi/test mà chưa phản biện mức đóng góp sản phẩm và tổng chi phí. Worker làm theo brief; trách nhiệm lựa chọn và kiểm soát ưu tiên thuộc Main.
+
+| Bằng chứng trong LAW | Kết luận đúng phạm vi |
+|---|---|
+| HANDOFF11.4: chuỗi public admission → checkpoint → builder → timeout diagnostic; các nhóm gap V4/V7 vẫn mở | Nguồn sạch và diagnostic hữu ích, nhưng chưa tạo thêm bằng chứng sản phẩm dùng trọn luồng; tên mốc và danh sách gap không tự ngăn lệch ưu tiên |
+| public-checkpoint/build-run/exit.json: wrapper quan sát1803.079s, behaviour gate quá1800s, không ZIP; số test/skip/fail UNKNOWN vì chưa giữ partial output | Budget từng lệnh không quản được chi phí toàn nhánh; phép chạy dài phải có khả năng trả bằng chứng dùng được khi dừng. 1803.079s chỉ là một lần quan sát, không phải tổng thời gian nhánh hay số tiền |
+| timeout-diagnostics/MAIN_REVIEW.json: sửa giữ log,6mock đạt; fullgate bản mới NOT_RUN | Kiểm hẹp có giá trị kỹ thuật, không đóng nghiệm thu artifact hoặc toàn mốc; sửa nhỏ rõ nguyên nhân lẽ ra Reviewer xử lý theo §8.3, tránh giao lại Worker |
+| STATE trước sửa31/10 vẫn chọn chẩn đoán runtime → artifact làm bước tiếp | Hướng đi được truyền theo trạng thái tác nghiệp thay vì xét lại thứ tự project → host/chất lượng → sửa/tiếp phiên/bảo toàn → artifact/review |
+
+Locator receipt tương đối: `working/source-intake-20261030/fullsuite-candidate-20261031/public-checkpoint/`. Không có dữ liệu billing/token toàn nhánh để quy tiền hoặc kết luận mọi chi phí đều lãng phí. Bản STATE/HANDOFF trước sửa và SHA nằm tại `archive/maintainer/roadmap-value-control-before-20261031/`.
+
+### 10.2. Nâng learning tại điểm ra quyết định
+
+Quy tắc đầy đủ của LAW nằm duy nhất tại ROADMAP_HOAN_THIEN.md §8.3, mục “Quyết định tiếp tục theo giá trị và chi phí”; AGENTS.md đã dẫn tới §8.3. Phần tăng thêm là: quyết định tiếp/dừng dựa trên điều kiện sản phẩm cụ thể; chẩn đoán phải là dependency hữu hạn; tính chi phí tích lũy cùng nhánh; dừng khi không đạt đóng góp hoặc lại phát sinh chuẩn bị; chỉ mở lại với căn cứ/cách làm thay đổi; báo tiến độ bằng khả năng sử dụng và phần nghiệm thu thực đóng. Giữ nguyên authority, acceptance và gate phát hành.
+
+**Disposition đề xuất cho CVF:** `RULE_EXISTS / EXECUTION_GAP`; bổ sung điều kiện ra quyết định vào hợp đồng mốc/template brief hiện có sau dedup. Không kết luận thiếu standard, không chỉ thêm lời nhắc hoặc tăng effort/model. Chưa triển khai machine checker; kiểm sự hiện diện trường trong brief cũng chưa chứng minh lựa chọn có giá trị.
+
+### 10.3. Đối chiếu quy tắc trên tình huống đã gặp
+
+Đây là kiểm nội dung bằng tình huống lịch sử, không phải phép thử host hay chứng minh đã ngăn được hành vi:
+
+| Tình huống | Quyết định quy tắc mới yêu cầu |
+|---|---|
+| Brief ghi V4/V7 và đủ gap nhưng chỉ hứa thêm log/checkpoint | Chưa đủ mở lượt; chỉ rõ dependency chặn điều kiện nào, câu hỏi cần trả lời, giới hạn tích lũy và hành động sau kết quả |
+| Builder timeout, chưa có ZIP; sửa diagnostic xong rồi muốn chạy lại dài | Không tự nối lượt. Giữ failure; xem lại toàn mốc/chi phí và khả năng thu evidence. Chỉ tiếp với căn cứ mới, đóng góp/giới hạn rõ; gate vẫn bắt buộc trước release |
+|6mock đạt nhưng chưa có luồng người dùng trọn vẹn | Báo kỹ thuật đã đạt đúng phạm vi, chưa đóng thêm điều kiện sản phẩm; không coi revision mới là tiến độ mốc |
+| Một sửa log nhỏ đã rõ cách sửa trong review | Reviewer sửa/kiểm hẹp trong cùng tranche; không thêm Worker hoặc vòng review chỉ vì sửa nhỏ |
+
+**Điều kiện đóng learning về hiệu quả:** ở lần giao sản phẩm tiếp theo, đối chiếu quyết định trước giao với kết quả thật: đã đóng gì so cam kết, đã tốn bao nhiêu theo đơn vị quan sát được, còn gì, và có thực sự dừng/đổi hướng khi chạm điều kiện hay không. Chưa có kết quả đó thì ghi **HIỆU QUẢ CHƯA KIỂM**, không gọi văn bản mới là vấn đề đã được giải quyết. Không mở riêng một tranche chỉ để chứng minh learning.
+
+### 10.4. Thử tại LAW ngày31/10 — LOCAL_PILOT_WITH_LIMITS
+
+Operator yêu cầu thử tại LAW trước upstream. Gắn V4/V6/V7/acceptance28; Main chọn ca báo cáo từ nguồn → thiếu/NA/0/kỳ khác → sửa khi mở fresh context, thay mặc định chạy tiếp runtime. Tái dùng orders.csv/definitions.md và internal-comms/spreadsheet-check, không dựng framework/corpus mới. Fixture cũ chỉ là regression kết hợp sửa-tiếp việc, không holdout hoặc chứng minh chất lượng ổn định. Hồ sơ tại HANDOFF “V4/V6/V7 kiểm báo cáo và tiếp phiên” revision2 POST và `working/v4-office/acceptance-20261031/RESULT.json`.
+
+- Hai child native độc lập fresh/fork none, requested Terra6.1High, actualbackendUNKNOWN; Main đọc đủ report/state và tính lại bằng Python CSV/Decimal. V1 có18pack/2.190.000VND NET; xác nhận mô phỏng O04=4 làm v2 thành22pack/2.670.000VND, tăng4pack/480.000VND. Giữ NA khác0/thiếu và loại dòng kỳ khác; không giả nguồn đã đổi. Hash2nguồn/2skill/index và2filev1 giữ.
+- Dùng2call/0retry, dừng sau kết quả đã định, không mở thêm benchmark hoặc chạy lại builder. Thời gian quan sát177.384s từ PREreceipt tới review2, không gồm scoping trước và tài liệu cuối; billing/tokenUNKNOWN. Đây là evidence bước đầu của việc giữ giới hạn và bàn giao nội dung có ích, không phải tỷ lệ ROI hay tổng chi phí project.
+- **Finding mới phải giữ:** chỉ dẫn Main tránh lộ oracle đã cấm đọc HANDOFF trong khi quy tắc bắt Worker đọc brief trước ghi; chỉ dẫn cho đọc đoạn giới hạn đến sau khi actor1 đã tạo file. Stage1 protocol NOT_MET; đọc sau không chữa hồi tố. Main chịu lỗi thiết kế brief; Worker chưa trả lại mâu thuẫn. Main sửa hẹp ngay cùng lần giao, lưu nguyênrevision1/SHA, tách oracle sang RESULT Main-only. Actor2 báo đọc revision2 trước ghi; không chứng minh host khóa tác động.
+- **Bổ sung thực thi tại §8.3:** brief/quyền/revision cần dùng phải đọc được theo chính phạm vi đã giao; tách oracle khỏi brief; Main kiểm bản Worker thực nhận trước dispatch. Không tăng lượt chạy để xóa finding, không thêm tầng giám sát. Ca nội dung đạt có giới hạn không xóa vi phạm quy trình.
+
+**Kết luận:** LOCAL_PILOT_WITH_LIMITS; nội dung/sửa-tiếp việc đạt đúng ca, toàn protocol không PASS và chưa đóng toàn mốc sản phẩm. Learning đã được thử trong công việc thật của đội dev trên DATAMOCK, chưa chứng minh hiệu quả bền vững hoặc tự cưỡng chế. Khi xét upstream phải mang cả finding/lần sửa và giới hạn, không chỉ báo “test đạt”; chưa ghi CVF gốc trong lượt này. Không mở thêm lượt thử chỉ để hoàn thiện hồ sơ learning.
+
+### 10.5. Đã chuyển vào CVF nền ngày31/10 — CANONICAL_SOURCE_UPDATED_BOUNDED
+
+Operator yêu cầu chuyển bài học lên CVF nền sau các lượt làm tại LAW. Đã cập nhật
+nguồn canonical `D:/UNG DUNG AI/TOOL AI 2026/Controlled-Vibe-Framework-CVF`,
+không sửa ngược từ public clone hoặc tạo learning family mới:
+
+- `docs/reference/CVF_PRODUCT_MILESTONE_COVERAGE_CONTRACT_2026-10-23.md`, mục
+  `Continuation Value And Cumulative Cost Decision`: quyết định tiếp/dừng theo
+  đóng góp sản phẩm, chi phí toàn nhánh, dependency hữu hạn, giữ sửa nhỏ trong
+  tranche, brief đọc được và lưu bằng chứng khi dừng; mục tiêu là hoàn thiện
+  roadmap, không mở phép thử chỉ để chứng minh learning.
+- Learning cùng family23/10 ghi recurrence LAW, năm điều kiện tiếp nhận, các
+  failure của Main và bằng chứng ZIP/lifecycle thật; README thêm trigger đọc.
+  Registry hiện có được rebind hash đúng finding, giữ nguyên proof máy lịch sử
+  và trạng thái HTML/M6 đang giữ. Disposition RULE_EXISTS + STANDARD_UPDATED;
+  không thêm schema/checker/ledger hoặc suy hướng dẫn thành tự cưỡng chế.
+- Năm guard hiện có (F2G, read-ahead, Markdown, operation trace, file-size) exit0;
+  diffcheck đạt, đúng bốn file CVF thay đổi, HEAD không đổi. Không chạy lại LAW
+  hoặc provider/fullsuite vì chỉ chuyển văn bản/binding, không đổi artifact.
+
+Receipt và before-bytes/SHA: `archive/maintainer/cvf-learning-upstream-20261031/UPSTREAM_RECEIPT.json`.
+Bản nguồn mục10 trước upstream được giữ nguyên trong archive này. Hai builder
+LAW quan sát1641.078+1264.562=2905.640s; lượt đầu thất bại và lỗi checker raw-vs-LF
+được giữ, không tính thành PASS. ZIP hiện hành/13CLI/freshVIEN/two upgrades đạt
+bounded, không chứng minh ngăn tái diễn bền vững hay ROI toàn project. Không mở
+thêm learningtrial. Phần chưa làm: commit/push/public-sync/rollout sibling và
+machine semantic enforcement; toàn gap roadmap50/PRERELEASE_NOT_READY giữ.

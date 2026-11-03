@@ -1,0 +1,7 @@
+{
+  ".agent/STATE.md": "9684ab9497dbbe7ab404797ff95fa2027245020ff97b47642dc40b9be5329de1",
+  ".agent/HANDOFF.md": "5df559c6d31102e62fbd75caea7bfbf82c6848f9cb18bc0ecd53517c3d6023b0",
+  "roadmap/ROADMAP_VAN_PHONG_NGHIEP_VU.md": "3673d20a86613103ab0fee8b2f2c70e508d093e30889c732b8c95f80a2aab91f",
+  "tools/build_release.py": "e295533079558904d541056f71145d8747d124b09be3e8b429f0c3d74cbf63e5",
+  "tests/test_release_gate.py": "c86b7adbe48b463bbe3e4a50b316adc6592b3311b6c7a20d8ff1da23b6fd7913"
+}

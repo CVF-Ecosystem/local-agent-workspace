@@ -56,9 +56,18 @@ class DeliveryRepairs(unittest.TestCase):
             cache.parent.mkdir()
             cache.write_bytes(b'local cache\r\n')
             (root / 'README.md').write_bytes(b'package\n')
+            # Unknown sources still fail closed; cache selection needs a coherent clean fixture.
+            with self.assertRaises(cp.ProjectionError) as refused:
+                cp.delivery_manifest(['README.md'], branding=False)
+            self.assertEqual(refused.exception.code, 'SOURCE_STATE_INVALID')
+            (root / 'PROJECT.md').write_bytes(b'DATAMOCK project\n')
+            rels = ['PROJECT.md', 'README.md']
+            manifest = ''.join(cp.sha_bytes(rel, (root / rel).read_bytes()) + '  ' + rel + '\n' for rel in rels)
+            (root / 'MANIFEST.sha256').write_text(manifest, encoding='utf-8')
+            self.assertEqual(cp.source_state(), 'clean')
             self.assertNotIn('.pytest_cache/README.md', cp.all_files())
             self.assertNotIn('.pytest_cache/README.md', cp.delivery_selection(branding=False))
-            self.assertNotIn(b'.pytest_cache', cp.delivery_manifest(['README.md'], branding=False))
+            self.assertNotIn(b'.pytest_cache', cp.delivery_manifest(rels, branding=False))
             self.assertEqual(cache.read_bytes(), b'local cache\r\n')
 
     def test_long_pack_description_is_rejected_and_fallback_keeps_words(self):

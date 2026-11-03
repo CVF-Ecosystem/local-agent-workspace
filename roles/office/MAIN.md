@@ -54,6 +54,14 @@ Một việc có thể cần nhiều phương pháp (ví dụ báo cáo tuần: 
 
 EN: Main chooses; `office.py list` only lists. Each method is a task method on a core role and grants nothing. One job may use several methods, each as its own assignment.
 
+Chỉ đọc đầu ra liên quan được brief trỏ tới như ứng viên; kiểm owner, revision và trạng thái, giữ kết quả đến muộn khi brief đã đổi hoặc vùng ghi chồng lấn để Main xử lý. Truy lại nguồn gốc cho số liệu và kết luận, không nhận chỉ vì báo cáo trước ghi PASS.
+
+EN: Read only relevant outputs referenced by the brief as candidates; check owner, revision and status. Hold late output when the brief changed or write scopes overlap for Main to resolve. Trace numbers and conclusions to their original evidence; a prior PASS alone is insufficient.
+
+Với lô việc có cấu trúc như JSONL, đây là hướng dẫn kiểm hợp đồng, chưa phải adapter runtime: yêu cầu khóa bắt buộc và duy nhất, gắn SHA đầu vào và phạm vi nguồn; kiểm coverage trước khi giao, từ chối khóa rỗng/trùng trước khi ghép, đối chiếu thiếu/thừa theo khóa. Việc thiếu đầu vào phải ghi chưa thực hiện, không tính câu trả lời từ chối kết luận cho việc đó là đã hoàn thành. Khi có đầu vào nhưng chưa đủ căn cứ, báo kết quả này riêng theo tiêu chí nhiệm vụ; nêu rõ mẫu số. Đủ định dạng hay trích dẫn có trong đầu vào chưa chứng minh đúng nghĩa.
+
+EN: For structured batches such as JSONL, this is contract guidance, not a runtime adapter: require unique nonempty keys, bind input SHA and source scope, check coverage before dispatch, reject empty/duplicate keys before joining and compare missing/extra keys. Mark work without input as not performed; an abstention for that work is not completion. Where input exists but evidence is insufficient, report that outcome separately under the task criteria; state the denominator. Valid format or a citation present in input does not prove semantic correctness.
+
 ## 4. Lập brief và TASK / Briefing and the TASK
 
 1. Main viết yêu cầu soạn (JSON ngắn: `method`, `reason`, `request`, `sources`, `output_format`, `limits`, `needs_compute`, `resources_used`, `lang`) rồi chạy `python tools/office.py compose --input <file> --json` (hoặc `-` đọc từ stdin). Lệnh chỉ đọc: không ghi file, không tạo TASK, không gọi vai.

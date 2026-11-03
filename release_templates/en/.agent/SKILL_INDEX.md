@@ -3,6 +3,8 @@
 A catalog for finding skills by task. It is not a priority order. When a skill adds what the task needs and matches the
 "Use when" column, read that skill's `SKILL.md` before starting (see `AGENTS.md`). You may use a native skill, a local skill, a combination, or handle the task directly.
 
+When project forms, sources or business rules are needed, check “Use when” before settling the method and read a relevant skill; a one-sentence edit need not search the index. Use the accepted revision for the canonical source and scope; version/hash only signals divergence and does not select a higher version or activate a candidate.
+
 | Skill ID | Origin | Scope | Location / Provider | Use when | Status | Provenance / Notes |
 |---|---|---|---|---|---|---|
 | office-documents | LOCAL | SHARED | skills/local/shared/office-documents/SKILL.md | Draft or edit Vietnamese business documents from sources and templates: procedures/SOPs, forms, internal guidance or structured reports, as Word files or text. Use when content needs structure around its readers and tasks; short edits can be done directly. For administrative format, consider vn-admin-documents. | AVAILABLE | Word settings/checks supplement native tools. Checker stdlib; helper python-docx; renderer also needs beautifulsoup4; ND30 is LAW-only. Intake: docs/en/SOURCES_AND_REFERENCES.md |

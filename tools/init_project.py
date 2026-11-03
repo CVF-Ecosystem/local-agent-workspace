@@ -18,13 +18,20 @@ Mọi thay đổi ghi qua một giao dịch có nhật ký (tools/transaction.py
 All changes go through one journaled transaction; if interrupted, run resume or rollback.
 Script không xóa file nào và không dùng mạng. Chỉ cần Python 3.8+.
 """
-import argparse, datetime, io, json, os, re, sys
+import argparse, datetime, io, json, ntpath, os, re, sys
 from result_schema import emit, make
 import transaction as tx
 import execution_profile as ep
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OVERLAY_SKIP = {'en/PROJECT_INSTRUCTIONS_SNIPPET.md'}
+INTAKE_CONFIG_REL = '.agent/SOURCE_INTAKE.json'
+
+
+def intake_config(rel):
+    """Private choices must never become an English overlay; standalone init needs no package import."""
+    path = ntpath.normpath(rel).replace('\\', '/').casefold()
+    return path in (INTAKE_CONFIG_REL.casefold(), ('en/' + INTAKE_CONFIG_REL).casefold())
 
 def overlay_pairs():
     """Mọi file trong en/ (trừ OVERLAY_SKIP) và đường dẫn đích ở thư mục gốc."""
@@ -34,7 +41,7 @@ def overlay_pairs():
         dirs.sort()
         for f in sorted(files):
             src = os.path.relpath(os.path.join(d, f), ROOT).replace(os.sep, '/')
-            if src in OVERLAY_SKIP or f.endswith('.bak') or '.bak-' in f:
+            if intake_config(src) or intake_config(src[3:]) or src in OVERLAY_SKIP or f.endswith('.bak') or '.bak-' in f:
                 continue
             out.append((src, src[3:]))
     return out

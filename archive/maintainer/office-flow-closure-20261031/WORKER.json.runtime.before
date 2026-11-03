@@ -1,0 +1,78 @@
+{
+  "status": "FINAL",
+  "writer": "Terra requested gpt-6.1-terra/high; actual backend unknown",
+  "driver_sha256": "e0d07548ec5389268f835321e79f08381d4ccfedaab70efe3f2e900c45fac70d",
+  "expected_zip_sha256": "29fbeeed44adeb494ce9f3c822a2a9baf3a5c0750a6019c9301726adfc8713af",
+  "current_and_frozen_test_sha256": "c2b05cfc3a9c5520cda00bd668cc5b99498f3e182248f7529cfee308631bf8f8",
+  "tests": [
+    "test_preview_is_read_only_and_scanners_exclude_staging",
+    "test_success_exact_bytes_metadata_blank_fulltext_repeat_refuses",
+    "test_commit_boundary_rollback_restores_exact_and_can_reuse",
+    "test_concurrent_index_save_is_not_overwritten_by_resume_or_rollback",
+    "test_newfile_user_inplace_edit_is_preserved_and_blocks_index",
+    "test_real_process_kill_resume_and_rollback_boundary"
+  ],
+  "read": [
+    "User-provided AGENTS instructions",
+    ".agent/HANDOFF.md (first brief, but first command inadvertently requested full file and tool output included later historical material; not used as evidence)",
+    "tests/test_library_intake.py",
+    "ZIP central directory first three names",
+    "SHA256 only: current test, frozen test, ZIP, driver"
+  ],
+  "static_checks": [
+    "Python ast.parse: OK",
+    "current and frozen test SHA256 equal",
+    "ZIP SHA256 equals brief"
+  ],
+  "not_run": [
+    "candidate driver",
+    "unittest",
+    "browser",
+    "product runtime",
+    "ZIP/extracted full comparison",
+    "module imports/origin checks",
+    "pre/post runtime snapshot"
+  ],
+  "risks_for_main_pre_review": [
+    "Child timeout reports PARTIAL and leaves the owned child alive without killing it; cleanup and post-check are deliberately withheld. Captured timeout logs may be partial. Handle ownership before any continuation.",
+    "The 180-second budget limits child wait relative to start; preflight/postflight hashing itself is not externally hard-stopped. Review against the strict parent timeout contract before approval.",
+    "The test imports library_audit lazily from artifact tools in addition to the six explicitly bound modules; the driver asserts the six named origins, not the seventh. This is unchanged trusted test behavior.",
+    "The six named tests cover repeat refusal but do not independently exercise the separate atomic no-clobber race test; do not claim that race covered.",
+    "Driver has no embedded approval gate; operator must not execute before RUN_APPROVED, and --suite must only be invoked by the driver after preflight.",
+    "Actual test and module bindings beyond the two test hashes and ZIP are not inspected yet; preflight may fail and must not be refreshed."
+  ],
+  "expected": "Only bounded ZIP50 P1 evidence if all preflight, six tests without skips, origins and pre/post checks pass; not whole product or UI53 acceptance.",
+  "nowriter": true,
+  "actuals": {
+    "driver_sha256": "f7b125530ec106c00da156692a32b2ae88dae4f0ac956e3997b4a2a7414fd02a",
+    "driver_revision_author": "Sol PRE small fix; initial Terra SHA retained above",
+    "command": "python -X utf8 -B working/office-flow-closure-20261031/scripts/p1_artifact_acceptance.py",
+    "execution_count": 1,
+    "process_exit": 0,
+    "result_status": "PASS_BOUNDED",
+    "summary": {
+      "tests": 6,
+      "skips": 0,
+      "failures": 0,
+      "errors": 0,
+      "seconds": 6.812999999849126
+    },
+    "driver_elapsed_seconds": 9.125,
+    "extracted_file_count_pre": 311,
+    "extracted_file_count_post": 311,
+    "extracted_unchanged": true,
+    "bindings_unchanged": true,
+    "modules": "six product modules and library_audit reported under extracted artifact tools",
+    "logs_sha256": {
+      "stdout.log": "e5b8f2c5e89c6183301f2a5899df7f558b33ce8e746a3185c6518910aca15b29",
+      "stderr.log": "87f936e010dde8c0df3aaaf74200fd67cbdaf8100cff08a33f8eaa80154ac103",
+      "results.json": "fb604a37b899e4c9abad5b0a26b6651454ee9045daa761143806043ec6b2bb0f"
+    },
+    "timeout": "none observed",
+    "budget": "180s cooperative total target, not a hard OS cap; child 120s and fixture subprocess 30s",
+    "scope": "six named methods only; separate atomic race not tested; no whole P1, UI53, W3/W4, artifact54 or host acceptance",
+    "post_review": "pending Sol independent POST and Main disposition",
+    "backend_effort_actual": "unknown",
+    "cost": "unknown"
+  }
+}

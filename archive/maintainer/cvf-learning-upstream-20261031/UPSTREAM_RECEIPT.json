@@ -1,0 +1,86 @@
+{
+  "status": "CANONICAL_SOURCE_UPDATED_BOUNDED",
+  "date": "2026-10-31",
+  "operator_authority": "User: chuyển bài học lên cho CVF nền đi",
+  "core_root": "D:\\UNG DUNG AI\\TOOL AI 2026\\Controlled-Vibe-Framework-CVF",
+  "base_head": "8cbdd21ca0b01d7ef9e9423ce687af86ada8666d",
+  "core_files": {
+    "docs/reference/CVF_PRODUCT_MILESTONE_COVERAGE_CONTRACT_2026-10-23.md": {
+      "before_sha256": "1b169c88a11a6b172c2b32fb30545bd28ba70ea1f975a3fa46fcac258203b81f",
+      "after_sha256": "21ffec098cd706eb33c6d6fe181814986a0c44620bd6da2d5b1abee31f2072dc"
+    },
+    "docs/reviews/learnings/CVF_PRODUCT_MILESTONE_COVERAGE_LEARNING_2026-10-23.md": {
+      "before_sha256": "139ff9d01281d098659bb892faf336f0c19e9ecdbe26511cc0f7efcb9569d586",
+      "after_sha256": "25e1f13b7ad24097626217b0cdbc7ab7554743d67b4114650df54d76f5e09a59"
+    },
+    "docs/reviews/learnings/README.md": {
+      "before_sha256": "41087a6a014926816e9372b89db19df9eca5f3a5c81aa269080308f8cb09b9ed",
+      "after_sha256": "9a552e8d4a08e6b88a57f3aa2c0b70cd0243015b5d6132b2793e6c340e1d8e59"
+    },
+    "docs/reference/downstream_gate_profile/downstream_finding_intake_registry.json": {
+      "before_sha256": "70b749ba7bcb68aec615e4370b54c3328a603f54edfd0f71e80a06f26ff94acf",
+      "after_sha256": "10933aac3056eed4b4c82212b2d38433e5ad1b37a5a6b6957cc19158294e8ae3"
+    }
+  },
+  "finding_id": "CVF-PRODUCT-MILESTONE-COVERAGE",
+  "parent_decision": "MERGE_INTO_EXISTING_OWNER",
+  "dispositions": [
+    "RULE_EXISTS",
+    "STANDARD_UPDATED"
+  ],
+  "checks": {
+    "finding-learning": {
+      "exit": 0,
+      "stdout_sha256": "7cbd787fda355545f63f097922c2913f9e3ce21af3cf98579708f5dcf2736e4b",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "read-ahead": {
+      "exit": 0,
+      "stdout_sha256": "5636dc7ff448a0f43a300afbb6b57714062ded1253489a94e60ef7c55f95be6f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "markdown": {
+      "exit": 0,
+      "stdout_sha256": "328662763f117cdce9269f8394be7d2d2fd8aeb05f30f57e7105590831c292f8",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "operation-trace": {
+      "exit": 0,
+      "stdout_sha256": "4dd55f02e7b19559ce065ff2e53e1b9d6f4b68ed4cb5eff6866b5f58fcc81028",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "file-size": {
+      "exit": 0,
+      "stdout_sha256": "71ff17551076f5fb17c7d9e57a9db435d92d86676c27ebabeff9e8dfef3dc4ba",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "diff_check_exit": 0,
+  "no_extra_core_paths": true,
+  "committed": false,
+  "pushed": false,
+  "public_synced": false,
+  "runtime_or_schema_changed": false,
+  "new_machine_checker": false,
+  "LAW_application": "Existing local rule already applied; receipt returned, no extra learning trial",
+  "effectiveness": "OBSERVED_BOUNDED_LOCAL_DELIVERY; sustained prevention and automatic enforcement NOT_PROVEN",
+  "holds": "M6/runtime/product/TypeSafe and academic/LAW PRERELEASE_NOT_READY unchanged",
+  "recorded_utc": "2026-10-31T10:56:54.792428+00:00",
+  "final_source_review": {
+    "utc": "2026-10-31T10:57:51.641613+00:00",
+    "core_diff_read": true,
+    "source_and_registry_hashes_match": true,
+    "other_parent_entries_unchanged": true,
+    "archived_bytes_verified": true,
+    "LAW_state_lines": 48,
+    "LAW_state_headings": 8,
+    "core_head_and_staged_unchanged": true,
+    "current_mode_and_parked_application_preserved": true,
+    "LAW_files": {
+      "PROJECT.md": "489f7ca1d3b84e16510595e0f613b9198eab3471c21bd5ca8df927564219aef6",
+      ".agent/STATE.md": "0b16cd15b6030460bb17d9aa694e1d4a902d8b97adcb3b6fe45916040e1e4683",
+      ".agent/HANDOFF.md": "9bcf7735c60fe376aabc499eddecdcd1347f5e960aa8290044159f030784e340",
+      "roadmap/LEARNING_CVF_DOI_DEV_TU_NGHIEM_THU_SAN_PHAM_2026-10-28.md": "048c04f55f3a6c2b436fd607afe9812d863ec8010ac105ef28869ccb5a6bb206"
+    }
+  }
+}

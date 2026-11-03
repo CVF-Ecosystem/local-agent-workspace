@@ -1,0 +1,30 @@
+{
+  "host": "antigravity",
+  "roles": {
+    "scout": {
+      "model": null,
+      "tier": null,
+      "effort": null
+    },
+    "worker": {
+      "model": "gemini-3.8-flash",
+      "tier": null,
+      "effort": "high"
+    },
+    "reviewer": {
+      "model": "gemini-3.8-flash",
+      "tier": null,
+      "effort": "high"
+    }
+  },
+  "fallback": {
+    "allowed": false,
+    "model": null,
+    "tier": null,
+    "effort": null
+  },
+  "requested_limits": {
+    "max_concurrency": 1,
+    "max_depth": 1
+  }
+}

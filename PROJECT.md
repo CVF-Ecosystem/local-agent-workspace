@@ -29,6 +29,10 @@ Chỉ điền điều hữu ích và ổn định. Tiến độ hiện tại thu
 
 - Chỉ định operator29/10/2026: được stage/commit local để lưu checkpoint và làm sạch Git worktree LAW/publicclone CVF; WIP Gateway ghi commit riêng, không nhận chất lượng. Không push/tag/release/nâng CVF gốc. Profile và dữ liệu làm việc giữ local theo .git/info/exclude, không sửa grant/B7 hoặc promote gói học thuật đang PAUSED.
 
+- **Tiếp nhận LAW sau CVF — chỉ định29/10/2026:** operator giao hoàn tất LAW C6/carrier adoption và kiểm bản đóng gói/fullsuite để tiếp roadmap. CVF acceptance source và workspace inheritance đã COMPLETE_BOUNDED (public15e3945, operator-local4043caf14); các ghi chú hoãn28/10 phía trên là lịch sử và không còn là trạng thái của learning đã nhận. LAW dùng chuẩn local tự đủ tại skills/README.md, không yêu cầu CVF sibling cho người nhận. Chỉ sửa tài liệu/hướng dẫn và kiểm trong lượt này, không runtime/schema/grant hoặc nâng trạng thái gói; academic PAUSED. Toàn gap V4/V6/V7 chưa đủ vẫn mở, không tự nhận prerelease/release hay cấp quyền push.
+
+- Chỉ định operator30/10/2026: Codex làm orchestrator/reviewer, được tạo subagent Worker Terra 6.1 High (`gpt-6.1-terra`, `high`), việc khó dùng Sol Medium (`gpt-6.1-sol`, `medium`) để tiếp roadmap. Ưu tiên chỉ định này hơn preset Worker cũ; chỉ trong bảo trì LAW, không đổi grant/profile sản phẩm hoặc quyền Git/publish.
+
 ## Mục đích của workspace
 
 Đây là workspace dựa trên file cho công việc văn phòng và vận hành: đọc tài liệu, viết quy
@@ -81,3 +85,7 @@ riêng của provider có thể ghi chú khi hữu ích, nhưng không sao chép
 Kết quả xong khi đáp ứng đúng phạm vi và định dạng yêu cầu với độ chính xác và khả năng dùng cần
 thiết. Một vấn đề cụ thể là lý do để xem lại phần liên quan; còn dư sức hay có thể trau chuốt thêm
 thì không phải lý do.
+
+- **Chỉ định operator31/10/2026 — upstream learning kiểm soát tiến độ:** đã cho chuyển bài học tại LAW lên CVF nền, mở lại đúng phạm vi canonical của learning31/10 thay quyết định hoãn cũ. Đã cập nhật contract milestone, learning cùngfamily/README và hash registry trong kho CVF gốc; receipt tại archive/maintainer/cvf-learning-upstream-20261031/UPSTREAM_RECEIPT.json. Không tự cấp quyền commit/push/publicsync/rollout project/runtime/grant; M6/TypeSafe/academic và toàn gap sản phẩm giữ nguyên. Mục tiêu vẫn hoàn thiện roadmap, không mở thêm tranche thử learning.
+
+- **Chỉ định operator31/10/2026 — không đạt phải tìm giải pháp trước:** khi một phép kiểm hoặc nhánh không đạt, dừng lặp cách chạy cũ; phân biệt nguyên nhân đã chứng minh với giả thuyết, tìm giải pháp hoặc phép kiểm phân biệt hữu hạn trước khi chạy lại. Lượt tiếp phải nêu điều gì đã đổi, bằng chứng vì sao xử lý nguyên nhân, trần chi phí và điểm dừng; giữ kết quả lỗi. Có log mới hoặc còn budget không tự đủ để chạy lại fullsuite. Không đẩy debug/QA sang người dùng; nếu chưa có đường xử lý có căn cứ thì tiếp điều kiện sản phẩm độc lập hoặc báo blocker đúng thực tế. Áp dụng cùng quy tắc giá trị/chi phí ở roadmap/ROADMAP_HOAN_THIEN.md §8.3, không mở thêm learning trial.

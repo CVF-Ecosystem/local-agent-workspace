@@ -599,6 +599,40 @@ class ContentCli(ContentBase):
         return subprocess.run([sys.executable, 'tools/library.py'] + list(args), cwd=self.project, env=env, capture_output=True,
                               text=True, encoding='utf-8', timeout=60)
 
+    def test_cli_stale_content_and_unknown_event_are_coded_no_write_refusals(self):
+        self.two_sources()
+        request = self.request(self.a)
+        (self.project / 'stale.json').write_text(json.dumps(request), encoding='utf-8')
+        event = self.event('SRC-999999', 1, sha(self.a))
+        (self.project / 'unknown.json').write_text(json.dumps(event), encoding='utf-8')
+        # Materialize the CLI tools before snapshotting, then change actual source bytes.
+        setup = self.cli('content', 'find', '--json')
+        self.assertEqual(setup.returncode, 0, setup.stdout + setup.stderr)
+        self.a.write_text('alpha v2', encoding='utf-8')
+        before = {p.relative_to(self.project).as_posix(): sha(p)
+                  for p in self.project.rglob('*') if p.is_file()}
+        for command, request_file, reason in (
+                ('content', 'stale.json', 'STALE_SOURCE_BASIS'),
+                ('source-event', 'unknown.json', 'UNKNOWN_SOURCE')):
+            for structured in (True, False):
+                with self.subTest(command=command, structured=structured):
+                    args = [command, 'preview', '--request', request_file]
+                    if structured:
+                        args.append('--result-json')
+                    out = self.cli(*args)
+                    self.assertEqual(out.returncode, 1, out.stdout + out.stderr)
+                    self.assertNotIn('Traceback', out.stderr)
+                    self.assertIn('[' + reason + ']', out.stderr)
+                    if structured:
+                        _, envelope = result_schema.split_output(out.stdout)
+                        self.assertIsNotNone(envelope)
+                        self.assertEqual((envelope['status'], envelope['code'],
+                                          envelope['changes'], envelope.get('reason')),
+                                         ('blocked', 1, False, reason))
+                    after = {p.relative_to(self.project).as_posix(): sha(p)
+                             for p in self.project.rglob('*') if p.is_file()}
+                    self.assertEqual(after, before, 'a refused CLI preview must not mutate the consumer')
+
     def test_cli_preview_apply_find_and_source_event_use_the_same_writer(self):
         sid, _ = self.two_sources()
         req = self.request(self.a, text='nội dung qua CLI')

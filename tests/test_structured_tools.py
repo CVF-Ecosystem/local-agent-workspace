@@ -271,6 +271,9 @@ class ProjectJourney(StructuredBase):
 
     def test_init_on_a_source_copy_does_not_carry_the_maintainer_state(self):
         state = self.base / '.agent' / 'STATE.md'
+        # Own the precondition; clean source snapshots carry no private maintainer state.
+        write(state, '# PROJECT STATE\n<!-- local-agent-workspace: maintainer-state -->\n'
+              '\n## Current phase\nDATAMOCK maintainer work.\n')
         maintainer = read(state)
         self.assertIn('<!-- local-agent-workspace: maintainer-state -->', maintainer)
         for lang, tpl in (('vi', 'release_templates/.agent/STATE.md'), ('en', 'release_templates/en/.agent/STATE.md')):

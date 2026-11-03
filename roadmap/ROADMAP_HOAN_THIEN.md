@@ -6,6 +6,16 @@ Cập nhật: **21/10/2026**. MVP `v1.9.0-rc2` đã công bố dạng prerelease
 
 Người dùng quyết định mục tiêu; agent làm việc trong kho chịu trách nhiệm đối chiếu code và triển khai trong phạm vi được giao. Trạng thái hiện hành ở mục 0; các snapshot và bằng chứng lịch sử bên dưới không thay kết luận nghiệm thu hiện tại. Đã công bố prerelease v1.9.0-rc2; chưa final.
 
+## Bổ sung kế hoạch nguồn — 30/10/2026
+
+Kế hoạch hiện hành cho P3/P4 (cảnh báo/chuẩn tải), P1 (nhập staging bảo toàn) và P2 (adapter Công báo có điều kiện) nằm duy nhất tại [roadmap văn phòng](ROADMAP_VAN_PHONG_NGHIEP_VU.md#nang-cap-tiep-nhan-nguon-20261030). Gắn các owner R2/A-03–A-06 và F6 hiện có; không mở lại verdict cũ hoặc tạo tranche mới. Cập nhật30/10: P3/P4 đã được review/nhận có giới hạn ở CLI Windows/Python3.11, engine pdfminer.six optional;12audit đạt,73sync có2skip1314,22content đạt. P1 source/CLI đã review bounded tại p1/REVIEW.md, còn execution scope NOT_MET giữ; cleanup hiện tại USER_CLEANUP_CONFIRMED_ABSENT theo user và exactpath metadata ở HANDOFFrevision10; P2 vẫn PLANNED, chưa có adapter/nguồn Công báo hoặc artifact mới được nhận. Sourcefactory/context đã sửa/review bounded bằng clean overlay VI/EN và failclosed; receipt factory-context/REVIEW.md, không đóng P1 protocol hoặc exactartifact/gates; cleanup hiện tại đã đóng theo user/exactpath metadata (roadmap văn phòng revision38). README14warnings đã đóng và consumercheck0errors0warnings bounded tại artifact-docs/REVIEW.md; optional intakeconfig ownership đã PRE/POST source bounded tại config-ownership/REVIEW.md (Worker11method, Main2existing regression đạt,0skip); chưa exactartifact/fullgates, không nhận toànP1/V7. Candidate-check revision36 giữ2failedattempt/module48NOT_RUN tại receiptcũ; followuprevision37 đãreview bounded: consumerrelease0error0warning/verify0changed0missing,48module47pass1skip1314/childexit0, guideexactreadonlyedge15negative/1positive vàMainbyteproof309/307khớp tại candidate-check-followup/REVIEW.md. FormalvalidatorNOT_TESTED trong-I-S giữ đúng receipt cũ; revision38 có direct formal probe riêng REVIEWED_WITH_LIMITS (2schema/4positive/7negative/2registrydeny, exit0/309hashgiữ), cleanupUSER_CONFIRMED_ABSENT, fullsuite vẫnNOT_RUN với172publicpaths chưa đủ closure, receipt candidate-gates-preparation/REVIEW.md. Chưa wholegates/fullsuite/ZIP/install-upgrade/P1protocol/P2; không sửa verdict cũ. P2 source/API/dependency có audit bounded tại p2-audit/REVIEW.md; điều kiện quyền/contract/TLS và offline/live còn mở, chưa activate adapter hoặc nhận toànP2. Lab normalized DATAMOCK P2 đã PRE/POST bounded tại p2-offline/REVIEW.md, không thay parser/API/PDF thật hoặc toàn offline/live acceptance. Receipt tại working/source-intake-20261030/p3-p4/REVIEW.md; không nhận toànV4/V7. Trước thi công theo8.3/8.4 và brief revision trong HANDOFF; V4/V7, native173, academicPAUSED cùng các gate/phạm vi chưa nhận giữ nguyên.
+
+**Hiện hành31/10, roadmap văn phòng revision50:** source sạch `8db7589f567a13300cfb986c570a2bac532b9fb0`/463tracked, 4gate đạt/1790test/8skip; exact ZIP311file/1446387B/SHA29fbeeed…713af. [Nghiệm thu current artifact](../working/release-closure-20261031/ACCEPTANCE-complete.json) đạt bounded: MANIFEST309entry, tạo mới VIEN/verify và hai nâng cấp1.8→current giữ dữ liệu riêng,13CLIexit0. RootHEAD/index/exclude/stash/profile giữ; 18grantREVOKED. Main review patch Worker Sol Medium, tự sửa lỗi env/checkpoint/checker nhỏ và giữ mọi failure cũ. Không nhận toàn quality/host/tiếp phiên/recovery/intake/P2 hoặc PRERELEASE_READY; academicPAUSED/phap-lyDEFER/khôngupstream/publish giữ. Brief hiện hành HANDOFF releaseclosure/revision2POST; không có Worker/builder đang chạy.
+
+**Lịch sử31/10, roadmap văn phòng revision45:** currentpubliccommit `c2cf67cb2646072451bc1054b29e60a711c8c327`/464raw/Gitclean vàrootHEAD/index/exclude/stash đượcMainreview/bảo toàn;2timeoutdiagnosticdelta có6mockPASS/current sourcecheck0error0warning/py38heuristic. [Currentcheckpoint](../working/source-intake-20261030/fullsuite-candidate-20261031/public-checkpoint/timeout-diagnostics/checkpoint.json). Parentffe9builderexit1/behaviourFAILED1800s/noZIP; testcount/skip/failureUNKNOWN, release_treeNOT_RUN. Diagnosticgiữ1800/code1/noZIP/chỉpartial40lines, khôngphụchồioldlog hoặcgọi6mockthànhfullgate. FreshfullgatescurrentNOT_RUN; toàn5gap/acceptance28/PRERELEASE_NOT_READY/oldhistory còn, chưaartifact/wholeinstall-upgrade/exactbyte review/mốcV4V7.
+
+**Lịch sử31/10, roadmap văn phòng revision41:** guard Windows đã review với29/29controls thực đạt; ba test cũ được cập nhật theo P1/docs39 và5/5ca hẹp đạt/exit0. Fullsuite r11-03 timeout ở1800s, khôngsummary; chưa nhận fullsuite hoặc gate/artifact mới. Hồ sơ [continuation2/REVIEW.md](../working/source-intake-20261030/fullsuite-candidate-20261031/continuation2/REVIEW.md) và HANDOFFrevision11.2POST giữ raw, source bindings và toàn bộ giới hạn. Các mô tả rev38/39 trong đoạn trên là bằng chứng lịch sử. Đội làm sạch kho pháp lý ở project kia giữ việc data; LAW chỉ phát triển/kiểm genericcore/template trên public inputs và DATAMOCK, không clean/crawl/OCR/reimport hoặc đối chiếu lại kho đang đổi. Toàn5nhóm điều kiện và PRERELEASE_NOT_READY giữ.
+
 ## Trách nhiệm nghiệm thu nội bộ — chỉ định 28/10/2026
 
 Áp dụng toàn LAW core, packages, skills, templates và các project phát triển kế thừa: đội agents dev chịu trách nhiệm biến mục tiêu nghiệp vụ thành roadmap có mốc sản phẩm, chuẩn đầu ra, bộ ca/đáp án kỳ vọng có căn cứ, kiểm và review trước khi giao bản dùng được. Noncoder cung cấp mục tiêu, quyết định nghiệp vụ và quyền tác động; không phải viết test, oracle, cấu hình kỹ thuật hoặc làm QA để đội phát triển hoàn tất sản phẩm. Feedback độ phù hợp đến sau nghiệm thu nội bộ, không chặn việc chuẩn bị/kiểm sản phẩm.
@@ -1086,10 +1096,75 @@ không thêm thủ tục cho việc văn phòng trong project người dùng.
 - **Giữ đơn vị công việc:** sửa lỗi nhỏ, kiểm bổ sung, đọc/checkpoint lại và hoàn thiện cùng acceptance ở trong tranche đang làm. Thiếu tool/lệnh, RESULT sai trường, budget dừng hoặc verdict PARTIAL không tự là lý do mở tranche mới hay chạy lại paid demo. Khi cần chia vì phạm vi/owner đổi thực sự, sửa lớn hoặc rủi ro schema/quyền/dữ liệu, ghi lý do, ranh giới và dependency ngay tại hàng/brief hiện có. Không đặt tên tranche mới chỉ để hợp thức hóa một sửa nhỏ.
 - **Reviewer chịu phần sửa nhỏ:** tự sửa lỗi rõ nguyên nhân/cách sửa trong phạm vi đã review; kiểm đúng phần, ghi tác giả và kết quả trong HANDOFF. Không chuyển lại Worker, không thêm reviewer/vòng review chỉ để soát sửa nhỏ đó. Giới hạn này không cho phép gộp schema/quyền/dữ liệu/sửa lớn vào sửa nhỏ.
 - **Giữ acceptance sản phẩm:** thử nghiệm phải phục vụ trực tiếp một điều kiện còn thiếu và tái dùng evidence còn đúng source. Điều kiện riêng của smoke, cấu trúc JSON, lệnh checkpoint hoặc cùng parent session không tự trở thành gate roadmap. Không hạ gate hiện có hoặc nhận fixture thay hành vi thật. Đổi acceptance sản phẩm phải theo quyết định operator, không suy từ kết quả test.
+- **Brief phải đọc được trước tác động:** phần Worker cần để kiểm revision/quyền/phạm vi không được đồng thời bị cấm đọc. Main tách đáp án đánh giá khỏi brief dùng chung; trước giao, tự đối chiếu đúng phần Worker sẽ nhận với yêu cầu kiểm trước ghi. Chỉ dẫn bổ sung đến sau tác động không khắc phục tuân thủ hồi tố; giữ finding, kiểm trạng thái và sửa mâu thuẫn trong cùng brief trước phần tiếp phụ thuộc. Không tăng lượt thử chỉ để xóa finding.
 - **Một brief đang giao, một owner tích hợp:** ghi revision/trạng thái ngay trong HANDOFF; ghi owner/phạm vi chồng lấn nếu có. Worker đọc lại brief/status mới nhất ngay trước tác động ghi hoặc mở lượt trả phí; revision đổi, thu hồi hoặc scope trùng thì dừng phần phụ thuộc và báo Main. Main đổi/thu hồi brief phải ghi lý do/revision mới và báo ngay operator trong hội thoại để chuyển cho Worker; không chỉ sửa file rồi coi bên kia đã biết. Chưa có xác nhận dừng/bằng chứng trạng thái thì không giao trùng hoặc sửa cùng file. Thực thi đã xảy ra trước khi biết đổi thì giữ bằng chứng, khai thời điểm và review đúng giới hạn; không retry/sửa hồi tố. Lệnh trực tiếp mới nhất của operator được ưu tiên.
+
+#### Quyết định tiếp tục theo giá trị và chi phí (operator chốt31/10/2026)
+
+Bổ sung cho đối chiếu mốc ở trên, áp dụng cả Main tự làm và giao Worker. Có tên mốc, bảng gap và budget từng lệnh vẫn chưa đủ để tiếp tục. Main chịu trách nhiệm lựa chọn việc; Reviewer phản biện lựa chọn đó, không chỉ kiểm bytes/test. Learning và căn cứ: [bổ sung31/10, mục10](LEARNING_CVF_DOI_DEV_TU_NGHIEM_THU_SAN_PHAM_2026-10-28.md#10-bổ-sung-31102026--kiểm-soát-giá-trị-tiến-độ-và-chi-phí).
+
+- **Trước khi làm tiếp, ghi quyết định ngay trong brief hiện có:** tiếp điều kiện nghiệm thu nào, vì sao là việc cần làm lúc này theo thứ tự sản phẩm đã chốt, kết quả quan sát nào làm giảm phần còn thiếu. Nếu chỉ là việc chuẩn bị/chẩn đoán, phải chỉ ra dependency bắt buộc đang chặn điều kiện cụ thể, câu hỏi hữu hạn cần giải đáp và hành động sau khi có đáp án. Nhãn V4/V7 chung hoặc “cần để chắc hơn” không đủ căn cứ giao việc.
+- **Tính cả nhánh, không đặt lại bộ đếm sau mỗi lượt:** ghi công sức/thời gian/lượt gọi đã quan sát từ đầu nhánh phục vụ cùng điều kiện, kể cả chuẩn bị, retry và review; phần chưa đo ghi UNKNOWN. Ghi giới hạn bổ sung trước lượt tiếp và điểm dừng đo được. Dùng đơn vị thực có (thời gian, số lượt, token nếu quan sát được); không bịa tiền hoặc coi timeout một lệnh là trần tổng chi phí. So với cách ít tốn hơn và evidence tái dùng bằng một câu có căn cứ; không cần bảng ROI hoặc khảo sát mới.
+- **Dừng mở rộng nhánh khi kết quả không đưa tới phần đóng đã cam kết**, hoặc lại sinh thêm chuẩn bị/chẩn đoán, chạm giới hạn, hay giá trị kỳ vọng không còn tương xứng chi phí. Main nhận/giữ bằng chứng đã có, đối chiếu lại toàn mốc và báo ngay operator phần chưa tiến triển; không tự nối một lượt tương tự. Chỉ mở tiếp khi có bằng chứng mới hoặc cách làm thay đổi giải quyết nguyên nhân dừng, kèm đóng góp và giới hạn mới trong cùng brief. Nếu chưa có, chuyển sang điều kiện sản phẩm độc lập theo thứ tự đã chốt; nếu mọi đường đều bị chặn, báo đúng blocker. Không đẩy QA/debug sang user.
+- **Một nhánh kỹ thuật chỉ được ưu tiên hơn thứ tự sản phẩm khi có dependency cụ thể.** Trước phép kiểm dài/tốn phí, kiểm bằng chứng sẵn có về khả năng giữ kết quả và chẩn đoán khi dừng; nếu chưa đủ, làm sửa hẹp cần thiết trước. Không tạo thêm nghiên cứu quan sát, agent giám sát hoặc benchmark vô hạn. Sửa nhỏ vẫn theo quy tắc Reviewer tự sửa ở trên.
+- **Bàn giao bằng thay đổi khả năng sử dụng và điều kiện nghiệm thu:** ghi phần đã đóng, phần chỉ giảm bất định và toàn phần còn lại. Nếu chưa đóng thêm điều kiện sản phẩm thì nói thẳng, dù kỹ thuật có giá trị. Không dùng revision/tranche/test/commit để biểu thị phần trăm hoàn thành hoặc hứa ngày xong thiếu căn cứ. Không hạ chuẩn, bỏ gate bắt buộc hoặc tự thu hẹp phạm vi đã cam kết để tạo tiến độ.
+
+Việc sửa quy tắc này chỉ chứng minh hướng dẫn đã được bổ sung. Hiệu quả chống lệch phải được kiểm ở quyết định giao việc và kết quả sản phẩm tiếp theo; không tự nhận đã có cơ chế tự động cưỡng chế.
 
 Đây là kiểm soát bắt buộc ở lớp hướng dẫn/hợp tác, chưa có host checker/khóa nguyên tử để
 cưỡng chế hoặc bảo đảm không có race. Không tuyên bố đã chặn lượt chạy chỉ từ trạng thái file.
+
+#### Project Development Application — phần chung và riêng
+
+Bổ sung 01-11-2026 theo yêu cầu operator nâng nền CVF, truyền workspace và kiểm trên
+LAW/SCST. Nguồn tham khảo cho maintainer local: artifact
+`project-development-application-standard` trong manifest do
+`../CVF_RULE_PACKS/ACTIVE_RULE_PACK.json` trỏ tới; nguồn CVF
+`docs/reference/downstream_gate_profile/CVF_PROJECT_DEVELOPMENT_APPLICATION_STANDARD.md`,
+SHA-256 `d06b62387e015160a77658f333882a2a316d54ffd0421071354cf63a3730dd7a` (worktree local, chưa public export).
+Quy tắc áp dụng nằm ngay mục này để LAW vẫn tự đủ; bản dùng văn phòng không cần
+repo CVF bên cạnh. Đây là kiểm soát đội phát triển, không phải bổ sung runtime LAW.
+
+**Nguồn bổ sung đã đối chiếu 01/11/2026:** active profile `operator-local`, manifest
+`../CVF_RULE_PACKS/operator-local/RULE_PACK_MANIFEST.json`, sinh lúc
+`2026-11-01T15:55:53+07:00`. `sourceCommit=1c7125286` là HEAD anchor;
+`sourceWorktreeDirty=true` nên không coi commit đó là phiên bản sạch chứa toàn bộ nội dung.
+SHA-256 manifest: `4fce59da49da1bc7033151631597ce0cf32b081f606f15e994d050570f3781d5`;
+artifact standard dùng đúng SHA-256 ở trên. Đã đối chiếu 33 file với hash khai báo,
+không lệch; artifact thư mục `session-state-tree` không có hash, chỉ xác nhận hiện diện.
+Đây là kiểm giao file, không phải đọc/tiếp nhận nội dung của cả 34 artifact hoặc chạy checker.
+
+Nguồn này bổ sung cho baseline LAW tự đủ trong `.cvf/`; không thay quy tắc, schema,
+grants hoặc một Core pin của project. `.cvf/PROVENANCE.md` ghi mốc CVF quan sát tại
+G-00 ngày 17/10, không phải bằng chứng pin mới. Không tự lấy pin public Core của
+workspace hoặc HEAD anchor của rule pack để ghi thành pin LAW. Nguồn operator-local
+không tự được export/phân phối cùng sản phẩm; các tham chiếu phía trên chỉ dành cho
+maintainer local, người dùng LAW không cần repo hoặc rule pack bên cạnh.
+
+Phần chung kế thừa: scope/owner rõ, milestone và phần còn lại, native reuse,
+review theo rủi ro, nghiệm thu nội bộ, kiểm tương xứng và không reset chi phí repair.
+Hàng roadmap/HANDOFF là hồ sơ việc mặc định; không thêm sổ hoặc work order riêng.
+
+| ID / nguồn tiêu chí | Quy tắc chung | Kiểm soát riêng khi phát triển LAW | Trigger / owner | Cách kiểm và tình trạng |
+|---|---|---|---|---|
+| LAW-DA01 / AGENTS: Chọn cách phù hợp; mục 8.3 | Ưu tiên năng lực sẵn có | Trước viết adapter/skill, đối chiếu native thực có ở phiên và nhu cầu còn thiếu; không sao chép native cho đủ bộ, không suy thiếu từ host khác | Maintainer trước chọn giải pháp; code reviewer | Brief ghi native đã kiểm/chưa biết, thiếu gì và vì sao phần bổ sung có giá trị. Đây là mapping, chưa thêm kiểm host |
+| LAW-DA02 / skills/README.md: developer-product-acceptance | Dev sở hữu chất lượng đầu ra | Khi đổi package/skill/template, kiểm artifact được giao và luồng nghiệp vụ đại diện, tách source test với nghiệm thu nội dung/hình thức | Worker + code reviewer trước giao bản dùng được | Input, bước thực hiện, output đã xem/kiểm, điều kiện chưa đạt; dùng checker chuyên loại file khi phù hợp. Không giao QA kỹ thuật cho noncoder |
+| LAW-DA03 / mục 8.3: dữ liệu, native projection, migration | Scope/risk, tương thích/phục hồi | Đổi upgrade/installer phải giữ file user và cấu hình native; dùng fixture/bản sao theo grant, không kiểm bằng ghi lên dữ liệu thật | Worker và reviewer độc lập trước nhận migration | Kiểm fresh/upgrade, preservation và lỗi có rollback theo contract thay đổi; giữ bằng chứng đúng revision. Lượt này chưa sửa/chạy migration |
+| LAW-DA04 / AGENTS: Điều phối vai; mục 8.3 và 8.4 | Nguồn/quyền, review độc lập | Phân biệt reviewer thi công code với vai Reviewer trong sản phẩm; hỗ trợ native/host chỉ kết luận cho cấu hình/version có bằng chứng | Main trước giao, reviewer khi nhận | Kiểm scope/quyền/phiên thực tế và nguồn evidence; không nâng metadata/role thành quyền hoặc whole-host PASS. Không đổi execution profile |
+| LAW-DA05 / mục 8.3: kiểm soát điều phối; learning 28-10 | Chọn việc theo giá trị và chi phí | Mỗi brief nêu điều kiện sản phẩm sẽ đóng, toàn phần còn thiếu, giá trị thêm và chi phí nhánh; tránh chọn việc kỹ thuật gần nhất chỉ vì dễ kiểm | Main trước continuation; reviewer trước đóng | Đối chiếu kết quả hữu ích với milestone, giữ lỗi và unknown; tách kết luận tranche/sản phẩm. Các hold hiện hành giữ nguyên |
+
+Agent mới bảo trì LAW chủ động chọn các row liên quan trong brief/hàng roadmap
+hiện hữu trước tác động phụ thuộc: ghi mã tiêu chí, rủi ro cụ thể cần tránh, kết quả
+người dùng sẽ nhận, phép kiểm/bản nguồn và phần còn lại. Không bắt ghi đủ cả năm mã
+cho mọi việc hoặc lập thêm hồ sơ. Ví dụ sửa adapter/upgrade chọn DA01 + DA03;
+thay giả định host/native xét thêm DA04; thay package/template xét DA02; mọi quyết định
+tiếp việc cần DA05. Một test đạt hoặc một mapping được sao chép chưa đủ làm outcome.
+
+Cập nhật khi đổi mục tiêu, rủi ro hoặc giả định native. Nếu thiếu quyết định nghiệp vụ
+quan trọng thì hỏi owner, vẫn làm phần độc lập đã được giao. Đội phát triển tự giải
+quyết cách triển khai và QA kỹ thuật. Áp dụng được đối chiếu trong review và bằng chứng
+đúng phần đã làm; chưa có bằng chứng thì ghi chưa kiểm, không nhận host tự nạp hoặc
+agent luôn tuân thủ. Không bắt tác vụ văn phòng thường ngày mở quy trình này.
 
 ### 8.4 Phân vai model/effort khi thi công roadmap
 

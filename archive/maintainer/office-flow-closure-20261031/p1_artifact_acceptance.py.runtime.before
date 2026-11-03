@@ -1,0 +1,222 @@
+"""One-shot exact ZIP50 P1 acceptance; run only after same-brief approval."""
+import hashlib
+import importlib
+import importlib.util
+import json
+import os
+from pathlib import Path
+import stat
+import subprocess
+import sys
+import tempfile
+import time
+import unittest
+import zipfile
+
+ROOT = Path(__file__).resolve().parents[3]
+JOB = ROOT / 'working/office-flow-closure-20261031'
+RELEASE = ROOT / 'working/release-closure-20261031'
+ART = RELEASE / 'acceptance/new-extracted/local-agent-workspace-v1.9.0'
+ZIP = RELEASE / 'attempt2/artifacts/local-agent-workspace-v1.9.0-rc5.zip'
+CURRENT = ROOT / 'tests/test_library_intake.py'
+FROZEN = RELEASE / 'source/tests/test_library_intake.py'
+TEMPLATE = 'skills/local/shared/source-library/assets/source-index-template.xlsx'
+NAMES = ('library', 'library_intake', 'library_sync', 'transaction', 'result_schema', 'artifacts')
+ARTIFACT_NAMES = NAMES + ('library_audit',)
+TESTS = ('test_preview_is_read_only_and_scanners_exclude_staging',
+         'test_success_exact_bytes_metadata_blank_fulltext_repeat_refuses',
+         'test_commit_boundary_rollback_restores_exact_and_can_reuse',
+         'test_concurrent_index_save_is_not_overwritten_by_resume_or_rollback',
+         'test_newfile_user_inplace_edit_is_preserved_and_blocks_index',
+         'test_real_process_kill_resume_and_rollback_boundary')
+EXPECTED_ZIP = '29fbeeed44adeb494ce9f3c822a2a9baf3a5c0750a6019c9301726adfc8713af'
+EXPECTED_TEST = 'c2b05cfc3a9c5520cda00bd668cc5b99498f3e182248f7529cf ee308631bf8f8'.replace(' ', '')
+
+
+def digest(p):
+    if not stat.S_ISREG(regular(p).st_mode):
+        raise ValueError('not a regular file: ' + str(p))
+    h = hashlib.sha256()
+    with p.open('rb') as f:
+        for block in iter(lambda: f.read(1048576), b''):
+            h.update(block)
+    return h.hexdigest()
+
+
+def regular(p):
+    s = p.lstat()
+    if stat.S_ISLNK(s.st_mode) or getattr(s, 'st_file_attributes', 0) & 0x400:
+        raise ValueError('link/reparse: ' + str(p))
+    return s
+
+
+def extracted():
+    files = {}
+    def walk(d):
+        regular(d)
+        for p in d.iterdir():
+            s = regular(p)
+            if stat.S_ISDIR(s.st_mode):
+                walk(p)
+            elif stat.S_ISREG(s.st_mode):
+                files[p.relative_to(ART).as_posix()] = digest(p)
+            else:
+                raise ValueError('non-regular: ' + str(p))
+    walk(ART)
+    return files
+
+
+def verify_archive():
+    if digest(ZIP) != EXPECTED_ZIP:
+        raise ValueError('ZIP hash mismatch')
+    disk = extracted()
+    archive = {}
+    with zipfile.ZipFile(ZIP) as z:
+        for info in z.infolist():
+            if info.is_dir():
+                continue
+            mode = info.external_attr >> 16
+            if stat.S_ISLNK(mode):
+                raise ValueError('ZIP symlink: ' + info.filename)
+            prefix = ART.name + '/'
+            if not info.filename.startswith(prefix):
+                raise ValueError('ZIP root mismatch: ' + info.filename)
+            name = info.filename[len(prefix):]
+            if not name or name in archive or '..' in Path(name).parts or '\\' in name:
+                raise ValueError('invalid/duplicate ZIP member: ' + name)
+            h = hashlib.sha256()
+            with z.open(info) as f:
+                for block in iter(lambda: f.read(1048576), b''):
+                    h.update(block)
+            archive[name] = h.hexdigest()
+    if archive != disk:
+        raise ValueError('ZIP/extracted mismatch: missing=%r extra=%r changed=%r' %
+                         (sorted(archive.keys()-disk.keys()), sorted(disk.keys()-archive.keys()),
+                          sorted(k for k in archive.keys() & disk.keys() if archive[k] != disk[k])))
+    return disk
+
+
+def bindings():
+    paths = [Path(__file__).resolve(), CURRENT, FROZEN, ZIP, ART / TEMPLATE,
+             ROOT / TEMPLATE, ROOT / '.agent/EXECUTION_PROFILE.json', ROOT / 'references/_INDEX.xlsx',
+             ROOT / '.git/HEAD', ROOT / '.git/index']
+    paths += [ROOT / 'tools' / (n + '.py') for n in NAMES]
+    paths += [ART / 'tools' / (n + '.py') for n in ARTIFACT_NAMES]
+    return {str(p): digest(p) if p.is_file() else None for p in paths}
+
+
+def suite():
+    sys.dont_write_bytecode = True
+    if digest(CURRENT) != EXPECTED_TEST or digest(FROZEN) != EXPECTED_TEST:
+        raise ValueError('child current/frozen test hash mismatch')
+    verify_archive()
+    tools = str(ART / 'tools')
+    sys.path.insert(0, tools)
+    modules = {name: importlib.import_module(name) for name in ARTIFACT_NAMES}
+    for name, module in modules.items():
+        if Path(module.__file__).resolve() != (ART / 'tools' / (name + '.py')).resolve():
+            raise RuntimeError('wrong module origin: ' + name)
+    spec = importlib.util.spec_from_file_location('trusted_intake_test', CURRENT)
+    test = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(test)
+    test.ROOT = ART
+    repo_tools = (ROOT / 'tools').resolve()
+    sys.path[:] = [p for p in sys.path if Path(p or os.getcwd()).resolve() not in (repo_tools, ROOT.resolve())]
+    print('MODULE_BINDINGS ' + json.dumps({n: str(Path(m.__file__).resolve()) for n, m in modules.items()}), flush=True)
+    case = unittest.TestSuite(test.Intake(name) for name in TESTS)
+    start = time.monotonic()
+    result = unittest.TextTestRunner(verbosity=2).run(case)
+    print('SUMMARY ' + json.dumps({'tests': result.testsRun, 'skips': len(result.skipped),
+          'failures': len(result.failures), 'errors': len(result.errors),
+          'seconds': time.monotonic() - start}), flush=True)
+    return 0 if result.wasSuccessful() and result.testsRun == 6 and not result.skipped else 1
+
+
+def main():
+    started = time.monotonic()
+    if any(os.path.lexists(str(JOB / name)) for name in ('stdout.log', 'stderr.log', 'results.json')):
+        raise ValueError('one-shot output already exists; suite not started')
+    pre = bindings()
+    result = {'status': 'PARTIAL', 'pre': pre, 'post': None, 'tests': list(TESTS),
+              'limits': {'parent_seconds': 180, 'child_seconds': 120, 'fixture_subprocess_seconds': 30,
+                         'parent_cap': 'Cooperative total target only; blocking filesystem IO/preflight/postflight is not a hard OS cap.',
+                         'coverage': 'Only six named methods; separate atomic no-clobber race test not selected.'}}
+    out = b''
+    err = b''
+    try:
+        if pre[str(CURRENT)] != EXPECTED_TEST or pre[str(FROZEN)] != EXPECTED_TEST:
+            raise ValueError('current/frozen test hash mismatch')
+        before = verify_archive()
+        result['extracted_pre'] = before
+        runtime = JOB / 'runtime'
+        runtime.mkdir(exist_ok=True)
+        regular(runtime)
+        temp = tempfile.TemporaryDirectory(prefix='p1-artifact-', dir=str(runtime))
+        env = dict(os.environ, PYTHONDONTWRITEBYTECODE='1', PYTHONUTF8='1',
+                   TEMP=temp.name, TMP=temp.name, TMPDIR=temp.name)
+        env.pop('PYTHONPATH', None)
+        remaining = 180 - (time.monotonic() - started)
+        if remaining <= 20:
+            temp.cleanup()
+            raise TimeoutError('preflight exhausted cooperative total budget; suite not started')
+        proc = subprocess.Popen([sys.executable, '-B', str(Path(__file__).resolve()), '--suite'],
+                                cwd=str(JOB), env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        try:
+            out, err = proc.communicate(timeout=min(120, remaining - 20))
+        except subprocess.TimeoutExpired:
+            result.update(reason='child timeout; owned process-tree termination requested', child_pid=proc.pid)
+            try:
+                if proc.poll() is None:
+                    if os.name == 'nt':
+                        killed = subprocess.run([str(Path(os.environ['SYSTEMROOT']) / 'System32/taskkill.exe'),
+                                                 '/PID', str(proc.pid), '/T', '/F'],
+                                                capture_output=True, timeout=10)
+                        result['owned_tree_termination_exit'] = killed.returncode
+                    else:
+                        proc.kill()
+                        result['descendants'] = 'UNKNOWN; only owned child killed on non-Windows'
+                out, err = proc.communicate(timeout=5)
+                result['child_exit'] = proc.returncode
+            except (OSError, subprocess.SubprocessError) as cleanup_exc:
+                out = getattr(cleanup_exc, 'output', None) or out
+                err = getattr(cleanup_exc, 'stderr', None) or err
+                result['cleanup_error'] = repr(cleanup_exc)
+                result['owned_child_state'] = 'UNKNOWN; temp retained'
+                temp._finalizer.detach()
+                raise
+            if os.name != 'nt' or result.get('owned_tree_termination_exit') not in (None, 0):
+                temp._finalizer.detach()
+                raise RuntimeError('timeout tree state unconfirmed; temp retained')
+        regular(runtime)
+        regular(Path(temp.name))
+        if Path(temp.name).resolve().parent != runtime.resolve():
+            temp._finalizer.detach()
+            raise ValueError('temporary cleanup path escaped owned runtime')
+        temp.cleanup()
+        result['child_exit'] = proc.returncode
+        result['post'] = bindings()
+        after = verify_archive()
+        result['extracted_post'] = after
+        result['extracted_unchanged'] = before == after
+        result['bindings_unchanged'] = pre == result['post']
+        summaries = [line[8:] for line in out.decode('utf-8', 'replace').splitlines() if line.startswith('SUMMARY ')]
+        result['summary'] = json.loads(summaries[-1]) if len(summaries) == 1 else None
+        if time.monotonic() - started > 180:
+            result.setdefault('reason', 'cooperative total budget exceeded; no PASS')
+        if ('reason' not in result and proc.returncode == 0 and result['summary'] and result['summary']['tests'] == 6
+                and result['summary']['skips'] == result['summary']['failures'] == result['summary']['errors'] == 0
+                and result['extracted_unchanged'] and result['bindings_unchanged']):
+            result['status'] = 'PASS_BOUNDED'
+    except Exception as exc:
+        result.setdefault('reason', repr(exc))
+    result['elapsed_seconds'] = time.monotonic() - started
+    for path, data in ((JOB / 'stdout.log', out), (JOB / 'stderr.log', err),
+                       (JOB / 'results.json', (json.dumps(result, indent=2, ensure_ascii=False) + '\n').encode('utf-8'))):
+        with path.open('xb') as f:
+            f.write(data)
+    return 0 if result['status'] == 'PASS_BOUNDED' else 1
+
+
+if __name__ == '__main__':
+    sys.exit(suite() if sys.argv[1:] == ['--suite'] else main())
+

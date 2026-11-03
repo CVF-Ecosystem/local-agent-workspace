@@ -20,6 +20,7 @@ sys.path.insert(0, str(ROOT / 'tools'))
 import result_schema
 import transaction as tx
 import upgrade_package as up
+import check_package as cp
 
 FAULT = tx.FAULT_ENV
 RUNTIME = '.agent/runtime/'
@@ -70,6 +71,25 @@ def only_tx(project):
     return items[0]
 
 
+class LegacyCreateCompatibility(unittest.TestCase):
+    """Default create labels remain v1; only explicit intake transactions opt in to v2."""
+    def test_default_mixed_write_create_create_exclusive_recovery(self):
+        with tempfile.TemporaryDirectory(prefix='tx-legacy-create-') as folder:
+            project = Path(folder)
+            write(project, 'old.txt', 'old')
+            transaction = tx.Transaction(folder, 'legacy-mixed')
+            transaction.add('old.txt', b'new', 'write')
+            transaction.add('created.txt', b'created', 'create')
+            transaction.add('pending.new', b'pending', 'create_exclusive')
+            self.assertEqual(transaction.journal['schema'], tx.SCHEMA)
+            with patch.dict(os.environ, {FAULT: 'commit:1'}):
+                with self.assertRaises(OSError): transaction.run()
+            self.assertEqual(tx._load(folder, transaction.txid)['schema'], tx.SCHEMA)
+            self.assertEqual(tx.resume(folder, transaction.txid)['code'], 0)
+            self.assertEqual((project / 'created.txt').read_bytes(), b'created')
+            self.assertEqual((project / 'pending.new').read_bytes(), b'pending')
+
+
 class Transactions(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory(prefix='tx-check-')
@@ -99,11 +119,28 @@ class Transactions(unittest.TestCase):
         return run('upgrade_package.py', '--project', old, '--from', new, '--apply', *extra, env=env)
 
     def package(self, name):
+        """Use the consumer projection: clean context/profile, no live user files or branding."""
         dst = self.root / name
-        shutil.copytree(ROOT, dst, ignore=shutil.ignore_patterns('.git', '__pycache__', 'dist', 'roadmap', 'tests', 'feedback'))
-        shutil.rmtree(str(dst / '.agent' / 'runtime'), ignore_errors=True)  # dữ liệu vận hành của máy phát triển không vào bản sao / dev-machine runtime data never enters the copy
-        [f.unlink() for f in (dst / 'assets').rglob('*') if f.is_file() and f.name != 'README.md']  # logo, font của máy phát triển / dev-machine branding and fonts
+        cp.materialize(str(dst), branding=False)
         return dst
+
+    def test_package_fixture_never_reads_live_user_files_or_copies_workspace(self):
+        real_open = open
+        def bounded_open(path, *args, **kwargs):
+            if isinstance(path, (str, os.PathLike)):
+                full = Path(path).resolve()
+                if ROOT in full.parents:
+                    rel = full.relative_to(ROOT).as_posix()
+                    normalized = rel[3:] if rel.startswith('en/') else rel
+                    if normalized in cp.USER_FILES or (cp.in_user_dir(rel) and not cp.package_readme(rel)):
+                        self.fail('consumer fixture attempted to read live user content: ' + rel)
+            return real_open(path, *args, **kwargs)
+        with patch('shutil.copytree', side_effect=AssertionError('copytree is forbidden for this fixture')), patch('builtins.open', side_effect=bounded_open):
+            pkg = self.package('bounded-package')
+        self.assertEqual([p.name for p in (pkg / 'working').iterdir()], ['README.md'])
+        self.assertFalse((pkg / '.agent/runtime').exists())
+        self.assertFalse((pkg / 'release_templates').exists())
+        self.assertEqual((pkg / cp.PROFILE_REL).read_bytes(), cp._ep().clean_profile_bytes())
 
     def test_preview_and_dry_run_write_nothing_and_create_no_runtime(self):
         old, new = self.upgrade_pair('pv')
@@ -117,11 +154,11 @@ class Transactions(unittest.TestCase):
         target = self.root / 'adopt-pv'
         write(target, 'AGENTS.md', 'PRIVATE')
         before = snapshot(target)
-        r = run('adopt_project.py', '--project', target, '--name', 'Example')
+        pkg = self.package('pkg-dry')
+        r = run('adopt_project.py', '--project', target, '--name', 'Example', base=pkg)
         self.assertEqual(r.returncode, 0, r.stderr)
         self.assertEqual(snapshot(target), before)
         self.assertFalse((target / '.agent' / 'runtime').exists())
-        pkg = self.package('pkg-dry')
         before = snapshot(pkg)
         r = run('init_project.py', '--name', 'Example', '--lang', 'en', '--dry-run', '--result-json', base=pkg)
         self.assertEqual(envelope(r)['status'], 'preview')

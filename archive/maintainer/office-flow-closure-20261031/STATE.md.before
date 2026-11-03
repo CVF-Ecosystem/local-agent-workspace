@@ -1,0 +1,54 @@
+# PROJECT STATE
+<!-- local-agent-workspace: maintainer-state -->
+## Goal
+
+Hoàn thiện LAW thành văn phòng trung tâm: tổ chức nghiệp vụ, giữ nguồn và tiếp việc lâu dài.
+
+## Current phase
+
+31/10/2026: đã chỉnh roadmap revision55 theo phản biện, audit gói học thuật; đã soát delta tài liệu, Sol không thấy blocker trong phạm vi đọc. PRERELEASE_NOT_READY, ZIP50 hiện hành; artifact54 chưa có ZIP mới. Không mở triển khai/pilot academic.
+
+## Completed
+
+- Roadmap có bảng hiện hành, thứ tự phụ thuộc, brief luồng sửa/tiếp phiên, stop blocker và giới hạn việc vụn; chỉ dẫn cũ đã đánh dấu lịch sử. Chưa nghiệm thu runtime mới.
+- Terra kiểm academic: cấu trúc OK/DEFER; 25 source/26 installed gồm metadata, 24/25 file chung cùng hash; Main xác minh entry chỉ lệch description. Intake1/4 vẫn thiếu; 2/3/5/6 giữ giới hạn hồ sơ.
+- Chart null/zero source và guidance đã sửa/review bounded: 5 test, heldout/default DOM đạt. Diagnostics8/nhóm29 đạt có giới hạn; nguyên nhân fullsuite vẫn UNKNOWN.
+- P3/P4, P1 CLI/APP và classifier52 nhận source có giới hạn; protocol findings lịch sử giữ. Chưa đóng W1–W4/toàn nguồn/host/recovery.
+- ZIP50 từ8db7589f: 4 gate, 1790 test/0 failure/0 error/8 skip; fresh/upgrade VI/EN bảo toàn đạt giới hạn; patch172/175/177 đã trong ZIP.
+- Roles49 chỉ current native session WITH_LIMITS; 18 trial grants REVOKED/0 ACTIVE. Không là chứng minh toàn Desktop hoặc hard enforcement.
+
+## Current artifact
+
+- Roadmap: roadmap/ROADMAP_VAN_PHONG_NGHIEP_VU.md, điều hành revision55 và disposition academic31/10; brief đầu HANDOFF revision1 POST/DOCS_REVIEWED_WITH_LIMITS.
+- Baseline3tài liệu trước sửa: archive/maintainer/roadmap-closure-review-20261031/*.before; hashes và kết quả audit/giới hạn tại HANDOFF.
+- ZIP hiện hành: working/release-closure-20261031/attempt2/artifacts/local-agent-workspace-v1.9.0-rc5.zip; SHA29fbeeed…713af, source8db7589f. ACCEPTANCE-complete.json giữ proof/giới hạn, lượt lỗi trước giữ nguyên.
+- Artifact54: working/delta-artifact-20261031/BUILD.json và MAIN.json; checkpoint4ca8489f/466pins, timeout1800/0ZIP. working/gate-runtime-20261031/ giữ diagnostic/order receipts, không fullrun mới.
+- Source mới: working/chart-quality-20261031/, working/panel-intake-20261031/, working/source-response-20261031/ giữ MAIN/WORKER/evidence; chưa newartifact.
+- working/office-host-integration-20261031/run/ giữ TASK/candidate/review/final; PREPARATION là lịch sử, không grant hiện hành.
+- GitHub draftPR9/6196673: https://github.com/CVF-Ecosystem/local-agent-workspace/pull/9. CI pending ở snapshot lượt trước; lần này không kiểm remote, không merge/push.
+- Gói v3/r7 tại working/tiep-nhan-thu-vien-phap-ly-v3-20261031/ giữ16file/receipt; CSV12.356ID DEFERRED_USER. Upstream learning receipt ở archive/maintainer/cvf-learning-upstream-20261031/.
+
+## Open items
+
+- V1/V2/V4/V5/V6: auto-selection, chất lượng theo claim, full revise/error/fresh reopen trên các host đích; actual registration/tools/return/support/usability còn thiếu. Excel173 native NOT_MET/causeUNKNOWN/0native QA.
+- V4/V7: nguồn/hiệu lực/provenance/intake và gói chưa đủ; academic triển khai PAUSED/REVIEW/DEFER, audit đã mở/hoàn tất; entry description root drift chưa sync. phap-ly DEFER, M6 held.
+- V7/P1: wider recovery/UI/ngắt ghi/concurrent save/Undo/schema theo phạm vi cam kết và W3/W4 toàn luồng còn; reuse ZIP50/recovery169 bounded, giữ protocol finding lịch sử.
+- P2 inactive: quyền/API/CB selector/alias/query provenance/filegrant/PDF/source-ack/transaction/replacement/live chưa đủ. D1–D5 DEFERRED_USER; không làm lại kho pháp lý riêng.
+- Artifact54: nguyên nhân timeout UNKNOWN; counts/failures/errors/skips toàn lượt UNKNOWN, release_tree/ZIP/wholeartifact NOT_RUN. New source/gates/ZIP/fresh-upgrade/flow/review/support còn, không suy ca cuối log là lỗi.
+- 8 skip của ZIP50: 7 file-symlink thiếu quyền1314, 1 nonWindows không áp dụng. Python3.8 heuristic; không claim mọi OS/host/no-egress/hard sandbox. Feedback người thật sau bản dùng được.
+
+## Waiting on user
+
+Không chờ xác nhận cho chỉnh roadmap/audit lần này. Chưa tự mở product grants, pilot academic hoặc quyền phân phối; phần phụ thuộc phải có đúng quyền khi triển khai, không giao QA/debug cho user.
+
+## Decisions
+
+- User31/10 cho chỉnh roadmap theo phản biện, kiểm academic và dùng Terra6.1, việc khó Sol-medium. Main sole writer tài liệu; 2 initial Worker và tối đa1 continuation kiểm delta, không agent con.
+- Giữ mục tiêu/acceptance; không coi việc xong một ca/test/commit là đạt sản phẩm. Không mở feature/template/learning hoặc retry nếu không đóng gap cụ thể; lỗi phải có giải pháp/căn cứ trước chạy lại.
+- Maintenance requested TerraHigh/SolMedium không chứng thực actual backend, không thay profile sản phẩm. Sửa nhỏ rõ trong review thì sửa/kiểm hẹp, không thêm vòng Worker.
+- Không fullsuite/build/COM/install/confirm/export/publish/Gitwrite/network mới trong lượt audit. Giữ failure/skips/raw evidence; subtotal3builder4709.109s là lịch sử, không tổngproject/billing, không reset cost.
+- Kho pháp lý riêng do đội khác làm sạch; LAW chỉ public inputs/DATAMOCK. Learning upstream đã nhận đúng phạm vi source, không tự mở CVF/M6/rollout mới.
+
+## Next milestone
+
+Tiếp V1/V2/V4/V5/V6 theo brief luồng tích hợp đầu roadmap: bind host/quyền/source, đóng sửa/lỗi/phiên mới và routing còn thiếu. Excel173/artifact54 chỉ mở lại khi có căn cứ mới; toàn host/quality/nguồn/recovery/AC/artifact/feedback còn như bảng hiện hành.

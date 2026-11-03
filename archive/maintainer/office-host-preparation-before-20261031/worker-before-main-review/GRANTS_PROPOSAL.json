@@ -1,0 +1,408 @@
+[
+  {
+    "schema_version": "law.cvf.control/3",
+    "record_type": "grant",
+    "evaluation_basis": "COOPERATIVE_WORKFLOW",
+    "example_only": true,
+    "note": "MAIN_PROPOSAL only, inactive. No send/overwrite/delete/install/account-copy. Exact path allowlists; no wildcard. Call caps in SCOPE/PREPARATION are cooperative.",
+    "grant_id": "office-host-main-read",
+    "grant_revision": 1,
+    "issuer": {
+      "actor_id": "codex-main",
+      "role": "main"
+    },
+    "issuer_ref": {
+      "ref_id": "scope-authority-proposal",
+      "kind": "grant",
+      "locator": "working/office-host-integration-20261031/SCOPE.md",
+      "digest": "sha256:bfd99846580facf297682402dcf88e62bd503770a9990acf984250e1c3784890",
+      "attribution": {
+        "source_class": "MAIN_PROPOSAL",
+        "channel": "MAIN_AUTHORED",
+        "recorded_by": {
+          "actor_id": "codex-main",
+          "role": "main"
+        },
+        "note": "Main proposal only; no operator confirmation or real grant."
+      }
+    },
+    "subject": {
+      "roles": [
+        "main"
+      ],
+      "actor_ids": [
+        "codex-main"
+      ]
+    },
+    "scope": {
+      "task_classes": [
+        "office-host-correspondence-trial"
+      ],
+      "operations": [
+        "read"
+      ],
+      "paths": [
+        "working/office-host-integration-20261031/run/TASK.json",
+        "working/office-host-integration-20261031/SCOPE.md",
+        "working/v4-office/scripts/fixtures/mail-thread.md",
+        "working/v4-office/scripts/fixtures/policy-local.md",
+        "working/v4-office/acceptance-20261031/report-v2.md",
+        "roles/office/catalog.json",
+        "roles/office/correspondence.md",
+        ".cvf/contracts/v3/control.schema.json",
+        "working/office-host-integration-20261031/run/assignments/a1/candidate/thu-nhap-tra-loi.md",
+        "working/office-host-integration-20261031/run/assignments/a1/RESULT.json",
+        "roles/office/evidence-reviewer.md",
+        "working/office-host-integration-20261031/run/review.md",
+        "working/office-host-integration-20261031/run/final.md",
+        "working/office-host-integration-20261031/CHOICES_PROPOSAL.json",
+        "working/office-host-integration-20261031/GRANTS_PROPOSAL.json",
+        "working/office-host-integration-20261031/TASK_PROPOSAL.json",
+        "working/office-host-integration-20261031/PREPARATION.json",
+        ".agent/EXECUTION_PROFILE.json",
+        ".agent/EXECUTION_PROFILE.schema.json",
+        ".cvf/contracts/v3/CONTROL_CONTRACT.md",
+        ".cvf/rules/CONTROL_RULES.md",
+        ".cvf/rules/ROUTING_POLICY.json",
+        "roles/README.md",
+        "roles/office/MAIN.md",
+        "tools/execution_profile.py",
+        "tools/office.py",
+        "tools/task_checkpoint.py",
+        "tools/transaction.py"
+      ],
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob",
+        "owner-readonly"
+      ]
+    },
+    "limits": {
+      "max_retries": 0,
+      "max_concurrency": 1
+    },
+    "status": "EXAMPLE_INACTIVE"
+  },
+  {
+    "schema_version": "law.cvf.control/3",
+    "record_type": "grant",
+    "evaluation_basis": "COOPERATIVE_WORKFLOW",
+    "example_only": true,
+    "note": "MAIN_PROPOSAL only, inactive. No send/overwrite/delete/install/account-copy. Exact path allowlists; no wildcard. Call caps in SCOPE/PREPARATION are cooperative.",
+    "grant_id": "office-host-main-create",
+    "grant_revision": 1,
+    "issuer": {
+      "actor_id": "codex-main",
+      "role": "main"
+    },
+    "issuer_ref": {
+      "ref_id": "scope-authority-proposal",
+      "kind": "grant",
+      "locator": "working/office-host-integration-20261031/SCOPE.md",
+      "digest": "sha256:bfd99846580facf297682402dcf88e62bd503770a9990acf984250e1c3784890",
+      "attribution": {
+        "source_class": "MAIN_PROPOSAL",
+        "channel": "MAIN_AUTHORED",
+        "recorded_by": {
+          "actor_id": "codex-main",
+          "role": "main"
+        },
+        "note": "Main proposal only; no operator confirmation or real grant."
+      }
+    },
+    "subject": {
+      "roles": [
+        "main"
+      ],
+      "actor_ids": [
+        "codex-main"
+      ]
+    },
+    "scope": {
+      "task_classes": [
+        "office-host-correspondence-trial"
+      ],
+      "operations": [
+        "create_new"
+      ],
+      "paths": [
+        "working/office-host-integration-20261031/run/TASK.json",
+        "working/office-host-integration-20261031/run/review.md",
+        "working/office-host-integration-20261031/run/final.md"
+      ],
+      "tools": [
+        "Write"
+      ]
+    },
+    "limits": {
+      "max_retries": 0,
+      "max_concurrency": 1
+    },
+    "status": "EXAMPLE_INACTIVE"
+  },
+  {
+    "schema_version": "law.cvf.control/3",
+    "record_type": "grant",
+    "evaluation_basis": "COOPERATIVE_WORKFLOW",
+    "example_only": true,
+    "note": "MAIN_PROPOSAL only, inactive. No send/overwrite/delete/install/account-copy. Exact path allowlists; no wildcard. Call caps in SCOPE/PREPARATION are cooperative.",
+    "grant_id": "office-host-main-delegate",
+    "grant_revision": 1,
+    "issuer": {
+      "actor_id": "codex-main",
+      "role": "main"
+    },
+    "issuer_ref": {
+      "ref_id": "scope-authority-proposal",
+      "kind": "grant",
+      "locator": "working/office-host-integration-20261031/SCOPE.md",
+      "digest": "sha256:bfd99846580facf297682402dcf88e62bd503770a9990acf984250e1c3784890",
+      "attribution": {
+        "source_class": "MAIN_PROPOSAL",
+        "channel": "MAIN_AUTHORED",
+        "recorded_by": {
+          "actor_id": "codex-main",
+          "role": "main"
+        },
+        "note": "Main proposal only; no operator confirmation or real grant."
+      }
+    },
+    "subject": {
+      "roles": [
+        "main"
+      ],
+      "actor_ids": [
+        "codex-main"
+      ]
+    },
+    "scope": {
+      "task_classes": [
+        "office-host-correspondence-trial"
+      ],
+      "operations": [
+        "delegate"
+      ],
+      "paths": [
+        "working/office-host-integration-20261031/run/TASK.json",
+        "working/office-host-integration-20261031/SCOPE.md",
+        "working/v4-office/scripts/fixtures/mail-thread.md",
+        "working/v4-office/scripts/fixtures/policy-local.md",
+        "working/v4-office/acceptance-20261031/report-v2.md",
+        "roles/office/catalog.json",
+        "roles/office/correspondence.md",
+        ".cvf/contracts/v3/control.schema.json",
+        "working/office-host-integration-20261031/run/assignments/a1/candidate/thu-nhap-tra-loi.md",
+        "working/office-host-integration-20261031/run/assignments/a1/RESULT.json",
+        "roles/office/evidence-reviewer.md"
+      ],
+      "tools": [
+        "native-role-call"
+      ],
+      "delegate_callees": [
+        {
+          "role_class": "core",
+          "role_name": "worker"
+        },
+        {
+          "role_class": "core",
+          "role_name": "reviewer"
+        }
+      ]
+    },
+    "limits": {
+      "max_retries": 0,
+      "max_concurrency": 1
+    },
+    "status": "EXAMPLE_INACTIVE"
+  },
+  {
+    "schema_version": "law.cvf.control/3",
+    "record_type": "grant",
+    "evaluation_basis": "COOPERATIVE_WORKFLOW",
+    "example_only": true,
+    "note": "MAIN_PROPOSAL only, inactive. No send/overwrite/delete/install/account-copy. Exact path allowlists; no wildcard. Call caps in SCOPE/PREPARATION are cooperative.",
+    "grant_id": "office-host-worker-read",
+    "grant_revision": 1,
+    "issuer": {
+      "actor_id": "codex-main",
+      "role": "main"
+    },
+    "issuer_ref": {
+      "ref_id": "scope-authority-proposal",
+      "kind": "grant",
+      "locator": "working/office-host-integration-20261031/SCOPE.md",
+      "digest": "sha256:bfd99846580facf297682402dcf88e62bd503770a9990acf984250e1c3784890",
+      "attribution": {
+        "source_class": "MAIN_PROPOSAL",
+        "channel": "MAIN_AUTHORED",
+        "recorded_by": {
+          "actor_id": "codex-main",
+          "role": "main"
+        },
+        "note": "Main proposal only; no operator confirmation or real grant."
+      }
+    },
+    "subject": {
+      "roles": [
+        "worker"
+      ],
+      "actor_ids": [
+        "office-trial-worker"
+      ]
+    },
+    "scope": {
+      "task_classes": [
+        "office-host-correspondence-trial"
+      ],
+      "operations": [
+        "read"
+      ],
+      "paths": [
+        "working/office-host-integration-20261031/run/TASK.json",
+        "working/office-host-integration-20261031/SCOPE.md",
+        "working/v4-office/scripts/fixtures/mail-thread.md",
+        "working/v4-office/scripts/fixtures/policy-local.md",
+        "working/v4-office/acceptance-20261031/report-v2.md",
+        "roles/office/catalog.json",
+        "roles/office/correspondence.md",
+        ".cvf/contracts/v3/control.schema.json",
+        "working/office-host-integration-20261031/run/assignments/a1/candidate/thu-nhap-tra-loi.md",
+        "working/office-host-integration-20261031/run/assignments/a1/RESULT.json"
+      ],
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ]
+    },
+    "limits": {
+      "max_retries": 0,
+      "max_concurrency": 1
+    },
+    "status": "EXAMPLE_INACTIVE"
+  },
+  {
+    "schema_version": "law.cvf.control/3",
+    "record_type": "grant",
+    "evaluation_basis": "COOPERATIVE_WORKFLOW",
+    "example_only": true,
+    "note": "MAIN_PROPOSAL only, inactive. No send/overwrite/delete/install/account-copy. Exact path allowlists; no wildcard. Call caps in SCOPE/PREPARATION are cooperative.",
+    "grant_id": "office-host-worker-create",
+    "grant_revision": 1,
+    "issuer": {
+      "actor_id": "codex-main",
+      "role": "main"
+    },
+    "issuer_ref": {
+      "ref_id": "scope-authority-proposal",
+      "kind": "grant",
+      "locator": "working/office-host-integration-20261031/SCOPE.md",
+      "digest": "sha256:bfd99846580facf297682402dcf88e62bd503770a9990acf984250e1c3784890",
+      "attribution": {
+        "source_class": "MAIN_PROPOSAL",
+        "channel": "MAIN_AUTHORED",
+        "recorded_by": {
+          "actor_id": "codex-main",
+          "role": "main"
+        },
+        "note": "Main proposal only; no operator confirmation or real grant."
+      }
+    },
+    "subject": {
+      "roles": [
+        "worker"
+      ],
+      "actor_ids": [
+        "office-trial-worker"
+      ]
+    },
+    "scope": {
+      "task_classes": [
+        "office-host-correspondence-trial"
+      ],
+      "operations": [
+        "create_new"
+      ],
+      "paths": [
+        "working/office-host-integration-20261031/run/assignments/a1/candidate/thu-nhap-tra-loi.md",
+        "working/office-host-integration-20261031/run/assignments/a1/RESULT.json"
+      ],
+      "tools": [
+        "Write"
+      ]
+    },
+    "limits": {
+      "max_retries": 0,
+      "max_concurrency": 1
+    },
+    "status": "EXAMPLE_INACTIVE"
+  },
+  {
+    "schema_version": "law.cvf.control/3",
+    "record_type": "grant",
+    "evaluation_basis": "COOPERATIVE_WORKFLOW",
+    "example_only": true,
+    "note": "MAIN_PROPOSAL only, inactive. No send/overwrite/delete/install/account-copy. Exact path allowlists; no wildcard. Call caps in SCOPE/PREPARATION are cooperative.",
+    "grant_id": "office-host-reviewer-read",
+    "grant_revision": 1,
+    "issuer": {
+      "actor_id": "codex-main",
+      "role": "main"
+    },
+    "issuer_ref": {
+      "ref_id": "scope-authority-proposal",
+      "kind": "grant",
+      "locator": "working/office-host-integration-20261031/SCOPE.md",
+      "digest": "sha256:bfd99846580facf297682402dcf88e62bd503770a9990acf984250e1c3784890",
+      "attribution": {
+        "source_class": "MAIN_PROPOSAL",
+        "channel": "MAIN_AUTHORED",
+        "recorded_by": {
+          "actor_id": "codex-main",
+          "role": "main"
+        },
+        "note": "Main proposal only; no operator confirmation or real grant."
+      }
+    },
+    "subject": {
+      "roles": [
+        "reviewer"
+      ],
+      "actor_ids": [
+        "office-trial-reviewer"
+      ]
+    },
+    "scope": {
+      "task_classes": [
+        "office-host-correspondence-trial"
+      ],
+      "operations": [
+        "read"
+      ],
+      "paths": [
+        "working/office-host-integration-20261031/run/TASK.json",
+        "working/office-host-integration-20261031/SCOPE.md",
+        "working/v4-office/scripts/fixtures/mail-thread.md",
+        "working/v4-office/scripts/fixtures/policy-local.md",
+        "working/v4-office/acceptance-20261031/report-v2.md",
+        "roles/office/catalog.json",
+        "roles/office/correspondence.md",
+        ".cvf/contracts/v3/control.schema.json",
+        "working/office-host-integration-20261031/run/assignments/a1/candidate/thu-nhap-tra-loi.md",
+        "working/office-host-integration-20261031/run/assignments/a1/RESULT.json",
+        "roles/office/evidence-reviewer.md"
+      ],
+      "tools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ]
+    },
+    "limits": {
+      "max_retries": 0,
+      "max_concurrency": 1
+    },
+    "status": "EXAMPLE_INACTIVE"
+  }
+]

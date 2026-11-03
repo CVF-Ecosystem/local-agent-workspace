@@ -1,0 +1,143 @@
+{
+  "timestamp": "2026-10-31T10:55:13Z",
+  "range": {
+    "base": "HEAD",
+    "head": "HEAD",
+    "baseSource": "explicit:--base"
+  },
+  "standard": "docs/reference/CVF_FINDING_TO_GOVERNANCE_LEARNING_TRIGGER_STANDARD.md",
+  "filesChecked": [
+    "docs/reference/CVF_FINDING_TO_GOVERNANCE_LEARNING_TRIGGER_STANDARD.md",
+    "docs/reviews/learnings/CVF_PRODUCT_MILESTONE_COVERAGE_LEARNING_2026-10-23.md",
+    "docs/reviews/learnings/README.md",
+    "governance/compat/run_agent_autorun_workflow_gate.py",
+    "governance/compat/run_local_governance_hook_chain.py"
+  ],
+  "fileCount": 5,
+  "violationCount": 0,
+  "violations": [],
+  "compliant": true,
+  "parentEvidence": {
+    "registry": "docs/reference/downstream_gate_profile/downstream_finding_intake_registry.json",
+    "typedValid": 6,
+    "legacyUntyped": 8,
+    "invalid": 0,
+    "issues": [],
+    "findings": [
+      {
+        "id": "F1-continuity-drift",
+        "outcome": "LEGACY_UNTYPED_NOT_REVALIDATED"
+      },
+      {
+        "id": "F2-status-fail-open",
+        "outcome": "LEGACY_UNTYPED_NOT_REVALIDATED"
+      },
+      {
+        "id": "F3-installed-not-invoked",
+        "outcome": "LEGACY_UNTYPED_NOT_REVALIDATED"
+      },
+      {
+        "id": "F4-project-to-parent-intake",
+        "outcome": "LEGACY_UNTYPED_NOT_REVALIDATED"
+      },
+      {
+        "id": "F5-reviewer-local-repair",
+        "outcome": "LEGACY_UNTYPED_NOT_REVALIDATED"
+      },
+      {
+        "id": "PLL-SHELL",
+        "outcome": "LEGACY_UNTYPED_NOT_REVALIDATED"
+      },
+      {
+        "id": "PLL-REPAIR",
+        "outcome": "LEGACY_UNTYPED_NOT_REVALIDATED"
+      },
+      {
+        "id": "PLL-COVERAGE",
+        "outcome": "LEGACY_UNTYPED_NOT_REVALIDATED"
+      },
+      {
+        "id": "NCR-LEARNING-APPLICATION-OBSERVABILITY",
+        "outcome": "TYPED_STRUCTURAL_VALID",
+        "states": {
+          "implementation": "IMPLEMENTED_BOUNDED",
+          "projectResolution": "OPEN",
+          "returnDelivery": "RETURNED",
+          "projectApplication": "APPLIED"
+        }
+      },
+      {
+        "id": "O3",
+        "outcome": "TYPED_STRUCTURAL_VALID",
+        "states": {
+          "implementation": "IMPLEMENTED_BOUNDED",
+          "projectResolution": "OPEN",
+          "returnDelivery": "NOT_RETURNED",
+          "projectApplication": "NOT_APPLIED"
+        }
+      },
+      {
+        "id": "CCMA-PROOF-PREPARATION-DELTA-20261012",
+        "outcome": "TYPED_STRUCTURAL_VALID",
+        "states": {
+          "implementation": "IMPLEMENTED_BOUNDED",
+          "projectResolution": "PARKED_BY_OPERATOR",
+          "returnDelivery": "PARKED_BY_OPERATOR",
+          "projectApplication": "PARKED_BY_OPERATOR"
+        }
+      },
+      {
+        "id": "CCMA-OUTPUT-DELIVERY-TRUTH-20261013",
+        "outcome": "TYPED_STRUCTURAL_VALID",
+        "states": {
+          "implementation": "IMPLEMENTED_BOUNDED",
+          "projectResolution": "RESOLVED",
+          "returnDelivery": "RETURNED",
+          "projectApplication": "APPLIED"
+        }
+      },
+      {
+        "id": "NCR-REVIEW-OVERHEAD-20261018",
+        "outcome": "TYPED_STRUCTURAL_VALID",
+        "states": {
+          "implementation": "NOT_IMPLEMENTED",
+          "projectResolution": "OPEN",
+          "returnDelivery": "NOT_RETURNED",
+          "projectApplication": "NOT_APPLIED"
+        }
+      },
+      {
+        "id": "CVF-PRODUCT-MILESTONE-COVERAGE",
+        "outcome": "TYPED_STRUCTURAL_VALID",
+        "states": {
+          "implementation": "IMPLEMENTED_BOUNDED",
+          "projectResolution": "OPEN",
+          "returnDelivery": "NOT_RETURNED",
+          "projectApplication": "PARKED_BY_OPERATOR"
+        }
+      }
+    ],
+    "lifecycleCounts": {
+      "implementation": {
+        "NOT_IMPLEMENTED": 1,
+        "IMPLEMENTED_BOUNDED": 5
+      },
+      "projectResolution": {
+        "UNKNOWN": 0,
+        "OPEN": 4,
+        "RESOLVED": 1,
+        "PARKED_BY_OPERATOR": 1
+      },
+      "returnDelivery": {
+        "NOT_RETURNED": 3,
+        "RETURNED": 2,
+        "PARKED_BY_OPERATOR": 1
+      },
+      "projectApplication": {
+        "NOT_APPLIED": 2,
+        "APPLIED": 2,
+        "PARKED_BY_OPERATOR": 2
+      }
+    }
+  }
+}

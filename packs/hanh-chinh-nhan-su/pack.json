@@ -19,6 +19,6 @@
     "version": "0.2.0",
     "relation": "SUPPLEMENT",
     "record": "references/intake-record.md",
-    "note": "Thiếu đối chiếu căn cứ với văn bản chính thức, ba việc thật của người dùng và đánh giá của người dùng; xem hồ sơ."
+    "note": "DEFER: còn thiếu căn cứ nguồn/xuất xứ và bằng chứng hiệu quả, tái dùng theo hồ sơ. Đội dev hoàn thiện nghiệm thu nội bộ trước feedback; điều kiện làn nhận folder giữ riêng. Không tự cài, xác nhận hoặc quảng bá gói."
   }
 }

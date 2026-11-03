@@ -15,6 +15,8 @@ Gợi ý để quyết định cách trình bày; không phải quy tắc bắt 
 Mẫu `assets/basic-charts.html` có sẵn thẻ KPI, đường, cột ngang, cột xếp chồng,
 vành khuyên và bảng kèm thanh. Dạng khác (phân tán, bản đồ, biểu đồ mạng) cần dựng riêng.
 
+Chỉ so sánh trực tiếp khi cùng đơn vị, định nghĩa, cách xác định kỳ và phạm vi thu thập tương đương. Với tỷ lệ có mẫu số khác nhau, ghi n/N từng nhóm; tỷ lệ gộp bằng tổng n chia tổng N, không lấy trung bình các tỷ lệ. Ví dụ 1/2 và 9/10 cho tỷ lệ gộp 10/12 ≈ 83,3%, còn trung bình hai tỷ lệ là 70%. Thiếu căn cứ thì tách bảng hoặc ghi chưa so sánh được; không suy diễn nhân quả.
+
 ## Điểm dễ sai
 
 - Cột bắt đầu từ 0. Biểu đồ đường có thể cắt trục nhưng phải ghi rõ điểm bắt đầu của trục.

@@ -86,50 +86,79 @@ def new_nd30_document(title=''):
                             'hoặc chạy trong workspace LAW. / tools/vn_legal_docx.py not found above this file.')
 
 
+def _owned_property(parent, tag, successors):
+    """Reuse one helper-owned property and insert in schema order; leave others intact."""
+    existing = parent.findall(qn(tag))
+    element = existing[0] if existing else OxmlElement(tag)
+    for old in existing:
+        parent.remove(old)
+    successor_tags = {qn(name) for name in successors}
+    for index, child in enumerate(parent):
+        if child.tag in successor_tags:
+            parent.insert(index, element)
+            break
+    else:
+        parent.append(element)
+    return element
+
+
 def set_cell_margins(cell, top=60, bottom=60, left=80, right=80):
-    """Lề trong ô, đơn vị twip (dxa)."""
+    """Lề trong ô, đơn vị twip (dxa); left/right là lề vật lý."""
     tcPr = cell._tc.get_or_add_tcPr()
-    m = tcPr.find(qn('w:tcMar'))
-    if m is None:
-        m = OxmlElement('w:tcMar'); tcPr.append(m)
-    for k, v in (('top', top), ('bottom', bottom), ('start', left), ('end', right)):
-        e = m.find(qn('w:' + k))
-        if e is None:
-            e = OxmlElement('w:' + k); m.append(e)
+    m = _owned_property(tcPr, 'w:tcMar', (
+        'w:textDirection', 'w:tcFitText', 'w:vAlign', 'w:hideMark', 'w:headers',
+        'w:cellIns', 'w:cellDel', 'w:cellMerge', 'w:tcPrChange'))
+    for tag in ('top', 'left', 'bottom', 'right', 'start', 'end'):
+        for old in m.findall(qn('w:' + tag)):
+            m.remove(old)
+    for k, v in (('top', top), ('left', left), ('bottom', bottom), ('right', right)):
+        e = OxmlElement('w:' + k)
         e.set(qn('w:w'), str(v)); e.set(qn('w:type'), 'dxa')
+        m.append(e)
 
 
 def set_cell_background(cell, fill):
-    """Nền ô (hex không #). Dùng shd val=clear + fill, không dùng solid (Word hiện đen khi thiếu color)."""
+    """Nền ô (hex không #), shading clear với fill."""
     tcPr = cell._tc.get_or_add_tcPr()
-    for old in tcPr.findall(qn('w:shd')):
-        tcPr.remove(old)
-    shd = OxmlElement('w:shd')
+    shd = _owned_property(tcPr, 'w:shd', (
+        'w:noWrap', 'w:tcMar', 'w:textDirection', 'w:tcFitText', 'w:vAlign',
+        'w:hideMark', 'w:headers', 'w:cellIns', 'w:cellDel', 'w:cellMerge', 'w:tcPrChange'))
+    # Explicit background/foreground must override any old theme selectors.
+    for name in ('themeColor', 'themeTint', 'themeShade',
+                 'themeFill', 'themeFillTint', 'themeFillShade'):
+        shd.attrib.pop(qn('w:' + name), None)
     shd.set(qn('w:val'), 'clear'); shd.set(qn('w:color'), 'auto'); shd.set(qn('w:fill'), fill)
-    tcPr.append(shd)
 
 
 def set_cell_borders(cell, sz=None, color=None, sides=('top', 'left', 'bottom', 'right'), val='single'):
     tcPr = cell._tc.get_or_add_tcPr()
-    b = tcPr.find(qn('w:tcBorders'))
-    if b is None:
-        b = OxmlElement('w:tcBorders'); tcPr.append(b)
-    for s in sides:
-        e = b.find(qn('w:' + s))
-        if e is None:
-            e = OxmlElement('w:' + s); b.append(e)
+    b = _owned_property(tcPr, 'w:tcBorders', (
+        'w:shd', 'w:noWrap', 'w:tcMar', 'w:textDirection', 'w:tcFitText', 'w:vAlign',
+        'w:hideMark', 'w:headers', 'w:cellIns', 'w:cellDel', 'w:cellMerge', 'w:tcPrChange'))
+    order = ('top', 'left', 'start', 'bottom', 'right', 'end', 'insideH', 'insideV', 'tl2br', 'tr2bl')
+    for side in sides:
+        following = tuple('w:' + name for name in order[order.index(side) + 1:]) if side in order else ()
+        e = _owned_property(b, 'w:' + side, following)
         e.set(qn('w:val'), val); e.set(qn('w:sz'), str(sz or THEME['border_sz']))
         e.set(qn('w:space'), '0'); e.set(qn('w:color'), color or THEME['border_color'])
 
 
 def set_repeat_header(row):
     trPr = row._tr.get_or_add_trPr()
-    e = OxmlElement('w:tblHeader'); e.set(qn('w:val'), 'true'); trPr.append(e)
+    e = _owned_property(trPr, 'w:tblHeader', (
+        'w:tblCellSpacing', 'w:jc', 'w:hidden', 'w:ins', 'w:del', 'w:trPrChange'))
+    e.attrib.pop(qn('w:val'), None)  # on/off defaults to enabled
+    for cell in row.cells:
+        for paragraph in cell.paragraphs:
+            paragraph.paragraph_format.keep_with_next = True
 
 
 def keep_row_together(row):
     trPr = row._tr.get_or_add_trPr()
-    e = OxmlElement('w:cantSplit'); e.set(qn('w:val'), 'true'); trPr.append(e)
+    e = _owned_property(trPr, 'w:cantSplit', (
+        'w:trHeight', 'w:tblHeader', 'w:tblCellSpacing', 'w:jc', 'w:hidden',
+        'w:ins', 'w:del', 'w:trPrChange'))
+    e.attrib.pop(qn('w:val'), None)  # on/off defaults to enabled
 
 
 def add_p(doc_or_cell, text='', align='left', bold=False, italic=False, size=None, color=None,
