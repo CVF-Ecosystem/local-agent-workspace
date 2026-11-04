@@ -145,6 +145,7 @@ The English handbook is in `docs/en/` and `START_HERE.en.html`.
 `tools/build_guides_html.py` rebuilds the HTML pages (both languages) from Markdown when you edit the guides
 in `docs/` or `docs/en/` (see `tools/README.md`). It is not needed in everyday office work.
 When you change a rule in one language, change it in the other too; `tools/check_package.py` compares their structure.
+The shared project-structure and progress catalog for agents is [roadmap/CATALOG_CAU_TRUC_VA_TIEN_DO.md](roadmap/CATALOG_CAU_TRUC_VA_TIEN_DO.md) (Vietnamese, source repository only).
 
 ## Using it with an assistant
 
