@@ -1,10 +1,12 @@
 # Roadmap LAW — Workspace cá nhân dùng lâu dài
 
-Cập nhật: **21/10/2026**. MVP `v1.9.0-rc2` đã công bố dạng prerelease để thu feedback; 4 gate nguồn đạt, 1495 test/6 skip. Chưa final; pilot người mới sau MVP, phần phát hành chính thức còn mở. Lịch sử và giới hạn nghiệm thu ở mục 0–12. Hướng phát triển văn phòng nghiệp vụ và trạng thái hiện hành của V0–V7 ở [roadmap riêng](ROADMAP_VAN_PHONG_NGHIEP_VU.md).
+**Điều phối hiện hành — 04/11/2026:** operator giao Local quyết định cuối cùng và lập roadmap theo thực tế project. [Roadmap văn phòng, mục Local 04/11](ROADMAP_VAN_PHONG_NGHIEP_VU.md#local-20261104) là nơi duy nhất ghi lựa chọn kỹ thuật, đối chiếu toàn V0–V7/R/T, thứ tự thi công, owner, điều kiện xong và các nhánh còn chặn/hoãn. Bắt đầu bằng chất lượng luồng báo cáo–số liệu–nháp thư trên nền hiện hữu; chưa chạy lại build hoặc mở học thuật. Đây là chốt kế hoạch, sản phẩm vẫn PRERELEASE_NOT_READY.
+
+Snapshot nền **21/10/2026**: MVP `v1.9.0-rc2` đã công bố dạng prerelease để thu feedback; 4 gate nguồn đạt, 1495 test/6 skip. Đây là bằng chứng lịch sử, không phải trạng thái release/CI hiện hành. Chưa final; pilot người mới sau MVP, phần phát hành chính thức còn mở. Lịch sử và giới hạn nghiệm thu ở mục 0–12; chuẩn bảo trì mục8.3/8.4 và ma trận T01–T48 tiếp tục áp dụng.
 
 Đây là roadmap nền cho MVP, bảo trì và lịch sử nghiệm thu của Local Agent Workspace (LAW), hợp nhất định hướng operator, đề xuất external agent R2, phản biện Claude và đối chiếu Local. [Roadmap trước](archive/ROADMAP_HOAN_THIEN_TRUOC_LAW_R2_2026-10-17.md) được giữ nguyên; kết quả lịch sử chỉ có giá trị trong phạm vi đã kiểm.
 
-Người dùng quyết định mục tiêu; agent làm việc trong kho chịu trách nhiệm đối chiếu code và triển khai trong phạm vi được giao. Trạng thái hiện hành ở mục 0; các snapshot và bằng chứng lịch sử bên dưới không thay kết luận nghiệm thu hiện tại. Đã công bố prerelease v1.9.0-rc2; chưa final.
+Người dùng giữ mục tiêu, quyền, dữ liệu và ngân sách; Local quyết định kỹ thuật/roadmap theo ủy quyền và triển khai trong phạm vi được giao. Mục 0 giữ lịch sử MVP; các snapshot và bằng chứng bên dưới không thay kế hoạch Local hoặc kết luận nghiệm thu hiện tại tại roadmap văn phòng. Quyết định lập roadmap không mở quyền gọi vai, cài/confirm/export hoặc phát hành.
 
 ## Bổ sung kế hoạch nguồn — 30/10/2026
 

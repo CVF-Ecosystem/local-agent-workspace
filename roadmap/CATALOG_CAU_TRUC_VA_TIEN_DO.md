@@ -4,7 +4,7 @@ Một bản đồ dùng chung để mọi agent (Claude, Codex, Gemini) và oper
 File này chỉ có ở kho nguồn (nằm trong `roadmap/`, không thuộc bản phân phối) và được đăng trên GitHub chủ yếu để agent bên ngoài đọc.
 Nó là bản tra nhanh, không phải nguồn sự thật: khi lệch với file thực, STATE, HANDOFF hoặc roadmap thì file thực thắng; nêu chỗ lệch cho operator thay vì tự sửa.
 
-**Cập nhật lần cuối:** 04/11/2026 · nền: `main` tại `62c942e` · Local roadmap `LOCAL-ROADMAP-20261104-r1`. Dữ liệu tiến độ chỉ mới đến mốc này; nếu ngày hiện tại muộn hơn nhiều, coi mục 5–6 có thể đã cũ và đối chiếu `.agent/STATE.md`.
+**Cập nhật lần cuối:** 04/11/2026 · nền: `main` tại `32604fb` · Local roadmap `LOCAL-ROADMAP-20261104-r2` (đã qua review độc lập, `REVIEW_PASSED`). Dữ liệu tiến độ chỉ mới đến mốc này; nếu ngày hiện tại muộn hơn nhiều, coi mục 5–6 có thể đã cũ và đối chiếu `.agent/STATE.md`.
 
 ## 1. Cách dùng và cách cập nhật
 
@@ -78,11 +78,12 @@ Chạy từ thư mục gốc. Dùng `python -X utf8 -B tools/<file>.py ...`; kh�
 
 ## 5. Tiến độ theo dòng roadmap
 
-Dòng và thứ tự lấy từ mục 4 của `roadmap/ROADMAP_VAN_PHONG_NGHIEP_VU.md` (revision `LOCAL-ROADMAP-20261104-r1`). Điều kiện đóng, phần còn lại sau mỗi dòng và bằng chứng chi tiết nằm ở roadmap/HANDOFF, không chép lại ở đây. Nhãn trạng thái giữ đúng nghĩa của roadmap: PLANNED, BLOCKED_*, DEFERRED_*, NOT_RUN.
+Dòng và thứ tự lấy từ mục 4 của `roadmap/ROADMAP_VAN_PHONG_NGHIEP_VU.md` (revision `LOCAL-ROADMAP-20261104-r2`). Điều kiện đóng, phần còn lại sau mỗi dòng và bằng chứng chi tiết nằm ở roadmap/HANDOFF, không chép lại ở đây. Nhãn trạng thái giữ đúng nghĩa của roadmap: PLANNED, BLOCKED_*, DEFERRED_*, NOT_RUN.
 
 | Dòng | Nội dung | Trạng thái | Ghi chú ngắn / con trỏ bằng chứng |
 |---|---|---|---|
-| 4.1 | V1/V2/V4: chất lượng luồng báo cáo–số liệu–nháp thư | PLANNED, ưu tiên đầu | Bước đầu: đối chiếu nguồn/output ca V2/V4 sẵn có, khóa gap và expected |
+| 4.0 | V7/M4: khôi phục kiểm source sạch (CI đỏ 5/5 job ở Package check do dòng PACK `law-academic-research` trỏ tới file chỉ có ở Local) | PLANNED; diff chưa chốt, chưa sửa registry | Cần review độc lập riêng khi có diff (operator giao); không đóng V7 |
+| 4.1 | V1/V2/V4: chất lượng luồng báo cáo–số liệu–nháp thư | PLANNED, ưu tiên giá trị; chuẩn bị độc lập với 4.0; ba fixture mới PREPARATION_NOT_RUN | Đường ca và thước đo ở mục 4.1 của roadmap; phần chấm độc lập chờ reviewer được operator giao |
 | 4.2 | V2/V5/V6: sửa, tiếp phiên, UX trạng thái | PLANNED; phần gọi vai BLOCKED_AUTHORITY | Profile hiện `NO_GRANT` cho Scout/Worker/Reviewer; phần đọc/nháp độc lập không bị chặn |
 | 4.3 | V3/V7/P1: nguồn đúng phạm vi, bảo toàn dữ liệu | PLANNED | P2 INACTIVE; D1–D5 DEFERRED_USER |
 | 4.4 | V4/V7: nội dung và định dạng Word/XLSX/HTML | PLANNED | Excel173 cause UNKNOWN, native QA chưa đạt; chart chỉ theo receipt |
@@ -96,5 +97,7 @@ Một dòng cho mỗi tranche đã đóng hoặc mốc kế hoạch đã chốt.
 
 | Ngày | Tranche / dòng | Đã đóng | Còn lại | Bằng chứng | Review |
 |---|---|---|---|---|---|
+| 04/11/2026 | Review độc lập roadmap r2 (Claude, operator giao trực tiếp) | Verdict `REVIEW_PASSED`, chốt kế hoạch; không đóng mốc sản phẩm | Diff 4.0 và ca 4.1 chưa có, review riêng khi operator giao; lưu ý N1–N3 | `roadmap/REVIEW_DOC_LAP_CLAUDE_ROADMAP_LOCAL_R2_2026-11-04.md` | Có (độc lập, chỉ tài liệu) |
+| 04/11/2026 | Local nhận phản biện F1–F9, nâng lên `LOCAL-ROADMAP-20261104-r2` | Thêm 4.0, đường ca và thước đo 4.1, trần từng gói (§6), bảng quyết định (§7) | Toàn 4.0–4.6 | `roadmap/DANH_GIA_CLAUDE_ROADMAP_LOCAL_2026-11-04.md`, `roadmap/XAC_NHAN_CLAUDE_ROADMAP_LOCAL_R2_2026-11-04.md` | Không áp dụng (kế hoạch) |
 | 04/11/2026 | Lập kế hoạch Local, `LOCAL-ROADMAP-20261104-r1` (chưa thi công dòng sản phẩm) | Quyết định dùng nền hiện hữu; thứ tự 4.1→4.6; đối chiếu toàn bảng điều kiện | Toàn bộ 4.1–4.6 | `roadmap/ROADMAP_VAN_PHONG_NGHIEP_VU.md` mục Local 04/11; đầu `.agent/HANDOFF.md` | Không áp dụng (kế hoạch) |
 | 04/11/2026 | Tạo catalog này | File catalog và link từ README | Cập nhật ở mỗi tranche | `roadmap/CATALOG_CAU_TRUC_VA_TIEN_DO.md` | Chưa |

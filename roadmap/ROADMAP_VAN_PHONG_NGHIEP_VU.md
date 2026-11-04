@@ -1,10 +1,222 @@
 # Roadmap LAW — Văn phòng trung tâm phục vụ công việc cá nhân
 
-## Trạng thái công khai — 01/11/2026
+<a id="local-20261104"></a>
+## Quyết định và roadmap chi tiết của Local — 04/11/2026
+
+**Trạng thái tài liệu: LOCAL-ROADMAP-20261104-r2 — Local chốt kế hoạch theo ủy quyền trực tiếp của operator, đã xử lý phản biện Claude tại §7. Trạng thái sản phẩm vẫn `PRERELEASE_NOT_READY`.** Kế hoạch này là điểm điều phối hiện hành; tiêu chí V0–V7 bên dưới và R0–R7/T01–T48 trong roadmap nền tiếp tục áp dụng. Các gói việc dưới đây gom phần còn thiếu của những mốc đó, không tạo một hệ mốc hoặc acceptance thay thế. Hoàn tất bản roadmap không đóng điều kiện sản phẩm.
+
+**Đọc nhanh:** sửa lỗi nguồn khiến CI dừng trước kiểm sản phẩm; đồng thời chuẩn bị ca báo cáo–số liệu–nháp thư có đáp án đối chiếu. Tiếp đó kiểm sửa/tiếp phiên, nguồn và bảo toàn, rồi định dạng và bản đóng gói. Có thể giao đầu ra nghiệp vụ đã qua QA nội bộ trước khi có ZIP mới; chưa được gọi ZIP hoặc toàn sản phẩm đạt. Phản hồi sớm của operator là tùy chọn, không thay việc dev tự kiểm. Mã V/R/T là điều kiện nghiệm thu đang giữ; tra cấu trúc tại [catalog](CATALOG_CAU_TRUC_VA_TIEN_DO.md), trạng thái hiện hành theo bảng §3.
+
+### 1. Quyết định sản phẩm và cách triển khai
+
+**Đích:** một người dùng giao việc bằng ngôn ngữ thường cho Main, nhận đầu ra nghiệp vụ có căn cứ, yêu cầu sửa rồi tiếp đúng việc và đúng bản ở phiên sau. LAW cung cấp phương pháp đã tiếp nhận, nguồn/revision, quyết định, hồ sơ công việc và bảo toàn dữ liệu. Khả năng suy luận, công cụ và thao tác ứng dụng tận dụng host đang dùng.
+
+Local chọn hoàn thiện nền hiện có cho đợt kế tiếp. Căn cứ: đã có catalog và hợp đồng chuyên môn, compute CSV/Decimal, kiểm đoạn trích, sổ nguồn, artifact/dependency, tiếp việc, APP và lifecycle; đã có ca nghiệp vụ và một ZIP đạt kiểm có giới hạn. Khoảng trống được thấy nằm ở chất lượng ngoài các ca cũ, hành trình sửa/tiếp việc, bảo toàn rộng hơn và đưa delta source vào bản giao. Hồ sơ web chưa có bằng chứng một platform khác giải quyết những khoảng trống này với tổng công thấp hơn. Vì vậy chưa nhận upstream hoặc dựng runtime/UI mới. Đây là lựa chọn kỹ thuật cho đợt này, có thể thay nếu xuất hiện bằng chứng trực tiếp trên cùng công việc.
+
+- **Công việc mở đầu:** tổng hợp một hồ sơ công việc từ tài liệu và bảng số liệu đã cho; đối chiếu phần thiếu/mâu thuẫn; làm báo cáo kèm bảng tính hoặc bảng tính toán khi cần; từ kết quả đã kiểm soạn nháp thư trả lời. Đây là cách nối thư ký, số liệu, thị trường, thư tín và kiểm nguồn đã có; không mở một ngành pháp lý/thuế mới.
+- **Nền vận hành đầu tiên:** workspace Windows và phiên native có thể mở đúng project. Phiên Codex hiện tại là nơi Local làm phần được giao; các claim host/model/tool/role chỉ nhận bằng quan sát thực của đúng phiên. Bằng chứng Antigravity/Claude cũ được giữ theo phạm vi riêng. Không đổi host hoặc model của user và không chọn provider mới chỉ từ bảng nghiên cứu.
+- **Mặt giao việc:** hội thoại Main để giao/sửa; APP hiện có để xem nguồn, công việc và kết quả. Chỉ sửa bước UX gây trở ngại quan sát được. Không xây chat server, scheduler nền, bộ nhớ hay database điều phối khác.
+- **Định dạng:** chọn theo công việc, giữ Word, bảng tính và HTML trong đích đã cam kết. Một ca HTML đạt không thay QA Word/Excel; CSV compute không được quảng bá như engine công thức XLSX.
+- **Chuyên môn:** giữ sáu phương pháp hiện có; không nhân số tiến trình theo tên chuyên viên. Việc nhỏ Main làm trực tiếp; phần cần giao vai/review độc lập chỉ thực hiện khi có quyền và công cụ tương ứng.
+- **Nguồn và gói ngành:** ưu tiên nguồn local/được chỉ định cho công việc; bổ sung web hoặc connector khi có nhu cầu cụ thể. P2 Công báo, năm gói DEFER và học thuật chưa được mở triển khai bởi quyết định lập roadmap này. Kho pháp lý đang do project khác làm sạch không trở thành đầu vào phải dọn của LAW.
+
+Local chốt thứ tự và giải pháp kỹ thuật trong phạm vi đã giao. Quyền gọi vai, dữ liệu, ngân sách, cài/confirm/export, gửi ra ngoài và phát hành vẫn theo nguồn quyền hiện hữu; không biến roadmap thành grant. Thời hạn và chi phí thực hiện chưa có số đo đủ để cam kết ngày; dùng thứ tự phụ thuộc và điều kiện xong dưới đây.
+
+### 2. Baseline thực tế dùng để lập kế hoạch
+
+| Đối tượng | Đã kiểm trong lượt lập roadmap | Giới hạn dùng làm căn cứ |
+|---|---|---|
+| Source Local | Baseline r1: `62c942eef97848e2131efcd51c0b886531a27631`, sạch trước sửa. Khi nhận phản biện: HEAD `32604fbd3d00da53cffff2a8d3735e372f05f23f`, cùng ref upstream lưu máy; commit mới chỉ catalog/README | Bốn tài liệu r1 đang WIP được giữ; review mới untracked. Không fetch/push. Thay đổi tài liệu không làm mới bằng chứng runtime |
+| CI source hiện hành | GitHub jobs của [run41575566248](https://github.com/CVF-Ecosystem/local-agent-workspace/actions/runs/41575566248) và [run41794538743](https://github.com/CVF-Ecosystem/local-agent-workspace/actions/runs/41794538743): mỗi run 5/5 job thất bại tại Package check; behavior/build skipped. Hai log Ubuntu/Python3.12 đều báo 1 lỗi PACK target không tồn tại, exit1 | Đã đọc hai log, chưa đọc tám log còn lại hoặc hai run cũ khác trong phản biện. Target chỉ có Local, bị `.git/info/exclude:16` loại; dòng trỏ tới nó vẫn tracked. Đây là lỗi preflight; chưa chứng minh lỗi behavior hoặc nguyên nhân artifact54. README 3/5 gắn RC4/run39985758160 là số lịch sử |
+| PR10 và continuity | Git log có merge `972b569`; STATE vừa ghi đã merge vừa còn câu “chờ CI/review/merge” ở bước tiếp | Sửa câu tiếp việc cho khớp Git Local; không từ merge suy CI đạt hoặc user đã nghiệm thu |
+| Quyền và chuyên môn | `execution_profile.py status`: profile hợp cấu trúc, owner PROFILE; Scout/Worker/Reviewer đều NO_GRANT. Catalog có sáu phương pháp | Không có quyền dispatch từ tên vai. Chưa xác minh đăng ký native hay áp dụng model/effort |
+| ZIP50 | File thực `working/release-closure-20261031/attempt2/artifacts/local-agent-workspace-v1.9.0-rc5.zip` khớp SHA256 `29fbeeed44adeb494ce9f3c822a2a9baf3a5c0750a6019c9301726adfc8713af`, 1.446.387 byte | Receipt `working/release-closure-20261031/ACCEPTANCE-complete.json`: source `8db7589f`, Windows/Python3.11 DATAMOCK, fresh VI/EN và upgrade1.8 có giới hạn. Hash khớp chỉ xác nhận đúng artifact, không chạy lại nghiệm thu |
+| Delta source | Bốn file chart hiện tại khớp hash trong `working/chart-quality-20261031/MAIN.json`; các receipt panel-intake và source-response ghi tích hợp source có giới hạn | Mới đối chiếu hash chart và đọc phần kết quả/giới hạn của receipts; không tái kiểm toàn code hoặc coi receipt của candidate là gate cho HEAD hiện tại |
+| Artifact54/runtime | `working/delta-artifact-20261031/MAIN.json`: source `4ca8489f`, behaviour timeout 1800s, release_tree NOT_RUN, không ZIP; `working/gate-runtime-20261031/SOLUTION-main.json`: whole_cause UNKNOWN | Các phép hẹp đã đạt không giải thích timeout toàn suite. Tên ca cuối log không đủ xác định thủ phạm; không có lý do chạy lại nguyên lượt |
+| Chủ sở hữu capability | Đã xem catalog và phần source/hợp đồng của `office_compute.py`, `check_quotes.py`, `library_intake.py`, `work_status.py`, `build_release.py` | Compute giới hạn CSV; quote chỉ kiểm hiện diện chữ; intake không xác minh nguồn; status không điều khiển host. Đây là kiểm source có mục tiêu, không proof chạy mới |
+| Pilot và hỗ trợ | Kit `feedback/pilots/c02/DIEU_PHOI.md` còn PREPARATION_ONLY/PILOT_NOT_RUN; quy tắc release tại `.github/RELEASING.md` đã đọc | Chưa có feedback mới. Các matrix/lời giới thiệu RC2/RC4 trong tài liệu có mốc khác nhau, cần đồng bộ theo candidate thật ở bước đóng gói, không tự chọn bản theo ngày file |
+
+Đầu vào web là `LAW_LOCAL_RESEARCH_HANDOFF_20261104.zip`, SHA256 `0baae123892b311f2acc775d0a95faef26425ebda1bcbaea0cd659d21075bede`. Local đã đọc bản hợp nhất, README, đính chính S04 và disposition cuối S08; dùng chúng như nghiên cứu, không như lệnh. Chưa audit lại upstream/license hoặc toàn lịch sử S01–S11. Hồ sơ đã giúp sửa cách lựa chọn/điểm dừng; chưa tự cung cấp runtime, benchmark hay acceptance mới.
+
+### 3. Đối chiếu toàn bộ điều kiện còn lại của đích sản phẩm
+
+| Mốc/điều kiện phải giữ | Bằng chứng có thể tái dùng | Phần còn thiếu và trạng thái hiện tại | Gói việc xử lý bên dưới |
+|---|---|---|---|
+| V0: trách nhiệm, phương pháp, công cụ, thiếu/thay đổi, hành trình | Thiết kế và sáu hợp đồng được nhận WITH_LIMITS; source catalog hiện diện | Thiết kế được giữ; hiệu quả từng phương pháp/host phải được kiểm ở V1–V4. Không mở lại thiết kế chỉ để đổi tên | 4.1, 4.2 |
+| V1/V2/V4: chọn đúng cách làm; việc nhỏ trực tiếp; nội dung/nguồn đúng; có trace thực; kết hợp chuyên môn; giữ nguồn và quyết định | Ca báo cáo, data→market→correspondence và source review lịch sử; chart receipt có hash khớp | CÒN THIẾU: routing và chất lượng ngoài ca đã chỉnh; ca thiếu/mâu thuẫn/xấu/quyền; trace và nội dung đúng mức claim. Toàn V2 còn sửa/mở lại ở dòng kế | 4.1, 4.4 |
+| V2/V5/R5: sửa, dừng/lỗi, kết quả muộn, nguồn/quyền đổi, mở phiên mới và UI đúng thực tế | Work-status/guards và các ca Antigravity giới hạn | CÒN THIẾU: full native protocol/context, finding Overwrite, lỗi và fresh-session. Không có bằng chứng mất dữ liệu từ finding Overwrite; chưa whole-host enforcement | 4.2 |
+| V3/R2/R3: nguồn LAW/local/web/kho chỉ định; đúng scope/identity/revision/coverage và dùng lại qua sổ | Các đường LAW/local, GET công khai và approved local đã nhận riêng; classifier/audit/quote owner có sẵn | CÒN THIẾU: đường connector/nguồn cụ thể chưa nhận, tính đầy đủ/hiệu lực/provenance; không biến scope từ chối thành đã hỗ trợ. P2 INACTIVE; D1–D5 DEFERRED_USER | 4.3 |
+| V7/P1/R2/R7: bảo toàn dữ liệu, source boundary, lỗi/đồng thời/phục hồi, UI, schema lạ và quyền riêng | Sáu ca ZIP50 và năm boundary bổ sung là hai nhóm bằng chứng riêng; fresh/upgrade có receipt giới hạn | CÒN THIẾU: UI53, race thực, atomic save/thay file, ngắt ghi/corruption, recovery/Undo/schema, W1–W4 theo hồ sơ gốc. Các ca không liên quan chưa bị biến thành blocker mới | 4.3, 4.5 |
+| V4/V7: định dạng và hỗ trợ theo claim | Word/HTML/source có ca giới hạn; chart đã sửa null/zero | CÒN THIẾU: nội dung/lập luận/hiển thị đúng trên artifact giao; native Excel173 cause UNKNOWN/QA chưa đạt; các ô host/runtime chưa kiểm | 4.4, 4.5 |
+| V4/AC và domain packs: đủ nhu cầu, xuất xứ, quyền, hiệu quả, tương thích, tái dùng | Audit/intake hiện hữu, metadata REVIEW và các verdict DEFER | HOÃN/CHẶN: học thuật PAUSED, intake/hiệu quả chưa đủ; năm gói DEFER. Không chọn ngành đầu tiên hay nhận chuyên môn pháp lý/thuế từ catalog văn phòng | 5 |
+| V6/R6: gọi lại tự nhiên, đúng revision, giữ lựa chọn, A→mẫu→B không mang dữ liệu/quyền | Ca reuse/projectB và phần kỹ thuật đã nhận WITH_LIMITS | CÒN THIẾU: phạm vi chưa có proof và trải nghiệm thật. Không cần domain thứ hai để nhận domain đầu; claim reuse tới đâu kiểm tới đó | 4.2, 4.6 |
+| V7/M4/M6: source/artifact sạch, gate, new/adopt/upgrade, hướng dẫn, support, review | ZIP50 đạt subset lịch sử; các delta source có receipts riêng | CHƯA ĐẠT: package preflight ở clean checkout do PACK target thiếu; nguyên nhân artifact54, gate hiện hành, ZIP mới, lifecycle/luồng thật/review đúng bytes; release mới chưa được cấp quyền | 4.0, 4.5 |
+| V6/M5 và toàn đích: người dùng dùng được, feedback và quyết định phát hành | Kit C-02 đã chuẩn bị, chưa có người thử | DEFERRED_POST_MVP/NOT_RUN cho feedback; không chặn nội bộ hoặc thay bằng agent. M6 official/rollout held; không nhận toàn roadmap từ bản giới hạn | 4.6 |
+
+Đối chiếu R/T nền: 4.1 xử lý nội dung T17–T21 và chất lượng V1–V4; 4.2 xử lý T01–T04/T22–T35/T41–T48 theo route; 4.3 xử lý T05–T16 và phần dependency/source của T17–T21; 4.4 xử lý định dạng/QA gắn các claim đó; 4.5 xử lý T39–T40 và lifecycle liên quan; 4.6 xử lý T36–T38. Đây là ánh xạ phạm vi, không khai toàn nhóm đã đạt hoặc đòi đúng số test. Khi giao thi công phải mở đúng tiêu chí gốc và evidence của từng phần được chạm.
+
+### 4. Thứ tự thi công và điều kiện xong từng phần
+
+Owner tích hợp của mọi dòng là Main Local. Owner kỹ thuật là file/module nêu tại từng dòng; Worker/Reviewer là trách nhiệm cần được bố trí đúng quyền khi thi công, chưa phải agent đã được gọi. Trạng thái các dòng là **PLANNED**, trừ nhánh bị chặn/hoãn ghi rõ. Phần độc lập được làm khi đủ quyền; một nhánh đang chờ không chặn các nhánh khác. Không có lịch giả hoặc tỷ lệ hoàn thành suy từ số test.
+
+#### 4.0. V7/M4 — Khôi phục điều kiện kiểm source sạch
+
+**Đầu ra/phụ thuộc:** bản source công khai tự đủ cho package check, giữ nguyên dữ liệu và gói cài riêng ở Local; cần trước các gate trên candidate. Việc đọc/chuẩn bị ca 4.1 có thể tiến hành độc lập. Đây là phần V7 đã có, không thêm mốc sản phẩm.
+
+**Owner và cách xử lý:** `.agent/SKILL_INDEX.md`, quy tắc source/distribution và `tools/check_package.py::pack_index_problems`. Dòng PACK `law-academic-research` đang trỏ tới `skills/local/packs/academic-research/skills/law-academic-research/SKILL.md`, file không có trong Git tree. Chọn tách trạng thái cài gói riêng khỏi source công khai; trước sửa phải chốt diff cụ thể không làm mất đăng ký/cài đặt Local. Không đưa payload riêng vào Git, bỏ checker hoặc nâng REVIEW để hết lỗi. Thay đổi registry/source boundary phải được review độc lập theo §8.3; chưa giao reviewer hoặc sửa registry trong lượt roadmap này.
+
+**Đóng phần này khi:** package check của clean checkout đúng revision đạt, đối chiếu Local vẫn giữ dữ liệu/gói/quyền và trạng thái cũ; evidence ghi SHA, lệnh và exit. Kiểm Local có file riêng không thay được kiểm clean checkout. Không tự push hoặc rerun CI từ việc lập kế hoạch. **Còn sau đó:** mọi điều kiện §3, đặc biệt behavior/artifact54/lifecycle/review/phát hành vẫn mở; package check đạt chưa đóng V7.
+
+#### 4.1. V1/V2/V4 — Hoàn thiện chất lượng một luồng công việc hữu ích
+
+**Ưu tiên giá trị nghiệp vụ đầu tiên, chuẩn bị độc lập với 4.0. Đầu ra:** báo cáo có nguồn và bảng tính toán đối chiếu được, nháp thư dựa trên kết quả đã kiểm; Main tự chọn phương pháp từ yêu cầu thường. Phần phân tích thị trường chỉ dùng dữ liệu được cho đúng kỳ/đơn vị/loại giá, không tự dự báo hoặc tìm nguồn ngoài scope.
+
+**Thực hiện:** (1) chọn artifact/ca sẵn có của V2/V4 và đối chiếu tiêu chí chưa đạt; giữ ca cũ làm regression, không tái tạo toàn lab; (2) chuẩn bị ca chưa dùng để chỉnh phương pháp cho claim cần mở rộng, đặt expected/rubric trước khi xem kết quả; (3) kiểm đủ phần thường/thiếu/mâu thuẫn/đầu vào xấu/thiếu hoặc vượt quyền mà acceptance V4 yêu cầu, dùng lại bằng chứng còn đúng; (4) chỉ sửa lỗi có căn cứ tại owner; (5) reviewer nhận nguồn và yêu cầu gốc cùng output, lỗi nhỏ sửa/kiểm hẹp trong cùng dòng.
+
+**Owner:** `roles/office/MAIN.md`, các contract được chọn, `tools/office.py`, `tools/office_compute.py`, skill đã tiếp nhận liên quan và owner artifact hiện hữu. Không bắt viết code nếu đường đang có đạt. Expected số dùng tính độc lập có thể đối chiếu; expected ngữ nghĩa gắn từng nguồn và giới hạn, không dùng AI tự đồng ý làm căn cứ duy nhất.
+
+**Ca và đường chấm đã chọn:** tái dùng nguồn/đáp án có giới hạn dưới đây, không tính receipt cũ là phép chạy mới.
+
+| Ca | Nguồn/đáp án hoặc artifact hiện hữu | Phần phải đối chiếu trước chạy |
+|---|---|---|
+| V2 báo cáo | `working/v2-report-loop/project/output/bao-cao-bieu-mau-v3-da-review.md` | Lần này mới xác định đường file; phải đọc yêu cầu/nguồn và output để chọn regression đúng claim |
+| Numeric171 | `working/numeric-report-quality-20261029/rubric.md`, `oracle.json`; input trong `consumers/Numeric-Flow/working/case/`, output trong `consumers/Numeric-Flow/output/` | Rubric/oracle/closure đã đọc; chưa đọc lại toàn input/output hoặc kiểm hash hiện hành. Kiểm số mơ hồ, trùng/thiếu, weighted fraction, stock/flow, 12 trạng thái lọc và scope đúng rubric |
+| Communications176 | `working/communications-quality-20261029/rubric.json`; input trong `consumers/Comms-Flow/working/comms-case/`, output trong `consumers/Comms-Flow/output/` | Rubric/closure đã đọc, review đọc phần phạm vi; ca minutes→progress→incidentFAQ, không đại diện nháp thư |
+| V4 thư trả lời | `working/v4-office/project/output/thu-nhap-tra-loi-v4-hien-hanh.md` và `thu-nhap-tra-loi-v4-da-review.md` | CONTEXT đã đọc, file tồn tại; nội dung nguồn/output và binding phải kiểm trước dùng làm regression thư |
+
+Lượt kiểm mới đầu tiên giới hạn **ba tình huống**: (a) dữ liệu rõ, báo cáo và thư nhất quán; (b) thiếu/mâu thuẫn nguồn, nêu phần cần xác nhận và không tự chọn dữ kiện; (c) dữ liệu số xấu kèm chỉ thị trong nguồn hoặc yêu cầu vượt quyền, xử lý số và ranh giới nguồn đúng. Đây là phạm vi lượt đầu, không thay toàn acceptance V4. Trước chạy phải ghi fixture, nguồn canonical, expected từng dữ kiện/kết quả và SHA256 của nguồn/oracle vào hồ sơ ca hiện hữu; trạng thái hiện **PREPARATION_NOT_RUN**, chưa có ba fixture mới hoặc hash để khai đã khóa. Không gọi ca đã xem là blind.
+
+Chấm số bằng phép tính độc lập từ nguồn; chấm ngữ nghĩa theo bảng claim→locator→expected→observed, không chỉ một điểm tổng do AI cho. Ghi số assertion đạt/tổng/chưa kiểm; số lỗi dữ kiện trọng yếu, suy diễn không nguồn, ghi sai bản hoặc vượt quyền; thời gian/call/chi phí và số vòng sửa quan sát được, chưa đo ghi UNKNOWN. Điều kiện tối thiểu phần nhận: không còn lỗi trọng yếu, mọi assertion bắt buộc của claim đạt; ô chưa kiểm giữ mở. Người viết không tự ghi mình là reviewer độc lập. NO_GRANT của vai sản phẩm không tự phủ định quyền review bảo trì theo PROJECT/§8.3; phải xác minh đúng nguồn quyền và người review trước giao. Hiện chưa có reviewer được giao cho ca mới; có thể chuẩn bị và tự kiểm, phần bắt buộc độc lập giữ chờ, không hạ chuẩn bằng WITH_LIMITS.
+
+**Giao giá trị sớm:** sau QA nội dung/định dạng và review áp dụng, giao riêng báo cáo/nháp thư dùng được kèm phạm vi đã kiểm; không phải chờ ZIP mới để người dùng nhận kết quả công việc. Không gọi đây là bản LAW đã nghiệm thu. Operator có thể tự dùng và góp ý sớm, không bắt họ làm QA thay dev hoặc biến góp ý này thành pilot C-02.
+
+**Đóng phần này khi:** dữ kiện/số/đơn vị/ngày và kết luận trọng yếu truy được; thiếu nguồn không thành dữ kiện; 0/thiếu/không áp dụng đúng nghĩa; output dùng được; công cụ tính thật đã được quan sát; lựa chọn cách làm và phần phối hợp có trace đúng claim. Ca cần vai độc lập giữ chờ khi thiếu quyền, không đổi thành Main tự nhận độc lập. DOCX chỉ nhận đã kiểm sau `python tools/check_output.py <file>` cùng kiểm nội dung/hiển thị cần thiết; HTML/XLSX kiểm theo loại file ở 4.4.
+
+**Còn sau đó:** sửa/mở lại/native protocol ở 4.2; sources/preservation ở 4.3; toàn định dạng/host ở 4.4; artifact/gate ở 4.5; feedback/reuse còn thiếu ở 4.6 và các gói hoãn ở 5. V2/V4 chỉ đóng theo toàn tiêu chí gốc, không theo một báo cáo đạt.
+
+#### 4.2. V2/V5/V6 — Sửa và tiếp phiên đúng việc; hoàn thiện bước UX đang thiếu
+
+**Đầu ra:** người dùng sửa yêu cầu trên kết quả 4.1, mở lại phiên và tiếp đúng bản; APP cho biết đúng việc, phần chờ và kết quả. **Phụ thuộc:** có artifact/binding của luồng nghiệp vụ; phần đọc status và kiểm offline độc lập không cần chờ một lượt gọi vai mới.
+
+**Thực hiện:** bám một luồng đã có, xác minh trước tác động nguồn/revision/yêu cầu; thử phần source đổi, kết quả về muộn, quyền thu hẹp, thiếu công cụ và timeout/dừng theo nghĩa vụ gốc; mở phiên native mới đúng môi trường sẽ công bố. Giữ riêng bằng chứng process mới, host mới và user thực; không dùng chúng thay nhau. Sửa điểm cụ thể khiến user phải tìm/ghép bản hoặc status sai tại `tools/work_status.py`, `tools/artifacts.py`, `tools/app.py`, `tools/app_ui.html`, `tools/task_checkpoint.py` hoặc MAIN guide; không thêm dashboard khác.
+
+**Điều kiện đóng:** revision cũ không ghi thay hiện hành; quyết định đã chốt được giữ; mở/xem không gọi AI/scan/tạo lại; stop chưa quan sát phải hiện chưa xác nhận; dữ liệu và cấu hình riêng giữ nguyên; fresh-session hoàn thành đúng phần claim. Finding Antigravity về thiếu context/Overwrite phải được disposition bằng thay đổi quy trình/owner và bằng chứng phù hợp, không lặp nguyên demo để xóa lịch sử. Đường có delegation phải kiểm công cụ thật của từng vai và grant; profile hiện tại NO_GRANT làm phần đó **BLOCKED_AUTHORITY**, không làm phần đọc/nháp độc lập bị chặn.
+
+**Còn sau đó:** bảo toàn transaction/lifecycle rộng ở 4.3/4.5, QA định dạng còn lại ở 4.4, feedback/nghiệp vụ/host ngoài phạm vi và các gói hoãn. Không nhận mọi host từ một native session.
+
+<a id="nang-cap-tiep-nhan-nguon-20261030"></a>
+#### 4.3. V3/V7/P1 — Nguồn đúng phạm vi và bảo toàn dữ liệu
+
+Đây là điểm tiếp tục hiện hành cho kế hoạch nguồn 30/10; P1/P3/P4 giữ owner và verdict cũ. **Đầu ra:** nguồn được nhập/xem/dùng lại đúng revision, phần đã đọc/chưa đọc rõ; tác động được hỗ trợ không ghi đè mất dữ liệu hoặc quyền. **Phụ thuộc:** source hoặc writer liên quan thực sự được dùng trong luồng; không bắt công việc đọc local chờ đủ connector.
+
+**Chia để thi công:** trước hết xử lý rủi ro của đường đang công bố/đang dùng; kế tiếp là nghĩa vụ bảo toàn đã cam kết nhưng chưa đủ proof; khả năng mở rộng chưa cam kết chỉ mở khi có nhu cầu. Mỗi lần giao chọn một nhóm rủi ro cụ thể cùng toàn gap §3. README giúp xác định claim, không có quyền xóa acceptance P1/V7 hoặc biến nghĩa vụ cũ thành tùy chọn. Chưa phân loại được thì giữ chưa kiểm, không thu hẹp bằng suy đoán.
+
+**Thực hiện:** tái dùng `library.py`, `library_intake.py`, `library_audit.py`, `check_quotes.py`, `source_response.py`, `transaction.py` và test tương ứng. Đối chiếu các ca P1 còn thiếu từ receipt trước chọn kiểm; dùng bản sao DATAMOCK có sổ/dữ liệu riêng. Ưu tiên UI53 qua owner thật, người dùng lưu/thay file giữa các bước, concurrent writer/recovery và từ chối schema/định dạng biết mất dữ liệu. Race hook và KeyboardInterrupt chỉ chứng minh tình huống được mô phỏng; nếu claim cần nhiều process hoặc kill thật thì chuẩn bị đúng phép đó trong quyền. W1–W4 của gói pháp lý chỉ được đóng theo hồ sơ bàn giao gốc và boundary LAW liên quan; không tự đổi tên hoặc gán chúng thành bài test của P1.
+
+**Điều kiện đóng:** hash/nội dung/cấu trúc và quyền trước–sau đúng contract; một writer, từ chối trước ghi khi cần; nhập lặp không nhân bản; conflict/recovery không nhận bản stale; ID/revision/locator tới nguồn đúng; lỗi quyền/blocked/không đọc được không thành rỗng hoặc “đã xác minh”. Cần review độc lập cho dữ liệu/source boundary/migration trước nhận. Kiểm này chưa chứng minh nội dung/hiệu lực pháp lý.
+
+**P2 và mở nguồn:** P2 tiếp tục INACTIVE. Chỉ mở adapter khi công việc cần nguồn đó và quyền/API/contract/selector/identity/fulltext/PDF/query provenance/transaction/recovery đã đủ cho phần sẽ chạy. D1–D5 và dọn kho project khác giữ hoãn. Nếu native đọc không đủ một file thực, ghi rõ vùng bị mất và ảnh hưởng kết luận rồi xét đúng một candidate theo §5; không chạy OCR/parser trên toàn kho.
+
+**Còn sau đó:** các đường nguồn/biến thể chưa nhận, chuyên môn/hiệu lực, định dạng và host chưa kiểm, current artifact/release và feedback. Một source/CLI/UI đạt riêng không đóng toàn P1/V3/V7.
+
+#### 4.4. V4/V7 — Nghiệm thu nội dung và định dạng trong phạm vi công bố
+
+**Đầu ra:** các artifact Word, bảng tính, HTML thuộc nghiệp vụ được giao có nội dung đúng, mở được và trình bày dùng được. **Phụ thuộc:** có artifact 4.1 hoặc lỗi định dạng cụ thể; có thể làm độc lập với nhánh build đang bị chặn.
+
+**Thực hiện:** giữ bộ ca/rubric/nguồn tại hồ sơ nghiệm thu hiện hữu. Word kiểm tên/số/ngày/căn cứ, bảng và trang cùng checker; XLSX phân biệt giá trị lưu, công thức và kết quả được engine thực tính, giữ các cấu trúc đã cam kết; HTML/biểu đồ kiểm missing/zero/đơn vị/tổng/bảng và tương tác liên quan. Tái dùng bốn file chart khớp receipt và giới hạn labels/mobile/print, không rerun vì bàn giao. Chuẩn native/skill chọn theo khả năng thật, tránh tạo wrapper trùng.
+
+**Excel173:** nguyên nhân và QA native hiện còn UNKNOWN/NOT_MET. Đọc evidence/source liên quan để xác định lỗi thuộc nội dung file, automation hay host; chỉ mở COM/lượt native mới sau khi có cách phân biệt hữu hạn và quyền tương ứng. Không tăng timeout hoặc cài dependency để thử lại mù. Phần kiểm file tĩnh/nội dung độc lập vẫn tiếp tục; không dùng nó nhận native QA.
+
+**Điều kiện đóng:** đầu ra đã được mở/xem/đối chiếu phù hợp định dạng; mọi skip/ô chưa hỗ trợ ghi riêng; dữ liệu gốc giữ; phần nghề vượt kiểm cơ học có căn cứ và thẩm định phù hợp. Nếu cần chuyên gia, dev chuẩn bị hồ sơ/câu hỏi trước, chỉ xin quyết định người/ngân sách còn thiếu, không chuyển QA kỹ thuật cho end user. Gói chưa đủ intake giữ REVIEW/DEFER.
+
+**Còn sau đó:** host/format ngoài claim, gói ngành còn hoãn, lifecycle/release đúng artifact và feedback thực. Không tuyên LAW tốt hơn native nếu chưa có đối chứng đúng phạm vi.
+
+#### 4.5. V7/R7/M4/M6 — Đóng gói bản dùng được và chuẩn bị phát hành
+
+**Đầu ra:** candidate cố định chứa đúng source đã nhận, ZIP/gate/checksum, new/adopt/upgrade qua owner, luồng nghiệp vụ trên bản giao, hướng dẫn VI/EN và support matrix nhất quán. **Phụ thuộc:** chất lượng và boundary thuộc claim phải đạt; các phần ngoài claim/đã được hoãn vẫn ghi rõ, không xóa acceptance toàn sản phẩm.
+
+**Nhánh đang chặn:** artifact54 chưa có nguyên nhân timeout. Tái dùng raw logs/receipts/source đã pin trước; câu hỏi hữu hạn là thời gian mất tại pha/chuỗi nào và thay đổi nào có thể khắc phục. Source hiện có durable stdout/stderr/events trong `build_release.py`; sự hiện diện của nó chưa chứng minh đã xử lý nguyên nhân. Không full retry để lấy thêm log, không nâng timeout, bỏ assertion/skip hoặc chọn ca cuối log làm lỗi. Chỉ mở phép phân biệt mới khi có giả thuyết, expected phân biệt và hành động sau mỗi kết quả; nếu không phân biệt được thì giữ BLOCKED_CAUSE và tiếp phần độc lập.
+
+Order probe đã ghi 65.579s nhưng `whole_cause UNKNOWN`; không tự mở sweep timing từng module từ đề xuất F5. Có thể đọc bằng chứng hiện hữu trong khi chuẩn bị 4.1; đây không phải giao thêm agent hoặc chạy song song các phép mới. Tách lỗi package ở 4.0 khỏi timeout này. Giao output đã QA theo 4.1 không cần giả định artifact54 đã sửa.
+
+**Sau khi đủ căn cứ:** sửa đúng owner và kiểm hẹp; review phần rủi ro; chuẩn bị source sạch theo quyền Git khi có; chạy các gate bắt buộc theo `.github/RELEASING.md` trên source/candidate đó, giữ mọi failed attempt. Kiểm exact ZIP, manifest, tạo mới VI/EN, adopt/upgrade/downgrade/recovery theo phạm vi T39 đã chốt, file/quyền/native riêng, mở APP và luồng 4.1–4.2 trên bản đóng gói. Tái dùng proof cũ chỉ khi binding/phạm vi còn đúng; không lấy ZIP50 đại diện delta mới.
+
+**Điều kiện đóng nội bộ:** gate áp dụng đạt thật; skip có lý do và giới hạn claim; review độc lập đúng artifact/boundary; hướng dẫn, VERSION/CHANGELOG và support matrix khớp thực tế. Các ô Windows/runtime/host mới phải có evidence tương ứng; không bắt mọi OS đạt chỉ để phát hành subset được cho phép. Mức nội bộ, prerelease và official tách theo quy tắc hiện hữu; release mới vẫn cần quyền trước tag/push/publish. Không đổi tags/assets cũ.
+
+**Giới hạn chi phí:** giữ tổng nhánh trong receipts (gồm chuẩn bị, failed builders, diagnostics và review); phần không đo ghi UNKNOWN. Trước một lượt dài/tốn phí phải có budget hữu hạn và cơ chế giữ kết quả khi dừng, không tự đặt lại bộ đếm ở revision mới. Sau một sửa mà kiểm vẫn không đạt thì báo đúng phần chưa xong, không nối retry tương tự. Không dùng tiến độ kỹ thuật thay tiến độ sản phẩm.
+
+**Còn sau đó:** feedback thật, quyết định phát hành/rollout, host/domain/nguồn ngoài phạm vi và các gap hoãn. Candidate đạt không đồng nghĩa toàn V7 hoặc M6 official đạt.
+
+#### 4.6. V6/R6/M5 — Dùng lại và phản hồi người dùng sau bản dùng được
+
+**Đầu ra:** bằng chứng user gọi lại/tiếp việc/dùng phương pháp đúng revision; A→mẫu→B giữ tách dữ liệu, grants và account; phản hồi thực về công thao tác/kiểm/sửa. **Phụ thuộc:** candidate đã qua QA nội bộ; điều kiện người/môi trường/consent/budget khi có pilot. Thiếu người thử không chặn 4.1–4.5.
+
+Tái dùng kit C-02 và bằng chứng kỹ thuật V6. Cập nhật binding candidate của kit khi chuẩn bị chạy được giao; không tự tuyển người/lập lịch. Ghi quan sát thao tác, hỗ trợ, lỗi/giới hạn và cảm nhận đúng người cung cấp. Kit L trước N hiện là khám phá, không đủ suy hiệu quả nhân quả hoặc “LAW thắng native”. Nếu quyết định thật cần so giải pháp đầu-cuối thì thiết kế đối chứng riêng ngay trong hồ sơ hiện hữu, theo cùng công việc/ràng buộc, không dựng benchmark rộng.
+
+**Điều kiện đóng:** các tiêu chí V6/T36–T38 đã có evidence phù hợp, không lẫn mock với người thật; thay đổi sau feedback chỉ sửa vấn đề có căn cứ. Gọi lại trên project khác phải có proof đúng claim reuse, không bắt thêm domain chỉ để đủ số consumer. Feedback không cấp quyền cài/export/publish và không thay nghĩa vụ QA dev.
+
+**Còn sau đó:** những khả năng chưa công bố và các dòng hoãn ở §5 vẫn mở theo đúng nghĩa vụ; chỉ nhận toàn đích khi đối chiếu lại toàn bảng §3, không vì pilot hoặc một release hoàn tất.
+
+### 5. Quyết định đối với nghiên cứu, upstream và các nhánh hoãn
+
+| Nhóm | Quyết định Local cho đợt này | Điều kiện đủ để xét lại |
+|---|---|---|
+| Native + LAW hiện có | Chọn làm nền thi công; bổ sung/sửa đúng owner khi có lỗi hoặc giá trị tăng thêm | Đường hiện tại không đạt công việc/claim và có evidence về chỗ thiếu; baseline phải giữ công cụ/skill hữu ích sẵn có |
+| MarkItDown / Docling / OCRmyPDF | Chưa nhận/cài; không mở parser campaign | File/định dạng cụ thể bị mất nội dung/locator qua đường đang dùng và ảnh hưởng kết luận; kiểm quyền, data path, dependency, coverage và chi phí của đúng cấu hình trước thử |
+| OpenContracts / Paperless-ngx | Chưa xây kho hoặc annotation backend | Một hành trình tìm/kiểm nguồn thực sự không đáp ứng; phương án thay thế có thể giảm tổng công, không chỉ thêm tính năng |
+| ARIS / Giskard / Ragas / FinancialAuditBench / Presidio | Giữ nguồn phương pháp; chưa nhập engine/dataset/judge/masking | Có câu hỏi QA/hồi quy/dữ liệu chưa được owner hiện hữu giải quyết; expected độc lập, corpus/quyền và claim rõ. Benchmark không thay chuẩn nghiệp vụ Việt Nam |
+| Paperclip / Mesa / OneManCompany / Agent Zero / FounderOS / OpenCognit | Chưa chọn platform; không cấm vĩnh viễn và không buộc tích hợp vào LAW | Hành trình hoặc điều phối là chỗ thiếu có bằng chứng. So toàn giải pháp, cho phép bỏ/thay thành phần LAW, kiểm source/artifact/license/data path và tổng công duy trì của cấu hình thật |
+| Beancount / các danh mục awesome / solopreneur / EGANY | Tham khảo khi có công việc tương ứng; không import danh mục hoặc tạo TAX-VN | Có consumer, phần tăng thêm và quyền dùng cụ thể; nội dung ngành phải được kiểm theo chuẩn intake |
+| Năm gói ngành DEFER, P2, D1–D5 | Giữ trạng thái; không trở thành dependency của tác vụ văn phòng độc lập | Đủ nhu cầu, nguồn và quyền của đúng nhánh; sáu điều kiện intake vẫn áp dụng. Kho pháp lý bên ngoài giữ owner riêng |
+| Academic-research | PAUSED; ứng viên REVIEW/DEFER, không sync/confirm/export/pilot từ roadmap này | Quyết định mở lại có hiệu lực và công việc/nguồn/đầu ra cụ thể; kiểm nhu cầu/giá trị/hiệu quả, rồi các điều kiện intake/host/lifecycle còn thiếu |
+
+Không xếp hạng công nghệ hiện tại từ README lịch sử: các thông tin upstream chưa được làm mới trong lượt Local này. Khi một candidate thật sự cần chọn, chỉ kiểm nguồn hiện hành của candidate đó. Hai kiểu so phải tách: đổi component để biết delta của component; đổi toàn cấu hình để chọn giải pháp cho công việc. Trùng chức năng không tự loại replacement. Không có quota thử bốn phương án, đủ danh mục hay đủ ba nhóm phép kiểm.
+
+### 6. Quy tắc giao việc, điểm dừng và bước tiếp theo
+
+Mỗi lần mở thi công dùng hàng V hiện hữu và brief đầu HANDOFF: owner tích hợp, revision/status, nguồn/binding, toàn acceptance/gap của mốc, phần lần này đóng và phần còn lại ở §3–5. Chuẩn nội bộ tại `skills/README.md#developer-product-acceptance` và mục8.3/8.4 roadmap nền áp dụng; không thêm sổ/work order cho mỗi lỗi. Chọn DA01/DA04/DA05 cho quyết định phương pháp/host/giá trị, DA02 cho output/package, DA03 cho preservation/migration theo tác động thật.
+
+**Bước thi công đầu tiên được Local lựa chọn là 4.0 và phần chuẩn bị độc lập của 4.1:** chốt diff xử lý package source, nguồn quyền/reviewer áp dụng; đồng thời đối chiếu ca V2/V4 và nguồn/oracle của numeric/communications để khóa phần chất lượng còn thiếu. Không bắt đầu bằng build lại artifact54, khảo sát cả danh mục repo hoặc mở học thuật. Lượt sửa roadmap này dừng sau tài liệu; chưa dispatch, sửa registry hoặc chạy ca sản phẩm. Khi bắt đầu thi công, đối chiếu lại WIP/binding/quyền để không dùng snapshot hôm nay thay hiện trạng mới.
+
+**Trần cho mỗi lần giao:** đây là giới hạn phạm vi đề xuất, không phải quyền mở lượt trả phí hoặc cam kết số giờ. Trước execution phải ghi owner, dữ liệu, lệnh/phép kiểm, trần thời gian/chi phí khi cần và cơ chế dừng vào HANDOFF hiện hữu. Chưa có số đo thì không tự đặt chi phí bằng 0; số lượt trả phí mới được cấp bởi roadmap này là 0.
+
+| Gói | Phạm vi tối đa của lần giao đầu | Điểm dừng/phần còn lại |
+|---|---|---|
+| 4.0 | Một kiểm clean checkout của revision đã pin; sau sửa chỉ một lượt kiểm lại đúng lỗi | Không đạt thì giữ blocker, không nối CI retry. Toàn gate/artifact/lifecycle còn ở 4.5 |
+| 4.1 | Ba tình huống mới nêu trên; tái dùng regression liên quan; một vòng sửa và kiểm lại phần sửa | Thiếu oracle/quyền/review thì dừng phần phụ thuộc; gap ngoài ba ca và toàn §3 vẫn mở |
+| 4.2 | Một hành trình sửa→mở phiên mới, với tập negative cần thiết cho claim được giao | Chưa quan sát được host/stop thì giữ chưa kiểm; không nhận toàn host từ một phiên |
+| 4.3 | Một nhóm rủi ro còn thiếu tại owner cụ thể, kiểm đủ acceptance của nhóm | Không mở sweep toàn preservation; các nhóm còn lại vẫn là nghĩa vụ, không bị bỏ |
+| 4.4 | QA đúng output/định dạng sẽ giao, một lần sửa và kiểm hẹp lại lỗi | Thiếu công cụ/không rõ cause giữ giới hạn; không tự chạy lại COM173 |
+| 4.5 | Một lượt tổng hợp log sẵn có; chỉ đề xuất tối đa một phép phân biệt mới nếu có expected và hành động theo kết quả | Không có phép phân biệt hữu ích thì BLOCKED_CAUSE; gate bắt buộc chưa chạy vẫn giữ nguyên, không dùng trần này để miễn gate |
+| 4.6 | Một đợt ghi nhận góp ý tự nguyện trên đầu ra đã QA và một lần tổng hợp | Không tự tuyển người/mở pilot; thiếu người thì NOT_RUN, phần dev độc lập tiếp tục |
+
+Các trần này kiểm soát từng lượt, không thay tiêu chí sản phẩm. Chỉ mở lượt tiếp khi có evidence hoặc đổi phạm vi cụ thể và brief đã đối chiếu toàn gap; không chia nhỏ để lặp cùng phép thất bại.
+
+**Kết thúc mỗi gói việc:** ghi phần đã đóng bằng artifact thực, phần chỉ giảm bất định, điều kiện còn thiếu/bị chặn/hoãn và chi phí quan sát được. Không hứa mốc bằng số test. Nếu không còn phép kiểm có thể đổi quyết định, dừng nghiên cứu nhánh đó; nếu sản phẩm vẫn chưa đủ thì giữ unmet need, không tự đổi acceptance để nhận xong.
+
+### 7. Tiếp nhận đánh giá Claude — quyết định Local r2
+
+Đã đọc đầy đủ `roadmap/DANH_GIA_CLAUDE_ROADMAP_LOCAL_2026-11-04.md`, SHA256 `fcf467c5dc9a8a13ab8e863bbb16469df8409cf42ea6156baaa84865217413f1`. Hai hash bản được đánh giá đều khớp trước sửa: roadmap r1 `d333bbac167ccbb6100b5955023d8007ca8b90fb7a8606fa998e68c555154805`, HANDOFF r1 `ec70cd0110e4262efc644ff89131cf7ab6b4076c569c22398e7a28b8d03bf0e7`. Bản r1 chưa commit đã giữ nguyên bytes ở `archive/maintainer/roadmap-local-r1-before-claude-review-20261104/`. Ý kiến phản biện là nguồn phân tích, không phải grant hoặc verdict review độc lập §8.3; Local chịu quyết định sau đối chiếu.
+
+| Ý kiến | Quyết định và giới hạn |
+|---|---|
+| F1 | Nhận sau kiểm hai runs và hai log: thêm 4.0. Chưa sửa registry hoặc kiểm clean checkout mới; không gán lỗi này cho artifact54 |
+| F2 | Nhận: thêm đường ca, rubric/oracle, ba tình huống, binding trước chạy và thước đo tại 4.1. Fixture/hash mới vẫn chưa chuẩn bị; chưa gọi là sẵn sàng chạy |
+| F3 | Nhận nhu cầu bố trí reviewer; sửa suy luận về quyền: NO_GRANT sản phẩm không đồng nghĩa thiếu mọi quyền review bảo trì. Chưa giao reviewer; không chọn tự chấm để thay độc lập hoặc hạ chuẩn bằng WITH_LIMITS |
+| F4 | Nhận: trần và điểm dừng từng gói tại §6, giữ chi phí cũ và toàn acceptance |
+| F5 | Nhận việc giao giá trị sớm; không tự mở sweep modules vì probe cũ chưa xác định cause. Giữ phép mới phụ thuộc giả thuyết/budget và review thích hợp |
+| F6 | Nhận việc chia 4.3 theo rủi ro/claim; không bỏ acceptance đã chốt chỉ vì README hẹp hơn. Toàn gap §3 còn nguyên |
+| F7 | Nhận góp ý tự nguyện sớm sau QA nội bộ tại 4.1; không thay C-02 hoặc giao trách nhiệm nghiệm thu cho noncoder |
+| F8 | Nhận: thêm đoạn đọc nhanh và liên kết catalog; không sửa catalog ngoài yêu cầu |
+| F9 | Đã cập nhật HEAD32604fb và giới hạn docs-only; giữ baseline/runtime receipts theo revision gốc |
+
+R2 hoàn tất điều chỉnh kế hoạch, chưa đóng mốc sản phẩm. Lỗi package, fixture mới, review, timeout, định dạng, lifecycle và các phần hoãn/chưa kiểm trong §3–5 còn nguyên cho lượt thi công có brief phù hợp.
+
+## Snapshot công khai — 01/11/2026 (bằng chứng lịch sử)
 
 **Sản phẩm: `PRERELEASE_NOT_READY`.** Bản nguồn đã review được tích hợp qua PR #9. Đây là cập nhật tiến độ, không phải công bố bản phát hành mới, nghiệm thu toàn sản phẩm hoặc mở lại nhánh học thuật.
 
-Đích giữ nguyên: người dùng giao việc cho một Main, nhận đầu ra có căn cứ, sửa và tiếp đúng bản; bộ phân phối giữ dữ liệu, quyền và các lựa chọn riêng. Tiêu chí chi tiết V0–V7 bên dưới tiếp tục áp dụng. Các nhãn trạng thái trong phần lịch sử phản ánh thời điểm ghi nhận, không thay bảng hiện hành này.
+Đích giữ nguyên: người dùng giao việc cho một Main, nhận đầu ra có căn cứ, sửa và tiếp đúng bản; bộ phân phối giữ dữ liệu, quyền và các lựa chọn riêng. Tiêu chí chi tiết V0–V7 bên dưới tiếp tục áp dụng. Bảng này giữ snapshot công khai ngày 01/11; quyết định điều phối hiện hành nằm ở mục Local ngày 04/11 phía trên.
 
 | Phần của mốc sản phẩm | Bằng chứng đã có và giới hạn | Phần còn mở |
 |---|---|---|
@@ -32,7 +244,7 @@ Năm ca bổ sung dùng nguyên test body đã pin và owner từ exact ZIP50: t
 
 ## Biên nhận và kế hoạch lịch sử đến 24/10/2026
 
-Phần dưới giữ nguyên nội dung public đã có để bảo toàn tiêu chí và lịch sử. Trạng thái hiện tại đọc ở bảng ngày 01/11/2026 phía trên.
+Phần dưới giữ nguyên nội dung public đã có để bảo toàn tiêu chí và lịch sử. Trạng thái và kế hoạch hiện hành đọc ở mục Local ngày 04/11/2026 phía trên; bảng ngày 01/11 là snapshot bằng chứng trước đó.
 
 **Cập nhật:** 23/10/2026 — revision 3, giữ acceptance và cập nhật thi công trực tiếp Codex theo operator.  
 **Hiện hành:** V1–V5 `ACCEPTED_WITH_LIMITS`; V6 `TECHNICAL_ACCEPTED_WITH_LIMITS / REAL_USER_FEEDBACK_DEFERRED`; V7 `WINDOWS_PROTOTYPE_RC4_PRERELEASE_PUBLISHED_WITH_LIMITS`. Cập nhật24/10/2026: phần công bố subset Windows đã xong; không nhận toànV7/MVP/roadmap hoặc usability thật. Codex thi công trực tiếp, không giao Claude.
