@@ -6,7 +6,7 @@ Hoàn thiện LAW thành văn phòng ảo trung tâm: Main nhận/đánh giá vi
 
 ## Current phase
 
-06/11/2026: operator giao commit local để sạch worktree; checkpoint bảo trì đã qua104tests liên quan/184.737s và Astra review có giới hạn. Giữ126archive raw và registry Local; staged-only bỏ PACKrow được thay bằng bytes live=HEAD, nên cleanclone package gate chưa đóng. Chốt nguồn không nhận sản phẩm; OFFICE41/4.1 NOT_MET, PRERELEASE_NOT_READY.
+06/11/2026: OFFICE41 r1b khép3report+3draft text DATAMOCK: Astra POST13/13claims PASS, Main nhận đúng6hash,8input/6DATA pins giữ. Preflight sửa đúng parent/UTF8/raw; một DATA run/một Writing attempt,4/4turns thêm+6cũ=10, giữ2failures/costUNKNOWN. Coverage§3.1r2 giữ12criteria và toàn gap; toàn4.1 NOT_MET/PRERELEASE_NOT_READY.
 
 ## Completed
 
@@ -22,7 +22,7 @@ Hoàn thiện LAW thành văn phòng ảo trung tâm: Main nhận/đánh giá vi
 
 ## Current artifact
 
-- Roadmap canonical: roadmap/ROADMAP_VAN_PHONG_NGHIEP_VU.md r7 SHA256 6ccffd757c3731889a0ddc44b3bed6fc9d74520046bd153394c975e5b52b7aad; form1.2 hiệu chỉnh1 từ CVF feb691726, local SHA 790889ba11ea…f479ef3a; bản1.1 giữ tại archive CVF theo link trong form. OFFICE41 evidence: working/office-flow-quality-20261106/{CASES.md,oracle.json,RUN.json,REVIEW.md,sources/}. Snapshot trước trial giữ tại archive/maintainer/roadmap-r7-before-office41-20261106/.
+- Roadmap canonical: roadmap/ROADMAP_VAN_PHONG_NGHIEP_VU.md r7/coverageC41-r2 SHA256 c7423a7d8006ddc3638dae6360bbd5062c1c5cb208c2afee1039d5a524b2ac2c; form1.2 hiệu chỉnh1 từ CVF feb691726, local SHA 790889ba11ea…f479ef3a; bản1.1 giữ tại archive CVF theo link trong form. OFFICE41 textaccepted/13claims proof: working/office-flow-quality-20261106/{CASES.md,oracle.json,RUN.json,REVIEW.md,sources/}. Snapshot trước trial giữ tại archive/maintainer/roadmap-r7-before-office41-20261106/.
 - Hồ sơ Excel: HANDOFF r6.17a; job working/excel-workflow-quality-20261029/native-final-20261104/. q tại repair-20261105/product/, manifest SHAadd9c230…f2f5/XLSX8e67074c…d0da/HTMLa3433a58…c8e; format candidate tại repair-20261105/format-r6.15/so-theo-doi.xlsx +2PNG, không thay q. SourcePOST260ee7dc…acab/Mainproofdeff80fb…d242; actualcontrol2logs giữ. CVFjobcontrol2execution524c9309…0d90/POSTc752ec79…c898/closeproof3d2ebe02…c52c. Qualification r1: evidence/control-qualification-20261105/qualification.json +mẫu Microsoft; nativeheld. VMfeasibility: evidence/vm-feasibility-20261105.json, localNOT_READY. Claude-r1 receipt SHAea00df4f…c73, Codexbytesverified6/6+3/3. R6.17a lệnh/output chỉ trong hội thoại, không thêm file.
 - DOCX A: format-qa/output/bao-cao-va-thu-nhap-A.docx; PDF2trang tại native-word-final/evidence/attempt1/word-export.pdf. DOCXdef180…aa72, PDFe064166…eedf.Baseline59pin giữ lịch sử; HEAD-staged-live giữ.
 - ZIP50: working/release-closure-20261031/attempt2/artifacts/local-agent-workspace-v1.9.0-rc5.zip, SHA29fbeeed…713af. Đây là artifact cũ; các delta source chưa có ZIP mới đạt.
@@ -32,7 +32,7 @@ Hoàn thiện LAW thành văn phòng ảo trung tâm: Main nhận/đánh giá vi
 
 ## Open items
 
-- V1/V2/V4: routing, chất lượng nghề/nội dung/nguồn và kết hợp ngoài ca đã kiểm; V3: provenance/identity/revision/coverage/hiệu lực/connectors. R6.19/20 mới chuẩn bị DOCX và bind claim trong fragment; chưa có host/TASK/RESULT/quyền/QA artifact. OFFICE41 DATA lỗi evidence sau một sửa, chưa có actor candidate/13actualchecks; fixture đã chuẩn bị, không còn PREPARATION_NOT_RUN.
+- V1/V2/V4: routing, chất lượng nghề/nội dung/nguồn và kết hợp ngoài ca đã kiểm; V3: provenance/identity/revision/coverage/hiệu lực/connectors. R6.19/20 mới chuẩn bị DOCX và bind claim trong fragment; chưa có host/TASK/RESULT/quyền/QA artifact. OFFICE41 r1b ba ca text đã POST13/13 và Main nhận6hash; hai failure r1/r1a giữ. Routing rộng/N-A/nghề/negative/route ngoài ca còn coverage§3.1, không nhận cả4.1.
 - V2/V5/V6: full nativeTASKRESULT/context/quyền/lỗi/late/sourcechange/timeout-stop/UI/hostkhác; profileNO_GRANT, WorkStatusconsumerNO_WORK/stopUNCONFIRMED; Antigravity findings cũ giữ, chưa hostenforcement.
 - 4.4/V4/V7: LAW còn thiếu proof chọn actor/capability/quyền của host, gắn nguồn/revision/claim, kiểm artifact thật và ghi skip/unsupported đúng; không suy mọi host từ test một môi trường. Word A giữ bounded. Nếu giao file Excel173, riêng ca đó còn Excel thật tính/lưu-mở lại/bảo toàn/in/hiển thị đủ 5 sheet và viewer/professional theo rubric; source gap đã sửa trong candidate q nhưng original frozen. Open1004/cleanup UNKNOWN chặn dùng lại COM cũ khi chưa an toàn, không là gate chung; 7/5 là độ phủ harness cũ.
 - V7/P1: UI53, race/save/interruption/corruption/recovery/Undo/schema/W1–W4 và nguồn đúng phạm vi chưa đủ; không nhận toàn bảo toàn từ subset.
@@ -42,7 +42,7 @@ Hoàn thiện LAW thành văn phòng ảo trung tâm: Main nhận/đánh giá vi
 
 ## Waiting on user
 
-Không chờ operator debug/QA hoặc trung chuyển host cho lỗi này. DATA đã dừng sau một sửa thất bại, không retry thêm. DEV phải khép preflight thư mục/UTF8/capture giữ raw trước lượt tương lai có căn cứ. Profile sản phẩm NO_GRANT/Core thiếu vẫn giữ; form CVF v1.2 đã upstream private và nhận tại LAW; hiệu quả chưa chứng minh.
+Không chờ operator debug/QA hoặc trung chuyển host cho lab text đã khép. DEV nhận3report+3draft đúng hash sau POST; chưa cần user xác nhận nghiệp vụ vì DATAMOCK. Product profileNO_GRANT/Core thiếu giữ; không dùng receipt lab để nhận activation, release hoặc mọi host.
 
 ## Decisions
 
@@ -55,6 +55,6 @@ Không chờ operator debug/QA hoặc trung chuyển host cho lỗi này. DATA �
 
 ## Next milestone
 
-Trước BUILD tiếp: đối chiếu toàn acceptance4.1 vào bảng chính§3 bằng criterion ID/trạng thái/owner/đích quay lại theo form1.2, dùng phần riêng LAW ở§6. OFFICE41 DATA vẫn NOT_MET; continuation cần cách làm đổi đúng lỗi dừng và trần thêm. Bảng hướng dẫn riêng không thay coverage hoặc tự mở run. 4.2/toàn Open items giữ.
+§4.1 theo coverage§3.1 C41-01..12/r2: ba ca text r1b đã khép; Main tiếp đối chiếu claim/corpus sáu phương pháp và evidence V1/V2/V4 hiện hữu để xác định gap C41-01/11 trước giao mới. C41-12/4.2 và toàn Open items giữ; không mở thêm run sau trần4turns r1b.
 
 Excel173 là ca artifact riêng: format-r6.15 được nhận bounded từ 2 render officecli; r6.17a viewer in-memory và ảnh DANH MUC có giới hạn. Nếu giao chính file này, còn kiểm Excel thật tính/lưu-mở lại/bảo toàn/in/hiển thị 5 sheet, viewer trên bản đã lưu/support. Các thiếu đó không thay proof 4.4 về kiểm soát host; 7 trạng thái/5 PDF/COM không là acceptance chung. Gate ceiling0/null action của route cũ giữ, không retry/commit từ kết quả này.
