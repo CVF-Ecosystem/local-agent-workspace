@@ -4,7 +4,7 @@ Một bản đồ dùng chung để mọi agent (Claude, Codex, Gemini) và oper
 File này chỉ có ở kho nguồn (nằm trong `roadmap/`, không thuộc bản phân phối) và được đăng trên GitHub chủ yếu để agent bên ngoài đọc.
 Nó là bản tra nhanh, không phải nguồn sự thật: khi lệch với file thực, STATE, HANDOFF hoặc roadmap thì file thực thắng; nêu chỗ lệch cho operator thay vì tự sửa.
 
-**Cập nhật tiến độ:** 06/11/2026 · Local roadmap `LOCAL-ROADMAP-20261106-r7` chốt baseline/kết quả và chức năng LAW theo operator; tích hợp form kiểm soát tiến độ chung, bản sửa F1/N1–N5 sau review Claude trong r6.22, Main kiểm hẹp; verdict cũ giữ trên bytes r7/form1.0; không nhận mốc sản phẩm từ sửa roadmap. Mốc `main` tại `32604fb` và snapshot r2 là nền lịch sử; đối chiếu `.agent/STATE.md` và HANDOFF khi cần trạng thái mới nhất.
+**Cập nhật tiến độ:** 06/11/2026 · Roadmap `LOCAL-ROADMAP-20261106-r7`, coverage chính C41-r2 tại §3.1; form CVF v1.2 hiệu chỉnh1 đã tiếp nhận. OFFICE41-r1b đã được review và Main nhận trong phạm vi ba ca text DATAMOCK; toàn mốc 4.1 chưa đạt. Git đã đồng bộ đến `a1bdc42`; `32604fb`/snapshot r2 là lịch sử. Lượt đối chiếu finding web F04 đồng bộ bản tóm tắt này với STATE/HANDOFF và roadmap, không đổi baseline hoặc trạng thái sản phẩm.
 
 ## 1. Cách dùng và cách cập nhật
 
@@ -82,8 +82,8 @@ Dòng lấy từ mục 4 của `roadmap/ROADMAP_VAN_PHONG_NGHIEP_VU.md` (revisio
 
 | Dòng | Nội dung | Trạng thái | Ghi chú ngắn / con trỏ bằng chứng |
 |---|---|---|---|
-| 4.0 | V7/M4: khôi phục kiểm source sạch | W40/candidate đã nhận có giới hạn; CHƯA ĐÓNG | Candidate clean package đã kiểm, staged bỏ dòng PACK trỏ file Local; live registry và gói riêng giữ. Source/CI/gate hiện hành và toàn V7 chưa được nhận; xem STATE/HANDOFF W40 |
-| 4.1 | V1/V2/V4: chất lượng luồng báo cáo–số liệu–nháp thư | Ba fixture PRE review; DATA_NOT_MET, report/thư chưa dispatch | OFFICE41-r1/r1a: actor native lỗi stdout rồi ghi evidence thiếu parent sau một sửa; không output được nhận, giữ failure/audit ở working/office-flow-quality-20261106/ và HANDOFF. Không suy product grant/adapter hoặc toàn luồng đạt |
+| 4.0 | V7/M4: khôi phục kiểm source sạch | W40/candidate đã nhận có giới hạn; CHƯA ĐÓNG | Candidate clean package giữ bằng chứng cũ. Checkpoint27def91 dùng live SKILL_INDEX=HEAD, giữ đăng ký Local; staged-only bỏ PACKrow không vào commit. Clean-clone PACK target/source/CI/gate còn thiếu; xem STATE/HANDOFF W40 và Git checkpoint |
+| 4.1 | V1/V2/V4: chất lượng luồng báo cáo–số liệu–nháp thư | OFFICE41-r1b nhận nội bộ ba ca text; toàn 4.1 CHƯA ĐẠT | DATA→Writing→Astra POST→Main nhận đúng report/draft trong RUN/REVIEW tại working/office-flow-quality-20261106/. Giữ failures r1/r1a. Routing rộng, chất lượng ngoài corpus và route sản phẩm còn mở; trạng thái từng criterion chỉ ở roadmap §3.1 C41-01..12, không suy product grant/adapter/Office |
 | 4.2 | V2/V5/V6: sửa, tiếp phiên, UX trạng thái | PLANNED; phần gọi vai BLOCKED_AUTHORITY | R6.20 phân biệt claim đổi trong TASK binding trên fixture, chưa kiểm luồng sửa/tiếp thật. Profile hiện `NO_GRANT` cho Scout/Worker/Reviewer; phần đọc/nháp độc lập không bị chặn |
 | 4.3 | V3/V7/P1: nguồn đúng phạm vi, bảo toàn dữ liệu | PLANNED | P2 INACTIVE; D1–D5 DEFERRED_USER |
 | 4.4 | V4/V7: LAW kiểm soát đầu ra theo host và claim | ĐANG LÀM, CHƯA ĐẠT | R6.19 cho thư ký chuẩn bị brief DOCX qua host_session có capability khai báo, chưa chứng minh host/quyền/artifact. Còn proof actor/capability/quyền, nguồn/revision, QA artifact và skip/unsupported trên luồng thật. Word A và Excel173 là ca có giới hạn; nếu giao Excel173 thì rubric tính/lưu/in riêng vẫn thiếu. Harness/COM cũ không là gate chung |
@@ -97,6 +97,8 @@ Một dòng cho mỗi tranche đã đóng hoặc mốc kế hoạch đã chốt.
 
 | Ngày | Tranche / dòng | Đã đóng | Còn lại | Bằng chứng | Review |
 |---|---|---|---|---|---|
+| 06/11/2026 | Đối chiếu web finding F01–F06 / đồng bộ catalog | F04: cập nhật OFFICE41-r1b và W40 theo STATE/HANDOFF/roadmap; F01/02/03/05/06 có disposition tại HANDOFF | Legal pack giữ DEFER; F02/03 chờ xử lý theo intake trước tiếp nhận; toàn gap sản phẩm giữ | HANDOFF mục WEB_FINDINGS_06; roadmap §3.1; legal intake/checklist | Main đối chiếu tài liệu; không thẩm định pháp lý hoặc test mới |
+| 06/11/2026 | OFFICE41-r1b / 4.1 và form CVF1.2 hiệu chỉnh1 | Ba ca text có DATA evidence, report/draft, independent POST và Main nhận; form nguồn đã tiếp nhận | Toàn 4.1 và các mốc sau chưa đạt; không Office/product adapter/user acceptance | RUN/REVIEW OFFICE41, roadmap §3.1, STATE/HANDOFF; Git checkpoint a1bdc42 | Astra PRE/POST ba ca; Main nghiệm thu; form theo hồ sơ tiếp nhận riêng |
 | 06/11/2026 | R6.22 / roadmap r7 và form1.1 | Chốt baseline; sau review Claude đã sửa F1/N1–N5, nối expected vào 4.1/4.2 | Toàn gap sản phẩm giữ; form CVF NOT_UPSTREAMED, hiệu quả chưa kiểm | HANDOFF r6.22; review Claude r7; roadmap §4.1/4.2; form1.1 | Astra/Claude review bản trước sửa; Main kiểm sửa nhỏ cùng lượt |
 | 04/11/2026 | Review độc lập roadmap r2 (Claude, operator giao trực tiếp) | Verdict `REVIEW_PASSED`, chốt kế hoạch; không đóng mốc sản phẩm | Diff 4.0 và ca 4.1 chưa có, review riêng khi operator giao; lưu ý N1–N3 | `roadmap/REVIEW_DOC_LAP_CLAUDE_ROADMAP_LOCAL_R2_2026-11-04.md` | Có (độc lập, chỉ tài liệu) |
 | 04/11/2026 | Local nhận phản biện F1–F9, nâng lên `LOCAL-ROADMAP-20261104-r2` | Thêm 4.0, đường ca và thước đo 4.1, trần từng gói (§6), bảng quyết định (§7) | Toàn 4.0–4.6 | `roadmap/DANH_GIA_CLAUDE_ROADMAP_LOCAL_2026-11-04.md`, `roadmap/XAC_NHAN_CLAUDE_ROADMAP_LOCAL_R2_2026-11-04.md` | Không áp dụng (kế hoạch) |
