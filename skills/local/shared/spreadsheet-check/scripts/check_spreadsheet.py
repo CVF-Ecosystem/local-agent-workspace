@@ -20,7 +20,12 @@ TOTAL_WORDS = ('tổng', 'tong', 'total', 'cộng', 'cong', 'sum')
 MSG = {
     'hidden': ('Sheet đang ẩn; xác nhận có dùng số liệu ở đây không.', 'Sheet is hidden; confirm whether the figures here should be used.'),
     'merged': ('Có %d vùng ô gộp; ô gộp dễ làm lệch cột khi đọc bằng máy.', '%d merged-cell ranges; merged cells easily misalign columns when read by machine.'),
-    'nocache': ('%d/%d ô công thức chưa có giá trị đã tính (file chưa được mở và lưu trong Excel); số đọc ra có thể thiếu.', '%d/%d formula cells have no calculated value (the file was not opened and saved in Excel); figures read may be missing.'),
+    'nocache': ('%d/%d ô công thức chưa có giá trị cache; số đọc ra có thể thiếu.', '%d/%d formula cells have no cached value; figures read may be missing.'),
+    'covcache': ('giá trị cache công thức', 'formula cache'),
+    'covdata': ('dữ liệu bảng', 'data'),
+    'covcolumns': ('kiểm tra theo cột', 'column checks'),
+    'covkey': ('khóa được yêu cầu', 'requested key'),
+    'covsheets': ('không có worksheet dữ liệu để kiểm', 'no data worksheets to check'),
     'nodata': ('Gần như không có dữ liệu (dưới 2 dòng có nội dung).', 'Almost no data (fewer than 2 non-empty rows).'),
     'header': ('Dòng tiêu đề đoán là dòng %d của sheet; %d cột, %d dòng dữ liệu. Kiểm tra lại nếu đoán sai. Số dòng nêu trong kết quả là số dòng trong sheet hoặc file (dòng đầu tiên là dòng 1).', 'Header row guessed to be sheet row %d; %d columns, %d data rows. Check again if the guess is wrong. Row numbers in this report are the row numbers in the sheet or file (the first row is row 1).'),
     'duphdr': ('Tên cột trùng nhau: %s.', 'Duplicate column names: %s.'),
@@ -169,18 +174,21 @@ def groups_at(groups, key='dupat'):
 def is_blank(v):
     return v is None or (isinstance(v, str) and not v.strip())
 
-def check_sheet(sh, keys, ex_n, R):
+def check_sheet(sh, keys, ex_n, R, coverage=None, info=None):
     name, rows = sh['name'], sh['rows']
     tag = '[%s] ' % name
     if sh['hidden']:
         R['Cần hỏi'].append(tag + T('hidden'))
     if sh['merged']:
         R['Lưu ý'].append(tag + T('merged') % sh['merged'])
+    if coverage is not None and sh['nocache']:
+        coverage.append(T('covcache'))
     if sh['formulas'] and sh['nocache']:
         R['Ảnh hưởng'].append(tag + T('nocache') % (sh['nocache'], sh['formulas']))
     nums_row = [i + 1 for i, r in enumerate(rows) if any(not is_blank(c) for c in r)]
     rows = [r for r in rows if any(not is_blank(c) for c in r)]
     if len(rows) < 2:
+        if coverage is not None: coverage.append(T('covdata'))
         R['Cần hỏi'].append(tag + T('nodata'))
         return
     # dòng tiêu đề = dòng đầu có >=2 ô chữ không rỗng
@@ -193,9 +201,11 @@ def check_sheet(sh, keys, ex_n, R):
     width = len(header)
     auto = sum(1 for h in header if h.startswith(T('colname').split('%')[0]))
     if width >= 4 and auto > width / 2:
+        if coverage is not None: coverage.append(T('covcolumns'))
         R['Lưu ý'].append(tag + T('nottable'))
         return
-    R['Lưu ý'].append(tag + T('header') % (nums_row[hdr_i], width, len(data)))
+    if not data and coverage is not None: coverage.append(T('covdata'))
+    (info if info is not None else R['Lưu ý']).append(tag + T('header') % (nums_row[hdr_i], width, len(data)))
     dup_h = [h for h, n in Counter(header).items() if n > 1]
     if dup_h:
         R['Cần hỏi'].append(tag + T('duphdr') % ', '.join(dup_h))
@@ -302,6 +312,8 @@ def check_sheet(sh, keys, ex_n, R):
                 R['Lưu ý'].append(loc + T('spaces') % len(sp))
     # trùng
     kidx = [i for i, h in enumerate(header) if h in keys or fold(h) in [fold(k) for k in keys]]
+    if keys and len(set(fold(header[i]) for i in kidx)) < len(set(fold(k) for k in keys)) and coverage is not None:
+        coverage.append(T('covkey'))
     if keys and not kidx:
         R['Cần hỏi'].append(tag + T('nokey') % (', '.join(keys), ', '.join(header)))
     if kidx and len(kidx) < len(set(fold(k) for k in keys)):
@@ -334,19 +346,30 @@ def main():
     ap.add_argument('--lang', choices=['vi', 'en'], default='vi', help='ngôn ngữ kết quả / output language')
     ap.add_argument('--khoa', '--key', dest='khoa', default='', help='cột khóa/mã, cách nhau bằng dấu phẩy / key columns, comma-separated')
     ap.add_argument('--toi-da-vi-du', '--max-examples', dest='toi_da_vi_du', type=int, default=3)
-    ap.add_argument('--status-exit', action='store_true', help='exit 0: pass, 1: findings, 2: not checked')
+    ap.add_argument('--status-exit', action='store_true', help='exit 0: no findings within mechanical scope, 1: findings, 2: not checked/incomplete')
     a = ap.parse_args()
     # Optional machine status; default invocation remains backward compatible.
     global LANG
     LANG = 0 if a.lang == 'vi' else 1
     keys = [k.strip() for k in a.khoa.split(',') if k.strip()]
     R = {'Ảnh hưởng': [], 'Cần hỏi': [], 'Lưu ý': []}
+    coverage, info = [], []
     sheets = load(a.file, a.sheet)
+    if a.status_exit and not sheets:
+        coverage.append(T('covsheets'))
+    if a.status_exit and a.sheet and a.file.lower().endswith(('.csv', '.tsv', '.txt')):
+        coverage.append('--sheet bị bỏ qua với CSV/TSV/TXT' if LANG == 0 else '--sheet is ignored for CSV/TSV/TXT')
     for sh in sheets:
-        check_sheet(sh, keys, a.toi_da_vi_du, R)
+        check_sheet(sh, keys, a.toi_da_vi_du, R, coverage if a.status_exit else None, info if a.status_exit else None)
     if hasattr(sys.stdout, 'reconfigure'):
         sys.stdout.reconfigure(encoding='utf-8')
     print(T('title') % (a.file, len(sheets), ', '.join(s['name'] for s in sheets)))
+    if a.status_exit:
+        for line in info: print('INFO: ' + line)
+        if any(sh['formulas'] for sh in sheets):
+            print('INFO: ' + ('Không tính lại công thức; giá trị cache chưa được engine xác minh.' if LANG == 0 else 'Formulas were not recalculated; cached values were not engine-verified.'))
+        if coverage:
+            print(('CHƯA KIỂM ĐỦ: ' if LANG == 0 else 'NOT CHECKED / INCOMPLETE: ') + ', '.join(sorted(set(coverage))))
     labels = {'Ảnh hưởng': T('l1'), 'Cần hỏi': T('l2'), 'Lưu ý': T('l3')}
     for k in ('Ảnh hưởng', 'Cần hỏi', 'Lưu ý'):
         print('\n== %s ==' % labels[k])
@@ -360,7 +383,7 @@ def main():
         h = '?'
     print(T('trace') % (os.path.basename(a.file), h, datetime.datetime.now().strftime('%Y-%m-%d %H:%M')))
     if '--status-exit' in sys.argv:
-        sys.exit(1 if any(R.values()) else 0)
+        sys.exit(2 if coverage else (1 if any(R.values()) else 0))
 
 if __name__ == '__main__':
     try:

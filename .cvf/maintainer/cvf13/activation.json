@@ -1,0 +1,10 @@
+{
+  "schema": "law.cvf13.activation/2",
+  "seal_sha256": "5ced664cae3fd2fc349c0bbe5905fa8101112554a8a5b35d0b4bf902422e806a",
+  "adapter_sha256": "4337f624b27d8fa703ecdfe54c6b3d44bf00953336fe229a95c12c6e8649bccd",
+  "registry_sha256": "efe461847160bc96fc2ce5800997ede13cd79c02badc90e7d3e17afb2fafaf9b",
+  "review_evidence": {
+    "path": "working/cvf-profile13-adoption-20261105/evidence/control2-post.md",
+    "sha256": "c752ec7974ca2ce64f9a2b10804fd5ab7979efd278620ab2f52a44c96891c898"
+  }
+}

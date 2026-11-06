@@ -1,0 +1,275 @@
+# Main only after exact r2+ PRE. Never dot-source as a capability probe.
+param([switch]$ReviewedExecution,[ValidateSet(1,2,3)][int]$Attempt)
+$ErrorActionPreference='Stop'
+Set-StrictMode -Version Latest
+if(-not $ReviewedExecution -or $Attempt -notin @(1,2,3)){throw 'Explicit reviewed attempt required'}
+$Job=Split-Path $PSScriptRoot -Parent
+$Task=Split-Path $Job -Parent
+$E=Join-Path $Job ('evidence/attempt'+$Attempt)
+$Fixtures=Join-Path $E 'fixtures'
+$Exe=[IO.Path]::GetFullPath('C:/Program Files/Microsoft Office/root/Office16/EXCEL.EXE')
+$Python=([IO.File]::ReadAllText((Join-Path $E 'runtime.json'))|ConvertFrom-Json).python
+$SourcePin='297bcff51a50c381d7ecf18c6b62a9d1dea169fbcaedbb681ff2d4c63d5a6e5c'
+$Proc=$null;$App=$null;$Book=$null;$Owned=$false;$BookId=0L;$AppId=0L
+$PidOwned=0;$Creation=0L;$KnownPath='';$Kind='';$DiscardDirty=$false;$Contaminated=$false;$Code=1;$ExpectedClose=$null
+$Observations=[ordered]@{status='FAILED';states=@();saved=@();diagnostics=@();exports=@();historical_1004_cause='UNKNOWN'}
+function Hash([string]$Path){
+ $A=[Security.Cryptography.SHA256]::Create();$F=[IO.File]::OpenRead($Path)
+ try{return [BitConverter]::ToString($A.ComputeHash($F)).Replace('-','').ToLowerInvariant()}finally{$F.Dispose();$A.Dispose()}
+}
+function Event([string]$Phase,[hashtable]$Data=@{}){
+ $Data.phase=$Phase;$Data.time=[DateTime]::UtcNow.ToString('o')
+ $Bytes=[Text.Encoding]::UTF8.GetBytes(($Data|ConvertTo-Json -Depth 30 -Compress)+"`n")
+ $F=[IO.FileStream]::new((Join-Path $E 'events.jsonl'),[IO.FileMode]::Append,[IO.FileAccess]::Write,[IO.FileShare]::Read)
+ try{$F.Write($Bytes,0,$Bytes.Length);$F.Flush($true)}finally{$F.Dispose()}
+}
+function Write-NewJson([string]$Path,$Value){
+ $Bytes=[Text.Encoding]::UTF8.GetBytes(($Value|ConvertTo-Json -Depth 40)+"`n")
+ $F=[IO.FileStream]::new($Path,[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::Read)
+ try{$F.Write($Bytes,0,$Bytes.Length);$F.Flush($true)}finally{$F.Dispose()}
+}
+. (Join-Path $PSScriptRoot 'contract_map.ps1')
+
+function Path-Guard([string]$Path){
+ $N=[IO.Path]::GetFullPath($Path)
+ while($N){
+  if(Test-Path -LiteralPath $N){if((Get-Item -LiteralPath $N -Force).Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Reparse path refused'}}
+  $N=Split-Path $N -Parent
+ }
+}
+function Check-Process{
+ if($null -eq $Proc -or $Proc.HasExited -or $Proc.Id -ne $PidOwned -or $Proc.StartTime.ToUniversalTime().Ticks -ne $Creation){throw 'Owned process lease unavailable'}
+ if(-not [string]::Equals([IO.Path]::GetFullPath($Proc.MainModule.FileName),$Exe,[StringComparison]::OrdinalIgnoreCase)){throw 'Executable lease mismatch'}
+}
+function Check-Zero{
+ Check-Process
+ if([OwnedExcelNative]::Identity($App) -ne $AppId -or [ExcelBoundary]::Count($App) -ne 0){$script:Contaminated=$true;throw 'Expected zero books in already-bound App; HOLD'}
+}
+function Check-Book{
+ Check-Process
+ if($null -eq $Book -or [ExcelBoundary]::Count($App) -ne 1){$script:Contaminated=$true;throw 'Unknown workbook count; HOLD without names/content'}
+ if([OwnedExcelNative]::Identity([ExcelBoundary]::Item($App,1)) -ne $BookId -or [OwnedExcelNative]::Identity([ExcelBoundary]::BookApp($Book)) -ne $AppId){$script:Contaminated=$true;throw 'Known workbook/application identity mismatch'}
+ if([ExcelBoundary]::BookWindows($Book) -ne 1){$script:Contaminated=$true;throw 'Known workbook window count mismatch'}
+ $H=[IntPtr]::new(([long][ExcelBoundary]::BookHwnd($Book) -band 4294967295L))
+ if(-not [OwnedExcelNative]::IsWindow($H) -or [OwnedExcelNative]::Pid($H) -ne $PidOwned){$script:Contaminated=$true;throw 'Known workbook HWND process mismatch'}
+ if($KnownPath -and -not [string]::Equals([ExcelBoundary]::FullName($Book),$KnownPath,[StringComparison]::OrdinalIgnoreCase)){$script:Contaminated=$true;throw 'Known workbook path mismatch; unexpected value omitted'}
+}
+function Content-Proof([string]$Phase){
+ Check-Book
+ Event ('before_'+$Phase)
+ $Actual=[ExcelBoundary]::ContentContract($Book)
+ if(-not [ExcelBoundary]::ContractEqual($Actual,$ExpectedContract)){$script:Contaminated=$true;throw 'Source content contract mismatch; no close/save'}
+ Check-Book
+ Event $Phase @{matches=$true;saved=[ExcelBoundary]::Saved($Book);formula_caches_omitted_only=$true}
+}
+function Close-Known{
+ Check-Book
+ if($Kind -eq 'BOOTSTRAP'){
+  Content-Proof 'bootstrap_content_before_close'
+  Event 'bootstrap_discard_authorized' @{saved=[ExcelBoundary]::Saved($Book);authority='canonical r2 disposable exact-content clone; no Saved assignment or save'}
+ }elseif($Kind -eq 'BLANK'){
+  if(-not [ExcelBoundary]::Blank($Book)){throw 'Blank changed; no discard'}
+ }elseif($Kind -eq 'QA'){
+  $Content=[ExcelBoundary]::ContentContract($Book)
+  if($null -eq $ExpectedClose -or -not [ExcelBoundary]::ContractEqual($Content,$ExpectedClose)){$script:Contaminated=$true;throw 'QA content differs from explicit expected/saved contract; no discard'}
+  Event 'qa_discard_content_proof' @{matches=$true;saved=[ExcelBoundary]::Saved($Book);authority='r3 exact known disposable saved/intentional-fixture contract';intentional_edits=$DiscardDirty}
+ }else{throw 'Unknown workbook kind'}
+ Event 'before_close_known' @{kind=$Kind;identity=$BookId;discard_intentional_qa=$DiscardDirty}
+ [ExcelBoundary]::Close($Book)
+ $script:Book=$null;$script:BookId=0L;$script:KnownPath='';$script:Kind='';$script:DiscardDirty=$false;$script:ExpectedClose=$null
+ Check-Zero
+ Event 'closed_known_zero_books'
+}
+function Open-Known([string]$Name,[bool]$Fresh=$true){
+ Check-Zero
+ $Path=[IO.Path]::GetFullPath((Join-Path $Fixtures $Name));Path-Guard $Path
+ if(-not $Path.StartsWith(([IO.Path]::GetFullPath($Fixtures)+[IO.Path]::DirectorySeparatorChar),[StringComparison]::OrdinalIgnoreCase)){throw 'QA path outside fixtures'}
+ if($Fresh -and (Hash $Path) -ne $SourcePin){throw 'Fresh clone hash mismatch'}
+ if(-not $Fresh -and (Hash $Path) -ne $SavedPins[$Name]){throw 'Saved QA copy changed before reopen'}
+ Event 'before_open_known' @{fixture=$Name;sha256=(Hash $Path);readonly=$false;update_links=0;add_to_mru=$false}
+ $script:Book=[ExcelBoundary]::Open($App,$Path)
+ $script:BookId=[OwnedExcelNative]::Identity($Book);$script:KnownPath=$Path;$script:Kind='QA';$script:DiscardDirty=$false
+ Check-Book
+ if([ExcelBoundary]::ReadOnly($Book)){throw 'QA copy opened read-only'}
+ if($Fresh){
+  [ExcelBoundary]::ValidateTemplate($Book)
+  [ExcelBoundary]::CheckContract($Book,$ExpectedContract)
+  $script:ExpectedClose=[ExcelBoundary]::CopyContract($ExpectedContract)
+ }else{
+  $script:ExpectedClose=[ExcelBoundary]::CopyContract($SavedContracts[$Name])
+  [ExcelBoundary]::CheckContract($Book,$ExpectedClose)
+ }
+ Event 'opened_known' @{fixture=$Name;identity=$BookId;read_only=[ExcelBoundary]::ReadOnly($Book)}
+}
+function Calculate-Known([string]$Label){
+ Check-Book;Event 'before_calculate' @{state=$Label}
+ [ExcelBoundary]::Calculate($App)
+ $D=[DateTime]::UtcNow.AddSeconds(12)
+ while([ExcelBoundary]::CalcState($App) -ne 0){if([DateTime]::UtcNow -gt $D){throw 'Calculation completion deadline'};Start-Sleep -Milliseconds 50}
+ Check-Book
+ Event 'calculated' @{state=$Label;calculation_state=[ExcelBoundary]::CalcState($App)}
+}
+function State([string]$Label,[int]$Period,$Threshold){
+ Check-Book;$script:DiscardDirty=$true
+ Event 'before_state_write' @{state=$Label;period=$Period;threshold=$Threshold}
+ [ExcelBoundary]::ExpectSelect($ExpectedClose,$Period,$Threshold)
+ [ExcelBoundary]::Select($Book,$Period,$Threshold)
+ Calculate-Known $Label
+ $Data=[ExcelBoundary]::Capture($Book)
+ $script:Observations.states+=@{name=$Label;period=$Period;threshold=$Threshold;calculation_state=[ExcelBoundary]::CalcState($App);cells=$Data}
+ Event 'state_observed' @{state=$Label;cells=$Data}
+}
+function Fill($Rows,[int]$Start=5){
+ Check-Book;$script:DiscardDirty=$true;Event 'before_fill' @{start=$Start;count=@($Rows).Count}
+ $Index=$Start
+ foreach($Row in $Rows){
+  $OnTime=$null;if($null -ne $Row.ontime){$OnTime=[double]$Row.ontime}
+  [ExcelBoundary]::ExpectRow($ExpectedClose,$Index,[string]$Row.id,[string]$Row.date,[string]$Row.channel,[double]$Row.received,[double]$Row.completed,$OnTime)
+  [ExcelBoundary]::PutRow($Book,$Index,[string]$Row.id,[string]$Row.date,[string]$Row.channel,[double]$Row.received,[double]$Row.completed,$OnTime)
+  $Index++
+ }
+}
+function Save-Known([string]$Name){
+ Check-Book
+ if([ExcelBoundary]::ReadOnly($Book) -or -not [string]::Equals($KnownPath,[IO.Path]::GetFullPath((Join-Path $Fixtures $Name)),[StringComparison]::OrdinalIgnoreCase)){throw 'Save not exact known QA copy'}
+ $Before=[ExcelBoundary]::ContentContract($Book)
+ if(-not [ExcelBoundary]::ContractEqual($Before,$ExpectedClose)){$script:Contaminated=$true;throw 'Intentional QA content differs before Save'}
+ Event 'before_save_known' @{fixture=$Name;content=$Before}
+ [ExcelBoundary]::Save($Book)
+ Check-Book
+ $After=[ExcelBoundary]::ContentContract($Book)
+ if(-not [ExcelBoundary]::ContractEqual($Before,$After)){$script:Contaminated=$true;throw 'Save changed known formula/value contract'}
+ $script:SavedContracts[$Name]=$After;$script:ExpectedClose=[ExcelBoundary]::CopyContract($After)
+ $script:DiscardDirty=$false;$script:SavedPins[$Name]=Hash $KnownPath
+ $script:Observations.saved+=@{fixture=$Name;sha256=$SavedPins[$Name];cells=[ExcelBoundary]::Capture($Book);content=$After;before_save_content=$Before}
+ Event 'saved_known' @{fixture=$Name;sha256=$SavedPins[$Name];native_saved_flag=[ExcelBoundary]::Saved($Book);content_before_after_equal=$true;save_call_returned=$true}
+}
+try{
+ foreach($Command in @('Add-Type','ConvertTo-Json','ConvertFrom-Json','Get-Command','Get-Item','Join-Path','Set-StrictMode','Split-Path','Start-Process','Start-Sleep','Test-Path','Where-Object')){if($null -eq (Get-Command $Command -CommandType Cmdlet -ErrorAction Stop)){throw 'Required native command unavailable'}}
+ foreach($Path in @($PSCommandPath,$E,$Fixtures,$Exe)){Path-Guard $Path}
+ $Pins=[IO.File]::ReadAllText((Join-Path $E 'execution-pins.json'))|ConvertFrom-Json
+ foreach($Name in @('run_excel.py','native_excel.ps1','excel_bridge.cs','render_excel.py','contract_map.ps1')){if((Hash (Join-Path $PSScriptRoot $Name)) -ne $Pins.$Name){throw 'Execution bytes mismatch'}}
+ $Pia=[IO.Path]::GetFullPath('C:/Windows/assembly/GAC_MSIL/Microsoft.Office.Interop.Excel/15.0.0.0__71e9bce111e9429c/Microsoft.Office.Interop.Excel.dll')
+ $Office=[IO.Path]::GetFullPath('C:/Windows/assembly/GAC_MSIL/office/15.0.0.0__71e9bce111e9429c/office.dll')
+ Add-Type -Path (Join-Path $PSScriptRoot 'excel_bridge.cs') -ReferencedAssemblies @($Pia,$Office)
+ $null=[ExcelBoundary]::SelfTest()
+ $ExpectedContract=Convert-Map ([IO.File]::ReadAllText((Join-Path $E 'source-contract.json'))|ConvertFrom-Json)
+ $Records=[IO.File]::ReadAllText((Join-Path $Task 'consumers/Excel-Flow/working/case/records.json'))|ConvertFrom-Json
+ $SavedPins=@{};$SavedContracts=@{}
+ $Bootstrap=[IO.Path]::GetFullPath((Join-Path $Fixtures 'bootstrap.xlsx'))
+ if((Hash $Bootstrap) -ne $SourcePin){throw 'Bootstrap input hash mismatch'}
+ Event 'before_excel_launch' @{switch='/x';clone_sha256=$SourcePin;no_com_activation=$true}
+ $Proc=Start-Process -FilePath $Exe -ArgumentList @('/x',('"'+$Bootstrap+'"')) -WindowStyle Hidden -PassThru
+ Event 'process_launch_returned_unverified' @{pid=$Proc.Id;expected_executable=$Exe;lease_validated=$false}
+ $PidOwned=$Proc.Id;$Handle=$Proc.Handle;$Creation=$Proc.StartTime.ToUniversalTime().Ticks
+ Event 'process_lease_candidate_unverified' @{pid=$PidOwned;creation_utc_ticks=$Creation;expected_executable=$Exe;handle_retained=($Handle -ne [IntPtr]::Zero);lease_validated=$false}
+ if($Handle -eq [IntPtr]::Zero){throw 'No retained process handle'}
+ Check-Process
+ Event 'process_lease' @{pid=$PidOwned;creation_utc_ticks=$Creation;executable=$Exe;handle_retained=$true}
+ $D=[DateTime]::UtcNow.AddSeconds(25);$Roots=@();$Panes=@()
+ do{
+  Check-Process
+  $AllRoots=@([OwnedExcelNative]::Roots([uint32]$PidOwned));$Pairs=@();$ZeroPaneRoots=0
+  foreach($CandidateRoot in $AllRoots){
+   $CandidatePanes=@([OwnedExcelNative]::Panes($CandidateRoot,[uint32]$PidOwned))
+   if($CandidatePanes.Count -gt 1){throw 'Ambiguous owned document panes'}
+   if($CandidatePanes.Count -eq 1){$Pairs+=@{root=$CandidateRoot;pane=$CandidatePanes[0]}}else{$ZeroPaneRoots++}
+  }
+  if($Pairs.Count -gt 1){throw 'More than one owned document-root pair'}
+  if($Pairs.Count -eq 1){$Roots=@($Pairs[0].root);$Panes=@($Pairs[0].pane);break}
+  Start-Sleep -Milliseconds 100
+ }while([DateTime]::UtcNow -lt $D)
+ if($Roots.Count -ne 1 -or $Panes.Count -ne 1){throw 'No unique owned workbook NativeOM window'}
+ Event 'before_nativeom' @{pid=$PidOwned;root_hwnd=$Roots[0].ToInt64();pane_hwnd=$Panes[0].ToInt64();all_xlmain_roots=$AllRoots.Count;zero_pane_roots_ignored_metadata_only=$ZeroPaneRoots;document_pairs=$Pairs.Count}
+ $Window=[OwnedExcelNative]::NativeOM($Panes[0])
+ $H=[IntPtr]::new(([long][ExcelBoundary]::WindowHwnd($Window) -band 4294967295L))
+ if([OwnedExcelNative]::Pid($H) -ne $PidOwned){throw 'NativeOM Window PID mismatch'}
+ $App=[ExcelBoundary]::App($Window);$AppId=[OwnedExcelNative]::Identity($App)
+ if([ExcelBoundary]::Count($App) -ne 1){throw 'Bootstrap workbook count unexpected; no names/content read'}
+ $Book=[ExcelBoundary]::WindowBook($Window);$BookId=[OwnedExcelNative]::Identity($Book);$KnownPath=$Bootstrap;$Kind='BOOTSTRAP'
+ Check-Book
+ Content-Proof 'bootstrap_content_before_settings'
+ if([ExcelBoundary]::ReadOnly($Book)){throw 'Bootstrap clone unexpectedly read-only'}
+ $Owned=$true
+ Event 'ownership_verified_before_writes' @{pid=$PidOwned;creation_utc_ticks=$Creation;book_identity=$BookId;app_identity=$AppId;version=[ExcelBoundary]::Version($App);clone_sha256=$SourcePin}
+ Event 'before_settings'
+ [ExcelBoundary]::Settings($App)
+ Event 'settings_readback' @{automation_security=3;enable_events=$true;ask_to_update_links=$false;display_alerts=$false;visible=$false}
+ Close-Known
+ Check-Zero;Event 'before_single_add' @{template=-4167;initial_books=0}
+ $Book=[ExcelBoundary]::Add($App);$BookId=[OwnedExcelNative]::Identity($Book);$KnownPath='';$Kind='BLANK'
+ Check-Book
+ if(-not [ExcelBoundary]::Blank($Book)){throw 'Returned Add workbook not pristine blank; HOLD'}
+ Event 'single_add_succeeded' @{identity=$BookId;template=-4167}
+ Close-Known
+ Open-Known 'populated.xlsx'
+ Fill $Records
+ State 'oct-blank' 202610 $null
+ State 'nov-blank' 202611 $null
+ State 'empty-period' 202612 $null
+ State 'zero-threshold' 202610 ([double]0)
+ State '80-percent-threshold' 202610 ([double]0.8)
+ $Append=[pscustomobject]@{id='R06';date='2026-10-20';channel='Email';received=5;completed=5;ontime=4}
+ Fill @($Append) 10
+ State 'appended-row' 202610 $null
+ Check-Book;[ExcelBoundary]::ExpectClear($ExpectedClose,'A10:F10');[ExcelBoundary]::Clear($Book,'A10:F10');[ExcelBoundary]::ExpectSelect($ExpectedClose,202610,$null);[ExcelBoundary]::Select($Book,202610,$null)
+ Calculate-Known 'populated-final-five-records'
+ Save-Known 'populated.xlsx'
+ $Names=@('HUONG DAN','BAO CAO','NHAP','DANH MUC','DU LIEU MAU');$Labels=@('guide','report','input','catalog','sample')
+ for($I=0;$I -lt 5;$I++){
+  Check-Book;$Pdf=Join-Path $E ($Labels[$I]+'.pdf');Path-Guard $Pdf
+  if(Test-Path -LiteralPath $Pdf){throw 'Native PDF exists'}
+  Event 'before_export_legacy2493' @{sheet=$Names[$I];output=($Labels[$I]+'.pdf')}
+  [ExcelBoundary]::ExportSheet($Book,$Names[$I],$Pdf)
+  $Observations.exports+=@{sheet=$Names[$I];pdf=($Labels[$I]+'.pdf');sha256=(Hash $Pdf);dispid=2493}
+  Event 'exported' @{sheet=$Names[$I];pdf=($Labels[$I]+'.pdf');sha256=(Hash $Pdf)}
+ }
+ Close-Known
+ Open-Known 'populated.xlsx' $false
+ $Observations.reopened_populated=@{cells=[ExcelBoundary]::Capture($Book);content=[ExcelBoundary]::ContentContract($Book);saved=[ExcelBoundary]::Saved($Book)}
+ Close-Known
+ foreach($Period in @(202610,202611)){
+  $Name='month-'+$Period+'.xlsx';Open-Known $Name
+  $Rows=@($Records|Where-Object{([string]$_.date).Substring(0,7).Replace('-','') -eq [string]$Period})
+  Fill $Rows
+  Check-Book;[ExcelBoundary]::ExpectSelect($ExpectedClose,$Period,$null);[ExcelBoundary]::Select($Book,$Period,$null);Calculate-Known ('month-'+$Period)
+  Save-Known $Name;Close-Known;Open-Known $Name $false
+  $Observations.saved+=@{reopened=$Name;cells=[ExcelBoundary]::Capture($Book);content=[ExcelBoundary]::ContentContract($Book)}
+  Close-Known
+ }
+ Open-Known 'capacity.xlsx'
+ Check-Book;$DiscardDirty=$true;Event 'before_unprotect_capacity_copy'
+ [ExcelBoundary]::Unprotect($Book)
+ $Many=@();for($I=1;$I -le 201;$I++){$Many+=[pscustomobject]@{id=('C'+$I.ToString('000'));date='2026-10-15';channel='Email';received=1;completed=1;ontime=1}}
+ Fill $Many
+ State '201-record-capacity' 202610 $null
+ Check-Book;[ExcelBoundary]::ExpectClear($ExpectedClose,'A5:F205');[ExcelBoundary]::Clear($Book,'A5:F205');Fill @($Records[0],$Records[0]);Calculate-Known 'duplicate'
+ $Observations.diagnostics+=@{name='duplicate';cells=[ExcelBoundary]::Diagnostics($Book)}
+ Check-Book;[ExcelBoundary]::ExpectClear($ExpectedClose,'A5:F205');[ExcelBoundary]::Clear($Book,'A5:F205');[ExcelBoundary]::ExpectMissing($ExpectedClose);[ExcelBoundary]::MissingRow($Book);Calculate-Known 'missing'
+ $Observations.diagnostics+=@{name='missing';cells=[ExcelBoundary]::Diagnostics($Book)}
+ Close-Known
+ $Observations.status='OBSERVED_REQUIRES_MAIN_ASTRA_EXPECTED_AND_VISUAL_REVIEW';$Code=0
+}catch{
+ $Observations.error=$_.Exception.ToString()
+ Event 'native_error' @{type=$_.Exception.GetType().FullName;detail=$_.Exception.Message;pid=$PidOwned;owned=$Owned}
+}finally{
+ if($Owned){
+  try{
+   Event 'before_cleanup'
+   if($Contaminated){throw 'Earlier ownership/content ambiguity; no cleanup access'}
+   if($null -ne $Book){Close-Known}
+   Check-Zero;Event 'before_quit'
+   [ExcelBoundary]::Quit($App);Event 'quit_requested'
+   Event 'before_release_owned_closed_rcws'
+   # Only references reached through this verified owned application. No FinalRelease,
+   # no unknown object traversal. Finalizer wait remains inside the parent deadline.
+   $Book=$null;$Window=$null;$App=$null
+   [GC]::Collect();[GC]::WaitForPendingFinalizers();[GC]::Collect()
+   if($Proc.WaitForExit(5000)){Event 'owned_process_exit_confirmed' @{pid=$PidOwned;creation_utc_ticks=$Creation;executable=$Exe;exit=$Proc.ExitCode};if($Proc.ExitCode -ne 0){$Code=1}}
+   else{Event 'cleanup_unknown_hold' @{pid=$PidOwned;no_excel_kill=$true};$Code=1}
+  }catch{Event 'cleanup_unknown_hold' @{pid=$PidOwned;detail=$_.Exception.Message;no_excel_kill=$true};$Code=1}
+ }else{Event 'cleanup_unknown_hold' @{pid=$PidOwned;no_unknown_attach_or_quit_or_kill=$true}}
+ if($null -ne $Proc){$Proc.Dispose()}
+ Write-NewJson (Join-Path $E 'native-observations.json') $Observations
+}
+exit $Code

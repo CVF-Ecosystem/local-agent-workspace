@@ -1,0 +1,21 @@
+{
+  "schema": "law.cvf13.seal/1",
+  "milestone": "V4",
+  "authority": {
+    "path": "roadmap/ROADMAP_VAN_PHONG_NGHIEP_VU.md",
+    "heading": "#### 4.4. V4/V7 — Nghiệm thu nội dung và định dạng trong phạm vi công bố"
+  },
+  "affected": [
+    "V4"
+  ],
+  "history_prefix": [
+    {
+      "path": ".cvf/maintainer/cvf13/history/w44-attempt3.json",
+      "sha256": "3d949ca2f166b10e713a80eed80e4f9509d6354be18f30127911752458c14e4e"
+    },
+    {
+      "path": ".cvf/maintainer/cvf13/history/w44-static-fix.json",
+      "sha256": "eb8d90b7431f52014476260b3e1ff228c0ed4bf4f6ea1892407e9faf676f5891"
+    }
+  ]
+}

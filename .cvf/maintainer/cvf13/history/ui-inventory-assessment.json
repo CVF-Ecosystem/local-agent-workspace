@@ -1,0 +1,79 @@
+{
+  "schemaVersion": "cvf.repairChainAssessment@1.0.0",
+  "milestoneId": "V4",
+  "history": [
+    {
+      "path": ".cvf/maintainer/cvf13/history/w44-attempt3.json",
+      "sha256": "3d949ca2f166b10e713a80eed80e4f9509d6354be18f30127911752458c14e4e"
+    },
+    {
+      "path": ".cvf/maintainer/cvf13/history/w44-static-fix.json",
+      "sha256": "eb8d90b7431f52014476260b3e1ff228c0ed4bf4f6ea1892407e9faf676f5891"
+    }
+  ],
+  "affectedCriteria": [
+    "V4"
+  ],
+  "failureBoundary": "Item1 returned 0x800A03EC in owned process diagnostic; cleanup unknown.",
+  "observedEvidence": [
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/binding-diagnostic2/events.jsonl",
+      "sha256": "48949561cf46835a37feada396fd1e1580f144d5da763cb7a397e27fc5cb63e4"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/main-passive-ui-unavailable.json",
+      "sha256": "55fa2ce748a3202c004178cc168d48a866f10ac412d01dc48a904ec2b49686d7"
+    },
+    {
+      "path": "working/cvf-profile13-adoption-20261105/evidence/main-activation.json",
+      "sha256": "72ecf1ad012fcb3bdf88984e85bc2b70ee4486adeb72747350f5fe4f5f6926b6"
+    },
+    {
+      "path": "working/cvf-profile13-adoption-20261105/evidence/actual-pre.md",
+      "sha256": "08d09a26b475b07e6d1323c322f900e109f5887601473b6d1310811efced5ce9"
+    }
+  ],
+  "causeStatus": "UNKNOWN",
+  "causeOrHypothesis": "Internal1004 remains unknown. The separate official cua runtime is an available tool interface; whether its inventory backend works is unproved. It is distinct from the failed sky native pipe.",
+  "remainingChain": [
+    "Resolve current exact Item1/1004 boundary and retain unknown cleanup; no blind native retry",
+    "All seven states/per-channel/blank-zero-.8/append/cap201/duplicate-missing/protected inputs",
+    "Save/reopen/native cached results and retained formulas",
+    "All five native sheets/every PDF page and exact native-populated viewer",
+    "Preserve source; prove own safe exit; Main and independent review; all other4.4 obligations remain"
+  ],
+  "discriminator": {
+    "question": "Does the separate official cua_repl runtime return an enabled-surface inventory that permits unique known-mock Excel target selection without selecting or opening any surface?",
+    "expected": "A returned inventory with documented targeting metadata identifies whether a later uniquely bound mock-window read can be planned; runtime failure, no suitable surface or unexpected content stops this route without any capture/control.",
+    "budgetMinutes": 1
+  },
+  "correctiveAction": "One read-only capability discriminator; no workbook repair or native QA is claimed.",
+  "owner": "Main",
+  "cumulativeMinutes": "UNKNOWN",
+  "additionalCeilingMinutes": 1,
+  "stopCondition": "Exactly one getState call with20s tool timeout; stop on return, failure, unsupported surface or unexpected content. No retry, selection, capture or input.",
+  "reopenCondition": "Use actual returned documentation and metadata for a separate reviewed prospective target-read decision; no automatic continuation.",
+  "disposition": "DIAGNOSTIC_ONLY",
+  "admittedAction": {
+    "kind": "VERIFY",
+    "selected": [
+      "V4"
+    ],
+    "owner": "Main",
+    "output": "working/cvf-profile13-adoption-20261105/evidence/cua-inventory-result.json",
+    "packet": {
+      "path": "working/cvf-profile13-adoption-20261105/candidate/packet-ui-inventory.json",
+      "sha256": "6dcebddfa112da681f8d3c13e04cca622f5ca8d01dd075fb4404052970523265"
+    }
+  },
+  "review": {
+    "reviewer": "Astra Medium",
+    "decision": "ACCEPTED",
+    "evidence": [
+      {
+        "path": "working/cvf-profile13-adoption-20261105/evidence/ui-inventory-pre.md",
+        "sha256": "17a4f3ccce3eebea5f4e92d8dea0c7531ad7b1f55cf030e13bf1397b52a501f3"
+      }
+    ]
+  }
+}

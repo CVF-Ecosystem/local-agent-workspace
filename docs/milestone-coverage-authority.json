@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "cvf.milestoneAuthority@1.1.0",
+  "milestones": {
+    "V4": {
+      "path": "roadmap/ROADMAP_VAN_PHONG_NGHIEP_VU.md",
+      "heading": "#### 4.4. V4/V7 — Nghiệm thu nội dung và định dạng trong phạm vi công bố"
+    }
+  },
+  "repairControls": {
+    "V4": {
+      "history": [
+        {
+          "path": ".cvf/maintainer/cvf13/history/w44-attempt3.json",
+          "sha256": "3d949ca2f166b10e713a80eed80e4f9509d6354be18f30127911752458c14e4e"
+        },
+        {
+          "path": ".cvf/maintainer/cvf13/history/w44-static-fix.json",
+          "sha256": "eb8d90b7431f52014476260b3e1ff228c0ed4bf4f6ea1892407e9faf676f5891"
+        }
+      ],
+      "affectedCriteria": [
+        "V4"
+      ],
+      "audit": {
+        "path": ".cvf/maintainer/cvf13/history/control2-close-assessment.json",
+        "sha256": "77789604bd0980cb57ca7a3ab40d7539e558db68f86b239f2e7675773046dee7"
+      }
+    }
+  }
+}

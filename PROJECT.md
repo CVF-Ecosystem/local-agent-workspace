@@ -68,3 +68,21 @@ riêng của provider có thể ghi chú khi hữu ích, nhưng không sao chép
 Kết quả xong khi đáp ứng đúng phạm vi và định dạng yêu cầu với độ chính xác và khả năng dùng cần
 thiết. Một vấn đề cụ thể là lý do để xem lại phần liên quan; còn dư sức hay có thể trau chuốt thêm
 thì không phải lý do.
+
+## Quyết định operator về sửa lỗi khi bảo trì LAW — 04/11/2026
+
+Áp dụng cho công việc phát triển/bảo trì LAW tại kho nguồn, không thêm quy trình cho việc văn phòng thông thường.
+
+- Nếu sau một tranche sửa lỗi mà lỗi chưa được giải quyết, tập trung audit để xác định chính xác nguyên nhân, sửa và kiểm được kết quả rồi mới chuyển việc. Không chuyển sang việc khác để né lỗi hoặc chia mỗi lỗi kỹ thuật thành tranche mới.
+- Audit toàn luồng liên quan, đối chiếu đúng API/môi trường/dữ liệu và bằng chứng thất bại; nếu code chưa đạt thì viết lại phần cần thiết. Review tĩnh hoặc sửa một lệnh chưa thay bằng chứng chạy hết luồng và kiểm đầu ra.
+- Giữ lịch sử thất bại, dữ liệu gốc, quyền và tiêu chí đã chốt. Không retry mù hoặc tăng timeout để thay việc tìm nguyên nhân. Nếu cần quyền hay điều kiện ngoài phạm vi, báo đúng blocker; không tự nhận lỗi đã sửa hoặc chuyển QA/debug cho người dùng.
+
+### Đích sản phẩm LAW do operator chốt lại — 06/11/2026
+
+Phần này là ngữ cảnh phát triển kho nguồn. LAW là **văn phòng ảo trung tâm**: Main nhận và đánh giá việc từ user, chọn AI/Agents chuyên trách theo roles/subagents, giao việc, nhận/kiểm/nghiệm thu rồi tích hợp báo cáo hoặc kết quả trước khi giao user. Chuyên viên tự thực hiện chi tiết trong phạm vi, công cụ/quyền và chuẩn đã giao; Main chịu trách nhiệm điều hành và chất lượng bản giao.
+
+CVF hỗ trợ điểm kiểm yêu cầu, phạm vi/quyền, nguồn/revision, bằng chứng và nghiệm thu theo rủi ro; không thay suy luận hay điều khiển từng thao tác của agent. User chọn provider/model; cách diễn đạt, chi tiết và cách làm có thể khác nhưng chuẩn mục tiêu/căn cứ/độ đúng/bảo toàn/quyền/khả năng dùng không được hạ theo model. Kết quả chưa đạt phải sửa hoặc giữ chờ đúng lý do trước khi giao như bản đã nghiệm thu.
+
+Skills/tools/chuyên môn được tích hợp theo packages đã tiếp nhận; tận dụng native thực có, không dựng thêm bản trùng khi native đã đáp ứng. Chỉ bổ sung gap được chứng minh, không tự kích hoạt gói REVIEW/DEFER. DEV chịu code, ca thử, expected, QA và review; khi cần phép thử host thật, DEV chuẩn bị đủ input/thao tác/expected/bằng chứng/điều kiện dừng để operator trung chuyển. Trục roadmap là luồng văn phòng trọn vòng và tiếp việc; sửa tool/checker hay tạo được một file chỉ là phần hỗ trợ có phạm vi.
+
+Operator đã đồng ý chốt baseline r7: năm kết quả là Main tổ chức việc, chuyên viên hoàn thành việc, Main nghiệm thu/giao, sửa/tiếp việc và bản cài dùng được. Roadmap §1.1–1.3 giữ phạm vi, năm hành vi LAW và tiêu chí; §6 áp dụng `roadmap/CVF_ROADMAP_PROGRESS_FORM.md` trong hồ sơ hiện có. Mỗi giao việc phải nối kết quả–gap thực–native/owner tái dùng–điểm nhận/dừng, reviewer xét cả sự cần thiết lẫn tính đúng. Đổi scope/chuẩn phải có quyết định đúng quyền, không tự đóng mốc bằng test xanh. Form CVF chung v1.2 hiệu chỉnh1 đã được tiếp nhận và giao về LAW; giữ nguyên form, bổ sung cách điền riêng theo nhu cầu LAW tại roadmap §6 và dùng các owner/chuẩn nghề hiện hữu. Các phần riêng của LAW không áp đặt sang project khác; việc nhận form không chứng minh runtime, rollout hoặc sản phẩm đã đạt.

@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "cvf.repairChainAssessment@1.0.0",
+  "milestoneId": "V4",
+  "history": [
+    {
+      "path": ".cvf/maintainer/cvf13/history/w44-attempt3.json",
+      "sha256": "3d949ca2f166b10e713a80eed80e4f9509d6354be18f30127911752458c14e4e"
+    },
+    {
+      "path": ".cvf/maintainer/cvf13/history/w44-static-fix.json",
+      "sha256": "eb8d90b7431f52014476260b3e1ff228c0ed4bf4f6ea1892407e9faf676f5891"
+    }
+  ],
+  "affectedCriteria": [
+    "V4"
+  ],
+  "failureBoundary": "Item1 returned 0x800A03EC in owned process diagnostic; cleanup unknown.",
+  "observedEvidence": [
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/binding-diagnostic2/events.jsonl",
+      "sha256": "48949561cf46835a37feada396fd1e1580f144d5da763cb7a397e27fc5cb63e4"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/main-passive-ui-unavailable.json",
+      "sha256": "55fa2ce748a3202c004178cc168d48a866f10ac412d01dc48a904ec2b49686d7"
+    }
+  ],
+  "causeStatus": "UNKNOWN",
+  "causeOrHypothesis": "Internal cause remains unresolved; UI observation unavailable.",
+  "remainingChain": [
+    "Resolve current exact Item1/1004 boundary and retain unknown cleanup; no blind native retry",
+    "All seven states/per-channel/blank-zero-.8/append/cap201/duplicate-missing/protected inputs",
+    "Save/reopen/native cached results and retained formulas",
+    "All five native sheets/every PDF page and exact native-populated viewer",
+    "Preserve source; prove own safe exit; Main and independent review; all other4.4 obligations remain"
+  ],
+  "discriminator": null,
+  "correctiveAction": "Hold dependent action pending independent evidence and prospective admission.",
+  "owner": "Main",
+  "cumulativeMinutes": "UNKNOWN",
+  "additionalCeilingMinutes": 0,
+  "stopCondition": "No dependent implementation or verification while assessment is blocked.",
+  "reopenCondition": "Independent review and concrete new evidence with finite prospective admission.",
+  "disposition": "BLOCKED",
+  "admittedAction": null,
+  "review": {
+    "reviewer": "Astra Medium",
+    "decision": "ACCEPTED",
+    "evidence": [
+      {
+        "path": "working/cvf-profile13-adoption-20261105/evidence/actual-pre.md",
+        "sha256": "08d09a26b475b07e6d1323c322f900e109f5887601473b6d1310811efced5ce9"
+      }
+    ]
+  }
+}

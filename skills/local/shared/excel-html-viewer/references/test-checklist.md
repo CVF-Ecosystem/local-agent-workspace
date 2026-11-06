@@ -3,6 +3,7 @@
 Chạy bằng trình duyệt tự động (ví dụ Playwright với Chromium) khi có; không có thì nói rõ chưa chạy tự động.
 
 0. Thử với file `.xlsx` THẬT của người dùng (và một file đã đổi thứ tự cột), không chỉ CSV hay dữ liệu mẫu nhúng sẵn; file không đọc được thì công cụ chưa xong.
+0a. Kiểm hệ ngày: reader mini từ chối 1904; thử đường đọc khác đã được xác minh khi cần hệ đó. Cache công thức không được reader tính lại hoặc engine xác minh. Kiểm phiên bản reader thực sự nhúng trong HTML; cập nhật reader dùng chung không tự thay bản đã nhúng.
 0b. Quét mạng: `grep -E 'src="https?:|href="https?:|fetch\(|XMLHttpRequest' file.html` phải trống; nếu mở được DevTools, tab Network khi mở file không có yêu cầu ra ngoài.
 0c. Lỗi dữ liệu phải bị bắt: ô ngày thật (serial) hiển thị `dd/mm/yyyy`; số âm ở cột lượng; chữ trong ô số; ngày ngoài khoảng; mỗi lỗi hiện đúng số dòng Excel.
 0d. Nhiều sheet: thử file có nhiều sheet (hướng dẫn, mock, bảng chính, danh mục); báo được số dòng đọc trên từng sheet; thẻ chỉ số không bằng 0 khi sheet có dữ liệu.

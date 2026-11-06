@@ -134,9 +134,13 @@ def _walk(base, skip_private=True):
     out = []
     for d, dirs, files in os.walk(base):
         dirs[:] = sorted(x for x in dirs if x not in SKIP_DIRS and not (d == base and x in ROOT_ONLY_SKIP)
-                         and os.path.relpath(os.path.join(d, x), base).replace(os.sep, '/') != RUNTIME_DIR)
+                         and os.path.relpath(os.path.join(d, x), base).replace(os.sep, '/') != RUNTIME_DIR
+                         and not private_namespace(os.path.relpath(os.path.join(d, x), base))
+                         and not maintainer_namespace(os.path.relpath(os.path.join(d, x), base)))
         for f in sorted(files):
             rel = os.path.relpath(os.path.join(d, f), base).replace(os.sep, '/')
+            if private_namespace(rel) or maintainer_namespace(rel) or maintainer_registry(rel):
+                continue
             if f.endswith(('.pyc', '.bak')) or '.bak-' in f or f == '.git':  # '.git' là file khi dùng git worktree / a file in a git worktree
                 continue
             if skip_private and private_file(f):
@@ -175,17 +179,41 @@ def intake_config(rel):
     return path in (INTAKE_CONFIG_REL.casefold(), ('en/' + INTAKE_CONFIG_REL).casefold())
 
 
+def maintainer_namespace(rel):
+    """Private maintainer implementation and its English mirror."""
+    path = ntpath.normpath(rel).replace('\\', '/').casefold()
+    if path.startswith('en/'):
+        path = path[3:]
+    return path == '.cvf/maintainer' or path.startswith('.cvf/maintainer/')
+
+
+def maintainer_registry(rel):
+    """Project maintainer registry is never a package-owned or delivered file."""
+    path = ntpath.normpath(rel).replace('\\', '/').casefold()
+    if path.startswith('en/'):
+        path = path[3:]
+    return path == 'docs/milestone-coverage-authority.json'
+
+
+def private_namespace(rel):
+    """Project-private namespace and English mirror; normalize Windows aliases without opening files."""
+    path = ntpath.normpath(rel).replace('\\', '/').casefold()
+    if path.startswith('en/'):
+        path = path[3:]
+    return path == '.agent/private' or path.startswith('.agent/private/')
+
+
 def user_owned(rel):
     """File do người dùng/project sở hữu (không phải của package): không áp quy tắc phát hành như số phiên bản,
     bản tiếng Anh hay đường dẫn trong tài liệu. Cùng một quy tắc với in_manifest.
     User/project-owned file (not the package's): release rules such as version strings, the English mirror and doc paths
     do not apply. Same ownership rule as in_manifest."""
-    if intake_config(rel) or rel in USER_FILES:
+    if private_namespace(rel) or intake_config(rel) or maintainer_namespace(rel) or maintainer_registry(rel) or rel in USER_FILES:
         return True
     return in_user_dir(rel) and not package_readme(rel)
 
 def in_manifest(rel):
-    if intake_config(rel) or rel in GENERATED or rel == PROFILE_REL:
+    if private_namespace(rel) or intake_config(rel) or maintainer_namespace(rel) or maintainer_registry(rel) or rel in GENERATED or rel == PROFILE_REL:
         return False
     if in_user_dir(rel):
         return package_readme(rel)
@@ -371,7 +399,7 @@ def delivery_selection(branding=True):
 def delivery_bytes(rel):
     """Bytes sẽ giao của rel: mẫu sạch (kho nguồn), overlay `.cvf/README.md`, phép thay tham chiếu; còn lại là bytes gốc."""
     _check_user_file_mapping()
-    if intake_config(rel) or rel in _NO_DELIVERY:
+    if private_namespace(rel) or intake_config(rel) or maintainer_namespace(rel) or maintainer_registry(rel) or rel in _NO_DELIVERY:
         raise ProjectionError('EXCLUDED_FILE', rel)
     if rel == 'assets/branding.js':
         js = branding_js()
@@ -557,7 +585,7 @@ def source_package_problems(source):
                 continue
             h, rel = line.split('  ', 1)
             declared.add(rel)
-            if intake_config(rel) or (in_user_dir(rel) and not package_readme(rel)):
+            if private_namespace(rel) or intake_config(rel) or maintainer_namespace(rel) or maintainer_registry(rel) or (in_user_dir(rel) and not package_readme(rel)):
                 private.append(rel)
                 continue
             if rel in USER_FILES or rel == 'MANIFEST.sha256':
@@ -587,6 +615,29 @@ def source_package_problems(source):
     return out
 
 
+def private_namespace_roots(base):
+    """Find reserved roots by shallow metadata only; never enter private contents."""
+    def matching(parent, name):
+        with os.scandir(parent) as entries:
+            return [entry.path for entry in entries if entry.name.casefold() == name]
+    def safe_directory(path):
+        info = os.lstat(path)
+        if os.path.islink(path) or getattr(info, 'st_file_attributes', 0) & 0x400:
+            raise OSError('Linked namespace parent: ' + path)
+        return os.path.isdir(path)
+    bases = [os.fspath(base)]
+    for mirror in matching(base, 'en'):
+        if safe_directory(mirror):
+            bases.append(mirror)
+    found = []
+    for parent in bases:
+        for agent in matching(parent, '.agent'):
+            if safe_directory(agent):
+                found.extend(os.path.relpath(path, base).replace(os.sep, '/')
+                             for path in matching(agent, 'private'))
+    return sorted(found)
+
+
 def tree_problems():
     """Cây phát hành (không có release_templates/): `.cvf` đúng closure, không dữ liệu vận hành, bytes pin khớp policy.
     A release tree: exact `.cvf` closure, no runtime data, pinned bytes equal to the policy pins."""
@@ -600,6 +651,11 @@ def tree_problems():
             out.append('Bản phát hành có file .cvf ngoài closure v3 (v1/v2, fixtures, evidence hoặc runtime): %s.' % ', '.join(extra[:8]))
         if missing:
             out.append('Bản phát hành thiếu file closure .cvf v3: %s.' % ', '.join(missing[:8]))
+    try:
+        for rel in private_namespace_roots(ROOT):
+            out.append('Bản phát hành có namespace private %s (không được đóng gói).' % rel)
+    except OSError as exc:
+        out.append('Không kiểm được metadata namespace private: %s.' % exc.__class__.__name__)
     for rel in private_files():
         out.append('Bản phát hành có file tài khoản/khóa thật %s (không được đóng gói).' % rel)
     rt = P(RUNTIME_DIR)
@@ -679,7 +735,7 @@ def verify(findings=None):
             pass
     changed, missing = [], []
     for rel, h in sorted(m.items()):
-        if intake_config(rel) or rel in USER_FILES:
+        if private_namespace(rel) or intake_config(rel) or maintainer_namespace(rel) or maintainer_registry(rel) or rel in USER_FILES:
             continue  # file người dùng sửa: có trong MANIFEST chỉ để biết còn nguyên bản mẫu hay chưa
         if not os.path.isfile(P(rel)):
             missing.append(rel); continue

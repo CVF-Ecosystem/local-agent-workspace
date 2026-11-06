@@ -1,0 +1,403 @@
+{
+  "schemaVersion": "cvf.repairChainAssessment@1.0.0",
+  "milestoneId": "V4",
+  "history": [
+    {
+      "path": ".cvf/maintainer/cvf13/history/w44-attempt3.json",
+      "sha256": "3d949ca2f166b10e713a80eed80e4f9509d6354be18f30127911752458c14e4e"
+    },
+    {
+      "path": ".cvf/maintainer/cvf13/history/w44-static-fix.json",
+      "sha256": "eb8d90b7431f52014476260b3e1ff228c0ed4bf4f6ea1892407e9faf676f5891"
+    }
+  ],
+  "affectedCriteria": [
+    "V4"
+  ],
+  "failureBoundary": "The one control2 wrapper returned exit1. Fresh owned Excel35748/session41, initialCount0 and security readback succeeded. Direct typed Workbooks collection was acquired; control Open failed at before_open_invoke with COM1004/0x800A03EC, stack Workbooks.Open and ExcelControl.OpenTyped. No after_open_invoke/control identity/sentinel/close/success or candidate before_open_call, states or exports. Original q clones and deterministic control bytes unchanged. Cleanup held after earlier ambiguity; no Quit/exit proof.",
+  "observedEvidence": [
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/binding-diagnostic2/events.jsonl",
+      "sha256": "48949561cf46835a37feada396fd1e1580f144d5da763cb7a397e27fc5cb63e4"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/main-passive-ui-unavailable.json",
+      "sha256": "55fa2ce748a3202c004178cc168d48a866f10ac412d01dc48a904ec2b49686d7"
+    },
+    {
+      "path": "working/cvf-profile13-adoption-20261105/evidence/cua-inventory-result.json",
+      "sha256": "60ce82dcf1addaccc99a49532572e8d7896077f25b5e04991f7192c5a3ebd67a"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/r6-host-file/result.json",
+      "sha256": "8b97d57af77c5c7acf9fd4992acd6f5770d1eb37f6b0a42e5bd74c90b579f08d"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/r6-host-file/host-stdout.log",
+      "sha256": "913724cd821a81fea056a6c4bd71e2f36851a69d8128faf8b2d0626fe686c7d6"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/r6-host-file/validate-stdout.log",
+      "sha256": "b6dc9112d3f194daad3ab6d761b6832248998062fce01271ec8747db783cb6d1"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/direct-preparation.json",
+      "sha256": "9127a6a2994c956eb009a5229ba9cd38695d7c753041f10ac589e0173b91ae19"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/direct1/scripts/native_excel_direct.ps1.bin",
+      "sha256": "94473d48ff8cf6930df8fcd51af40e4f20b379578488b8704cde364bbd81037b"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/scripts/direct_excel_factory.cs",
+      "sha256": "c905a8b3e9f834b716099a1d411c8b63e8fa762f228dce653bc4a71e14138c6e"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/r6.6-before/run_excel_direct.py.bin",
+      "sha256": "be5134a8c5a4bb7f611ce6b1562705241d7c5db0207272c6ae57b0c315d50226"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/r6.6-before/render_excel_direct.py.bin",
+      "sha256": "0a5d0813eefe5485665fed63e3bc22d19f7b718acdcdcaf7cd030610f1572cce"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/scripts/test_excel_direct.py",
+      "sha256": "d944b3f4fc14342484258b506f2f76d56702fd08d954192e2c22ca13e31599b4"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/direct-reviewer-delta.json",
+      "sha256": "36c221d101308629164a05d5c75e998895c14d3f64bc2eacb0d174477cdce494"
+    },
+    {
+      "path": "working/cvf-profile13-adoption-20261105/evidence/direct-native-execution.json",
+      "sha256": "e027f0568a2d473a67cce95fe90b084074196f96963e84c34092440fe4a53f2f"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/direct1/process.json",
+      "sha256": "e02c18e7ff756b2124785336f76296448738ec30091d71c32f6a656623c6010c"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/direct1/events.jsonl",
+      "sha256": "d0c1fc2304a8ebb6c0bd0a1158e1b1a661d08b240f604b996a2021ad3b86ce6b"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/direct1/native-observations.json",
+      "sha256": "705578be711eb34c9e250056f85faad1f027baa3417aedbac9202421c74c6929"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/direct1/native-stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/direct1/native-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/direct1-static-audit.json",
+      "sha256": "331b30b4263ea1a83f098107e08d21021153791f9429b70ca90c9ae3c2824a97"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/r6.6-before/native_excel_direct.ps1.bin",
+      "sha256": "7413951f2c1faca390c5b25cad48b34ebc4436292cc1d9fdfd3980d3acf742d3"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/scripts/_scratch/test_direct_telemetry.ps1",
+      "sha256": "625594925543b66459f55d5da9e4e6fdd47b910b6996cc2c82888cb8ed4d4184"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/direct-telemetry-preparation.json",
+      "sha256": "1e3b63cb2ca0d9f069d92d3bc2fe2079d39eb00f012053f9ee4fa6f154c1be19"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/scripts/run_excel_direct.py",
+      "sha256": "8dbd25e2d5c6b574890c03dc8e0d36305319cee044d89fc5e947bce2413893ba"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/direct2/scripts/native_excel_direct.ps1.bin",
+      "sha256": "c9f4a42b483a3923e6e295a9f6d1a9a00e11bbf5a75210fa067dbd9cf593fe72"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/scripts/render_excel_direct.py",
+      "sha256": "4a915436306ddc4ce1a2ba2b080b44e988ee8e2e76dd271112555215caec5999"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/trace2-preparation.json",
+      "sha256": "edd8c0675ea0eafcdba6749c44443055c9c63c50f82ef25f6e2a1321f45ad398"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/trace2-parser.json",
+      "sha256": "5785b85eb44af8e5de7289b8ff884502d815a5678c790284fa92e0d598f32c7c"
+    },
+    {
+      "path": "working/cvf-profile13-adoption-20261105/evidence/trace2-execution.json",
+      "sha256": "a6ad3d774c2342ba1ddf1b7d52782e89a5742a9e318043dc6dda43f5b761ac28"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/direct2/process.json",
+      "sha256": "84cc7c1a1560b93245f20ee7c02ff7a7fc5ae45a9c7ef37a88f85342119c318b"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/direct2/events.jsonl",
+      "sha256": "b3a2885eea05ed7d34a58a97bdfb210b434037be5095eaf0c1d8a8febb432f81"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/direct2/native-observations.json",
+      "sha256": "705578be711eb34c9e250056f85faad1f027baa3417aedbac9202421c74c6929"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/direct2/native-stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/direct2/native-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/scripts/native_excel_direct.ps1",
+      "sha256": "c9bfccca60d5f9591ee0e8f1a4c7d362aaa7632409fb89c74ea425a3e486660a"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/scripts/_scratch/test_exception_context.ps1",
+      "sha256": "f453c781499c4503396ff2cf3063f6049a4d506be06f016963be2e474f334b61"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/exception-context-preparation.json",
+      "sha256": "6423e29ada46af6e8537a4181d8b7718e87fe4936b6f06cd9e60c5ab57ac221d"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control1/scripts/run_excel_control.py.bin",
+      "sha256": "d239e5e6c2f2fc495e5ce5f9a81bedf28d4a5b08c10e2a539cb89f9526497351"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control1/scripts/native_excel_control.ps1.bin",
+      "sha256": "2063ac0222bc080fd9960ef448df7127d27c6d33d78d3e0a097498c60add8bd3"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control1/scripts/render_excel_control.py.bin",
+      "sha256": "9ba37cf2c4c701575c7b8a5b514025bd13c764ff405b3e3727353e7a6084c6ea"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control1/scripts/excel_control.cs.bin",
+      "sha256": "4274800eb72c835543010bcb3581e451a0e2706d011ce198cb74e07029f3fb77"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control1/scripts/control_fixture.py.bin",
+      "sha256": "360928e1e896406d91e9917912b4041e9a5b89ffe333c6d294b7db69ac3f24b1"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control1/scripts/test_excel_control.py.bin",
+      "sha256": "7b980a8323df37fafd9c1ffa9ff34f6b762b667ce8324612a81b5c7c74bf2a43"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control-preparation.json",
+      "sha256": "7e3869ddb537fa6eec111ac9535d7a4cc5460c617df35105ea1db2da5a2f8317"
+    },
+    {
+      "path": "working/cvf-profile13-adoption-20261105/candidate/packet-control1.json",
+      "sha256": "15cf4446af7c25c11535d079293c60551e9099909fc2b454b382cd26539c6752"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/baseline.json",
+      "sha256": "50980b3881ccc3348b348502972d87d373d85955edcfcd0d3517bbd0c03f63bb"
+    },
+    {
+      "path": "working/cvf-profile13-adoption-20261105/evidence/control-execution.json",
+      "sha256": "ec1d25eb6072e79b9a1c338dcb9418248b0e9842c5ebf896e4b34b4ea22c032d"
+    },
+    {
+      "path": "working/cvf-profile13-adoption-20261105/evidence/control-admission.json",
+      "sha256": "c456626ad31b1de1c643f8184bf0b6e0390463c701653456493a17997de8b6e8"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control-host-session.json",
+      "sha256": "14e89676c7de95082640d445ddacda3ab301faaeb1bb4c21f19b3993b1b65984"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control-openxml-check.json",
+      "sha256": "189f0ae2afd7b34e07f97b008a58f98761ffeecc52f2e8e0cedf65d5e6ce06fc"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control1-admission.json",
+      "sha256": "1cb60cc88f2275446a2755cac0fc806e9b35f88d9b3e2c5e176fbc8190629c92"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control1-reservation.json",
+      "sha256": "f7acdf2fec3fd219d40acaaee588404d8f932e6e2286dc0e386c9eccc8755f14"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control1/process.json",
+      "sha256": "aa1c310d632611cf53dd853b0c7168eba3742c68c1ebdb93735b053e9d73b664"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control1/events.jsonl",
+      "sha256": "3c0fe9a4cf324f45eca76b9b43e1591dff472a8e874e5d3319e3020f7264b3c2"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control1/native-process.json",
+      "sha256": "a5e4806a59f2e29721958aac58b6e011bec27b7be1121119ffa4b790a86d8420"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control1/native-observations.json",
+      "sha256": "527d13369440198b8bfd9e50434556c51dbfda31bb51733e600e7792114410ee"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control1/native-stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control1/native-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/EXCEL173_DANH_GIA_TOAN_DIEN_20261105.md",
+      "sha256": "61bc33d4c738db47a9826636d28c9331d4eac9b017701316c5ab77c41b43e1de"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/integrated-native-preparation-r6.13q.json",
+      "sha256": "70fedfb5d3f89af18abafdb88482872c6cfb626069bd9a69d251c113da417179"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/integrated-source-review-r6.13q.md",
+      "sha256": "260ee7dcc784298c464f4f9e406dd6209e149f1b4edfadc0ee760a0d3a03acab"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/integrated-main-r6.13q.json",
+      "sha256": "deff80fbf2939f95ba5db7af297521f1c9238bb9953af29f2917341e1b85d242"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control2-host-session.json",
+      "sha256": "23ac1cc41feafc38aae782fcd53e791253c02a99dc8e543ee4f3067e835d1ece"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/repair-20261105/product/product-manifest-r6.13q.json",
+      "sha256": "add9c230932da20e31a25013e3b0bfa7a04b436e6168662a076b6553f5bef2f5"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/repair-20261105/product/output/viewer.html",
+      "sha256": "a3433a584dfdff341380f8094c79d997d5f69629c99d41373febeb27ee5c0c8e"
+    },
+    {
+      "path": "working/cvf-profile13-adoption-20261105/evidence/control2-execution.json",
+      "sha256": "524c930946eaf6ed6aa9821103c9ee47d4ab75e60006b9e287511b7b64c70d90"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control2/process.json",
+      "sha256": "2fcb2d9ee2e8e2192844a7379bdca1d091528564efd949bbf1812f6b9f3618aa"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control2/events.jsonl",
+      "sha256": "b1db351f395cd83bfd3885147fcd31b17ec7aac9465b0993f73680a8f1af9d40"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control2/native-process.json",
+      "sha256": "34e1118714e9f0994f94987fc9bf7ef4528ef01d1c6065ef8a1071d3c6bdfa1b"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control2/native-observations.json",
+      "sha256": "6efbb574a59570738eb9c3624835cac9a7c14de896309977e8528765152413b1"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control2/native-stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control2/native-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control2/runtime.json",
+      "sha256": "5872c2e3caefacec97d3346a0e23ae94293ee0323ffa26641173178ec695015d"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control2/execution-pins.json",
+      "sha256": "bd531973362bd7af9b65c7b14b7dba230080d2dd876b58f94b2eb8685a866143"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control2-admission.json",
+      "sha256": "d71d7a6119b34bd2c0d30d6623f7d4ed10e27b5c21129bb3c35fb729f701238d"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control2-reservation.json",
+      "sha256": "a63116aaaba6f4870c12c13abebc2536daf9a3a77203f4fac269c0e4830e614f"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control2/scripts/binding_probe.cs.bin",
+      "sha256": "4a6b3d135fe99d6a78b1d2167f10fd740c6de4bc7db2a2337b4eabf1ea2bc3f3"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control2/scripts/binding_probe.ps1.bin",
+      "sha256": "fe653b32ca53323a29de349fc91c1f96dbf4fbd01f6bdeebbb8e7793e9c7656f"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control2/scripts/contract_map.ps1.bin",
+      "sha256": "52e3bbc2ec013f5de2bf7c81f9a8daec3beccd976e5790130146a47738117537"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control2/scripts/control_fixture.py.bin",
+      "sha256": "360928e1e896406d91e9917912b4041e9a5b89ffe333c6d294b7db69ac3f24b1"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control2/scripts/direct_excel_factory.cs.bin",
+      "sha256": "c905a8b3e9f834b716099a1d411c8b63e8fa762f228dce653bc4a71e14138c6e"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control2/scripts/excel_bridge.cs.bin",
+      "sha256": "99cc6b198f790db5f52210003dc5d2c3b7af1c149cb3dbea76f7d2d5d1660f6d"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control2/scripts/excel_control.cs.bin",
+      "sha256": "6761be1528edefde9584f8b00d1eb0108083c4c7298024ebbaaedec5abf8de45"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control2/scripts/native_excel.ps1.bin",
+      "sha256": "15dd52ede29578b607a1a080b6a543f926b2837c4ea57770f3a0da8ba453eef2"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control2/scripts/native_excel_control.ps1.bin",
+      "sha256": "fae006025d8ff65690b9ef20cb903ab091e3fe2fc87deed203bff7d76fafac46"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control2/scripts/render_excel.py.bin",
+      "sha256": "5f41448acb6c3e66ffb4891441406ff40fbe5c1dc838689563333277e8a7a929"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control2/scripts/render_excel_control.py.bin",
+      "sha256": "90929e272f127cc311b17ffcba2d7af8190568c34e90fa816739b561d1326829"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control2/scripts/run_excel.py.bin",
+      "sha256": "a47dc3236047317b6ce759c6b84d97b1b6bf109b34d20cde71cd65f54560ea51"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control2/scripts/run_excel_control.py.bin",
+      "sha256": "fb475c71ac8061e639c758746bb5c191f74217c1731c24cd8aaa5a420fa6f1f6"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/control2/scripts/test_excel_control.py.bin",
+      "sha256": "610ac59352ae46d520f2702186eef43cc18354b69a2d500079a23d5481d470d1"
+    }
+  ],
+  "causeStatus": "UNKNOWN",
+  "causeOrHypothesis": "New control evidence excludes the previous custom Open delegate as a necessary component of this failure and proves the stale-session precondition no longer blocks reaching Open. It does not determine internal Excel, host/configuration, file/control-format or other root cause; the minimal control failed before revised173 was attempted. No returned book or post-errorCount proves which workbook, if any, was partially opened. The openpyxl dynamic-name read-only warning is not the native Open exception.",
+  "remainingChain": [
+    "Audit exact Open helper/return and partial-open nonzero-count boundary with no guessed parameter or ownership-policy change; obtain evidence that distinguishes native/host/file/interop cause before another effect. Old and new cleanup UNKNOWN.",
+    "All seven states/per-channel/blank-zero-.8/append/cap201/duplicate-missing/protected inputs",
+    "Save/reopen/native cached results and retained formulas",
+    "All five native sheets/every PDF page and exact native-populated viewer",
+    "Preserve source; prove own safe exit; Main and independent review; all other4.4 obligations remain"
+  ],
+  "discriminator": null,
+  "correctiveAction": "Consume this one wrapper/tree and close BLOCKED. Preserve actual control2 executed snapshots and primary/cleanup errors. No revised173 attempt, fallback or same-host telemetry retry. Source q integration remains accepted with limits; native route on this host remains unproven. Any genuinely separate authorized environment is not currently verified/available and no install/account/UI or alternative-host action is admitted.",
+  "owner": "Main",
+  "cumulativeMinutes": "UNKNOWN",
+  "additionalCeilingMinutes": 0,
+  "stopCondition": "Consumed control2 one-wrapper reservation. No further native/COM/UI/session/other-PID query, attach/Close/Quit/kill, source repair or successor effect from this result. New owned PID35748 exit UNKNOWN, like historical cleanup; do not act on it. Nativehelper7.945688s, parent10.219s and Mainouter11.094s are distinct nested layers, not additive. Prior five-helper17.178869s plus this helper =25.124557s six-helper subset only, not Excel lifetime/total effort or remaining320 budget; legacy20.457842 mixed ledger retained.",
+  "reopenCondition": "Independent actual POST and blocked close required. No same-host parameter/logging retry. Need a proven cause fix or materially discriminating new route/environment with availability, explicit scope and review; source/static/HTML/control failure cannot become native QA or user debugging duty.",
+  "disposition": "BLOCKED",
+  "admittedAction": null,
+  "review": {
+    "reviewer": "Astra Medium",
+    "decision": "PENDING",
+    "evidence": []
+  }
+}

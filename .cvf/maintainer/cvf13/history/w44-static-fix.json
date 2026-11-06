@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "cvf.repairAttempt@1.0.0",
+  "milestoneId": "V4",
+  "criterionIds": [
+    "V4"
+  ],
+  "trancheId": "W44-EXCEL173-r7.4-source-hash-repair",
+  "activity": "REPAIR",
+  "result": "UNMET",
+  "proofState": "STATIC_FIX_VERIFIED",
+  "elapsedMinutes": "UNKNOWN",
+  "evidence": [
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/reviewer-runtime-hash-repair.json",
+      "sha256": "c2d9bedd9f48afbfcc63259a6b25554c88e91210dad30971bbefd311802be8d6"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/binding-diagnostic2/events.jsonl",
+      "sha256": "48949561cf46835a37feada396fd1e1580f144d5da763cb7a397e27fc5cb63e4"
+    }
+  ]
+}

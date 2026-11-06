@@ -21,6 +21,7 @@ import json
 import os
 import re
 import sys
+import unicodedata
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -374,6 +375,12 @@ def _text(v, limit, required=True):
     return isinstance(v, str) and (0 < len(v.strip()) if required else True) and len(v) <= limit and not CONTROL_RE.search(v)
 
 
+def _task_text(v, limit):
+    # TASK canonicalization requires NFC and valid Unicode scalar values.
+    return (_text(v, limit) and unicodedata.normalize("NFC", v) == v
+            and not any(0xD800 <= ord(ch) <= 0xDFFF for ch in v))
+
+
 def check_request(req):
     """[mã] của yêu cầu soạn brief: trường lạ, kiểu, độ dài. / Problems of the compose request: unknown fields, types, lengths."""
     if not isinstance(req, dict):
@@ -384,11 +391,11 @@ def check_request(req):
             problems.append('REQUEST_INVALID:%s.MISSING' % k)
     if 'method' in req and not (isinstance(req['method'], str) and ID_RE.match(req['method'])):
         problems.append('REQUEST_INVALID:method')
-    if 'reason' in req and not _text(req['reason'], 1000):
+    if 'reason' in req and not _task_text(req['reason'], 1000):
         problems.append('REQUEST_INVALID:reason')
-    if 'request' in req and not _text(req['request'], 4000):
+    if 'request' in req and not _task_text(req['request'], 4000):
         problems.append('REQUEST_INVALID:request')
-    if 'limits' in req and not _text(req['limits'], 2000):
+    if 'limits' in req and not _task_text(req['limits'], 2000):
         problems.append('REQUEST_INVALID:limits')
     if 'output_format' in req and (not isinstance(req['output_format'], str) or req['output_format'] not in OUTPUT_FORMATS):
         problems.append('REQUEST_INVALID:output_format')
@@ -502,8 +509,9 @@ def compose(request, root=None):
         return refuse('CONTRACT_INVALID', entry['problems'], {'id': entry['id']})
     lang = request.get('lang', 'vi')
     fmt = request.get('output_format', 'text')
-    if ('host_session' in request and fmt not in ('text', 'html')
-            and (entry['id'] not in ('data-analyst', 'market-analyst') or entry['method_version'] != 2)):
+    office_contract = ((entry['id'] in ('data-analyst', 'market-analyst') and entry['method_version'] == 2)
+                       or (entry['id'] == 'executive-secretary' and entry['method_version'] == 1 and fmt == 'docx'))
+    if 'host_session' in request and fmt not in ('text', 'html') and not office_contract:
         return refuse('REQUEST_INVALID', ['REQUEST_INVALID:host_session.OUTPUT_CONTRACT_UNSUPPORTED'], {'id': entry['id']})
     used = request.get('resources_used', [])
     bad = ['RESOURCE_NOT_LISTED:' + p for p in used if p not in entry['resources']]
@@ -570,18 +578,20 @@ def compose(request, root=None):
                        'contract': entry['contract'], 'preset_mode': entry['preset_mode']},
             'brief': brief, 'context_refs': ctx_refs, 'inputs_proposal': inputs, 'capabilities': caps, 'held': held, 'missing': missing,
             'profile': profile_view(root, entry['base_role']),
-            'task_fragment': {'main_interpretation': 'Main chọn / chose %s v%d: %s' % (entry['id'], entry['method_version'], request['reason']),
+            'task_fragment': {'main_interpretation': 'Main chọn / chose %s v%d: %s\n%s' % (entry['id'], entry['method_version'], request['reason'], marker['statement']),
                               'acceptance_requirement': marker, 'context_refs': ctx_refs, 'inputs': inputs,
                               'note': 'Inputs chỉ đề xuất path/digest bytes; Main bổ sung source_id/revision từ sổ cho nguồn đã đăng ký trước TASK, không tự tạo ID; lỗi sổ không đồng nghĩa chưa đăng ký. Không phải TASK, không lưu ở đâu. / Inputs propose byte path/digest only; Main adds source_id/revision from the ledger for registered sources before the TASK, never invents an ID; a ledger error does not mean unregistered. Not a TASK, stored nowhere.'}}
 
 
 def _statement(entry, request, lang):
-    gist = ' '.join(request['request'].split())[:200]
+    # JSON preserves the exact input strings and makes field boundaries unambiguous.
+    claim = json.dumps({'request': request['request'], 'output_format': request.get('output_format', 'text'),
+                        'limits': request.get('limits'), 'needs_compute': request.get('needs_compute', False)}, ensure_ascii=False)
     if lang == 'en':
         return ('Carry out the "%s" method (v%d, contract %s) for: %s. Done only when the contract\'s done-when checks are met and gaps are reported, not filled.'
-                % (entry['label']['en'], entry['method_version'], entry['contract'], gist))
+                % (entry['label']['en'], entry['method_version'], entry['contract'], claim))
     return ('Thực hiện đúng phương pháp «%s» (v%d, hợp đồng %s) cho yêu cầu: %s. Chỉ đạt khi đáp ứng điều kiện xong của hợp đồng và phần thiếu được báo, không được lấp.'
-            % (entry['label']['vi'], entry['method_version'], entry['contract'], gist))
+            % (entry['label']['vi'], entry['method_version'], entry['contract'], claim))
 
 
 # Cấu trúc con của RESULT cho brief Worker: chỉ minh họa hình dạng, giá trị là ví dụ; schema canonical vẫn là owner. / Nested RESULT shape shown in the Worker brief: shape only, values are examples; the canonical schema stays the owner.
@@ -724,7 +734,7 @@ def _brief(entry, request, lang, fmt, inputs, missing, caps, held, ctx_refs, rou
     add(('VIỆC ĐƯỢC GIAO — phương pháp «%s» (%s, v%d, vai lõi %s)' if vi else 'ASSIGNMENT — method "%s" (%s, v%d, core role %s)')
         % (entry['label'][lang], entry['id'], entry['method_version'], entry['base_role']))
     add(('Lý do Main chọn: ' if vi else 'Why Main chose it: ') + ' '.join(request['reason'].split()))
-    add(('Yêu cầu cụ thể:\n' if vi else 'Concrete request:\n') + request['request'].strip())
+    add(('Yêu cầu cụ thể:\n' if vi else 'Concrete request:\n') + request['request'])
     add('')
     add('NGUỒN MAIN GIAO (chỉ dùng các nguồn này):' if vi else 'SOURCES MAIN ASSIGNED (use only these):')
     notes = {s['path']: s.get('note') for s in request.get('sources', [])}
@@ -734,7 +744,7 @@ def _brief(entry, request, lang, fmt, inputs, missing, caps, held, ctx_refs, rou
     else:
         add('- (chưa có nguồn nào được xác nhận)' if vi else '- (no confirmed source)')
     add(('ĐẦU RA: định dạng %s; %s.' if vi else 'OUTPUT: format %s; %s.') % (fmt, role_out[0 if vi else 1]))
-    add(('GIỚI HẠN: ' if vi else 'LIMITS: ') + (request['limits'].strip() if request.get('limits') else
+    add(('GIỚI HẠN: ' if vi else 'LIMITS: ') + (request['limits'] if request.get('limits') else
         ('không có giới hạn bổ sung ngoài hợp đồng.' if vi else 'none beyond the contract.')))
     add('')
     add('TRƯỚC KHI LÀM, mở và đọc đúng các file sau (đã bind bằng digest; không dùng bản khác):' if vi

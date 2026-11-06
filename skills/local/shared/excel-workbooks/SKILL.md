@@ -62,7 +62,7 @@ Phân biệt rõ hạng mục đầu tư mới với tài sản đã có; tên g
 - Công cụ giao cho nhiều người dùng chung: thư mục có cấu trúc cố định và một file hướng dẫn ở gốc, ví dụ
   `01_MAU` (chỉ mẫu trống), `02_DU_LIEU\<năm>\`, `03_BAO_CAO_IN` (PDF đã trình ký), `_LUU_TRU` (bản cũ), `HUONG_DAN_SU_DUNG.txt`.
   Thư mục này chỉ chứa file đã chuẩn hóa; file thô để ngoài.
-- Người dùng gửi lại file: so md5 và thời điểm sửa với các bản đang có để biết bản nào mới nhất (có thể lưu nhầm chỗ, ví dụ vào thư mục mẫu).
+- Người dùng gửi lại file: chọn theo revision canonical đã tiếp nhận, phạm vi công việc và quyền được cấp. Hash (kể cả md5) chỉ nhận diện nội dung; thời điểm sửa chỉ là tín hiệu, không xác định bản hiện hành. Nếu thiếu hoặc mâu thuẫn thông tin, không tự chọn hoặc ghi đè; cần xác nhận.
 - Sửa sổ ĐANG DÙNG (đã có danh sách chọn, định dạng có điều kiện kiểu mới): không mở rồi lưu lại bằng openpyxl vì có thể mất danh sách chọn;
   sửa trực tiếp XML trong file, xem `references/openpyxl-notes.md` mục "Sửa trực tiếp XML". Bản cũ vào `_LUU_TRU` trước khi ghi.
 - Dữ liệu người dùng nhập sai chỗ (đối tượng sai sheet, số nằm sai cột, mốc thời gian viết trong ghi chú): tách bằng script từ giá trị, chuyển

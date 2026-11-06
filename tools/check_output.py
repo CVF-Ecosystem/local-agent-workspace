@@ -366,8 +366,14 @@ def main():
                 r = subprocess.run([sys.executable, sc, f, '--lang', LANG, '--status-exit'], capture_output=True)
             except OSError as e:
                 print('  ' + L('Không chạy được công cụ kiểm Excel (%s). Chưa kiểm được file này.', 'Could not run the Excel check tool (%s). This file was not checked.') % e); result(2); continue
-            print(r.stdout.decode('utf-8', 'replace').rstrip() or r.stderr.decode('utf-8', 'replace').rstrip())
-            if r.returncode not in (0, 1):
+            stdout = r.stdout.decode('utf-8', 'replace').rstrip()
+            stderr = r.stderr.decode('utf-8', 'replace').rstrip()
+            if stdout: print(stdout)
+            if stderr: print(stderr)
+            if r.returncode == 2:
+                print('  ' + L('CHƯA KIỂM ĐỦ / KHÔNG KIỂM ĐƯỢC trong phạm vi yêu cầu.', 'NOT CHECKED / INCOMPLETE within the requested scope.'))
+                result(2)
+            elif r.returncode not in (0, 1):
                 err = r.stderr.decode('utf-8', 'replace').strip().splitlines()
                 print('  ' + L('LỖI CÔNG CỤ: skill spreadsheet-check không chạy xong (mã %d) - KHÔNG kiểm được file này, đừng hiểu là không có lỗi. %s', 'TOOL ERROR: the spreadsheet-check skill did not finish (code %d) - this file was NOT checked, do not read it as no problems. %s') % (r.returncode, err[-1] if err else ''))
                 result(2)

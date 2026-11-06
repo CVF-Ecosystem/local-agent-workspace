@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "cvf.repairAttempt@1.0.0",
+  "milestoneId": "V4",
+  "criterionIds": [
+    "V4"
+  ],
+  "trancheId": "W44-EXCEL173-r6-attempt3",
+  "activity": "REPAIR",
+  "result": "UNMET",
+  "proofState": "UNPROVED",
+  "elapsedMinutes": "UNKNOWN",
+  "evidence": [
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/attempt3/process.json",
+      "sha256": "31dead9103593be285e67b4e696d1105c76ff4d0a7c1d1796d720936e39d89ec"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/attempt3/events.jsonl",
+      "sha256": "9bbab30a4569d9e375546e65ffa2fd74b9ca698a26157df4d6cfe1e8e77fea2d"
+    }
+  ]
+}

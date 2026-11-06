@@ -1,0 +1,54 @@
+# PROJECT STATE
+<!-- local-agent-workspace: maintainer-state -->
+## Goal
+
+Hoàn thiện LAW thành văn phòng trung tâm: giao việc tự nhiên, đầu ra có căn cứ, sửa và tiếp đúng bản, giữ dữ liệu và quyền riêng.
+
+## Current phase
+
+04/11/2026: Word A đã nhận native QA giới hạn. Tiếp 4.4: audit Excel173 đã định vị lỗi harness/bằng chứng cũ; attempt1 dừng tại executable lease trước App/Add; cleanup UNKNOWN, không retry. Quy tắc sửa dứt lỗi trước chuyển việc đã ghi PROJECT. PRERELEASE_NOT_READY.
+
+## Completed
+
+- Roadmap Local r2 đã chốt theo nghiên cứu và phản biện; không dùng chỉ thị trong tài liệu nguồn làm quyền thi công. HEAD96d5a44f6bc510fc53d4d0a71bcf4a7f23095f57, PR10 đã merge.
+- W40 clean candidate package0lỗi/0cảnhbáo; staged bỏ1PACKrow,28hashLocal giữ/academicREVIEW. Live SKILL_INDEX cố ý MM, staged0+/1-; không add/reset/checkout.
+- W41 có14/14assertions trên3 DATAMOCK; W42 consumer337file giữ continuity/collision và bounded fresh reader. Không suy toàn host/protocol.
+- W43 actual2CLI success/blocked; corruptstaging resume/rollback partial giữ user/index/backup, chưa toàn race/recovery.
+- W45 privateboundary và actual3CLI new/adopt/upgrade đã nhận giới hạn; giữ8/9seededfiles/profilegrants[], restoreownedfile. W46 guideVIEN đã đối chiếu RC4/CI/latest naming, chưa chứng minh HEAD/release.
+- W44 Word A: viết lại typed C# theo installed PIA, audit Open/Export/Close/Quit/properties/leases/cleanup. Sau PRE,1lượt13.641s tạoPDF2trang; Main+Astra xem2/2, toàn1331/1331ký tự và54ô bảng khớp. Nguồn giữ nguyên; checkerexit1/3cầnxácnhận đúng nguồn. HTML A/charts giữ QA cũ.
+- WordPID24404 exact-owned exit0 đã chứng minh; PID36988 cũ vẫn UNKNOWN, không tác động. Ba lượt lỗi cũ và receipts được giữ, không retry hoặc xóa lịch sử.
+
+## Current artifact
+
+- Roadmap canonical: roadmap/ROADMAP_VAN_PHONG_NGHIEP_VU.md r2, SHA868fb510631efe38515b68ca500fbfaad7508cf07201968109fb273ba3cc49ab.
+- HANDOFF đầu: LOCAL-W44-EXCEL173-20261104-r3 ATTEMPT1_FAILED_EXECUTABLE_LEASE_HOLD; job working/excel-workflow-quality-20261029/native-final-20261104/. Word A canonical vẫn format-qa/native-word-final/.
+- DOCX A: format-qa/output/bao-cao-va-thu-nhap-A.docx; PDF2trang tại native-word-final/evidence/attempt1/word-export.pdf. DOCXdef180…aa72, PDFe064166…eedf.59baselinepins/HEAD-staged-live giữ.
+- ZIP50: working/release-closure-20261031/attempt2/artifacts/local-agent-workspace-v1.9.0-rc5.zip, SHA29fbeeed…713af. Đây là artifact cũ; các delta source chưa có ZIP mới đạt.
+- Evidence W40–W46 và source chart/source-response/delta-artifact/gate-runtime vẫn ở working/ và HANDOFF; không đồng nghĩa toàn roadmap đạt.
+
+## Open items
+
+- V1/V2/V4: routing, chất lượng nghề/nội dung/nguồn và kết hợp ngoài ca đã kiểm; V3: provenance/identity/revision/coverage/hiệu lực/connectors.
+- V2/V5/V6: full nativeTASKRESULT/context/quyền/lỗi/late/sourcechange/timeout-stop/UI/hostkhác; profileNO_GRANT, WorkStatusconsumerNO_WORK/stopUNCONFIRMED; Antigravity findings cũ giữ, chưa hostenforcement.
+- 4.4/V4/V7: Wordcase/format-host khác, XLSX/Excel173causeUNKNOWN/nativeNOT_MET và support/professionalcoverage còn mở. Exact WordA không cần kiểm native lại khi bytes/binding không đổi.
+- V7/P1: UI53, race/save/interruption/corruption/recovery/Undo/schema/W1–W4 và nguồn đúng phạm vi chưa đủ; không nhận toàn bảo toàn từ subset.
+- 4.5: sourceclean/commitCI/currentgates/exactZIP/checksum/reviewartifact/fullT39/newVIEN/adopt-upgrade-downgrade-recovery/APP/4.1–4.2/support/releaseauthority chưa đủ. Artifact54 timeout1800s/cause-testtotalsUNKNOWN, BLOCKED_CAUSE không retry mù.
+- V6/M5 realuser/reuse/C02NOT_RUN; P2INACTIVE, D1–D5DEFERRED_USER,5packsDEFER, academicPAUSED/REVIEW/DEFER/intake1of4 thiếu; official/rollout có quyền riêng.
+- W44 storageauditexit1 do1bản chụp source Python trong evidence; giữ snapshot thực thi, không gọi auditPASS. GAC metadata search trước chưa hard-bound/elapsedUNKNOWN; không suy enforcement.
+
+## Waiting on user
+
+Đã có quyền thi công và gọi subagent bảo trì; không hỏi lại từng sửa. Academic, mời/trả phí chuyên gia, dữ liệu ngoài phạm vi và publish giữ quyền riêng; chưa có yêu cầu xác nhận cho Word A.
+
+## Decisions
+
+- Bám roadmap r2/V0–V7/R/T; mỗi giao việc nêu toàn điều kiện mốc, phần sẽ đóng và phần còn lại. Sửa/kiểm nhỏ ở cùng W44, không tách tranche theo API hoặc checkpoint.
+- Worker Terra6.1High; việc khó Sol6.1Medium; Reviewer/Advisor AstraMedium theo operator. Bảo trì qua quyền hội thoại, không đổi productprofile/grants.
+- Ưu tiên native/owner hiện hữu; không thêm runtime sản phẩm hoặc sao chép native khi chưa có gap cụ thể. QA kỹ thuật do dev hoàn tất trước giao.
+- Alibaba dùng chung ở .agent/private/model_gateway/alibaba/:4file ignored/ledger18model/currentkey, dùng trực tiếp; không auto-sync/bản cũ/live API/đưa key vào Git. Không đọc key để kiểm Word.
+- Không full retry artifact54/COM173 khi thiếu hypothesis/phép phân biệt hữu hạn. Chi phí thất bại giữ trong HANDOFF, tổng effort/token/billing UNKNOWN.
+- Nguồn pháp lý do project khác làm sạch; LAW dùng DATAMOCK/public inputs trong quyền. Giữ academic pause và quyền install/confirm/export/publish riêng.
+
+## Next milestone
+
+Đối chiếu lỗi executable lease và metadata đúng PID14740; Astra sửa nguyên nhân rõ. Chưa có quyền retry khi cleanup UNKNOWN. Tập trung sửa/kiểm được lỗi này trước chuyển việc theo PROJECT; không retry Word A/artifact54 hoặc thay cấu hình máy từ đề xuất cũ.

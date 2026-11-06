@@ -1,0 +1,140 @@
+{
+  "schemaVersion": "cvf.repairChainAssessment@1.0.0",
+  "milestoneId": "V4",
+  "history": [
+    {
+      "path": ".cvf/maintainer/cvf13/history/w44-attempt3.json",
+      "sha256": "3d949ca2f166b10e713a80eed80e4f9509d6354be18f30127911752458c14e4e"
+    },
+    {
+      "path": ".cvf/maintainer/cvf13/history/w44-static-fix.json",
+      "sha256": "eb8d90b7431f52014476260b3e1ff228c0ed4bf4f6ea1892407e9faf676f5891"
+    }
+  ],
+  "affectedCriteria": [
+    "V4"
+  ],
+  "failureBoundary": "direct1: fresh process lease and zero-book/settings readback passed; 0x800A03EC after before_open_known, no opened_known event. Open/identity/Count1/Item1/window/template/content boundaries are not individually logged. Cleanup UNKNOWN; no native states or exports.",
+  "observedEvidence": [
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/binding-diagnostic2/events.jsonl",
+      "sha256": "48949561cf46835a37feada396fd1e1580f144d5da763cb7a397e27fc5cb63e4"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/main-passive-ui-unavailable.json",
+      "sha256": "55fa2ce748a3202c004178cc168d48a866f10ac412d01dc48a904ec2b49686d7"
+    },
+    {
+      "path": "working/cvf-profile13-adoption-20261105/evidence/cua-inventory-result.json",
+      "sha256": "60ce82dcf1addaccc99a49532572e8d7896077f25b5e04991f7192c5a3ebd67a"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/r6-host-file/result.json",
+      "sha256": "8b97d57af77c5c7acf9fd4992acd6f5770d1eb37f6b0a42e5bd74c90b579f08d"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/r6-host-file/host-stdout.log",
+      "sha256": "913724cd821a81fea056a6c4bd71e2f36851a69d8128faf8b2d0626fe686c7d6"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/r6-host-file/validate-stdout.log",
+      "sha256": "b6dc9112d3f194daad3ab6d761b6832248998062fce01271ec8747db783cb6d1"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/direct-preparation.json",
+      "sha256": "9127a6a2994c956eb009a5229ba9cd38695d7c753041f10ac589e0173b91ae19"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/direct1/scripts/native_excel_direct.ps1.bin",
+      "sha256": "94473d48ff8cf6930df8fcd51af40e4f20b379578488b8704cde364bbd81037b"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/scripts/direct_excel_factory.cs",
+      "sha256": "c905a8b3e9f834b716099a1d411c8b63e8fa762f228dce653bc4a71e14138c6e"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/scripts/run_excel_direct.py",
+      "sha256": "be5134a8c5a4bb7f611ce6b1562705241d7c5db0207272c6ae57b0c315d50226"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/scripts/render_excel_direct.py",
+      "sha256": "0a5d0813eefe5485665fed63e3bc22d19f7b718acdcdcaf7cd030610f1572cce"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/scripts/test_excel_direct.py",
+      "sha256": "d944b3f4fc14342484258b506f2f76d56702fd08d954192e2c22ca13e31599b4"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/direct-reviewer-delta.json",
+      "sha256": "36c221d101308629164a05d5c75e998895c14d3f64bc2eacb0d174477cdce494"
+    },
+    {
+      "path": "working/cvf-profile13-adoption-20261105/evidence/direct-native-execution.json",
+      "sha256": "e027f0568a2d473a67cce95fe90b084074196f96963e84c34092440fe4a53f2f"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/direct1/process.json",
+      "sha256": "e02c18e7ff756b2124785336f76296448738ec30091d71c32f6a656623c6010c"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/direct1/events.jsonl",
+      "sha256": "d0c1fc2304a8ebb6c0bd0a1158e1b1a661d08b240f604b996a2021ad3b86ce6b"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/direct1/native-observations.json",
+      "sha256": "705578be711eb34c9e250056f85faad1f027baa3417aedbac9202421c74c6929"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/direct1/native-stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/direct1/native-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/direct1-static-audit.json",
+      "sha256": "331b30b4263ea1a83f098107e08d21021153791f9429b70ca90c9ae3c2824a97"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/scripts/native_excel_direct.ps1",
+      "sha256": "7413951f2c1faca390c5b25cad48b34ebc4436292cc1d9fdfd3980d3acf742d3"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/scripts/_scratch/test_direct_telemetry.ps1",
+      "sha256": "625594925543b66459f55d5da9e4e6fdd47b910b6996cc2c82888cb8ed4d4184"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/direct-telemetry-preparation.json",
+      "sha256": "1e3b63cb2ca0d9f069d92d3bc2fe2079d39eb00f012053f9ee4fa6f154c1be19"
+    }
+  ],
+  "causeStatus": "UNKNOWN",
+  "causeOrHypothesis": "One reviewed fresh direct route still hit COM1004 within Open-Known before content ownership was proved. UI-bootstrap NativeOM is therefore not required for the newly observed failure, but this does not isolate the failing call or prove that all old failures share one cause. Fresh instance/settings succeeded; clone/source integrity holds. The coarse event boundary and absent stack/detail cannot distinguish Open from subsequent getters/content validation. Exact failed method and underlying host/PIA/workbook cause remain UNKNOWN.",
+  "remainingChain": [
+    "Static full-chain audit of Open-Known, argument/interop contracts and logging blind spot; exact failing method/internal1004/old and new cleanup remain UNKNOWN. No native retry or PID manipulation.",
+    "All seven states/per-channel/blank-zero-.8/append/cap201/duplicate-missing/protected inputs",
+    "Save/reopen/native cached results and retained formulas",
+    "All five native sheets/every PDF page and exact native-populated viewer",
+    "Preserve source; prove own safe exit; Main and independent review; all other4.4 obligations remain"
+  ],
+  "discriminator": null,
+  "correctiveAction": "Telemetry-only source patch adds durable actual-call boundaries and separates original/cleanup errors; no native run or underlying COM repair claimed. Historical execution code bound to immutable direct1 snapshot; present patched code is an unexecuted candidate. All native effects remain BLOCKED.",
+  "owner": "Main",
+  "cumulativeMinutes": "UNKNOWN",
+  "additionalCeilingMinutes": 0,
+  "stopCondition": "Consumed one direct1 attempt; no native, COM, PID, UI, Office cleanup, fallback, install, global change or retry. Static reads/drafts only.",
+  "reopenCondition": "Only a focused same-W44 full-chain audit with a new distinguishing observation, independent review, and actual scoped admission may reopen effects; preserve original history and costUNKNOWN.",
+  "disposition": "BLOCKED",
+  "admittedAction": null,
+  "review": {
+    "reviewer": "Astra Medium",
+    "decision": "ACCEPTED",
+    "evidence": [
+      {
+        "path": "working/cvf-profile13-adoption-20261105/evidence/telemetry-pre.md",
+        "sha256": "c8cffadf4d2640bd7b97028ff0830da483d141790f0efe4e03417c6656e812b5"
+      }
+    ]
+  }
+}

@@ -38,6 +38,8 @@ python skills/local/shared/spreadsheet-check/scripts/check_spreadsheet.py FILE.x
 python skills/local/shared/spreadsheet-check/scripts/check_spreadsheet.py FILE.csv
 ```
 
+Với `--status-exit`, mã 0 nghĩa là không có phát hiện trong phạm vi kiểm cơ học; 1 là có phát hiện; 2 là chưa kiểm được hoặc chưa đủ phạm vi yêu cầu, ưu tiên hơn 1 khi có cả hai. Thông tin tiêu đề là metadata, không phải phát hiện. CSV dùng `--sheet` không được chọn sheet: chế độ status báo chưa kiểm đủ. Công thức không được tính lại; cache chưa được engine xác minh và thiếu cache cho mã 2. Không suy ra file đúng từ mã 0. Không dùng `--status-exit` thì giữ hành vi thoát mặc định.
+
 CSV chỉ cần Python 3.8+. Excel cần `openpyxl` (`pip install openpyxl`); không có thì script báo rõ và
 dừng, khi đó xuất sheet sang CSV hoặc kiểm bằng cách khác. `--sheet TÊN` chỉ kiểm một sheet; `--khoa`
 chỉ định cột mã để tìm trùng. Kết quả chia ba nhóm như bên dưới; vẫn cần người đọc đánh giá ý nghĩa

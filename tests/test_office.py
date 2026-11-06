@@ -323,6 +323,44 @@ class Compose(unittest.TestCase):
         self.assertIn('This brief only prepares a hand-over', out['brief'])
         self.assertIn('write_html', [c['capability'] for c in out['capabilities'] if c['required']])
 
+    def test_fragment_preserves_and_distinguishes_complete_claims(self):
+        prefix = 'a' * 200
+        cases = [dict(request=prefix + ' first'), dict(request=prefix + ' second'),
+                 dict(request=prefix + ' first', output_format='html'),
+                 dict(request=prefix + ' first', output_format='docx'),
+                 dict(request=prefix + ' first', limits=' giới hạn 1 '),
+                 dict(request=prefix + ' first', limits=' giới hạn 2 '),
+                 dict(request=prefix + ' first', needs_compute=True),
+                 dict(request='đ' * 4000, limits='ữ' * 2000),
+                 dict(request='  dòng một\n"dòng hai"  ', limits='  giữ nguyên\n giới hạn  ')]
+        statements = []
+        for case in cases:
+            out = self.compose(**case)
+            self.assertEqual(out['outcome'], 'COMPOSED')
+            claim = {'request': case['request'], 'output_format': case.get('output_format', 'text'),
+                     'limits': case.get('limits'), 'needs_compute': case.get('needs_compute', False)}
+            encoded = json.dumps(claim, ensure_ascii=False)
+            statement = out['task_fragment']['acceptance_requirement']['statement']
+            self.assertIn(encoded, statement)
+            self.assertIn(statement, out['task_fragment']['main_interpretation'])
+            self.assertIn(case['request'], out['brief'])
+            self.assertIn(case.get('output_format', 'text'), out['brief'])
+            if 'limits' in case:
+                self.assertIn(case['limits'], out['brief'])
+            statements.append(statement)
+        self.assertEqual(len(statements), len(set(statements)))
+        for field, value in [('request', 'a' * 4001), ('limits', 'a' * 2001),
+                             ('request', 'a\x00b'), ('limits', 'a\x01b')]:
+            self.assertEqual(self.compose(**{field: value})['outcome'], 'REFUSED')
+
+    def test_task_claim_text_rejects_noncanonical_unicode_before_binding(self):
+        for field in ('request', 'reason', 'limits'):
+            for value in ('x' * 200 + ' e\u0301', 'x\ud800', 'x\udfff'):
+                with self.subTest(field=field, value=ascii(value)):
+                    out = self.compose(**{field: value})
+                    self.assertEqual(out['outcome'], 'REFUSED')
+                    self.assertIn('REQUEST_INVALID:' + field, out['problems'])
+
     def test_report_loop_contracts_reach_the_worker_and_reviewer_briefs_in_both_languages(self):
         """The claim table, the keep-decisions revision pass and the finding codes are part of the bound method text, not Main-only advice."""
         decisions = 'Quyết định giữ nguyên chữ: D1 chọn phương án B.'
@@ -546,6 +584,23 @@ class OfficeBinding(tf.FlowBase):
 
     def office_problems(self, cp):
         return [p for p in cp['problems'] if p.startswith('OFFICE_')]
+
+    def test_claim_change_changes_task_binding(self):
+        _, _, task, out = self.office_assignment(request='x' * 200 + ' first')
+        changed = office.compose(request('executive-secretary', request='x' * 200 + ' second',
+                                         sources=[{'path': tf.SOURCE_REL}], resources_used=[SKILL_MINUTES]), self.project)
+        self.assertEqual(changed['outcome'], 'COMPOSED')
+        other = copy.deepcopy(task)
+        other['acceptance']['requirements'][-1] = copy.deepcopy(changed['task_fragment']['acceptance_requirement'])
+        self.assertNotEqual(out['task_fragment']['acceptance_requirement']['statement'],
+                            changed['task_fragment']['acceptance_requirement']['statement'])
+        self.assertNotEqual(self.r.binding_stub(self.v3, task), self.r.binding_stub(self.v3, other))
+        for change in ({'output_format': 'html'}, {'limits': 'giới hạn'}, {'needs_compute': True}):
+            variant = office.compose(request('executive-secretary', request='x' * 200 + ' first',
+                                             sources=[{'path': tf.SOURCE_REL}], resources_used=[SKILL_MINUTES],
+                                             **change), self.project)
+            other['acceptance']['requirements'][-1] = copy.deepcopy(variant['task_fragment']['acceptance_requirement'])
+            self.assertNotEqual(self.r.binding_stub(self.v3, task), self.r.binding_stub(self.v3, other))
 
     def test_a_valid_office_candidate_passes_and_publishes_the_checked_bytes(self):
         task_rel, result_rel, task, out = self.office_assignment()

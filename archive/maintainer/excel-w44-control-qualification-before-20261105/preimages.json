@@ -1,0 +1,10 @@
+[
+  {
+    "path": ".agent/STATE.md",
+    "sha256": "78580eb1544829ea8f7f0dde703eb042ff381597cc3671094bafa717bbdd22b8"
+  },
+  {
+    "path": ".agent/HANDOFF.md",
+    "sha256": "e19884d96df860405dbf72c242194a4a368ff853d5c0d0076ddf3b2a328e37da"
+  }
+]

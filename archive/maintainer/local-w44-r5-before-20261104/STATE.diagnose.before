@@ -1,0 +1,60 @@
+# PROJECT STATE
+<!-- local-agent-workspace: maintainer-state -->
+## Goal
+
+Hoàn thiện LAW thành văn phòng trung tâm: giao việc tự nhiên, đầu ra có căn cứ, sửa và tiếp đúng bản, giữ dữ liệu và quyền riêng.
+
+## Current phase
+
+04/11/2026: W44r5 phânbiệt dependencyhash/cmd, chưaWord; r4 giữthấtbại; W46 đã nhận, 4.5 chưa đạt. Artifact54 BLOCKED_CAUSE, không buildretry. HTML A đạt giới hạn; Word/native chưa đạt. PRERELEASE_NOT_READY.
+
+## Completed
+
+- Đã đọc bản hợp nhất nghiên cứu web, README, đính chính S04 và disposition S08; không biến prompt trong ZIP thành quyền thi công.
+- HEAD hiện96d5a44f6bc510fc53d4d0a71bcf4a7f23095f57 đã chốt roadmap r2; PR10 đã merge. Hai CI runs41575566248/41794538743 trên baseline cũ đều5/5job lỗi Package check; chưa CI mới cho stagedfix.
+- Profile hợp cấu trúc, owner PROFILE; Scout/Worker/Reviewer đều NO_GRANT. Catalog có sáu phương pháp, chưa chứng minh mọi host/role hoạt động.
+- ZIP50 hiện hữu khớp SHA trong receipt; bốn file chart khớp receipt. Không chạy lại tests hoặc nghiệm thu toàn artifact.
+- Bằng chứng cũ được giữ: V1–V6 có các subset giới hạn, Antigravity nội dung/continuity bounded; P1 sáu ca và năm boundary riêng; CVF dev guidance đã nhận ở lớp tài liệu.
+- W40 clean candidate package0lỗi/0cảnh báo; staged bỏ1PACKrow,28hashLocal nguyên/academicREVIEW. W41 có14/14assertions đạt sau1sửa nhỏ của Astra; nguồn/oracle khóa trước run, compute và action trace có bản ghi host giới hạn.
+- W42 consumerthật từsourceclean: @2chỉđổithứtự/predecessor1/currentSET; collisionTARGET_EXISTS giữbytes. Nativecontextreader riêng tiếpđúngbản,336filekhôngđổi; Astra sửa1câuphasequaowner sauđó, final337file.
+- W45r2 privateboundary đã nhận; r3 actual3CLI new/adopt/upgrade đạt, giữ8/9seededfiles/profilegrants[], restoreownedfile/0privatemanifest-action-new; Astra nhận bounded, khôngwholelifecycle.
+- W46: đã sửa1guide phát hành VI/EN theo RC4/CI; tách historical khỏi HEAD, giữ skip/failure và latest naming mismatch/payloadUNKNOWN. EOL/diff đạt, Astra nhận bounded.
+- W44 HTML A được Astra nhận: đủ nội dung, desktop/mobile390px và2trangin đã xem; Wordr4 1attempt1.609s lỗiGet-FileHash trướclaunch, Astra nhậnrecordthấtbại; checkerexit1/3cầnxácnhận, nativeNOT_MET/PID36988UNKNOWN.
+- W43: r2 actual2CLI success/blocked/1row; r4 corruptstaging resume/rollback partial/0newrow, giữuser/index/backup; Astra nhận bounded, chưafullrace/recovery.
+
+## Current artifact
+
+- Roadmap hiện hành: roadmap/ROADMAP_VAN_PHONG_NGHIEP_VU.md, mục Local 04/11, revision LOCAL-ROADMAP-20261104-r2; §7 xử lý F1–F9. Hash roadmap/HANDOFF r1 khớp phản biện; bản trước ở archive/maintainer/roadmap-local-r1-before-claude-review-20261104/.
+- LOCAL-W44-20261104-r5 DIAGNOSE_NO_WORD đầu HANDOFF; job format-qa/native-owned-20261104-r5/. W46doc/W45 giữ evidence; HEAD/staged/liveMM giữ.
+- W40 evidence: working/source-preflight-20261104/INTEGRATION.json và REVIEW.md; W41 ba bản giao DATAMOCK tại working/v4-office/acceptance-20261104/quality-loop/run/output/, review độc lập tại quality-loop/REVIEW.md; cả ba agent FINAL/NOWRITER.
+- ZIP50: working/release-closure-20261031/attempt2/artifacts/local-agent-workspace-v1.9.0-rc5.zip; SHA29fbeeed…713af, source8db7589f; receipt ACCEPTANCE-complete.json ở thư mục release-closure.
+- Source/evidence mới: working/chart-quality-20261031/, panel-intake-20261031/, source-response-20261031/, delta-artifact-20261031/ và gate-runtime-20261031/. Source được nhận riêng không đồng nghĩa có ZIP mới đạt.
+- Nghiên cứu gốc: C:/Users/DELL/Downloads/LAW_LOCAL_RESEARCH_HANDOFF_20261104.zip; SHA0baae123…75bede. Không giải nén/cài hoặc sửa nguồn này.
+
+## Open items
+
+- V1/V2/V4: routing, chất lượng nội dung/nguồn và kết hợp nghề ngoài ca đã kiểm; cần output dùng được, rubric/expected có căn cứ.
+- V2/V5/V6: cóboundedfreshreaderCodex, còn nativeTASKRESULT/context/quyền/lỗi/dừng/late/sourcechange/UI vàhostkhác; WorkStatusconsumerNO_WORK/stopUNCONFIRMED, khôngproductgrant. Antigravityfindingcũ giữ, chưa hostenforcement.
+- V4/V7: HTML A đã QA giới hạn; còn Word native/XLSX/format-host/support khác, Excel173 cause UNKNOWN/native QA chưa đạt. WordPID36988ownershipUNKNOWN, không tác động. Chart giữ receipt.
+- V3/V7/P1: đã nhận1ca2process; còn UI53, race/lịch khác, lưu/thay file, ngắt ghi/corruption khác/recovery/Undo/schema và W1–W4; nguồn/hiệu lực/provenance chưa đủ, root INDEX vắng trong snapshot đã kiểm.
+- V7: staged source đã sửa PACK, chưa commit/push/CI HEAD. Artifact54 timeout1800s vẫn cause/test totals UNKNOWN, release_tree/ZIP mới NOT_RUN; còn gates, fresh/adopt/upgrade, luồng bản giao và review đúng artifact.
+- Năm gói DEFER; P2 inactive; D1–D5 DEFERRED_USER. Academic PAUSED/REVIEW/DEFER, intake1/4 thiếu và entry description drift chưa sync.
+- V6/M5: feedback thật NOT_RUN, kit C-02 giữ chuẩn bị. M6/official/rollout còn điều kiện và quyền riêng; không nhận toàn roadmap từ các subset.
+
+## Waiting on user
+
+Đã có quyền thi công và gọi subagent bảo trì theo chỉ định mới trong hội thoại; không đổi profile vai sản phẩm. Academic, mời/trả phí chuyên gia, dữ liệu ngoài phạm vi và publish giữ quyền riêng; chỉ hỏi khi phần cụ thể phụ thuộc.
+
+## Decisions
+
+- Local chốt: preflight source 4.0 và chuẩn bị luồng báo cáo–số liệu–nháp thư 4.1 → sửa/tiếp phiên → nguồn/bảo toàn → định dạng → artifact. Output đã QA có thể giao và nhận góp ý tùy chọn sớm; không thay pilot hoặc QA dev.
+- Giữ V0–V7/R/T và acceptance gốc; mỗi giao việc nêu toàn gap, phần sẽ đóng và phần còn lại. Không tạo roadmap/work order song song hoặc tự mở agent phụ.
+- Dùng native/owner hiện hữu cho đợt này; upstream chỉ xét khi có gap cụ thể và phép so có thể đổi quyết định. Không thêm runtime/UI/database mới theo danh mục nghiên cứu.
+- Operator04/11 yêu cầu kho Alibaba chung: .agent/private/model_gateway/alibaba/README.md và .env.local (ignored), ledger18model hiện hành từ CVF; dùng trực tiếp, không bản cũ/auto-sync. Freeonly1/scope0; chưa live. Không đổi roadmap/model/grant.
+- Chỉ định mới04/11: Worker Terra6.1 High, việc khó Sol Medium; Advisor/Reviewer Astra Medium. Ghi dispatch thực và chất lượng trong HANDOFF; không tự đổi profile sản phẩm.
+- Không full retry artifact54/COM173 khi chưa có căn cứ nguyên nhân/phép phân biệt hữu hạn; giữ chi phí nhánh và lịch sử thất bại. Không hạ gate để có tiến độ.
+- Kho pháp lý do project khác làm sạch; LAW dùng public inputs/DATAMOCK trong quyền. Giữ academic pause và các giới hạn intake/install/confirm/export/publish.
+
+## Next milestone
+
+Main1phépPS15s khôngOffice kiểm.NETSHA/cmd; chỉđủproofmớiAstra sửa nhỏ/PRE. NativeNOT_MET vàtoàngapgiữmở. KhôngđụngWordPID36988UNKNOWN/realprivate/build/COMprobe/install; WordAQA vàmọigaptoànmốc còn mở.

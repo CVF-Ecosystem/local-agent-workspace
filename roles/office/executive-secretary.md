@@ -11,7 +11,7 @@ EN: Call it to consolidate several sources into a periodic report or minutes for
 
 ## Đầu vào / Input {#input}
 
-Kỳ báo cáo; người đọc và mục đích dùng; mẫu hoặc cấu trúc mong muốn (nếu có); danh sách nguồn kèm revision; các quyết định user đã chốt cần giữ nguyên; định dạng đầu ra (text hoặc HTML); đường dẫn candidate trong slot được giao. Thiếu kỳ, người đọc hoặc nguồn thì trả lại Main.
+Kỳ báo cáo; người đọc và mục đích dùng; mẫu hoặc cấu trúc mong muốn (nếu có); danh sách nguồn kèm revision; các quyết định user đã chốt cần giữ nguyên; định dạng đầu ra do Main giao (text, HTML hoặc DOCX qua host_session); đường dẫn candidate trong slot được giao. Thiếu kỳ, người đọc hoặc nguồn thì trả lại Main.
 **Lần sửa** (Main giao lại sau review hoặc khi người dùng đổi yêu cầu) có thêm: đường dẫn và digest của candidate trước; danh sách quyết định giữ nguyên chữ do Main nêu; phát hiện Main đã chấp nhận sửa (mã phát hiện, mã claim, điều cần sửa); nguồn hoặc revision nguồn nào đã đổi. Candidate trước là tư liệu để sửa, không phải nguồn của sự kiện: chỗ nào cần căn cứ vẫn quay về nguồn. Thiếu candidate trước hoặc danh sách quyết định thì trả lại Main. Danh sách rỗng được nêu rõ nghĩa là chưa có quyết định đã chốt cần giữ.
 
 EN: The period, reader and purpose, the template if any, the sources with revisions, decisions the user already made, the output format and the candidate path in the slot. A **revision pass** adds the previous candidate (path and digest), the decisions Main says to keep verbatim, the findings Main accepted for fixing (finding code, claim code, the fix needed) and which sources or revisions changed. The previous candidate is working material, not evidence of any fact; return to the sources where grounds are needed. If the previous candidate or the list of decisions is missing, return the brief to Main; an explicit empty list means there are no settled decisions to preserve.
@@ -33,15 +33,15 @@ EN: Confirm period and reader; read every source and keep a locator per statemen
 
 ## Đầu ra / Output {#output}
 
-Đúng một candidate (text hoặc HTML) trong slot được giao, có bảng căn cứ ở mục cuối (bước 9), cùng phần ghi chú trả về Main gồm: điều còn thiếu, mâu thuẫn giữa nguồn, danh sách điểm cần người dùng xác nhận, và với lần sửa là các claim đã đổi cùng claim nào chưa kiểm lại được. Ghi chú chỉ tóm tắt; căn cứ đầy đủ nằm trong bảng của candidate để mở lại không cần hỏi lại Worker. Kết quả là CANDIDATE; không đặt trạng thái nhận bản.
+Đúng một candidate (text, HTML hoặc DOCX được Main giao qua host_session) trong slot được giao, có bảng căn cứ ở mục cuối (bước 9), cùng phần ghi chú trả về Main gồm: điều còn thiếu, mâu thuẫn giữa nguồn, danh sách điểm cần người dùng xác nhận, và với lần sửa là các claim đã đổi cùng claim nào chưa kiểm lại được. Bảng căn cứ, quyết định, phần thay đổi của lần sửa và ghi nhận kiểm tra theo claim được giao nằm trong chính candidate; ghi rõ phần chưa kiểm, không tự nhận đạt. Ghi chú chỉ tóm tắt; căn cứ đầy đủ nằm trong bảng của candidate để mở lại không cần hỏi lại Worker. Kết quả là CANDIDATE; không đặt trạng thái nhận bản.
 
-EN: Exactly one candidate file in the assigned slot, with the evidence table as its last part (step 9), plus notes for Main: gaps, source conflicts, points the user must confirm and, for a revision, the claims changed and any not rechecked. The notes only summarise; the full grounds live in the candidate's table so it can be reopened without asking the Worker again. The result stays a CANDIDATE.
+EN: Exactly one candidate file in the assigned slot, including DOCX when Main assigns it through host_session, with the evidence table as its last part (step 9), decisions, revision changes and checks against assigned claims recorded inside it; identify unchecked items and do not declare acceptance. Notes for Main summarise gaps, conflicts, confirmations and revision claims changed or not rechecked. The result stays a CANDIDATE.
 
 ## Công cụ cần có / Capabilities {#capabilities}
 
-Bắt buộc: `read_local` (Read), `search_local` (Grep, Glob), `write_text` (Write, tạo đúng một file mới trong slot). Tùy chọn: `write_html` (cũng bằng Write) khi đầu ra là HTML. Không có Python hay công cụ tính; nếu báo cáo cần phép tính đáng kể thì phần đó giao cho phương pháp số liệu, không tự tính bằng ước chừng.
+Bắt buộc: `read_local` (Read), `search_local` (Grep, Glob), `write_text` (ghi text/HTML và metadata RESULT.json trong slot; không dùng capability này làm bằng chứng tạo DOCX). Khi đầu ra là HTML cần `write_html`; DOCX qua host_session cần `office_files` được khai. Khai capability chỉ chuẩn bị tuyến chưa kiểm chứng, không chứng minh host có năng lực hoặc được cấp quyền. Dùng công cụ tạo file thực có của host trong quyền được giao; không suy năng lực tính toán từ office_files. Nếu báo cáo cần phép tính đáng kể thì phần đó giao cho phương pháp số liệu, không tự tính bằng ước chừng.
 
-EN: Required: read_local, search_local, write_text. Optional: write_html. No calculation tool; significant calculation belongs to the data method.
+EN: Required: read_local, search_local, write_text (text/HTML and RESULT.json metadata in the slot; not evidence of DOCX creation); HTML requires write_html and DOCX through host_session requires a declared office_files capability. A declaration prepares an unverified route, not proof of host capability or authority. Use the host's actual file-creation tools within assigned authority; office_files does not imply calculation capability. Significant calculation belongs to the data method.
 
 ## Skill và mẫu bổ sung / Optional resources {#resources}
 
@@ -54,6 +54,8 @@ EN: Optional by output: meeting-minutes, html-reports, internal-comms, vn-admin-
 Xong khi: đúng kỳ và đúng người đọc; mọi mục báo cáo có nội dung hoặc "cần xác nhận"; quyết định, đề xuất, việc chờ tách riêng; mỗi số liệu, ngày, tên và trích dẫn trọng yếu truy được về nguồn; không có người phụ trách hay thời hạn không có trong nguồn; HTML (nếu có) mở được offline và đã escape. Mọi nhận định trọng yếu có mã `C` và một dòng trong bảng căn cứ; claim thiếu nguồn hoặc mâu thuẫn mang đúng loại và tình trạng, không viết như dữ kiện. Lần sửa còn xong khi quyết định trong danh sách giữ nguyên chữ, claim ngoài phạm vi sửa không đổi và mục "Thay đổi so với bản trước" khớp với những gì thực sự đổi. Báo cáo gửi ra ngoài hoặc trình ký cần Reviewer theo phương pháp `evidence-reviewer` trước khi tích hợp; Main không bỏ bước này.
 
 EN: Done when period and reader are right, every section has content or "to be confirmed", the three categories are separate, key facts trace to sources, no invented owner or deadline, HTML opens offline. Every key statement has a `C` code and a table row, and unsupported or conflicting claims carry that type and status rather than reading as fact. A revision is also done when listed decisions keep their wording, claims outside the fix are unchanged and the changes part matches what really changed. A report leaving the unit needs the evidence-reviewer before integration.
+
+Với DOCX, Main kiểm mở, đọc và trình bày trên artifact thật theo claim được giao trước khi nhận; khai capability hay brief không thay thế phép kiểm đó. / For DOCX, Main checks opening, reading and presentation of the actual artifact against the assigned claims before acceptance; a capability declaration or brief does not replace that check.
 
 ## Thiếu hoặc mâu thuẫn / Gaps and conflicts {#missing}
 

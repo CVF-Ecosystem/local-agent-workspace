@@ -124,20 +124,42 @@ class HostSession(unittest.TestCase):
             self.assertEqual(out['host_session']['actual_model'], 'NOT_INSPECTED')
 
     def test_office_formats_require_a_supporting_method_contract_and_declared_capability(self):
+        self.session['capabilities'].extend(['search_local', 'write_html'])
         for method in ('data-analyst', 'market-analyst', 'executive-secretary', 'correspondence',
                        'research-assistant', 'evidence-reviewer'):
             for fmt in ('docx', 'xlsx', 'pptx', 'pdf'):
                 req = office_fixture.request(method, resources_used=[], host_session=self.session, output_format=fmt)
                 out = office.compose(req, self.root)
-                if method in ('data-analyst', 'market-analyst'):
+                if method in ('data-analyst', 'market-analyst') or (method == 'executive-secretary' and fmt == 'docx'):
                     self.assertEqual(out['outcome'], 'COMPOSED', out)
-                    self.assertNotIn('office_files', out['held'])
+                    self.assertEqual(out['state'], 'PREPARED', out)
+                    self.assertEqual(out['held'], [])
+                    self.assertEqual(next(c for c in out['capabilities'] if c['capability'] == 'office_files')['status'], 'ROUTE_READY_UNVERIFIED')
                 else:
                     self.assertEqual(out['outcome'], 'REFUSED', out)
                     self.assertIn('REQUEST_INVALID:host_session.OUTPUT_CONTRACT_UNSUPPORTED', out['problems'])
         spec = copy.deepcopy(self.session)
         spec['capabilities'].remove('office_files')
         self.assertIn('office_files', self.compose(spec, output_format='xlsx')['held'])
+        req = office_fixture.request('executive-secretary', resources_used=[], host_session=spec, output_format='docx')
+        out = office.compose(req, self.root)
+        self.assertEqual(out['state'], 'NEEDS_CAPABILITY')
+        self.assertIn('office_files', out['held'])
+        for fmt in ('text', 'html'):
+            req = office_fixture.request('executive-secretary', resources_used=[], host_session=self.session, output_format=fmt)
+            self.assertEqual(office.compose(req, self.root)['state'], 'PREPARED')
+
+        spec = copy.deepcopy(self.session)
+        spec['capabilities'].remove('write_text')
+        req = office_fixture.request('executive-secretary', resources_used=[], host_session=spec, output_format='docx')
+        out = office.compose(req, self.root)
+        self.assertEqual(out['state'], 'NEEDS_CAPABILITY')
+        self.assertEqual(out['held'], ['write_text'])  # Worker must also write RESULT.json.
+        req.pop('host_session')
+        out = office.compose(req, self.root)
+        self.assertEqual(out['state'], 'NEEDS_CAPABILITY')
+        self.assertIn('office_files', out['held'])
+        self.assertNotIn('host_session', out)
 
     def test_native_reviewer_requires_exact_candidate_path_and_digest(self):
         for lang in ('vi', 'en'):

@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "cvf.repairChainAssessment@1.0.0",
+  "milestoneId": "V4",
+  "history": [
+    {
+      "path": ".cvf/maintainer/cvf13/history/w44-attempt3.json",
+      "sha256": "3d949ca2f166b10e713a80eed80e4f9509d6354be18f30127911752458c14e4e"
+    },
+    {
+      "path": ".cvf/maintainer/cvf13/history/w44-static-fix.json",
+      "sha256": "eb8d90b7431f52014476260b3e1ff228c0ed4bf4f6ea1892407e9faf676f5891"
+    }
+  ],
+  "affectedCriteria": [
+    "V4"
+  ],
+  "failureBoundary": "Item1 returned 0x800A03EC in owned process diagnostic; cleanup unknown.",
+  "observedEvidence": [
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/binding-diagnostic2/events.jsonl",
+      "sha256": "48949561cf46835a37feada396fd1e1580f144d5da763cb7a397e27fc5cb63e4"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/main-passive-ui-unavailable.json",
+      "sha256": "55fa2ce748a3202c004178cc168d48a866f10ac412d01dc48a904ec2b49686d7"
+    },
+    {
+      "path": "working/cvf-profile13-adoption-20261105/evidence/cua-inventory-result.json",
+      "sha256": "60ce82dcf1addaccc99a49532572e8d7896077f25b5e04991f7192c5a3ebd67a"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/r6-host-file/result.json",
+      "sha256": "8b97d57af77c5c7acf9fd4992acd6f5770d1eb37f6b0a42e5bd74c90b579f08d"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/r6-host-file/host-stdout.log",
+      "sha256": "913724cd821a81fea056a6c4bd71e2f36851a69d8128faf8b2d0626fe686c7d6"
+    },
+    {
+      "path": "working/excel-workflow-quality-20261029/native-final-20261104/evidence/r6-host-file/validate-stdout.log",
+      "sha256": "b6dc9112d3f194daad3ab6d761b6832248998062fce01271ec8747db783cb6d1"
+    }
+  ],
+  "causeStatus": "UNKNOWN",
+  "causeOrHypothesis": "Internal1004 remains UNKNOWN. Actual bounded preflight observed own and active console session40,357 visible same-session processes including explorer1/dwm1, candidate desktop visibility; old PID absent only in this context and old cleanupUNKNOWN. Independent officecli validator exit0 reports success=true/count0/errors[] on exact preserved clone; excludes reported schema faults only, not semantic/calculation/native defects. Distinct direct-private-COM route is proposed for review, not admitted by this blocked close.",
+  "remainingChain": [
+    "Resolve current exact Item1/1004 boundary and retain unknown cleanup; no blind native retry",
+    "All seven states/per-channel/blank-zero-.8/append/cap201/duplicate-missing/protected inputs",
+    "Save/reopen/native cached results and retained formulas",
+    "All five native sheets/every PDF page and exact native-populated viewer",
+    "Preserve source; prove own safe exit; Main and independent review; all other4.4 obligations remain"
+  ],
+  "discriminator": null,
+  "correctiveAction": "Consume the one host/file discriminator and hold dependent operation pending reviewed actual new native route or other concrete evidence.",
+  "owner": "Main",
+  "cumulativeMinutes": "UNKNOWN",
+  "additionalCeilingMinutes": 0,
+  "stopCondition": "No dependent implementation or verification while assessment is blocked.",
+  "reopenCondition": "Actual supported native observation capability becomes available or independent concrete evidence supports a finite reviewed discriminator; unchanged backend retries do not qualify.",
+  "disposition": "BLOCKED",
+  "admittedAction": null,
+  "review": {
+    "reviewer": "Astra Medium",
+    "decision": "ACCEPTED",
+    "evidence": [
+      {
+        "path": "working/cvf-profile13-adoption-20261105/evidence/host-file-close-pre.md",
+        "sha256": "86d9a5cf56770a125472352d10c7714184a26a642b7dad76678815daca7c1855"
+      }
+    ]
+  }
+}
